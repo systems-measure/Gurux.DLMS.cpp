@@ -2019,7 +2019,7 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
     {
         if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC && data.GetData().GetSize() != 0)
         {
-            if (reply.GetPosition() != reply.GetSize()) {
+            if (reply.GetPosition() != reply.GetSize()) {                                
                 reply.SetPosition(reply.GetPosition() + 3);
             }
         }
