@@ -36,6 +36,9 @@
 #include "../include/GXDLMSClient.h"
 #include <sstream>
 
+
+#ifndef __ICCARM__
+
 #if defined(_WIN32) || defined(_WIN64)//Windows includes
 #include <Winsock.h> //Add support for sockets
 #else
@@ -521,3 +524,5 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     }
     return DLMS_ERROR_CODE_OK;
 }
+
+#endif //__ICCARM__
