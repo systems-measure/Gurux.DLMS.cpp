@@ -1390,24 +1390,15 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSDisconnectControl.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSEmergencyProfile.cpp</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSExtendedRegister.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSGPRSSetup.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSHdlcSetup.cpp</name>
@@ -1417,33 +1408,18 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSImageActivateInfo.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSImageTransfer.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSIp4Setup.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSIp4SetupIpOption.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSLimiter.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSLimits.cpp</name>
@@ -1456,21 +1432,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSMBusClient.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSMBusMasterPortSetup.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSMBusSlavePortSetup.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSMessageHandler.cpp</name>
@@ -1501,21 +1468,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSPppSetup.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSPppSetupIPCPOption.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSPppSetupLcpOption.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSProfileGeneric.cpp</name>
@@ -1528,9 +1486,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSQualityOfService.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSRegister.cpp</name>
@@ -1546,51 +1501,30 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSSchedule.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSScheduleEntry.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSScript.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSScriptAction.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSScriptTable.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSSeasonProfile.cpp</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSSecureClient.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSSecureServer.cpp</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSSecuritySetup.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSServer.cpp</name>
@@ -1603,15 +1537,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSSpecialDay.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSSpecialDaysTable.cpp</name>
-            <excluded>
-                <configuration>Lib</configuration>
-            </excluded>
         </file>
         <file>
             <name>$PROJ_DIR$\..\src\GXDLMSTcpUdpSetup.cpp</name>
