@@ -2025,7 +2025,6 @@ int CGXDLMSServer::HandleRequest(
         {
             ret = 0;
         }
-        
         return ret;
     }
     // If all data is not received yet.

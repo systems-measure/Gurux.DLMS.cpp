@@ -36,7 +36,7 @@
 #include "../include/GXHelpers.h"
 
 #include <string.h>
-//#include <locale>
+#include <locale>
 #include <vector>
 #include <assert.h>
 

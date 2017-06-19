@@ -37,14 +37,14 @@
 #include <algorithm>
 #include <functional>
 #include <cctype>
-//#include <locale>
+#include <locale>
 #include <stdio.h>
 #include <string.h>
 #include <sstream>
 #include <vector>
 #include <time.h>
 #include <map>
-//#include <fstream>
+#include <fstream>
 #include <assert.h>
 #include <iostream>
 #include <math.h>
