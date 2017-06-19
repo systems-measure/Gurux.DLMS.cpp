@@ -116,8 +116,8 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
 //        return new CGXDLMSImageTransfer();
 //    case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
 //        return new CGXDLMSDisconnectControl();
-//    case DLMS_OBJECT_TYPE_LIMITER:
-//        return new CGXDLMSLimiter();
+    case DLMS_OBJECT_TYPE_LIMITER:
+        return new CGXDLMSLimiter();
 //    case DLMS_OBJECT_TYPE_MBUS_CLIENT:
 //        return new CGXDLMSMBusClient();
     case DLMS_OBJECT_TYPE_MODEM_CONFIGURATION:
@@ -140,8 +140,8 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
 //        return new CGXDLMSCustomObject(type);
 //    case DLMS_OBJECT_TYPE_ZIG_BEE_SAS_APS_FRAGMENTATION:
 //        return new CGXDLMSCustomObject(type);
-    case DLMS_OBJECT_TYPE_SAP_ASSIGNMENT:
-        return new CGXDLMSSapAssignment();
+//    case DLMS_OBJECT_TYPE_SAP_ASSIGNMENT:
+//        return new CGXDLMSSapAssignment();
 //    case DLMS_OBJECT_TYPE_SCHEDULE:
 //        return new CGXDLMSSchedule();
 //    case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
