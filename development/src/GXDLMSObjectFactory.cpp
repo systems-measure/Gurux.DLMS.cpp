@@ -108,12 +108,8 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
         return new CGXDLMSIECOpticalPortSetup();
     case DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP:
         return new CGXDLMSCustomObject(type);
-        
-        
-//    case DLMS_OBJECT_TYPE_IP4_SETUP:
-//        return new CGXDLMSIp4Setup();
-
-        
+    case DLMS_OBJECT_TYPE_IP4_SETUP:
+        return new CGXDLMSIp4Setup();
     case DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP:
         return new CGXDLMSMBusSlavePortSetup();
     case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:
@@ -220,12 +216,8 @@ std::string CGXDLMSObjectFactory::ObjectTypeToString(DLMS_OBJECT_TYPE type)
         return "GXDLMSIECOpticalPortSetup";
     case DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP:
         return "GXDLMSIEC_TWISTED_PAIR_SETUP";
-        
-        
-//    case DLMS_OBJECT_TYPE_IP4_SETUP:
-//        return "GXDLMSIp4Setup";
-
-        
+    case DLMS_OBJECT_TYPE_IP4_SETUP:
+        return "GXDLMSIp4Setup";
     case DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP:
         return "GXDLMSMBusSlavePortSetup";
     case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:
