@@ -1593,6 +1593,15 @@ static int SetBitString(CGXByteBuffer& buff, CGXDLMSVariant& value)
     {
         buff.SetUInt8(0);
     }
+    else if (value.vt == DLMS_DATA_TYPE_INT32)
+    {
+        uint32_t tmp = value.ToInteger();
+        
+        GXHelpers::SetObjectCount(24, buff);
+        buff.SetUInt8((tmp >> 16) & 0xFF);
+        buff.SetUInt8((tmp >> 8) & 0xFF);
+        buff.SetUInt8(tmp & 0xFF);
+    }
     else
     {
         //BitString must give as string.
