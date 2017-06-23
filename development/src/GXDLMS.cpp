@@ -2020,7 +2020,8 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
         if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC && data.GetData().GetSize() != 0)
         {
             if (reply.GetPosition() != reply.GetSize()) {
-                reply.SetPosition(reply.GetPosition() + 3);
+                unsigned long newPos = ((reply.GetPosition() + 3) > reply.GetSize())?reply.GetSize():(reply.GetPosition() + 3);                                
+                reply.SetPosition(newPos);
             }
         }
         if (data.GetCommand() == DLMS_COMMAND_REJECTED)
