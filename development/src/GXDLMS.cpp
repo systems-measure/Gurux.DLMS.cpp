@@ -1218,6 +1218,10 @@ int CGXDLMS::GetHdlcData(
         else if (tmp == HDLC_CONTROL_FRAME_RECEIVE_READY)
         {
             // Get next frame.
+            
+            //!!!!
+            data.SetCommand((DLMS_COMMAND)frame);
+            //!!!!
         }
         // Get Eop if there is no data.
         if (reply.GetPosition() == packetStartID + frameLen + 1)

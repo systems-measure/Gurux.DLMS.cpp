@@ -73,6 +73,8 @@ private:
      */
     bool m_Initialized;
 
+    bool m_LinkEstablished;
+    
     /**
     * Parse SNRM Request. If server do not accept client empty byte array is
     * returned.
@@ -511,7 +513,7 @@ public:
     /**
      * Reset after connection is closed.
      */
-    void Reset();
+    void Reset(int v = 0);
 
     /**
      * Handles client request.

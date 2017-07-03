@@ -45,7 +45,11 @@
 
 
 CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
-    DLMS_INTERFACE_TYPE type) : m_Transaction(NULL), m_Settings(true)
+    DLMS_INTERFACE_TYPE type) : m_Transaction(NULL), m_Settings(true),
+
+    //!!!
+    m_LinkEstablished(false)
+    //!!!
 {
     m_Settings.SetUseLogicalNameReferencing(logicalNameReferencing);
     m_Settings.SetInterfaceType(type);
@@ -292,9 +296,14 @@ void CGXDLMSServer::Reset(bool connected)
     }
 }
 
-void CGXDLMSServer::Reset()
+void CGXDLMSServer::Reset(int v)
 {
-    Reset(false);
+    if(v == 0) {
+        Reset(false);
+    } else {
+        Reset(true);
+    }
+        
 }
 
 /**
@@ -744,6 +753,10 @@ void GenerateConfirmedServiceError(
     DLMS_SERVICE_ERROR type,
     unsigned char code, CGXByteBuffer& data)
 {
+    //!!!!
+    data.Set(LLC_REPLY_BYTES, 3);    
+    //!!!!
+    
     data.SetUInt8(DLMS_COMMAND_CONFIRMED_SERVICE_ERROR);
     data.SetUInt8(service);
     data.SetUInt8(type);
@@ -1811,25 +1824,49 @@ int CGXDLMSServer::HandleCommand(
         ret = HandleMethodRequest(data, connectionInfo);
         break;
     case DLMS_COMMAND_SNRM:
+        if(m_LinkEstablished) {
+            m_LinkEstablished = true;
+        }
         ret = HandleSnrmRequest(m_Settings, m_ReplyData);
         frame = DLMS_COMMAND_UA;
+        
+        //!!!!
+        m_LinkEstablished = true;
+        //!!!!
+
         break;
     case DLMS_COMMAND_AARQ:
         ret = HandleAarqRequest(data, connectionInfo);
         break;
     case DLMS_COMMAND_DISCONNECT_REQUEST:
-    case DLMS_COMMAND_DISC:
-        ret = GenerateDisconnectRequest(m_Settings, m_ReplyData);
-        m_Settings.SetConnected(false);
-        Disconnected(connectionInfo);
-        frame = DLMS_COMMAND_UA;
-        Reset(true);
+    case DLMS_COMMAND_DISC:        
+        //!!!!
+        if(m_LinkEstablished) {
+        //!!!!    
+            ret = GenerateDisconnectRequest(m_Settings, m_ReplyData);
+            m_Settings.SetConnected(false);
+            Disconnected(connectionInfo);
+            frame = DLMS_COMMAND_UA;
+            Reset(true);
+            m_LinkEstablished = false;
+
+        //!!!!              
+        } else {
+            frame = 0x1F;
+        }
+        //!!!!
         break;
     case DLMS_COMMAND_NONE:
         //Get next frame.
         break;
+        
+    case 0x11:
+        frame = 0x11;
+        break;
+        
     default:
         //Invalid command.
+        frame = 0x97;
         break;
     }
 

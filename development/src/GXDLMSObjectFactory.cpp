@@ -114,8 +114,8 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
 //        return new CGXDLMSMBusSlavePortSetup();
 //    case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:
 //        return new CGXDLMSImageTransfer();
-//    case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
-//        return new CGXDLMSDisconnectControl();
+    case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
+        return new CGXDLMSDisconnectControl();
     case DLMS_OBJECT_TYPE_LIMITER:
         return new CGXDLMSLimiter();
 //    case DLMS_OBJECT_TYPE_MBUS_CLIENT:
@@ -144,12 +144,12 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
 //        return new CGXDLMSSapAssignment();
 //    case DLMS_OBJECT_TYPE_SCHEDULE:
 //        return new CGXDLMSSchedule();
-//    case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
-//        return new CGXDLMSScriptTable();
+    case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
+        return new CGXDLMSScriptTable();
     case DLMS_OBJECT_TYPE_SMTP_SETUP:
         return new CGXDLMSCustomObject(type);
-//    case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
-//        return new CGXDLMSSpecialDaysTable();
+    case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
+        return new CGXDLMSSpecialDaysTable();
     case DLMS_OBJECT_TYPE_STATUS_MAPPING:
         return new CGXDLMSCustomObject(type);
     case DLMS_OBJECT_TYPE_TCP_UDP_SETUP:
