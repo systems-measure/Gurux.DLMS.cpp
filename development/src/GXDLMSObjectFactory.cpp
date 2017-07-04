@@ -108,20 +108,16 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
         return new CGXDLMSIECOpticalPortSetup();
     case DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP:
         return new CGXDLMSCustomObject(type);
-        
-        
 //    case DLMS_OBJECT_TYPE_IP4_SETUP:
 //        return new CGXDLMSIp4Setup();
-
-        
 //    case DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP:
 //        return new CGXDLMSMBusSlavePortSetup();
 //    case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:
 //        return new CGXDLMSImageTransfer();
-//    case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
-//        return new CGXDLMSDisconnectControl();
-//    case DLMS_OBJECT_TYPE_LIMITER:
-//        return new CGXDLMSLimiter();
+    case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
+        return new CGXDLMSDisconnectControl();
+    case DLMS_OBJECT_TYPE_LIMITER:
+        return new CGXDLMSLimiter();
 //    case DLMS_OBJECT_TYPE_MBUS_CLIENT:
 //        return new CGXDLMSMBusClient();
     case DLMS_OBJECT_TYPE_MODEM_CONFIGURATION:
@@ -138,22 +134,22 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
         return new CGXDLMSRegisterMonitor();
     case DLMS_OBJECT_TYPE_REGISTER_TABLE:
         return new CGXDLMSCustomObject(type);
-    case DLMS_OBJECT_TYPE_ZIG_BEE_SAS_STARTUP:
-        return new CGXDLMSCustomObject(type);
-    case DLMS_OBJECT_TYPE_ZIG_BEE_SAS_JOIN:
-        return new CGXDLMSCustomObject(type);
-    case DLMS_OBJECT_TYPE_ZIG_BEE_SAS_APS_FRAGMENTATION:
-        return new CGXDLMSCustomObject(type);
-    case DLMS_OBJECT_TYPE_SAP_ASSIGNMENT:
-        return new CGXDLMSSapAssignment();
+//    case DLMS_OBJECT_TYPE_ZIG_BEE_SAS_STARTUP:
+//        return new CGXDLMSCustomObject(type);
+//    case DLMS_OBJECT_TYPE_ZIG_BEE_SAS_JOIN:
+//        return new CGXDLMSCustomObject(type);
+//    case DLMS_OBJECT_TYPE_ZIG_BEE_SAS_APS_FRAGMENTATION:
+//        return new CGXDLMSCustomObject(type);
+//    case DLMS_OBJECT_TYPE_SAP_ASSIGNMENT:
+//        return new CGXDLMSSapAssignment();
 //    case DLMS_OBJECT_TYPE_SCHEDULE:
 //        return new CGXDLMSSchedule();
-//    case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
-//        return new CGXDLMSScriptTable();
+    case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
+        return new CGXDLMSScriptTable();
     case DLMS_OBJECT_TYPE_SMTP_SETUP:
         return new CGXDLMSCustomObject(type);
-//    case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
-//        return new CGXDLMSSpecialDaysTable();
+    case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
+        return new CGXDLMSSpecialDaysTable();
     case DLMS_OBJECT_TYPE_STATUS_MAPPING:
         return new CGXDLMSCustomObject(type);
     case DLMS_OBJECT_TYPE_TCP_UDP_SETUP:
@@ -219,9 +215,9 @@ std::string CGXDLMSObjectFactory::ObjectTypeToString(DLMS_OBJECT_TYPE type)
     case DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP:
         return "GXDLMSIECOpticalPortSetup";
     case DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP:
-        return "GXDLMSIEC_TWISTED_PAIR_SETUP";        
+        return "GXDLMSIEC_TWISTED_PAIR_SETUP";
     case DLMS_OBJECT_TYPE_IP4_SETUP:
-        return "GXDLMSIp4Setup";        
+        return "GXDLMSIp4Setup";
     case DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP:
         return "GXDLMSMBusSlavePortSetup";
     case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:

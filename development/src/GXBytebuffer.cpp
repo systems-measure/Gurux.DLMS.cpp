@@ -101,9 +101,6 @@ unsigned long CGXByteBuffer::GetPosition()
 //Sets position of the buffer.
 void CGXByteBuffer::SetPosition(unsigned long value)
 {
-    if(value > m_Size) {
-        value = m_Size;
-    }
     assert(!(value > m_Size));
     m_Position = value;
 }

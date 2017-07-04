@@ -36,6 +36,7 @@
 #include "../include/GXDLMSClient.h"
 #include <sstream>
 
+
 #ifndef __ICCARM__
 
 #if defined(_WIN32) || defined(_WIN64)//Windows includes
@@ -46,6 +47,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #endif
+
 
 //Constructor.
 CGXDLMSIp4Setup::CGXDLMSIp4Setup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP)
@@ -523,4 +525,4 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     return DLMS_ERROR_CODE_OK;
 }
 
-#endif // __ICCARM__
+#endif //__ICCARM__
