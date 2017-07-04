@@ -513,7 +513,7 @@ public:
     /**
      * Reset after connection is closed.
      */
-    void Reset(int v = 0);
+    void Reset();
 
     /**
      * Handles client request.

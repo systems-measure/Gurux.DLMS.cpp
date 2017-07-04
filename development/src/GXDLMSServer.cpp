@@ -296,14 +296,9 @@ void CGXDLMSServer::Reset(bool connected)
     }
 }
 
-void CGXDLMSServer::Reset(int v)
-{
-    if(v == 0) {
-        Reset(false);
-    } else {
-        Reset(true);
-    }
-        
+void CGXDLMSServer::Reset()
+{    
+    Reset(false);
 }
 
 /**
@@ -327,7 +322,11 @@ int CGXDLMSServer::HandleAarqRequest(
     ret = CGXAPDU::ParsePDU(m_Settings, m_Settings.GetCipher(), data, diagnostic);
     if (ret != 0)
     {
-        return ret;
+        //!!!
+        diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
+//        //!!!
+//      return ret;
+
     }
     if (diagnostic != DLMS_SOURCE_DIAGNOSTIC_NONE)
     {

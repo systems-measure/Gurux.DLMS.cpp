@@ -95,7 +95,7 @@ typedef enum
     //Server is not initialized.
     DLMS_ERROR_CODE_NOT_INITIALIZED,
     //Not enough memory available.
-    DLMS_ERROR_CODE_OUTOFMEMORY,
+    DLMS_ERROR_CODE_OUTOFMEMORY,        // 260
     //Packet is not a reply for a send packet.
     DLMS_ERROR_CODE_NOT_REPLY,
     //Invalid Logical Name
@@ -115,7 +115,7 @@ typedef enum
     //CRC do not match.
     DLMS_ERROR_CODE_WRONG_CRC,
     //Invalid response
-    DLMS_ERROR_CODE_INVALID_RESPONSE,
+    DLMS_ERROR_CODE_INVALID_RESPONSE,           // 270
     //Invalid Tag.
     DLMS_ERROR_CODE_INVALID_TAG,
     //Encoding failed. Not enough data.
