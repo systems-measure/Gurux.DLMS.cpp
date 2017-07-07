@@ -2073,6 +2073,9 @@ int CGXDLMSServer::HandleRequest(
         {
             ret = 0;
         }
+		else {
+			m_ReceivedData.Clear();
+		}
         return ret;
     }
     // If all data is not received yet.
