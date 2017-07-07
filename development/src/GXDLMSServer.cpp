@@ -1860,13 +1860,25 @@ int CGXDLMSServer::HandleCommand(
         //Get next frame.
         break;
         
-    case 0x11:
-        frame = 0x11;
-        break;
+//    case 0x11:
+//        frame = 0x11;
+//        break;
+//        
+//    case 0x51:
+//        frame = 0x54;
+//        break;
         
     default:
         //Invalid command.
-        frame = 0x97;
+        if((frame & 0x01) == 0) { // I
+            frame = 0;
+            
+        } else if((frame & 0x0F) == 1) { // RR
+            frame = cmd;
+            
+        } else {
+            frame = 0x97; // FRMR
+        }
         break;
     }
 

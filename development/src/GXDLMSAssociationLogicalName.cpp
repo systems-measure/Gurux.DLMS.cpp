@@ -40,8 +40,8 @@
 void CGXDLMSAssociationLogicalName::Init()
 {
     m_AssociationStatus = DLMS_DLMS_ASSOCIATION_STATUS_NON_ASSOCIATED;
-    m_LlsSecret.AddString("Gurux");
-    m_HlsSecret.AddString("Gurux");
+    m_LlsSecret.AddString("111");
+    m_HlsSecret.AddString("12345");
 }
 
 void CGXDLMSAssociationLogicalName::UpdateAccessRights(CGXDLMSObject* pObj, CGXDLMSVariant data)
