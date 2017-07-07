@@ -1870,11 +1870,11 @@ int CGXDLMSServer::HandleCommand(
         
     default:
         //Invalid command.
-        if((frame & 0x01) == 0) { // I
+        if((cmd & 0x01) == 0) { // I
             frame = 0;
             
-        } else if((frame & 0x0F) == 1) { // RR
-            frame = cmd;
+        } else if((cmd & 0x0F) == 1) { // RR
+            frame = 0x01;
             
         } else {
             frame = 0x97; // FRMR

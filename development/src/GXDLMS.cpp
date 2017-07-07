@@ -356,7 +356,12 @@ int CGXDLMS::GetHdlcFrame(
     }
     else
     {
-        reply.SetUInt8(frame);
+		if (frame == 0x01) {
+			reply.SetUInt8(settings.GetKeepAlive());
+		}
+		else {
+			reply.SetUInt8(frame);
+		}
     }
     // Add header CRC.
     int crc = CountFCS16(reply, 1, reply.GetSize() - 1);
