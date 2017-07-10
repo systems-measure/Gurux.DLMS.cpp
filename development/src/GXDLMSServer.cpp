@@ -757,45 +757,54 @@ void GenerateConfirmedServiceError(
 
 int CGXDLMSServer::HandleSetRequest(CGXByteBuffer& data)
 {
-    CGXDLMSVariant value;
-    unsigned char ch, type;
-    int ret;
-    CGXDataInfo i;
-    CGXByteBuffer bb;
-    // Return error if connection is not established.
-    if (!m_Settings.IsConnected())
-    {
-        GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR,
-            DLMS_SERVICE_ERROR_SERVICE, DLMS_SERVICE_UNSUPPORTED,
-            m_ReplyData);
-        return 0;
-    }
-    // Get type.
-    if ((ret = data.GetUInt8(&type)) != 0)
-    {
-        return ret;
-    }
-    // Get invoke ID and priority.
-    if ((ret = data.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_SET_RESPONSE, type, NULL, NULL, 0);
-    if (type == DLMS_SET_COMMAND_TYPE_NORMAL || type == DLMS_SET_COMMAND_TYPE_FIRST_DATABLOCK)
-    {
-        ret = HandleSetRequest(data, type, p);
-    }
-    else if (type == DLMS_SET_COMMAND_TYPE_WITH_DATABLOCK)
-    {
-        // Set Request With Data Block
-        ret = HanleSetRequestWithDataBlock(data, p);
-    }
-    else
-    {
-        m_Settings.ResetBlockIndex();
-        p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
-    }
-    return CGXDLMS::GetLNPdu(p, m_ReplyData);
+	CGXDLMSVariant value;
+	unsigned char ch, type;
+	int ret;
+	CGXDataInfo i;
+	CGXByteBuffer bb;
+	// Return error if connection is not established.
+	if (!m_Settings.IsConnected())
+	{
+		GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR,
+			DLMS_SERVICE_ERROR_SERVICE, DLMS_SERVICE_UNSUPPORTED,
+			m_ReplyData);
+		return 0;
+	}
+	// Get type.
+	if ((ret = data.GetUInt8(&type)) != 0)
+	{
+		return ret;
+	}
+	// Get invoke ID and priority.
+	if ((ret = data.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_SET_RESPONSE, type, NULL, NULL, 0);
+	if (type > 5) {
+		type = DLMS_SET_COMMAND_TYPE_NORMAL;
+		p.SetRequestType(type);
+		p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
+	}
+	else{
+		if (type == DLMS_SET_COMMAND_TYPE_NORMAL || type == DLMS_SET_COMMAND_TYPE_FIRST_DATABLOCK)
+		{
+			ret = HandleSetRequest(data, type, p);
+		}
+		else {
+			if (type == DLMS_SET_COMMAND_TYPE_WITH_DATABLOCK)
+			{
+				// Set Request With Data Block
+				ret = HanleSetRequestWithDataBlock(data, p);
+			}
+			else
+			{
+				m_Settings.ResetBlockIndex();
+				p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
+			}
+		}
+	}
+	return CGXDLMS::GetLNPdu(p, m_ReplyData);
 }
 
 unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
@@ -1566,6 +1575,13 @@ int CGXDLMSServer::ReturnSNError(DLMS_COMMAND cmd, DLMS_ERROR_CODE error)
 
 int CGXDLMSServer::HandleReadRequest(CGXByteBuffer& data)
 {
+	if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
+	{
+		GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR,
+			DLMS_SERVICE_ERROR_SERVICE,
+			DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
+		return 0;
+	}
     CGXByteBuffer bb;
     int ret;
     unsigned char ch;
@@ -1654,7 +1670,7 @@ int CGXDLMSServer::HandleReadRequest(CGXByteBuffer& data)
 int CGXDLMSServer::HandleWriteRequest(CGXByteBuffer& data)
 {
     // Return error if connection is not established.
-    if (!m_Settings.IsConnected())
+    if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
     {
         GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR,
             DLMS_SERVICE_ERROR_SERVICE,
