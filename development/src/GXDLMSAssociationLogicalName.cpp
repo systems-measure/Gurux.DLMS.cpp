@@ -440,7 +440,8 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
         }
         else
         {
-            settings.SetConnected(false);
+            e.SetError(DLMS_ERROR_CODE_OTHER_REASON);
+            settings.SetConnected(false);            
         }
     }
     else
