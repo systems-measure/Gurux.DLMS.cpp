@@ -209,6 +209,15 @@ private:
         CGXDLMSConnectionEventArgs& connectionInfo);
 
     /**
+    * 
+    *
+    * @param 
+    *        
+    * @return
+    */
+    bool HandleReadyRead(DLMS_COMMAND cmd);
+    
+    /**
     * Count how many rows can fit to one PDU.
     *
     * @param pg

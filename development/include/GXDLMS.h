@@ -250,7 +250,8 @@ public:
      */
     static int GetHDLCAddress(
         CGXByteBuffer& buff,
-        unsigned long& address);
+        unsigned long& address,
+        unsigned long& addrSize);
 
     /**
      * Check that client and server address match.

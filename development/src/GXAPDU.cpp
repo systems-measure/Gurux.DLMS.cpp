@@ -724,12 +724,8 @@ int GetUserInformation(
 {
     data.Clear();
     data.SetUInt8(DLMS_COMMAND_INITIATE_RESPONSE); // Tag for xDLMS-Initiate
-    // response
-
-    //!!!!
-//    data.SetUInt8(0x01);
-    //!!!!
-
+    // response    
+//    data.SetUInt8(0x01);    
     data.SetUInt8(0x00); // Usage field for the response allowed component
     // (not used)
     // DLMS Version Number

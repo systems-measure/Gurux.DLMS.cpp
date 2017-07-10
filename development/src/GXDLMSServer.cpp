@@ -45,11 +45,8 @@
 
 
 CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
-    DLMS_INTERFACE_TYPE type) : m_Transaction(NULL), m_Settings(true),
-
-    //!!!
-    m_LinkEstablished(false)
-    //!!!
+    DLMS_INTERFACE_TYPE type) : m_Transaction(NULL), m_Settings(true),    
+    m_LinkEstablished(false)    
 {
     m_Settings.SetUseLogicalNameReferencing(logicalNameReferencing);
     m_Settings.SetInterfaceType(type);
@@ -276,10 +273,11 @@ void CGXDLMSServer::Reset(bool connected)
     m_ReceivedData.Clear();
     m_ReplyData.Clear();
     if (!connected)
-    {
+    {        
         m_Info.Clear();
         m_Settings.SetServerAddress(0);
         m_Settings.SetClientAddress(0);
+        m_LinkEstablished = false;
     }
 
     m_Settings.SetAuthentication(DLMS_AUTHENTICATION_NONE);
@@ -321,10 +319,8 @@ int CGXDLMSServer::HandleAarqRequest(
     }
     ret = CGXAPDU::ParsePDU(m_Settings, m_Settings.GetCipher(), data, diagnostic);
     if (ret != 0)
-    {
-        //!!!
+    {        
         diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
-//        //!!!
 //      return ret;
 
     }
@@ -751,11 +747,8 @@ void GenerateConfirmedServiceError(
     DLMS_CONFIRMED_SERVICE_ERROR service,
     DLMS_SERVICE_ERROR type,
     unsigned char code, CGXByteBuffer& data)
-{
-    //!!!!
-    data.Set(LLC_REPLY_BYTES, 3);    
-    //!!!!
-    
+{    
+    data.Set(LLC_REPLY_BYTES, 3);         
     data.SetUInt8(DLMS_COMMAND_CONFIRMED_SERVICE_ERROR);
     data.SetUInt8(service);
     data.SetUInt8(type);
@@ -1822,60 +1815,48 @@ int CGXDLMSServer::HandleCommand(
     case DLMS_COMMAND_METHOD_REQUEST:
         ret = HandleMethodRequest(data, connectionInfo);
         break;
-    case DLMS_COMMAND_SNRM:
-        if(m_LinkEstablished) {
-            m_LinkEstablished = true;
-        }
+    case DLMS_COMMAND_SNRM:        
         ret = HandleSnrmRequest(m_Settings, m_ReplyData);
-        frame = DLMS_COMMAND_UA;
-        
-        //!!!!
-        m_LinkEstablished = true;
-        //!!!!
-
+        if(ret == 0) {
+            frame = DLMS_COMMAND_UA;
+            m_LinkEstablished = true;        
+        } else {
+            frame = 0x1F; // DM
+        }        
         break;
     case DLMS_COMMAND_AARQ:
         ret = HandleAarqRequest(data, connectionInfo);
         break;
     case DLMS_COMMAND_DISCONNECT_REQUEST:
     case DLMS_COMMAND_DISC:        
-        //!!!!
         if(m_LinkEstablished) {
-        //!!!!    
             ret = GenerateDisconnectRequest(m_Settings, m_ReplyData);
             m_Settings.SetConnected(false);
             Disconnected(connectionInfo);
             frame = DLMS_COMMAND_UA;
             Reset(true);
             m_LinkEstablished = false;
-
-        //!!!!              
+        
         } else {
-            frame = 0x1F;
+            frame = 0x1F; // DM
         }
-        //!!!!
         break;
     case DLMS_COMMAND_NONE:
         //Get next frame.
-        break;
+        break;        
         
-//    case 0x11:
-//        frame = 0x11;
-//        break;
-//        
-//    case 0x51:
-//        frame = 0x54;
-//        break;
-        
-    default:
-        //Invalid command.
-        if((frame & 0x01) == 0) { // I
+    default:        
+        if((cmd & 0x01) == 0) { // I
             frame = 0;
             
-        } else if((frame & 0x0F) == 1) { // RR
-            frame = cmd;
+        } else if((cmd & 0x0F) == 1) { // RR
+            if(HandleReadyRead(cmd)) {
+                frame = cmd;                
+            } else {
+                frame = 0x97; // FRMR
+            }
             
-        } else {
+        } else { //Invalid command
             frame = 0x97; // FRMR
         }
         break;
@@ -2013,6 +1994,15 @@ int CGXDLMSServer::HandleMethodRequest(
         InvalidConnection(connectionInfo);
     }
     return ret;
+}
+
+bool CGXDLMSServer::HandleReadyRead(DLMS_COMMAND cmd)
+{
+//    unsigned char nr = (cmd & 0xE0);
+//    if(nr != GetSettings().GetReceiverReady()) {
+//        return false;
+//    }
+    return true;
 }
 
 int CGXDLMSServer::HandleRequest(

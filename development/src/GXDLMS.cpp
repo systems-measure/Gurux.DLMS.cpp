@@ -38,6 +38,13 @@
 #include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXBytebuffer.h"
 
+
+#define MAX_SERVER_ADDR_SIZE    4
+#define MAX_CLIENT_ADDR_SIZE    1
+
+#define DEFAULT_PHY_ADDRESS     16
+
+
 static unsigned char CIPHERING_HEADER_SIZE = 7 + 12 + 3;
 //CRC table.
 static unsigned short FCS16Table[256] =
@@ -1217,11 +1224,8 @@ int CGXDLMS::GetHdlcData(
         }
         else if (tmp == HDLC_CONTROL_FRAME_RECEIVE_READY)
         {
-            // Get next frame.
-            
-            //!!!!
-            data.SetCommand((DLMS_COMMAND)frame);
-            //!!!!
+            // Get next frame.                        
+            data.SetCommand((DLMS_COMMAND)frame);            
         }
         // Get Eop if there is no data.
         if (reply.GetPosition() == packetStartID + frameLen + 1)
@@ -1259,7 +1263,8 @@ int CGXDLMS::GetHdlcData(
 
 int CGXDLMS::GetHDLCAddress(
     CGXByteBuffer& buff,
-    unsigned long& address)
+    unsigned long& address,
+    unsigned long& addrSize)
 {
     unsigned char ch;
     unsigned short s;
@@ -1278,6 +1283,8 @@ int CGXDLMS::GetHDLCAddress(
             break;
         }
     }
+    addrSize = size;
+    
     if (size == 1)
     {
         if ((ret = buff.GetUInt8(&ch)) != 0)
@@ -1291,7 +1298,7 @@ int CGXDLMS::GetHDLCAddress(
         if ((ret = buff.GetUInt16(&s)) != 0)
         {
             return ret;
-        }
+        }        
         address = ((s & 0xFE) >> 1) | ((s & 0xFE00) >> 2);
     }
     else if (size == 4)
@@ -1299,7 +1306,7 @@ int CGXDLMS::GetHDLCAddress(
         if ((ret = buff.GetUInt32(&l)) != 0)
         {
             return ret;
-        }
+        }        
         address = ((l & 0xFE) >> 1) | ((l & 0xFE00) >> 2)
             | ((l & 0xFE0000) >> 3) | ((l & 0xFE000000) >> 4);
     }
@@ -1332,18 +1339,35 @@ int CGXDLMS::CheckHdlcAddress(
 {
     unsigned char ch;
     unsigned long source, target;
+    unsigned long srcAddrSize, tgtAddrSize;
     int ret;
     // Get destination and source addresses.
-    if ((ret = GetHDLCAddress(reply, target)) != 0)
+    if ((ret = GetHDLCAddress(reply, target, tgtAddrSize)) != 0)
     {
         return ret;
     }
-    if ((ret = GetHDLCAddress(reply, source)) != 0)
+    if ((ret = GetHDLCAddress(reply, source, srcAddrSize)) != 0)
     {
         return ret;
     }
     if (server)
     {
+        if(tgtAddrSize > MAX_SERVER_ADDR_SIZE) {
+            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
+        }
+        if(srcAddrSize > MAX_CLIENT_ADDR_SIZE) {
+            return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
+        }
+        
+        uint16_t srvPhysicalAddr = (target & 0x7F);    
+        uint16_t srvLogicalAddr = (target & 0x3F80) >> 7;    
+        if(srvPhysicalAddr != DEFAULT_PHY_ADDRESS) {
+            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
+        }
+        if(srvLogicalAddr != 1) {
+            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
+        }
+        
         // Check that server addresses match.
         if (settings.GetServerAddress() != 0 && settings.GetServerAddress() != target)
         {
