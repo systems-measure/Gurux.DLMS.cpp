@@ -861,81 +861,82 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     // Attribute Id
     if ((ret = data.GetUInt8(&attributeIndex)) != 0)
     {
-        return ret;
+        status = (DLMS_ERROR_CODE)ret;
     }
-
-    CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);
-    if (obj == NULL)
-    {
-        std::string name;
-        GXHelpers::GetLogicalName(ln, name);
-        obj = FindObject(ci, 0, name);
-    }
-    if (obj == NULL)
-    {
-        // "Access Error : Device reports a undefined object."
-        status = DLMS_ERROR_CODE_UNDEFINED_OBJECT;
-    }
-    else
-    {
-        // Access selection
-        unsigned char selection, selector = 0;
-        if ((ret = data.GetUInt8(&selection)) != 0)
-        {
-            return ret;
-        }
-        CGXDLMSVariant parameters;
-        if (selection != 0)
-        {
-            if ((ret = data.GetUInt8(&selector)) != 0)
-            {
-                return ret;
-            }
-            CGXDataInfo i;
-            if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
-            {
-                return ret;
-            }
-        }
-        CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
-        arr.push_back(e);
-        if (GetAttributeAccess(e) == DLMS_ACCESS_MODE_NONE)
-        {
-            // Read Write denied.
-            status = DLMS_ERROR_CODE_READ_WRITE_DENIED;
-        }
-        else
-        {
-            if (obj->GetObjectType() == DLMS_OBJECT_TYPE_PROFILE_GENERIC && attributeIndex == 2)
-            {
-                e->SetRowToPdu(GetRowsToPdu((CGXDLMSProfileGeneric*)obj));
-            }
-            PreRead(arr);
-            if (!e->GetHandled())
-            {
-                m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
-                if ((ret = obj->GetValue(m_Settings, *e)) != 0)
-                {
-                    status = DLMS_ERROR_CODE_HARDWARE_FAULT;
-                }
-                PostRead(arr);
-            }
-            if (status == 0)
-            {
-                status = e->GetError();
-            }
-            CGXDLMSVariant& value = e->GetValue();
-            if (e->IsByteArray() && value.vt == DLMS_DATA_TYPE_OCTET_STRING)
-            {
-                // If byte array is added do not add type.
-                bb.Set(value.byteArr, value.GetSize());
-            }
-            else if ((ret = CGXDLMS::AppendData(obj, attributeIndex, bb, value)) != 0)
-            {
-                status = DLMS_ERROR_CODE_HARDWARE_FAULT;
-            }
-        }
-    }
+	else {
+		CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);
+		if (obj == NULL)
+		{
+			std::string name;
+			GXHelpers::GetLogicalName(ln, name);
+			obj = FindObject(ci, 0, name);
+		}
+		if (obj == NULL)
+		{
+			// "Access Error : Device reports a undefined object."
+			status = DLMS_ERROR_CODE_UNDEFINED_OBJECT;
+		}
+		else
+		{
+			// Access selection
+			unsigned char selection, selector = 0;
+			if ((ret = data.GetUInt8(&selection)) != 0)
+			{
+				return ret;
+			}
+			CGXDLMSVariant parameters;
+			if (selection != 0)
+			{
+				if ((ret = data.GetUInt8(&selector)) != 0)
+				{
+					return ret;
+				}
+				CGXDataInfo i;
+				if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
+				{
+					return ret;
+				}
+			}
+			CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
+			arr.push_back(e);
+			if (GetAttributeAccess(e) == DLMS_ACCESS_MODE_NONE)
+			{
+				// Read Write denied.
+				status = DLMS_ERROR_CODE_READ_WRITE_DENIED;
+			}
+			else
+			{
+				if (obj->GetObjectType() == DLMS_OBJECT_TYPE_PROFILE_GENERIC && attributeIndex == 2)
+				{
+					e->SetRowToPdu(GetRowsToPdu((CGXDLMSProfileGeneric*)obj));
+				}
+				PreRead(arr);
+				if (!e->GetHandled())
+				{
+					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
+					if ((ret = obj->GetValue(m_Settings, *e)) != 0)
+					{
+						status = DLMS_ERROR_CODE_HARDWARE_FAULT;
+					}
+					PostRead(arr);
+				}
+				if (status == 0)
+				{
+					status = e->GetError();
+				}
+				CGXDLMSVariant& value = e->GetValue();
+				if (e->IsByteArray() && value.vt == DLMS_DATA_TYPE_OCTET_STRING)
+				{
+					// If byte array is added do not add type.
+					bb.Set(value.byteArr, value.GetSize());
+				}
+				else if ((ret = CGXDLMS::AppendData(obj, attributeIndex, bb, value)) != 0)
+				{
+					status = DLMS_ERROR_CODE_HARDWARE_FAULT;
+				}
+			}
+		}
+	}
     CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 1, NULL, &bb, status);
 
     ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
@@ -1187,7 +1188,7 @@ int CGXDLMSServer::HandleGetRequest(
         // Access Error : Device reports a hardware fault.
         bb.SetUInt8(DLMS_ERROR_CODE_HARDWARE_FAULT);
         CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE,
-            type, NULL, &bb, DLMS_ERROR_CODE_OK);
+			DLMS_GET_COMMAND_TYPE_NORMAL, NULL, &bb, DLMS_ERROR_CODE_INVALID_RESPONSE);
         ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
     }
     return ret;
@@ -1845,7 +1846,7 @@ int CGXDLMSServer::HandleCommand(
         //Get next frame.
         break;        
         
-    default:        
+    default:                
         if((cmd & 0x01) == 0) { // I
             frame = 0;
             
@@ -1854,8 +1855,7 @@ int CGXDLMSServer::HandleCommand(
                 frame = cmd;                
             } else {
                 frame = 0x97; // FRMR
-            }
-            
+            }                       
         } else { //Invalid command
             frame = 0x97; // FRMR
         }
