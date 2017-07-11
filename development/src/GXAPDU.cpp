@@ -853,10 +853,10 @@ int CGXAPDU::ParsePDU(
             {
                 return ret;
             }
-            if (tag != BER_TYPE_INTEGER)
+            /*if (tag != BER_TYPE_INTEGER)
             {
                 return DLMS_ERROR_CODE_INVALID_TAG;
-            }
+            }*/
             // Get len.
             if ((ret = buff.GetUInt8(&len)) != 0)
             {
@@ -870,7 +870,9 @@ int CGXAPDU::ParsePDU(
             {
                 return ret;
             }
-            resultComponent = (DLMS_ASSOCIATION_RESULT)tag;
+			if (tag >= 0 && tag <= 2) {
+				resultComponent = (DLMS_ASSOCIATION_RESULT)tag;
+			}
             break;
             // 0xA3 SourceDiagnostic
         case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AE_QUALIFIER:
@@ -883,33 +885,77 @@ int CGXAPDU::ParsePDU(
             {
                 return ret;
             }
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            // Result source diagnostic component.
-            if ((ret = buff.GetUInt8(&tag)) != 0)
-            {
-                return ret;
-            }
-            if (tag != BER_TYPE_INTEGER)
-            {
-                return DLMS_ERROR_CODE_INVALID_TAG;
-            }
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            if (len != 1)
-            {
-                return DLMS_ERROR_CODE_INVALID_TAG;
-            }
-            if ((ret = buff.GetUInt8(&tag)) != 0)
-            {
-                return ret;
-            }
-            diagnostic = (DLMS_SOURCE_DIAGNOSTIC)tag;
-            break;
+			if (tag == 0xA1) {
+				if ((ret = buff.GetUInt8(&len)) != 0)
+				{
+					return ret;
+				}
+				// Result source diagnostic component.
+				if ((ret = buff.GetUInt8(&tag)) != 0)
+				{
+					return ret;
+				}
+				/*if (tag != BER_TYPE_INTEGER)
+				{
+					return DLMS_ERROR_CODE_INVALID_TAG;
+				}*/
+				if ((ret = buff.GetUInt8(&len)) != 0)
+				{
+					return ret;
+				}
+				if (len != 1)
+				{
+					return DLMS_ERROR_CODE_INVALID_TAG;
+				}
+				if ((ret = buff.GetUInt8(&tag)) != 0)
+				{
+					return ret;
+				}
+				if ((tag >= 0 && tag <= 2) || (tag >= 11 && tag <= 14)) {
+					diagnostic = (DLMS_SOURCE_DIAGNOSTIC)tag;
+				}
+			}
+			else {
+				if (tag == 0xA2) {
+					if ((ret = buff.GetUInt8(&len)) != 0)
+					{
+						return ret;
+					}
+					// Result source diagnostic component.
+					if ((ret = buff.GetUInt8(&tag)) != 0)
+					{
+						return ret;
+					}
+					/*if (tag != BER_TYPE_INTEGER)
+					{
+						return DLMS_ERROR_CODE_INVALID_TAG;
+					}*/
+					if ((ret = buff.GetUInt8(&len)) != 0)
+					{
+						return ret;
+					}
+					if (len != 1)
+					{
+						return DLMS_ERROR_CODE_INVALID_TAG;
+					}
+					if ((ret = buff.GetUInt8(&tag)) != 0)
+					{
+						return ret;
+					}
+					if (tag >= 0 && tag <= 2)  {
+						diagnostic = (DLMS_SOURCE_DIAGNOSTIC)(tag + 20);
+					}
+				}
+				else {
+					if ((ret = buff.GetUInt8(&len)) != 0)
+					{
+						return ret;
+					}
+					buff.SetPosition(buff.GetPosition() + len);
+					diagnostic = DLMS_SOURCE_DIAGNOSTIC_NONE;
+				}
+			}
+           break;
             // 0xA4 Result
         case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AP_INVOCATION_ID:
             // Get len.
@@ -917,19 +963,19 @@ int CGXAPDU::ParsePDU(
             {
                 return ret;
             }
-            if (len != 0xA)
+           /* if (len != 0xA)
             {
                 return DLMS_ERROR_CODE_INVALID_TAG;
-            }
+            }*/
             // Choice for result (Universal, Octet string type)
             if ((ret = buff.GetUInt8(&tag)) != 0)
             {
                 return ret;
             }
-            if (tag != BER_TYPE_OCTET_STRING)
+            /*if (tag != BER_TYPE_OCTET_STRING)
             {
                 return DLMS_ERROR_CODE_INVALID_TAG;
-            }
+            }*/
             // responding-AP-title-field
             // Get len.
             if ((ret = buff.GetUInt8(&len)) != 0)
@@ -1029,6 +1075,26 @@ int CGXAPDU::ParsePDU(
                 return ret;
             }
             break;
+		case BER_TYPE_CONTEXT| PDU_TYPE_PROTOCOL_VERSION:
+		{
+			if ((ret = buff.GetUInt8(&len)) != 0) {
+				return ret;
+			}
+			if ((ret = buff.GetUInt8(&len)) != 0) {
+				return ret;
+			}
+			unsigned char ver;
+			unsigned char cur_ver = 0x01 << (settings.GetDLMSVersion() - 1);
+
+			if ((ret = buff.GetUInt8(&ver)) != 0) {
+				return ret;
+			}
+			if ((cur_ver & (ver >> len)) == 0) {
+				diagnostic = DLMS_SOURCE_DIAGNOSTIC_ASCE_NO_COMMON_VERSION;
+				return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
+			}
+			break;
+		}
         default:
             // Unknown tags.
             if (buff.GetPosition() < buff.GetSize())
@@ -1042,7 +1108,7 @@ int CGXAPDU::ParsePDU(
             break;
         }
     }
-    switch ((int)resultComponent)
+    switch ((int)diagnostic)
     {
     case DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN:
         return DLMS_ERROR_CODE_NO_REASON_GIVEN;
@@ -1059,6 +1125,9 @@ int CGXAPDU::ParsePDU(
     case DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_FAILURE:
         return DLMS_ERROR_CODE_AUTHENTICATION_FAILURE;
         break;
+	case DLMS_SOURCE_DIAGNOSTIC_ASCE_NO_COMMON_VERSION:
+		return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
+		break;
     default:
         //OK.
         break;
@@ -1098,13 +1167,25 @@ int CGXAPDU::GenerateAARE(
     // SourceDiagnostic
     data.SetUInt8(0xA3);
     data.SetUInt8(5); // len
-    data.SetUInt8(0xA1); // Tag
-    data.SetUInt8(3); // len
-    data.SetUInt8(2); // Tag
-    // Choice for result (INTEGER, universal)
-    data.SetUInt8(1); // Len
-    // diagnostic
-    data.SetUInt8(diagnostic);
+	// Tag
+	if (diagnostic >= 20) {
+		data.SetUInt8(0xA2);
+		data.SetUInt8(3); // len
+		data.SetUInt8(2); // Tag
+		// Choice for result (INTEGER, universal)
+		data.SetUInt8(1); // Len
+		// diagnostic
+		data.SetUInt8(diagnostic - 20);
+	}
+	else {
+		data.SetUInt8(0xA1);
+		data.SetUInt8(3); // len
+		data.SetUInt8(2); // Tag
+		// Choice for result (INTEGER, universal)
+		data.SetUInt8(1); // Len
+		// diagnostic
+		data.SetUInt8(diagnostic);
+	}
     // SystemTitle
     if (cipher != NULL
         && (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC

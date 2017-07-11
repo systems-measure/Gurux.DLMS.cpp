@@ -319,15 +319,17 @@ int CGXDLMSServer::HandleAarqRequest(
     }
     ret = CGXAPDU::ParsePDU(m_Settings, m_Settings.GetCipher(), data, diagnostic);
     if (ret != 0)
-    {        
-        diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
+    {      
+		if (ret != DLMS_ERROR_CODE_INVALID_VERSION_NUMBER) {
+			diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
+		}
 //      return ret;
 
     }
     if (diagnostic != DLMS_SOURCE_DIAGNOSTIC_NONE)
     {
         result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
-        diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
+        //diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
         InvalidConnection(connectionInfo);
     }
     else
@@ -1577,7 +1579,7 @@ int CGXDLMSServer::HandleReadRequest(CGXByteBuffer& data)
 {
 	if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
 	{
-		GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR,
+		GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_READ,
 			DLMS_SERVICE_ERROR_SERVICE,
 			DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
 		return 0;
@@ -1672,7 +1674,7 @@ int CGXDLMSServer::HandleWriteRequest(CGXByteBuffer& data)
     // Return error if connection is not established.
     if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
     {
-        GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR,
+        GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_WRITE,
             DLMS_SERVICE_ERROR_SERVICE,
             DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
         return 0;
