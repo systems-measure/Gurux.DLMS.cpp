@@ -212,6 +212,9 @@ public:
     // Generates Keep Alive S-frame.
     unsigned char GetKeepAlive();
 
+    // Returns N(S)|N(R)
+    unsigned char GetReceiverFrame();       
+    
     // Gets current block index.
     unsigned long GetBlockIndex();
 

@@ -48,6 +48,7 @@ CGXReplyData::CGXReplyData(
     m_Data = buff;
     m_Complete = complete;
     m_Time = NULL;
+    m_ControlField = 0xFF;
 }
 
 CGXReplyData::CGXReplyData()
@@ -240,4 +241,14 @@ void CGXReplyData::SetTime(struct tm* value)
         }
         memcpy(m_Time, value, sizeof(struct tm));
     }
+}
+
+unsigned char CGXReplyData::GetControlField(void)
+{
+    return m_ControlField;
+}
+        
+void CGXReplyData::SetControlField(unsigned char ctl)
+{
+    m_ControlField = ctl;
 }

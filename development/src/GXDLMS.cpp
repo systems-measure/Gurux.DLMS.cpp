@@ -2047,6 +2047,8 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
     {
         return DLMS_ERROR_CODE_FALSE;
     }
+    data.SetControlField(frame);
+        
     GetDataFromFrame(reply, data);
     // If keepalive or get next frame request.
     if (frame != 0x13 && (frame & 0x1) != 0)
