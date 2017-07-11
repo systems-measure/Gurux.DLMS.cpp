@@ -323,13 +323,10 @@ int CGXDLMSServer::HandleAarqRequest(
 		if (ret != DLMS_ERROR_CODE_INVALID_VERSION_NUMBER) {
 			diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
 		}
-//      return ret;
-
     }
     if (diagnostic != DLMS_SOURCE_DIAGNOSTIC_NONE)
     {
-        result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;
-        //diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
+        result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;        
         InvalidConnection(connectionInfo);
     }
     else
@@ -363,7 +360,6 @@ int CGXDLMSServer::HandleAarqRequest(
         m_ReplyData.Set(LLC_REPLY_BYTES, 3);
     }
     // Generate AARE packet.
-    m_Settings.ResetFrameSequence();
     return CGXAPDU::GenerateAARE(m_Settings, m_ReplyData, result, diagnostic, m_Settings.GetCipher());
 }
 
