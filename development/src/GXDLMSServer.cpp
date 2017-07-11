@@ -1837,7 +1837,7 @@ int CGXDLMSServer::HandleCommand(
             m_LinkEstablished = true;
             
         } else {
-            frame = 0x1F; // DM
+            frame = DLMS_COMMAND_DM;
         }        
         break;
     case DLMS_COMMAND_AARQ:
@@ -1858,7 +1858,7 @@ int CGXDLMSServer::HandleCommand(
             m_LinkEstablished = false;
         
         } else {
-            frame = 0x1F; // DM
+            frame = DLMS_COMMAND_DM;
         }
         break;
     case DLMS_COMMAND_NONE:
@@ -1866,9 +1866,13 @@ int CGXDLMSServer::HandleCommand(
         break;        
         
     default:  
-        if((cmd & 0x0F) == 1) { // RR
-            frame = cmd;
-        } else {
+        if((cmd & 0x0F) == HDLC_FRAME_TYPE_S_FRAME) { // RR      
+            ret = HandleReadyRead(cmd, frame);
+            
+        } /*else if((cmd & 0x01) == HDLC_FRAME_TYPE_I_FRAME) { 
+            ret = HandleInfoFrame(cmd, frame);
+            
+        }*/ else {
             frame = DLMS_COMMAND_REJECTED;
         }
         break;
@@ -2008,29 +2012,59 @@ int CGXDLMSServer::HandleMethodRequest(
     return ret;
 }
 
+int CGXDLMSServer::HandleReadyRead(unsigned char cmd,                                   
+                                   unsigned char &frame)
+{       
+    if(cmd == DLMS_COMMAND_RR) {
+        frame = DLMS_COMMAND_RR;
+        return 0;
+    }
+    
+    if(!m_Settings.IsConnected()) {
+        frame = DLMS_COMMAND_REJECTED;
+        return 0;
+    }
+            
+    unsigned char clientNR = (cmd & 0xE0) >> 5;
+    unsigned char srvNS = (m_Settings.GetSenderFrame() & 0x0E) >> 1;
+    srvNS = (srvNS >= 7)?0:(srvNS + 1);
+    if(clientNR == srvNS) {
+        frame = m_Settings.GetNextSend(0);                
+    } else {
+        frame = DLMS_COMMAND_REJECTED;
+    }    
+     
+    return 0;
+}
+
 bool CGXDLMSServer::CheckCtlField(unsigned char ctl,
                                   CGXByteBuffer &reply)
 {   
-    if((ctl & 0x01) == 0) { // I-frame
-        unsigned char ns = ctl & 0x0E;
-        unsigned char nr = ctl & 0xE0;
+    if((ctl & 0x01) == HDLC_FRAME_TYPE_I_FRAME) { // I-frame
+
+        unsigned char clientNS = (ctl & 0x0E) >> 1;
+        unsigned char srvNR = (m_Settings.GetSenderFrame() & 0xE0) >> 5;
+        if(clientNS != srvNR) {
+            unsigned char frame = DLMS_COMMAND_RR;
+            frame |= ((srvNR << 5) & 0xE0);
+            CGXDLMS::GetHdlcFrame(m_Settings, frame, NULL, reply);
+            return false;
+        }
+
+    } else if((ctl & 0x0F) == HDLC_FRAME_TYPE_S_FRAME) {    // RR                
+        if(ctl == DLMS_COMMAND_RR) {
+            return true;
+        }
         
-        if(ns != (GetSettings().GetReceiverFrame() & 0x0E)) {
-            CGXDLMS::GetHdlcFrame(m_Settings, m_Settings.GetKeepAlive(), NULL, reply);
+        unsigned char clientNR = (ctl & 0xE0) >> 5;
+        unsigned char srvNS = (m_Settings.GetSenderFrame() & 0x0E) >> 1;
+        srvNS = (srvNS >= 7)?0:(srvNS + 1);
+        if(clientNR != srvNS) {
+            CGXDLMS::GetHdlcFrame(m_Settings, DLMS_COMMAND_REJECTED, NULL, reply);
             return false;
         }
-        if(nr != (GetSettings().GetReceiverFrame() & 0xE0)) { 
-            CGXDLMS::GetHdlcFrame(m_Settings, DLMS_COMMAND_REJECTED, NULL, reply); // FRMR
-            return false;
-        }
-            
-    } else if((ctl & 0x0F) == 1) { // RR
-        unsigned char nr = (ctl & 0xF1);                
-        if(nr != m_Settings.GetKeepAlive()) {
-            CGXDLMS::GetHdlcFrame(m_Settings, DLMS_COMMAND_REJECTED, NULL, reply); // FRMR
-            return false;
-        }        
     }
+    
     return true;
 }
 
@@ -2112,13 +2146,7 @@ int CGXDLMSServer::HandleRequest(
             m_Info.Clear();
             return 0;
         }
-    }
-    
-    // 
-    if(!CheckCtlField(m_Info.GetControlField(), reply)) {
-        m_Info.Clear();
-        return 0;
-    }
+    }    
     
     // If client want next frame.
     if ((m_Info.GetMoreData() & DLMS_DATA_REQUEST_TYPES_FRAME) == DLMS_DATA_REQUEST_TYPES_FRAME)
@@ -2132,6 +2160,12 @@ int CGXDLMSServer::HandleRequest(
         {
             m_Info.SetCommand(m_Transaction->GetCommand());
         }
+    }
+    
+    // 
+    if(!CheckCtlField(m_Info.GetControlField(), reply)) {
+        m_Info.Clear();
+        return 0;
     }
         
     ret = HandleCommand(connectionInfo, m_Info.GetCommand(), m_Info.GetData(), reply);
