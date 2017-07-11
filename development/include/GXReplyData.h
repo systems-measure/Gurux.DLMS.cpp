@@ -106,6 +106,11 @@ private:
      * Data notification date time.
      */
     struct tm* m_Time;
+    
+    /**
+    * Control filed value
+    */
+    unsigned char m_ControlField;
 
 public:
     /**
@@ -272,6 +277,16 @@ public:
      *            Data notification date time.
      */
     void SetTime(struct tm* value);
+    
+    /**
+     * @return Control field value.
+     */
+    unsigned char GetControlField(void);
+    
+    /**
+     * @param New control field value.
+     */
+    void SetControlField(unsigned char ctl);
 };
 
 #endif //GXREPLYDATA_H

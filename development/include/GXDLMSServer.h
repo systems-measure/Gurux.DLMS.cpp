@@ -206,16 +206,21 @@ private:
     */
     int HandleMethodRequest(
         CGXByteBuffer& data,
-        CGXDLMSConnectionEventArgs& connectionInfo);
-
+        CGXDLMSConnectionEventArgs& connectionInfo);    
+    
     /**
-    * 
+    *  Checks Control field of frame
     *
-    * @param 
+    * @param ctl 
+    *           Control field value
+    *
+    * @param reply
+    *           Buffer for response in case of error.
     *        
-    * @return
+    * @return true - control field ok, false - bad control field 
     */
-    bool HandleReadyRead(DLMS_COMMAND cmd);
+    bool CheckCtlField(unsigned char ctl,
+                       CGXByteBuffer &reply);
     
     /**
     * Count how many rows can fit to one PDU.
