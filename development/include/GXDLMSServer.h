@@ -209,6 +209,16 @@ private:
         CGXDLMSConnectionEventArgs& connectionInfo);    
     
     /**
+    * Handle RR request.
+    *
+    * @param 
+    *            
+    * @return 
+    */
+    int HandleReadyRead(unsigned char cmd,
+                        unsigned char &frame);           
+    
+    /**
     *  Checks Control field of frame
     *
     * @param ctl 

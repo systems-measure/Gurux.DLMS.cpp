@@ -881,6 +881,16 @@ typedef enum
     DLMS_COMMAND_WRITE_RESPONSE = 0xD,
 
     /**
+     * Ready Read comand, NR=0.
+     */
+    DLMS_COMMAND_RR = 0x11,
+    
+    /**
+     * Disconnected mode (DM) response.
+     */
+    DLMS_COMMAND_DM = 0x1F,
+    
+    /**
      * Get request.
      */
     DLMS_COMMAND_GET_REQUEST = 0xC0,

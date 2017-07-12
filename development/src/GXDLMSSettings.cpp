@@ -220,9 +220,9 @@ unsigned char CGXDLMSSettings::GetKeepAlive()
     return (unsigned char)(m_SenderFrame & 0xF1);
 }
 
-unsigned char CGXDLMSSettings::GetReceiverFrame()
+unsigned char CGXDLMSSettings::GetSenderFrame()
 {
-    return m_ReceiverFrame;
+    return m_SenderFrame;
 }
 
 unsigned long CGXDLMSSettings::GetBlockIndex()

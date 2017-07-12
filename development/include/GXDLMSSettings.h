@@ -213,7 +213,7 @@ public:
     unsigned char GetKeepAlive();
 
     // Returns N(S)|N(R)
-    unsigned char GetReceiverFrame();       
+    unsigned char GetSenderFrame();       
     
     // Gets current block index.
     unsigned long GetBlockIndex();
