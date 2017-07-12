@@ -451,6 +451,9 @@ int ParseUserInformation(
     if (settings.IsServer())
     {
         settings.SetNegotiatedConformance((DLMS_CONFORMANCE)(v & settings.GetProposedConformance()));
+		if (settings.GetNegotiatedConformance() == 0) {
+			return DLMS_ERROR_CODE_INVALID_PARAMETER;
+		}
     }
     else
     {
@@ -468,7 +471,9 @@ int ParseUserInformation(
         {
             pduSize = settings.GetMaxServerPDUSize();
         }
-        settings.SetMaxReceivePDUSize(pduSize);
+		if ((ret = settings.SetMaxReceivePDUSize(pduSize)) != 0) {
+			return ret;
+		}
     }
     else
     {
