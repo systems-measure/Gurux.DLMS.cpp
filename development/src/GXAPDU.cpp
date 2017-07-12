@@ -376,28 +376,33 @@ int ParseUserInformation(
         // Skip if used.
         if (tag != 0)
         {
-            if ((ret = data.GetUInt8(&len)) != 0)
+            if ((ret = data.GetUInt8(&tag)) != 0)
             {
                 return ret;
             }
-            data.SetPosition(data.GetPosition() + len);
+            //data.SetPosition(data.GetPosition() + len);
         }
-    }
+	}
     else
     {
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     // Get DLMS version number.
     if (settings.IsServer())
-    {
-        if ((ret = data.GetUInt8(&ch)) != 0)
-        {
-            return ret;
-        }
-        settings.SetDLMSVersion(ch);
-    }
-    else
-    {
+	{
+		if ((ret = data.GetUInt8(&ch)) != 0)
+		{
+			return ret;
+		}
+		settings.SetDLMSVersion(ch);
+		if (ch < 6)
+		{
+			//Invalid DLMS version number.
+			return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
+		}
+	}
+	else
+	{
         if ((ret = data.GetUInt8(&ch)) != 0)
         {
             return ret;
@@ -641,6 +646,9 @@ int UpdatePassword(
     }
     else
     {
+		if (len != 16) {
+			return DLMS_ERROR_CODE_INVALID_TAG;
+		}
         settings.SetCtoSChallenge(tmp);
     }
     return 0;
@@ -714,6 +722,16 @@ int UpdateAuthentication(
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     settings.SetAuthentication((DLMS_AUTHENTICATION)ch);
+	CGXByteBuffer null_psw;
+	null_psw.SetUInt8('\0');
+	if (settings.GetAuthentication() == DLMS_AUTHENTICATION_LOW) {
+		settings.SetPassword(null_psw);
+	}
+	else {
+		if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH) {
+			settings.SetCtoSChallenge(null_psw);
+		}
+	}
     return 0;
 }
 
@@ -723,44 +741,53 @@ int GetUserInformation(
     CGXByteBuffer& data)
 {
     data.Clear();
-    data.SetUInt8(DLMS_COMMAND_INITIATE_RESPONSE); // Tag for xDLMS-Initiate
-    // response    
-//    data.SetUInt8(0x01);    
-    data.SetUInt8(0x00); // Usage field for the response allowed component
-    // (not used)
-    // DLMS Version Number
-    data.SetUInt8(06);
-    data.SetUInt8(0x5F);
-    data.SetUInt8(0x1F);
-    // length of the conformance block
-    data.SetUInt8(0x04);
-    // encoding the number of unused bits in the bit string
-    data.SetUInt8(0x00);
-    CGXByteBuffer bb(4);
-    bb.SetUInt32((unsigned long)settings.GetNegotiatedConformance());
-    data.Set(&bb, 1, 3);
-    data.SetUInt16(settings.GetMaxPduSize());
-    // VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
-    if (settings.GetUseLogicalNameReferencing())
-    {
-        data.SetUInt16(0x0007);
-    }
-    else
-    {
-        data.SetUInt16(0xFA00);
-    }
-    if (cipher != NULL && cipher->IsCiphered())
-    {
-        CGXByteBuffer tmp(data);
-        data.Clear();
-        return cipher->Encrypt(cipher->GetSecurity(),
-            DLMS_COUNT_TYPE_PACKET,
-            settings.GetCipher()->GetFrameCounter(),
-            DLMS_COMMAND_GLO_INITIATE_RESPONSE,
-            cipher->GetSystemTitle(),
-            tmp,
-            data);
-    }
+	if (settings.GetDLMSVersion() < 6) {
+		
+		data.SetUInt8(DLMS_COMMAND_CONFIRMED_SERVICE_ERROR);
+		data.SetUInt8(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR);
+		data.SetUInt8(DLMS_SERVICE_ERROR_INITIATE);
+		data.SetUInt8(DLMS_INITIATE_DLMS_VERSION_TOO_LOW);
+	}
+	else {
+		data.SetUInt8(DLMS_COMMAND_INITIATE_RESPONSE); // Tag for xDLMS-Initiate
+													   // response    
+													   //    data.SetUInt8(0x01);    
+		data.SetUInt8(0x00); // Usage field for the response allowed component
+							 // (not used)
+							 // DLMS Version Number
+		data.SetUInt8(06);
+		data.SetUInt8(0x5F);
+		data.SetUInt8(0x1F);
+		// length of the conformance block
+		data.SetUInt8(0x04);
+		// encoding the number of unused bits in the bit string
+		data.SetUInt8(0x00);
+		CGXByteBuffer bb(4);
+		bb.SetUInt32((unsigned long)settings.GetNegotiatedConformance());
+		data.Set(&bb, 1, 3);
+		data.SetUInt16(settings.GetMaxPduSize());
+		// VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
+		if (settings.GetUseLogicalNameReferencing())
+		{
+			data.SetUInt16(0x0007);
+		}
+		else
+		{
+			data.SetUInt16(0xFA00);
+		}
+		if (cipher != NULL && cipher->IsCiphered())
+		{
+			CGXByteBuffer tmp(data);
+			data.Clear();
+			return cipher->Encrypt(cipher->GetSecurity(),
+				DLMS_COUNT_TYPE_PACKET,
+				settings.GetCipher()->GetFrameCounter(),
+				DLMS_COMMAND_GLO_INITIATE_RESPONSE,
+				cipher->GetSystemTitle(),
+				tmp,
+				data);
+		}
+	}
     return 0;
 }
 
@@ -802,6 +829,7 @@ int CGXAPDU::ParsePDU(
     CGXByteBuffer tmp;
     unsigned char tag, len;
     int ret;
+	settings.SetAuthentication(DLMS_AUTHENTICATION_NONE);
     diagnostic = DLMS_SOURCE_DIAGNOSTIC_NONE;
     // Get AARE tag and length
     if ((ret = ValidateAare(settings, buff)) != 0)
@@ -832,7 +860,9 @@ int CGXAPDU::ParsePDU(
         {
             if ((ret = ParseApplicationContextName(settings, buff)) != 0)
             {
-                return DLMS_ERROR_CODE_REJECTED_PERMAMENT;
+                //return DLMS_ERROR_CODE_REJECTED_PERMAMENT;
+				buff.SetPosition(buff.GetSize());
+				diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
             }
         }
         break;
@@ -1047,6 +1077,10 @@ int CGXAPDU::ParsePDU(
             {
                 return ret;
             }
+			if (tag != 0x80) {
+				buff.SetPosition(buff.GetSize());
+				diagnostic  = DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_FAILURE;
+			}
             break;
             //  0x8B or 0x89
         case BER_TYPE_CONTEXT | PDU_TYPE_MECHANISM_NAME:
@@ -1060,7 +1094,8 @@ int CGXAPDU::ParsePDU(
         case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLING_AUTHENTICATION_VALUE:
             if ((ret = UpdatePassword(settings, buff)) != 0)
             {
-                return ret;
+				buff.SetPosition(buff.GetSize());
+				diagnostic = DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_FAILURE;
             }
             break;
             // 0xBE
@@ -1072,7 +1107,11 @@ int CGXAPDU::ParsePDU(
             }
             if ((ret = ParseUserInformation(settings, cipher, buff)) != 0)
             {
-                return ret;
+				buff.SetPosition(buff.GetSize());
+                diagnostic = DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN;
+				if (ret == DLMS_ERROR_CODE_INVALID_VERSION_NUMBER) {
+					return ret;
+				}
             }
             break;
 		case BER_TYPE_CONTEXT| PDU_TYPE_PROTOCOL_VERSION:
@@ -1090,8 +1129,9 @@ int CGXAPDU::ParsePDU(
 				return ret;
 			}
 			if ((cur_ver & (ver >> len)) == 0) {
+				buff.SetPosition(buff.GetSize());
 				diagnostic = DLMS_SOURCE_DIAGNOSTIC_ASCE_NO_COMMON_VERSION;
-				return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
+				//return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
 			}
 			break;
 		}

@@ -318,12 +318,10 @@ int CGXDLMSServer::HandleAarqRequest(
         Reset(true);
     }
     ret = CGXAPDU::ParsePDU(m_Settings, m_Settings.GetCipher(), data, diagnostic);
-    if (ret != 0)
-    {      
-		if (ret != DLMS_ERROR_CODE_INVALID_VERSION_NUMBER) {
-			diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
-		}
-    }
+	if (ret == DLMS_ERROR_CODE_INVALID_TAG || ret == DLMS_ERROR_CODE_OUTOFMEMORY || ret == DLMS_ERROR_CODE_INVALID_PARAMETER)
+	{
+		diagnostic = DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED;
+	}
     if (diagnostic != DLMS_SOURCE_DIAGNOSTIC_NONE)
     {
         result = DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED;        
@@ -543,6 +541,7 @@ int CGXDLMSServer::HandleSetRequest(
     {
         return ret;
     }
+	bool fl = (index == 64);
     // Get Access Selection.
     if ((ret = data.GetUInt8(&ch)) != 0)
     {
@@ -617,39 +616,46 @@ int CGXDLMSServer::HandleSetRequest(
         }
         else
         {
-            if (value.vt == DLMS_DATA_TYPE_OCTET_STRING)
-            {
-                DLMS_DATA_TYPE dt;
-                ret = obj->GetDataType(index, dt);
-                if (ret != 0)
-                {
-                    return ret;
-                }
-                if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
-                {
-                    CGXByteBuffer tmp;
-                    tmp.Set(value.byteArr, value.GetSize());
-                    value.Clear();
-                    if ((ret = CGXDLMSClient::ChangeType(tmp, dt, value)) != 0)
-                    {
-                        return ret;
-                    }
-                }
-            }
-            if (p.IsMultipleBlocks())
-            {
-                m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
-            }
-            PreWrite(list);
-            if (e->GetError() != 0)
-            {
-                p.SetStatus(e->GetError());
-            }
-            else if (!e->GetHandled() && !p.IsMultipleBlocks())
-            {
-                obj->SetValue(m_Settings, *e);
-                PostWrite(list);
-            }
+			if (value.vt != DLMS_DATA_TYPE_NONE) {
+				if (value.vt == DLMS_DATA_TYPE_OCTET_STRING)
+				{
+					DLMS_DATA_TYPE dt;
+					ret = obj->GetDataType(index, dt);
+					if (ret != 0)
+					{
+						p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
+						return ret;
+					}
+					if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
+					{
+						CGXByteBuffer tmp;
+						tmp.Set(value.byteArr, value.GetSize());
+						value.Clear();
+						if ((ret = CGXDLMSClient::ChangeType(tmp, dt, value)) != 0)
+						{
+							p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
+							return ret;
+						}
+					}
+				}
+				if (p.IsMultipleBlocks())
+				{
+					m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
+				}
+				PreWrite(list);
+				if (e->GetError() != 0)
+				{
+					p.SetStatus(e->GetError());
+				}
+				else if (!e->GetHandled() && !p.IsMultipleBlocks())
+				{
+					obj->SetValue(m_Settings, *e);
+					PostWrite(list);
+				}
+			}
+			else {
+				p.SetStatus(DLMS_ERROR_CODE_READ_WRITE_DENIED);
+			}
         }
     }
     return ret;
