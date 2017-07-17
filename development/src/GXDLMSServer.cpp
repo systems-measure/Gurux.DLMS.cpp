@@ -541,8 +541,7 @@ int CGXDLMSServer::HandleSetRequest(
     {
         return ret;
     }
-	bool fl = (index == 64);
-    // Get Access Selection.
+	 // Get Access Selection.
     if ((ret = data.GetUInt8(&ch)) != 0)
     {
         return ret;
