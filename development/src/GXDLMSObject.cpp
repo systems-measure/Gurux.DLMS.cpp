@@ -84,6 +84,7 @@ void CGXDLMSObject::Initialize(short sn, unsigned short class_id, unsigned char 
 {
     m_AttributeIndex = 0;
     m_DataIndex = 0;
+	m_DataValidity = false;
     m_SN = sn;
     m_ObjectType = (DLMS_OBJECT_TYPE)class_id;
     m_Version = version;
@@ -111,6 +112,14 @@ CGXDLMSObject::~CGXDLMSObject(void)
 {
     m_Attributes.clear();
     m_MethodAttributes.clear();
+}
+
+bool CGXDLMSObject::GetDataValidity() {
+	return m_DataValidity;
+}
+
+void CGXDLMSObject::SetDataValidity(bool validity) {
+	m_DataValidity = validity;
 }
 
 CGXDLMSVariant CGXDLMSObject::GetName()

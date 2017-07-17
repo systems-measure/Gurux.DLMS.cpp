@@ -926,9 +926,11 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				if (!e->GetHandled())
 				{
 					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
-					if ((ret = obj->GetValue(m_Settings, *e)) != 0)
-					{
-						status = DLMS_ERROR_CODE_HARDWARE_FAULT;
+					if (obj->GetDataValidity()) {
+						if ((ret = obj->GetValue(m_Settings, *e)) != 0)
+						{
+							status = DLMS_ERROR_CODE_HARDWARE_FAULT;
+						}
 					}
 					PostRead(arr);
 				}
@@ -1008,10 +1010,12 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
                         PreRead(m_Transaction->GetTargets());
                         if (!(*arg)->GetHandled())
                         {
-                            if ((ret = (*arg)->GetTarget()->GetValue(m_Settings, *(*arg))) != 0)
-                            {
-                                return ret;
-                            }
+							if ((*arg)->GetTarget()->GetDataValidity()) {
+								if ((ret = (*arg)->GetTarget()->GetValue(m_Settings, *(*arg))) != 0)
+								{
+									return ret;
+								}
+							}
                             std::vector<CGXDLMSValueEventArg*> arr;
                             arr.push_back(*arg);
                             PostRead(arr);
