@@ -1819,7 +1819,7 @@ int CGXDLMSServer::HandleCommand(
     CGXByteBuffer& reply)
 {
     int ret = 0;
-    unsigned char frame = 0;
+    unsigned char frame = 0;    
     switch (cmd)
     {
     case DLMS_COMMAND_SET_REQUEST:
@@ -2015,6 +2015,8 @@ int CGXDLMSServer::HandleMethodRequest(
     if (!m_Settings.IsConnected() && obj->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME && id == 1)
     {
         InvalidConnection(connectionInfo);
+    } else if(m_Settings.IsConnected() && obj->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME && id == 1) {
+        Connected(connectionInfo);
     }
     return ret;
 }
@@ -2022,7 +2024,7 @@ int CGXDLMSServer::HandleMethodRequest(
 int CGXDLMSServer::HandleReadyRead(unsigned char cmd,                                   
                                    unsigned char &frame)
 {       
-    if(cmd == DLMS_COMMAND_RR) {
+    if((cmd == DLMS_COMMAND_RR) && !m_Settings.IsConnected()) {
         frame = DLMS_COMMAND_RR;
         return 0;
     }
@@ -2039,7 +2041,7 @@ int CGXDLMSServer::HandleReadyRead(unsigned char cmd,
         frame = m_Settings.GetNextSend(0);                
     } else {
         frame = DLMS_COMMAND_REJECTED;
-    }    
+    }
      
     return 0;
 }
