@@ -63,7 +63,7 @@ protected:
     std::map<int, time_t> m_ReadTimes;
     unsigned short m_SN;
     unsigned char m_LN[6];
-
+	bool m_DataValidity;
     /*
      * Is attribute read. This can be used with static attributes to make
      * meter reading faster.
@@ -91,6 +91,11 @@ public:
     CGXDLMSObject(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer& ln);
 
     virtual ~CGXDLMSObject(void);
+
+	//Get Object's Data validity
+	bool GetDataValidity();
+
+	void SetDataValidity(bool validity);
 
     //Get Object's Logical or Short Name as a std::string.
     CGXDLMSVariant GetName();
