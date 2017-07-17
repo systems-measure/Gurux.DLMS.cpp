@@ -862,22 +862,22 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     CGXDLMSValueEventCollection arr;
     unsigned char attributeIndex;
     int ret;
-    CGXByteBuffer ln;
+    CGXByteBuffer ln;          
     // CI
     unsigned short tmp;
     if ((ret = data.GetUInt16(&tmp)) != 0)
     {
         return ret;
     }
-    DLMS_OBJECT_TYPE ci = (DLMS_OBJECT_TYPE)tmp;
-    ln.Set(&data, data.GetPosition(), 6);
+    DLMS_OBJECT_TYPE ci = (DLMS_OBJECT_TYPE)tmp;    
+    ln.Set(&data, data.GetPosition(), 6);    
     // Attribute Id
     if ((ret = data.GetUInt8(&attributeIndex)) != 0)
     {
         status = (DLMS_ERROR_CODE)ret;
     }
 	else {
-		CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);
+		CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);                        
 		if (obj == NULL)
 		{
 			std::string name;
@@ -926,11 +926,12 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				PreRead(arr);
 				if (!e->GetHandled())
 				{
-					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
+					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());                                                           
 					if ((ret = obj->GetValue(m_Settings, *e)) != 0)
 					{
 						status = DLMS_ERROR_CODE_HARDWARE_FAULT;
 					}
+                    
 					PostRead(arr);
 				}
 				if (status == 0)
@@ -949,7 +950,8 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				}
 			}
 		}
-	}
+	}       
+    
     CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 1, NULL, &bb, status);
 
     ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
@@ -963,6 +965,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
         }
         m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, bb);
     }
+    
     return ret;
 }
 
@@ -1157,7 +1160,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 
 int CGXDLMSServer::HandleGetRequest(
     CGXByteBuffer& data)
-{
+{       
     // Return error if connection is not established.
     if (!m_Settings.IsConnected())
     {
@@ -1182,7 +1185,7 @@ int CGXDLMSServer::HandleGetRequest(
     // GetRequest normal
     if (type == DLMS_GET_COMMAND_TYPE_NORMAL)
     {
-        ret = GetRequestNormal(data);
+        ret = GetRequestNormal(data);       
     }
     else if (type == DLMS_GET_COMMAND_TYPE_NEXT_DATA_BLOCK)
     {
@@ -1808,6 +1811,8 @@ int CGXDLMSServer::HandleWriteRequest(CGXByteBuffer& data)
     return CGXDLMS::GetSNPdu(p, m_ReplyData);
 }
 
+
+
 int CGXDLMSServer::HandleCommand(
     CGXDLMSConnectionEventArgs& connectionInfo,
     DLMS_COMMAND cmd,
@@ -1826,8 +1831,8 @@ int CGXDLMSServer::HandleCommand(
         break;
     case DLMS_COMMAND_GET_REQUEST:
         if (data.GetSize() != 0)
-        {
-            ret = HandleGetRequest(data);
+        {            
+            ret = HandleGetRequest(data);            
         }
         break;
     case DLMS_COMMAND_READ_REQUEST:
@@ -1875,10 +1880,7 @@ int CGXDLMSServer::HandleCommand(
         if((cmd & 0x0F) == HDLC_FRAME_TYPE_S_FRAME) { // RR      
             ret = HandleReadyRead(cmd, frame);
             
-        } /*else if((cmd & 0x01) == HDLC_FRAME_TYPE_I_FRAME) { 
-            ret = HandleInfoFrame(cmd, frame);
-            
-        }*/ else {
+        } else {
             frame = DLMS_COMMAND_REJECTED;
         }
         break;
@@ -2110,7 +2112,7 @@ int CGXDLMSServer::HandleRequest(
     unsigned char* buff,
     unsigned short size,
     CGXByteBuffer& reply)
-{
+{        
     int ret;        
     reply.Clear();
     if (buff == NULL || size == 0)
