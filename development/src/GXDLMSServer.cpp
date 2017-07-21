@@ -926,7 +926,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				if (!e->GetHandled())
 				{
 					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());                                                           
-					if (obj->GetDataValidity()) {
+					if (obj->GetDataValidity() || e->GetIndex() == 1) {
 						if ((ret = obj->GetValue(m_Settings, *e)) != 0)
 						{
 							status = DLMS_ERROR_CODE_HARDWARE_FAULT;
