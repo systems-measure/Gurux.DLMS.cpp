@@ -1100,6 +1100,11 @@ int CGXDLMS::GetHdlcData(
     {
         return ret;
     }
+    
+    if((frame & 0xA0) != 0xA0) {
+        return DLMS_ERROR_CODE_UNACCEPTABLE_FRAME;
+    }
+    
     if ((frame & 0xF0) != 0xA0)
     {
         // If same data.
@@ -1118,10 +1123,13 @@ int CGXDLMS::GetHdlcData(
     frameLen += ch;
     if (reply.GetSize() - reply.GetPosition() + 1 < frameLen)
     {
+        return DLMS_ERROR_CODE_UNACCEPTABLE_FRAME;
+        /*        
         data.SetComplete(false);
         reply.SetPosition(packetStartID);
         // Not enough data to parse;
         return 0;
+        */
     }
     int eopPos = frameLen + packetStartID + 1;
     if ((ret = reply.GetUInt8(eopPos, &ch)) != 0)
