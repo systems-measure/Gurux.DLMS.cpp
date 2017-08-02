@@ -1981,15 +1981,17 @@ int CGXDLMSServer::HandleMethodRequest(
             PreAction(arr);
             if (!e->GetHandled())
             {
-                if ((ret = obj->Invoke(m_Settings, *e)) != 0)
-                {
-                    return ret;
-                }
+				if (obj->GetDataValidity()) {
+					if ((ret = obj->Invoke(m_Settings, *e)) != 0)
+					{
+						return ret;
+					}
+				}
                 PostAction(arr);
             }
             CGXDLMSVariant& actionReply = e->GetValue();
             // Set default action reply if not given.
-            if (actionReply.vt != DLMS_DATA_TYPE_NONE || e->GetError() == DLMS_ERROR_CODE_OK)
+            if (actionReply.vt != DLMS_DATA_TYPE_NONE && e->GetError() == DLMS_ERROR_CODE_OK)
             {
                 // Add return parameters
                 bb.SetUInt8(1);
