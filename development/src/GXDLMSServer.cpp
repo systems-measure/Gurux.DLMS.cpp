@@ -646,7 +646,7 @@ int CGXDLMSServer::HandleSetRequest(
 				{
 					p.SetStatus(e->GetError());
 				}
-				else if (!e->GetHandled() && !p.IsMultipleBlocks())
+				else if (!e->GetHandled() && !p.IsMultipleBlocks() && e->GetTarget()->GetDataValidity())
 				{
 					obj->SetValue(m_Settings, *e);
 					PostWrite(list);
