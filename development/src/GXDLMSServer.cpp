@@ -150,6 +150,13 @@ void CGXDLMSServer::SetUseLogicalNameReferencing(bool value)
     m_Settings.SetUseLogicalNameReferencing(value);
 }
 
+bool CGXDLMSServer::IsLongTransaction() {
+	if (m_Transaction == NULL) {
+		return false;
+	}
+	return true;
+}
+
 int CGXDLMSServer::Initialize()
 {
     CGXDLMSObject* associationObject = NULL;
@@ -2043,7 +2050,12 @@ int CGXDLMSServer::HandleReadyRead(unsigned char cmd,
     unsigned char srvNS = (m_Settings.GetSenderFrame() & 0x0E) >> 1;
     srvNS = (srvNS >= 7)?0:(srvNS + 1);
     if(clientNR == srvNS) {
-        frame = m_Settings.GetNextSend(0);                
+		if (IsLongTransaction()) {
+			frame = m_Settings.GetNextSend(0);
+		}
+		else {
+			frame = (m_Settings.GetSenderFrame() & 0xF0) | 0x01;
+		}
     } else {
         frame = DLMS_COMMAND_REJECTED;
     }

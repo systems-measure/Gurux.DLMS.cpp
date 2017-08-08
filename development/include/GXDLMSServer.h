@@ -426,6 +426,8 @@ protected:
     * Update short names.
     */
     int UpdateShortNames();
+	
+	bool IsLongTransaction();
 
 public:
     /**
