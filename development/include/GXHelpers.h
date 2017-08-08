@@ -184,6 +184,8 @@ public:
      * @return Occurred error.
      */
     static void HexToBytes(std::string value, CGXByteBuffer& buffer);
+    
+    static void LNToBytes(std::string ln, CGXByteBuffer& buffer);
 
     static void Write(char* fileName, char* pData, int len);
 

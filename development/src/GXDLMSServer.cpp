@@ -818,6 +818,7 @@ unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
     for (std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject*> >::iterator it = pg->GetCaptureObjects().begin();
         it != pg->GetCaptureObjects().end(); ++it)
     {
+        DLMS_OBJECT_TYPE objType = it->first->GetObjectType();
         it->first->GetDataType(it->second->GetAttributeIndex(), dt);
         if (dt == DLMS_DATA_TYPE_OCTET_STRING)
         {
@@ -836,6 +837,10 @@ unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
             }
         }
         else if (dt == DLMS_DATA_TYPE_NONE)
+        {
+            rowsize += 2;
+        }
+        else if ((dt == DLMS_DATA_TYPE_STRUCTURE) && (objType == DLMS_OBJECT_TYPE_REGISTER))
         {
             rowsize += 2;
         }

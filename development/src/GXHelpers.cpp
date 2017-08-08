@@ -1447,7 +1447,10 @@ static int SetOctetString(CGXByteBuffer& buff, CGXDLMSVariant& value)
     if (value.vt == DLMS_DATA_TYPE_STRING)
     {
         CGXByteBuffer bb;
-        GXHelpers::HexToBytes(value.strVal, bb);
+        GXHelpers::LNToBytes(value.strVal, bb);
+        if(bb.GetSize() == 0) {
+            return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        }
         GXHelpers::SetObjectCount(bb.GetSize(), buff);
         buff.Set(bb.GetData(), bb.GetSize());
     }
@@ -1762,6 +1765,37 @@ void GXHelpers::HexToBytes(std::string value, CGXByteBuffer& buffer)
             lastValue = -1;
             ++index;
         }
+    }
+}
+
+void GXHelpers::LNToBytes(std::string ln, CGXByteBuffer& buffer)
+{
+    int byteCnt = 0;
+    unsigned char byteVal = 0;
+    buffer.Clear();
+    buffer.Capacity(6);
+    std::string::iterator ch = ln.begin();
+    while(ch != ln.end()) {
+        if(*ch >= '0' && *ch <= '9') {
+            byteVal *= 10;
+            byteVal += GetValue(*ch);
+            
+        } else if(*ch == '.') {
+            buffer.SetUInt8(byteVal);
+            byteVal = 0;
+            ++byteCnt;
+        } else {
+            break;
+        }
+        ++ch;
+    }
+    if(ch == ln.end()) {
+        buffer.SetUInt8(byteVal);        
+        ++byteCnt;
+    }
+    
+    if(byteCnt < 6) { // conversion failed
+        buffer.Clear();
     }
 }
 
