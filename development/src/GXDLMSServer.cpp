@@ -929,7 +929,9 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				{
 					e->SetRowToPdu(GetRowsToPdu((CGXDLMSProfileGeneric*)obj));
 				}
-				PreRead(arr);
+				if (e->GetIndex() != 1) {
+					PreRead(arr);
+				}
 				if (!e->GetHandled())
 				{
 					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());                                                           
@@ -2050,7 +2052,7 @@ int CGXDLMSServer::HandleReadyRead(unsigned char cmd,
     unsigned char srvNS = (m_Settings.GetSenderFrame() & 0x0E) >> 1;
     srvNS = (srvNS >= 7)?0:(srvNS + 1);
     if(clientNR == srvNS) {
-		if (IsLongTransaction()) {
+		if (IsLongTransaction() || m_ReplyData.GetSize() != 0) {
 			frame = m_Settings.GetNextSend(0);
 		}
 		else {
