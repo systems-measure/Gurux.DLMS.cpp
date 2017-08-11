@@ -244,11 +244,13 @@ int CGXDLMSRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
-    {
+    {               
         e.GetValue().Clear();
         e.GetValue().vt = DLMS_DATA_TYPE_STRUCTURE;
         e.GetValue().Arr.push_back(m_Scaler);
+        e.GetValue().Arr.at(0).vt = DLMS_DATA_TYPE_INT8;
         e.GetValue().Arr.push_back(m_Unit);
+        e.GetValue().Arr.at(1).vt = DLMS_DATA_TYPE_ENUM;
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
