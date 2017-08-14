@@ -1330,9 +1330,9 @@ static int SetDateTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
     }
     else
     {
-        int val = dt.tm_wday;
+        int val = dt.tm_wday + 1;
         //If Sunday.
-        if (val == 0)
+        if (val == 1)
         {
             val = 8;
         }
