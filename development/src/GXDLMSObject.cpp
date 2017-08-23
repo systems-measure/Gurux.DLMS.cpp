@@ -202,7 +202,7 @@ DLMS_ACCESS_MODE CGXDLMSObject::GetAccess(int index)
             return (*it).GetAccess();
         }
     }
-    return DLMS_ACCESS_MODE_READ_WRITE;
+    return DLMS_ACCESS_MODE_READ;
 }
 
 // Set attribute access.
