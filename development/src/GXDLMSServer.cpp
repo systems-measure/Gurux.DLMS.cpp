@@ -923,7 +923,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 			}
 			CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
 			arr.push_back(e);
-			if (GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ || GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ_WRITE)
+			if (GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ_WRITE)
 			{
 				// Read Write denied.
 				status = DLMS_ERROR_CODE_READ_WRITE_DENIED;
@@ -1131,7 +1131,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
             }
             CGXDLMSValueEventArg *arg = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
             list.push_back(arg);
-            if (GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ || GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ_WRITE)
+            if (GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ_WRITE)
             {
                 // Read Write denied.
                 arg->SetError(DLMS_ERROR_CODE_READ_WRITE_DENIED);
