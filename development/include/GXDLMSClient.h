@@ -40,14 +40,16 @@
 #include "GXDLMSProfileGeneric.h"
 #include "GXSecure.h"
 #include "GXDateTime.h"
+#include "OBiscodes.h"
 
 class CGXDLMSClient
 {
 protected:
     CGXDLMSSettings m_Settings;
+	static void UpdateOBISCodes(CGXDLMSObjectCollection& objects);
 private:
     bool m_IsAuthenticationRequired;
-    static void UpdateOBISCodes(CGXDLMSObjectCollection& objects);
+    
     // SN referencing
     int ParseSNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects);
     /**

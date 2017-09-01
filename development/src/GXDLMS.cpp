@@ -654,7 +654,9 @@ int CGXDLMS::GetLNPdu(
             }
         }
         // Add attribute descriptor.
-        reply.Set(p.GetAttributeDescriptor());
+		if ((p.IsMultipleBlocks() && (p.GetRequestType() == 2)) || (!p.IsMultipleBlocks() && (p.GetRequestType() == 1)) || (p.GetCommand() == DLMS_COMMAND_GET_REQUEST)) {
+			reply.Set(p.GetAttributeDescriptor());
+		}
         if (p.GetCommand() != DLMS_COMMAND_DATA_NOTIFICATION &&
             (p.GetSettings()->GetNegotiatedConformance() & DLMS_CONFORMANCE_GENERAL_BLOCK_TRANSFER) == 0)
         {
@@ -709,7 +711,7 @@ int CGXDLMS::GetLNPdu(
                     len -= GXHelpers::GetObjectCountSizeInBytes(len);
                 }
                 GXHelpers::SetObjectCount(len, reply);
-                reply.Set(p.GetData(), 0, len);
+                reply.Set(p.GetData(), p.GetData()->GetPosition(), len);
             }
         }
         // Add data that fits to one block.
@@ -780,7 +782,10 @@ int CGXDLMS::GetLnMessages(
         {
             return ret;
         }
-        p.SetLastBlock(true);
+		if (p.GetData() != NULL && p.IsMultipleBlocks()) {
+			frame = p.GetSettings()->GetNextSend(1);
+		}
+		p.SetLastBlock(true);
         if (p.GetAttributeDescriptor() == NULL)
         {
             p.GetSettings()->IncreaseBlockIndex();
@@ -1628,10 +1633,22 @@ int CGXDLMS::HandleSetResponse(
     else if (type == DLMS_SET_RESPONSE_TYPE_DATA_BLOCK || type == DLMS_SET_RESPONSE_TYPE_LAST_DATA_BLOCK)
     {
         unsigned long  tmp;
+		if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+		{
+			return ret;
+		}
         if ((ret = data.GetData().GetUInt32(&tmp)) != 0)
         {
             return ret;
         }
+		if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+		{
+			return ret;
+		}
+		if (ch != 0) 
+		{
+			return ch;
+		}
     }
     else
     {

@@ -40,7 +40,7 @@
 #ifndef __ICCARM__
 
 #if defined(_WIN32) || defined(_WIN64)//Windows includes
-#include "pcap.h"
+#include "winsock.h"
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
