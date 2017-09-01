@@ -622,47 +622,52 @@ int CGXDLMSServer::HandleSetRequest(
         }
         else
         {
-			if (value.vt != DLMS_DATA_TYPE_NONE) {
-				if (value.vt == DLMS_DATA_TYPE_OCTET_STRING)
-				{
-					DLMS_DATA_TYPE dt;
-					ret = obj->GetDataType(index, dt);
-					if (ret != 0)
+			if (p.IsMultipleBlocks()) {
+				m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
+			}
+			else {
+				if (value.vt != DLMS_DATA_TYPE_NONE) {
+					if (value.vt == DLMS_DATA_TYPE_OCTET_STRING)
 					{
-						p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
-						return ret;
-					}
-					if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
-					{
-						CGXByteBuffer tmp;
-						tmp.Set(value.byteArr, value.GetSize());
-						value.Clear();
-						if ((ret = CGXDLMSClient::ChangeType(tmp, dt, value)) != 0)
+						DLMS_DATA_TYPE dt;
+						ret = obj->GetDataType(index, dt);
+						if (ret != 0)
 						{
 							p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 							return ret;
 						}
+						if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
+						{
+							CGXByteBuffer tmp;
+							tmp.Set(value.byteArr, value.GetSize());
+							value.Clear();
+							if ((ret = CGXDLMSClient::ChangeType(tmp, dt, value)) != 0)
+							{
+								p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
+								return ret;
+							}
+						}
+					}
+					if (p.IsMultipleBlocks())
+					{
+						m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
+					}
+					PreWrite(list);
+					if (e->GetError() != 0)
+					{
+						p.SetStatus(e->GetError());
+					}
+					else if (!e->GetHandled() && !p.IsMultipleBlocks() && e->GetTarget()->GetDataValidity())
+					{
+						obj->SetValue(m_Settings, *e);
+						PostWrite(list);
 					}
 				}
-				if (p.IsMultipleBlocks())
-				{
-					m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
-				}
-				PreWrite(list);
-				if (e->GetError() != 0)
-				{
-					p.SetStatus(e->GetError());
-				}
-				else if (!e->GetHandled() && !p.IsMultipleBlocks() && e->GetTarget()->GetDataValidity())
-				{
-					obj->SetValue(m_Settings, *e);
-					PostWrite(list);
+				else {
+					p.SetStatus(DLMS_ERROR_CODE_READ_WRITE_DENIED);
 				}
 			}
-			else {
-				p.SetStatus(DLMS_ERROR_CODE_READ_WRITE_DENIED);
-			}
-        }
+		}
     }
     return ret;
 }
@@ -682,10 +687,10 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
     {
         return ret;
     }
-    if (blockNumber != m_Settings.GetBlockIndex())
-    {
-        p.SetStatus(DLMS_ERROR_CODE_DATA_BLOCK_NUMBER_INVALID);
-    }
+	if (blockNumber != m_Settings.GetBlockIndex() && !p.IsLastBlock())
+	{
+		p.SetStatus(DLMS_ERROR_CODE_DATA_BLOCK_NUMBER_INVALID);
+	}
     else
     {
         m_Settings.IncreaseBlockIndex();
@@ -725,7 +730,8 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             }
             target->SetValue(value);
             PreWrite(m_Transaction->GetTargets());
-            if (!target->GetHandled() && !p.IsMultipleBlocks())
+			p.SetStatus(target->GetError());
+            if (!target->GetHandled() && !p.IsMultipleBlocks() && target->GetTarget()->GetDataValidity())
             {
                 target->GetTarget()->SetValue(m_Settings, *target);
                 PostWrite(m_Transaction->GetTargets());
