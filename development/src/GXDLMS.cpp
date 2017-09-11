@@ -45,9 +45,9 @@
 #define DEFAULT_PHY_ADDRESS     16
 
 
-static unsigned char CIPHERING_HEADER_SIZE = 7 + 12 + 3;
+const unsigned char CIPHERING_HEADER_SIZE = 7 + 12 + 3;
 //CRC table.
-static unsigned short FCS16Table[256] =
+const unsigned short FCS16Table[256] =
 {
     0x0000, 0x1189, 0x2312, 0x329B, 0x4624, 0x57AD, 0x6536, 0x74BF,
     0x8C48, 0x9DC1, 0xAF5A, 0xBED3, 0xCA6C, 0xDBE5, 0xE97E, 0xF8F7,

@@ -62,16 +62,16 @@ void CGXDLMSAssociationLogicalName::UpdateAccessRights(CGXDLMSObject* pObj, CGXD
 
 int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMSServer* server, CGXByteBuffer& data)
 {
-    int ret;
-    int cnt = pItem->GetAttributeCount();
+    int8_t cnt = (int8_t)pItem->GetAttributeCount();
     data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
     data.SetUInt8(2);
     data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
     GXHelpers::SetObjectCount(cnt, data);
     CGXDLMSValueEventArg e(server, pItem, 0);
 
-    CGXDLMSVariant index, access, empty;
-    for (int pos = 0; pos != cnt; ++pos)
+   // CGXDLMSVariant index, access, empty;
+	int8_t index, access;
+    for (int8_t pos = 0; pos != cnt; ++pos)
     {
         e.SetIndex(pos + 1);
         index = pos + 1;
@@ -86,17 +86,22 @@ int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMS
         //attribute_access_item
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(3);
-        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index)) != 0 ||
+		data.SetUInt8(DLMS_DATA_TYPE_INT8);
+		data.SetUInt8(index);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(access);
+		data.SetUInt8(DLMS_DATA_TYPE_NONE);
+       /* if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index)) != 0 ||
             (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_ENUM, access)) != 0 ||
             (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_NONE, empty)) != 0)
         {
             return ret;
-        }
+        }*/
     }
     cnt = pItem->GetMethodCount();
     data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
     GXHelpers::SetObjectCount(cnt, data);
-    for (int pos = 0; pos != cnt; ++pos)
+    for (int8_t pos = 0; pos != cnt; ++pos)
     {
         e.SetIndex(pos + 1);
         index = pos + 1;
@@ -111,8 +116,12 @@ int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMS
         //attribute_access_item
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(2);
-        GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index);
-        GXHelpers::SetData(data, DLMS_DATA_TYPE_ENUM, access);
+		data.SetUInt8(DLMS_DATA_TYPE_INT8);
+		data.SetUInt8(index);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(access);
+        /*GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index);
+        GXHelpers::SetData(data, DLMS_DATA_TYPE_ENUM, access);*/
     }
     return DLMS_ERROR_CODE_OK;
 }
@@ -128,41 +137,84 @@ int CGXDLMSAssociationLogicalName::GetObjects(
     //Add count only for first time.
     if (settings.GetIndex() == 0)
     {
-        settings.SetCount((unsigned short)m_ObjectList.size());
+        settings.SetCount((unsigned short)m_ObjectList.size() + m_ObjectList.sizeRequiredObj());
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         //Add count
-        GXHelpers::SetObjectCount((unsigned long)m_ObjectList.size(), data);
+        GXHelpers::SetObjectCount((unsigned long)m_ObjectList.size() + m_ObjectList.sizeRequiredObj(), data);
     }
+	CGXDLMSObject* tmp_obj = nullptr;
+	CGXByteBuffer ln;
     for (CGXDLMSObjectCollection::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); ++it)
     {
-        ++pos;
-        if (!(pos <= settings.GetIndex()))
-        {
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            data.SetUInt8(4);//Count
-            CGXDLMSVariant type = (*it)->GetObjectType();
-            CGXDLMSVariant version = (*it)->GetVersion();
-            GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, type);//ClassID
-            GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, version);//Version
-            CGXDLMSVariant ln((*it)->m_LN, 6, DLMS_DATA_TYPE_OCTET_STRING);
-            GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln);//LN
-            //Access rights.
-            if ((ret = GetAccessRights(*it, e.GetServer(), data)) != 0)
-            {
-                return ret;
-            };
-            if (settings.IsServer())
-            {
-                settings.SetIndex(settings.GetIndex() + 1);
-                //If PDU is full.
-                if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
-                {
-                    break;
-                }
-            }
-        }
+		ln.Clear();
+		ln.Set(*it, 6);
+		tmp_obj = m_ObjectList.FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
+		if (tmp_obj != NULL) {
+			++pos;
+			if (!(pos <= settings.GetIndex()))
+			{
+				data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+				data.SetUInt8(4);//Count
+				data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+				data.SetUInt16(tmp_obj->GetObjectType());//ClassID
+				data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+				data.SetUInt8(tmp_obj->GetVersion());//Version
+				data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+				data.SetUInt8(0x06);
+				data.Set(tmp_obj->m_LN, 6);//LN
+				//Access rights.
+				if ((ret = GetAccessRights(tmp_obj, e.GetServer(), data)) != 0)
+				{
+					return ret;
+				};
+				if (settings.IsServer())
+				{
+					settings.SetIndex(settings.GetIndex() + 1);
+					//If PDU is full.
+					if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
+					{
+						break;
+					}
+				}
+			}
+		}
+		tmp_obj = nullptr;
+		m_ObjectList.FreeConstructedObj();
     }
-    return DLMS_ERROR_CODE_OK;
+	if (data.GetSize() < settings.GetMaxPduSize() || e.GetSkipMaxPduSize())
+	{
+		std::vector<CGXDLMSObject*> tmp_dlms_obj = m_ObjectList.GetDlmsObj();
+		for (std::vector<CGXDLMSObject*>::iterator it = tmp_dlms_obj.begin(); it != tmp_dlms_obj.end(); ++it) {
+			++pos;
+			if (!(pos <= settings.GetIndex()))
+			{
+				data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+				data.SetUInt8(4);//Count
+				data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+				data.SetUInt16((*it)->GetObjectType());//ClassID
+				data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+				data.SetUInt8((*it)->GetVersion());//Version
+				data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+				data.SetUInt8(0x06);
+				data.Set((*it)->m_LN, 6);//LN
+				//Access rights.
+				if ((ret = GetAccessRights((*it), e.GetServer(), data)) != 0)
+				{
+					return ret;
+				};
+				if (settings.IsServer())
+				{
+					settings.SetIndex(settings.GetIndex() + 1);
+					//If PDU is full.
+					if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
+	return DLMS_ERROR_CODE_OK;
 }
 
 /**

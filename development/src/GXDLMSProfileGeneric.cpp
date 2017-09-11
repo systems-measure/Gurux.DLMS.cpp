@@ -753,7 +753,7 @@ int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     else if (e.GetIndex() == 6)
     {
         e.SetByteArray(true);
-        static char empty[6] = { 0 };
+        const char empty[6] = { 0 };
         CGXByteBuffer data;
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(4);

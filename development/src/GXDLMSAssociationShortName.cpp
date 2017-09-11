@@ -241,45 +241,45 @@ int CGXDLMSAssociationShortName::GetObjects(
     CGXDLMSValueEventArg& e,
     CGXByteBuffer& data)
 {
-    unsigned long pos = 0;
-    int ret;
-    //Add count only for first time.
-    if (settings.GetIndex() == 0)
-    {
-        settings.SetCount((unsigned short)m_ObjectList.size());
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        //Add count
-        GXHelpers::SetObjectCount((unsigned long)m_ObjectList.size(), data);
-    }
-    for (CGXDLMSObjectCollection::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); ++it)
-    {
-        ++pos;
-        if (!(pos <= settings.GetIndex()))
-        {
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            data.SetUInt8(4);//Count
-            CGXDLMSVariant type = (*it)->GetObjectType();
-            CGXDLMSVariant version = (*it)->GetVersion();
-            CGXDLMSVariant sn = (*it)->GetShortName();
-            CGXDLMSVariant ln((*it)->m_LN, 6, DLMS_DATA_TYPE_OCTET_STRING);
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT16, sn)) != 0 || //base address.
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, type)) != 0 || //ClassID
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, version)) != 0 || //Version
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != 0) //LN
-            {
-                return ret;
-            }
-            if (settings.IsServer())
-            {
-                settings.SetIndex(settings.GetIndex() + 1);
-                //If PDU is full.
-                if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
-                {
-                    break;
-                }
-            }
-        }
-    }
+    //unsigned long pos = 0;
+    //int ret;
+    ////Add count only for first time.
+    //if (settings.GetIndex() == 0)
+    //{
+    //    settings.SetCount((unsigned short)m_ObjectList.size());
+    //    data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+    //    //Add count
+    //    GXHelpers::SetObjectCount((unsigned long)m_ObjectList.size(), data);
+    //}
+    //for (CGXDLMSObjectCollection::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); ++it)
+    //{
+    //    ++pos;
+    //    if (!(pos <= settings.GetIndex()))
+    //    {
+    //        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+    //        data.SetUInt8(4);//Count
+    //        CGXDLMSVariant type = (*it)->GetObjectType();
+    //        CGXDLMSVariant version = (*it)->GetVersion();
+    //        CGXDLMSVariant sn = (*it)->GetShortName();
+    //        CGXDLMSVariant ln((*it)->m_LN, 6, DLMS_DATA_TYPE_OCTET_STRING);
+    //        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT16, sn)) != 0 || //base address.
+    //            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, type)) != 0 || //ClassID
+    //            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, version)) != 0 || //Version
+    //            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != 0) //LN
+    //        {
+    //            return ret;
+    //        }
+    //        if (settings.IsServer())
+    //        {
+    //            settings.SetIndex(settings.GetIndex() + 1);
+    //            //If PDU is full.
+    //            if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
+    //            {
+    //                break;
+    //            }
+    //        }
+    //    }
+    //}
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -356,60 +356,60 @@ int CGXDLMSAssociationShortName::Invoke(CGXDLMSSettings& settings, CGXDLMSValueE
 
 int CGXDLMSAssociationShortName::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-    if (e.GetIndex() == 1)
-    {
-        int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(tmp);
-    }
-    else if (e.GetIndex() == 2)
-    {
-        e.SetByteArray(true);
-        CGXByteBuffer buff;
-        int ret = GetObjects(settings, e, buff);
-        e.SetValue(buff);
-        return ret;
-    }
-    else if (e.GetIndex() == 3)
-    {
-        e.SetByteArray(true);
-        int ret;
-        //Add count
-        unsigned long cnt = (unsigned long)m_ObjectList.size();
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount(cnt, data);
-        for (std::vector<CGXDLMSObject*>::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); ++it)
-        {
-            if ((ret = GetAccessRights(*it, e.GetServer(), data)) != 0)
-            {
-                return ret;
-            }
-        }
-        e.SetValue(data);
-    }
-    else if (e.GetIndex() == 4)
-    {
-        e.SetByteArray(true);
-        CGXByteBuffer data;
-        CGXDLMSVariant tmp = m_SecuritySetupReference;
-        GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, tmp);
-        e.SetValue(data);
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
+    //if (e.GetIndex() == 1)
+    //{
+    //    int ret;
+    //    CGXDLMSVariant tmp;
+    //    if ((ret = GetLogicalName(this, tmp)) != 0)
+    //    {
+    //        return ret;
+    //    }
+    //    e.SetValue(tmp);
+    //}
+    //else if (e.GetIndex() == 2)
+    //{
+    //    e.SetByteArray(true);
+    //    CGXByteBuffer buff;
+    //    int ret = GetObjects(settings, e, buff);
+    //    e.SetValue(buff);
+    //    return ret;
+    //}
+    //else if (e.GetIndex() == 3)
+    //{
+    //    e.SetByteArray(true);
+    //    int ret;
+    //    //Add count
+    //    unsigned long cnt = (unsigned long)m_ObjectList.size();
+    //    CGXByteBuffer data;
+    //    data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+    //    GXHelpers::SetObjectCount(cnt, data);
+    //    for (std::vector<CGXDLMSObject*>::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); ++it)
+    //    {
+    //        if ((ret = GetAccessRights(*it, e.GetServer(), data)) != 0)
+    //        {
+    //            return ret;
+    //        }
+    //    }
+    //    e.SetValue(data);
+    //}
+    //else if (e.GetIndex() == 4)
+    //{
+    //    e.SetByteArray(true);
+    //    CGXByteBuffer data;
+    //    CGXDLMSVariant tmp = m_SecuritySetupReference;
+    //    GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, tmp);
+    //    e.SetValue(data);
+    //}
+    //else
+    //{
+    //    return DLMS_ERROR_CODE_INVALID_PARAMETER;
+    //}
     return DLMS_ERROR_CODE_OK;
 }
 
 int CGXDLMSAssociationShortName::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-    if (e.GetIndex() == 1)
+   /* if (e.GetIndex() == 1)
     {
         return SetLogicalName(this, e.GetValue());
     }
@@ -479,6 +479,6 @@ int CGXDLMSAssociationShortName::SetValue(CGXDLMSSettings& settings, CGXDLMSValu
     else
     {
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
+    }*/
     return DLMS_ERROR_CODE_OK;
 }

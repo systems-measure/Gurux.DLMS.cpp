@@ -38,7 +38,7 @@
 
 // Consts.
 const unsigned char BLOCK_SIZE = 16;
-static unsigned char TAG_SIZE = 0x10;
+const unsigned char TAG_SIZE = 0x10;
 
 CGXGMacBlock::CGXGMacBlock()
 {
@@ -390,10 +390,13 @@ static unsigned int Shift(
 static unsigned int starX(
     unsigned int value)
 {
-    unsigned int m1, m2, m3;
+	static const unsigned int m2 = 0x7f7f7f7f;
+	static const unsigned int m3 = 0x0000001b;
+	static const int  m1 = (int)0x80808080;
+    /*unsigned int m1, m2, m3;
     m1 = (int)0x80808080;
     m2 = 0x7f7f7f7f;
-    m3 = 0x0000001b;
+    m3 = 0x0000001b;*/
     return ((value & m2) << 1) ^ (((value & m1) >> 7) * m3);
 }
 
@@ -764,7 +767,7 @@ void CGXCipher::gCTRBlock(
     CGXGMacBlock *block,
     CGXByteBuffer *output)
 {
-    int pos, ret;
+    int pos;
     CGXByteBuffer *hashBytes;
     CGXByteBuffer tmp;
     tmp.Zero(0, BLOCK_SIZE);
@@ -776,7 +779,7 @@ void CGXCipher::gCTRBlock(
         }
     }
 
-    if ((ret = ProcessBlock(settings, &settings->m_Counter, 0, &tmp, 0, block)) != 0)
+    if ((ProcessBlock(settings, &settings->m_Counter, 0, &tmp, 0, block)) != 0)
     {
         return;
     }

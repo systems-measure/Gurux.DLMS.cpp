@@ -35,12 +35,29 @@
 #ifndef GXDLMSOBJECTCOLLECTION_H
 #define GXDLMSOBJECTCOLLECTION_H
 
+
+
 #include <vector>
 #include "GXDLMSObject.h"
+#include "GXDLMSObjectFactory.h"
 
-class CGXDLMSObjectCollection : public std::vector<CGXDLMSObject*>
+typedef void(*InitObjField)(CGXDLMSObject* constr_obj);
+
+typedef unsigned char(*TypeObj)(const char* obis);
+
+class CGXDLMSObjectCollection : public std::vector<unsigned char*>
 {
+private:
+	CGXDLMSObject* constructed_obj;
+
+	std::vector<CGXDLMSObject*> dlms_only_obj;
+
+	InitObjField init_callback;
+
+	TypeObj type_callback;
 public:
+	CGXDLMSObjectCollection();
+
     ~CGXDLMSObjectCollection();
 
     CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, std::string& ln);
@@ -49,12 +66,29 @@ public:
 
     CGXDLMSObject* FindBySN(unsigned short sn);
 
-    void GetObjects(DLMS_OBJECT_TYPE type, CGXDLMSObjectCollection& items);
+	std::vector<CGXDLMSObject*>& GetDlmsObj();
 
-    void push_back(
-        CGXDLMSObject* item);
+    //void GetObjects(DLMS_OBJECT_TYPE type, CGXDLMSObjectCollection& items);
+
+    void push_back(unsigned char* item);
+
+	void push_back(CGXDLMSObject* item);
+
+	int sizeRequiredObj();
+
+	void clear();
+
+	InitObjField GetInitCallback();
+
+	void SetInitCallback(InitObjField init);
+
+	TypeObj GetTypeObjCallback();
+
+	void SetTypeObjCallback(TypeObj type);
 
     void Free();
+
+	void FreeConstructedObj();
 
     std::string ToString();
 };
