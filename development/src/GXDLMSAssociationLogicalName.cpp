@@ -165,6 +165,8 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 				//Access rights.
 				if ((ret = GetAccessRights(tmp_obj, e.GetServer(), data)) != 0)
 				{
+					tmp_obj = nullptr;
+					m_ObjectList.FreeConstructedObj();
 					return ret;
 				};
 				if (settings.IsServer())
