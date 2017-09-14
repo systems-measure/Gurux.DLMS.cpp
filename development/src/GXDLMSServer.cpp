@@ -214,20 +214,8 @@ int CGXDLMSServer::Initialize()
             list.insert(list.end(), GetItems().begin(), GetItems().end());
 			list.GetDlmsObj().insert(list.GetDlmsObj().end(), tmp_dlms_obj.begin(), tmp_dlms_obj.end());
         }
-        else
-        {
-        /*    CGXDLMSAssociationShortName* it2 = (CGXDLMSAssociationShortName*)CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE_ASSOCIATION_SHORT_NAME);
-            CGXDLMSObjectCollection& list = it2->GetObjectList();
-            GetItems().push_back(it2);
-            list.insert(list.end(), GetItems().begin(), GetItems().end());*/
-        }
     }
-    // Arrange items by Short Name.
-
-    if (!m_Settings.GetUseLogicalNameReferencing())
-    {
-        /*UpdateShortNames(false);*/
-    }
+    
     return 0;
 }
 
@@ -239,33 +227,6 @@ int CGXDLMSServer::UpdateShortNames()
 
 int CGXDLMSServer::UpdateShortNames(bool force)
 {
-    //int ret;
-    //short sn = 0xA0;
-    //unsigned char offset, count;
-    //for (CGXDLMSObjectCollection::iterator it = m_Settings.GetObjects().begin();
-    //    it != m_Settings.GetObjects().end(); ++it)
-    //{
-    //    // Generate Short Name if not given.
-    //    if (force || (*it)->GetShortName() == 0)
-    //    {
-    //        (*it)->SetShortName(sn);
-    //        // Add method index addresses.
-    //        if ((ret = CGXDLMS::GetActionInfo((*it)->GetObjectType(), offset, count)) != 0)
-    //        {
-    //            return ret;
-    //        }
-    //        if (count != 0)
-    //        {
-    //            sn += offset + (8 * count);
-    //        }
-    //        else
-    //        {
-    //            // If there are no methods.
-    //            // Add attribute index addresses.
-    //            sn += 8 * (*it)->GetAttributeCount();
-    //        }
-    //    }
-    //}
     return 0;
 }
 
@@ -844,23 +805,7 @@ unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
     for (std::vector<DLMS_DATA_TYPE>::iterator it = dt.begin();
         it != dt.end(); ++it)
     {
-        /*if ((*it) == DLMS_DATA_TYPE_OCTET_STRING)
-        {
-            it->first->GetUIDataType(it->second->GetAttributeIndex(), dt);
-            if (dt == DLMS_DATA_TYPE_DATETIME)
-            {
-                rowsize += GXHelpers::GetDataTypeSize(DLMS_DATA_TYPE_DATETIME);
-            }
-            else if (dt == DLMS_DATA_TYPE_DATE)
-            {
-                rowsize += GXHelpers::GetDataTypeSize(DLMS_DATA_TYPE_DATE);
-            }
-            else if (dt == DLMS_DATA_TYPE_TIME)
-            {
-                rowsize += GXHelpers::GetDataTypeSize(DLMS_DATA_TYPE_TIME);
-            }
-        }
-        else */if ((*it) == DLMS_DATA_TYPE_NONE)
+        if ((*it) == DLMS_DATA_TYPE_NONE)
         {
             rowsize += 2;
         }
@@ -1208,13 +1153,6 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 		obj = NULL;
 		GetItems().FreeConstructedObj();
     }
-    /*
-    pos = 0;
-    for (std::vector<CGXDLMSValueEventArg*>::iterator it = list.begin(); it != list.end(); ++it)
-    {
-       
-    }
-    PostRead(list);*/
     CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 3, NULL, &bb, 0xFF);
     return CGXDLMS::GetLNPdu(p, m_ReplyData);
 }
@@ -1278,38 +1216,6 @@ int CGXDLMSServer::HandleGetRequest(
  */
 int CGXDLMSServer::FindSNObject(int sn, CGXSNInfo& i)
 {
-    //unsigned char offset, count;
-    //for (CGXDLMSObjectCollection::iterator it = GetItems().begin(); it != GetItems().end(); ++it)
-    //{
-    //    if (sn >= (*it)->GetShortName())
-    //    {
-    //        // If attribute is accessed.
-    //        if (sn < (*it)->GetShortName() + (*it)->GetAttributeCount() * 8)
-    //        {
-    //            i.SetAction(false);
-    //            i.SetItem(*it);
-    //            i.SetIndex(((sn - (*it)->GetShortName()) / 8) + 1);
-    //            break;
-    //        }
-    //        else
-    //        {
-    //            // If method is accessed.
-    //            CGXDLMS::GetActionInfo((*it)->GetObjectType(), offset, count);
-    //            if (sn < (*it)->GetShortName() + offset + (8 * count))
-    //            {
-    //                i.SetItem(*it);
-    //                i.SetAction(true);
-    //                i.SetIndex((sn - (*it)->GetShortName() - offset) / 8 + 1);
-    //                break;
-    //            }
-    //        }
-    //    }
-    //}
-    //if (i.GetItem() == NULL)
-    //{
-    //    std::string ln;
-    //    i.SetItem(FindObject(DLMS_OBJECT_TYPE_NONE, sn, ln));
-    //}
     return 0;
 }
 

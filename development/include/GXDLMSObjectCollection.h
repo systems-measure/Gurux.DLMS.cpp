@@ -68,8 +68,6 @@ public:
 
 	std::vector<CGXDLMSObject*>& GetDlmsObj();
 
-    //void GetObjects(DLMS_OBJECT_TYPE type, CGXDLMSObjectCollection& items);
-
     void push_back(unsigned char* item);
 
 	void push_back(CGXDLMSObject* item);

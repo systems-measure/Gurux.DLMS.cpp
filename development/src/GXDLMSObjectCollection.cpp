@@ -127,26 +127,8 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, CGXByteB
 
 CGXDLMSObject* CGXDLMSObjectCollection::FindBySN(unsigned short sn)
 {
-   /* for (CGXDLMSObjectCollection::iterator it = begin(); it != end(); ++it)
-    {
-        if ((*it)->GetShortName() == sn)
-        {
-            return *it;
-        }
-    }*/
     return NULL;
 }
-
-//void CGXDLMSObjectCollection::GetObjects(DLMS_OBJECT_TYPE type, CGXDLMSObjectCollection& items)
-//{
-//    for (CGXDLMSObjectCollection::iterator it = begin(); it != end(); ++it)
-//    {
-//        if ((*it)->GetObjectType() == type)
-//        {
-//            items.push_back(*it);
-//        }
-//    }
-//}
 
 std::vector<CGXDLMSObject*>& CGXDLMSObjectCollection::GetDlmsObj() {
 	return dlms_only_obj;

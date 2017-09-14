@@ -68,8 +68,6 @@ int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMS
     data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
     GXHelpers::SetObjectCount(cnt, data);
     CGXDLMSValueEventArg e(server, pItem, 0);
-
-   // CGXDLMSVariant index, access, empty;
 	int8_t index, access;
     for (int8_t pos = 0; pos != cnt; ++pos)
     {
@@ -91,12 +89,6 @@ int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMS
 		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
 		data.SetUInt8(access);
 		data.SetUInt8(DLMS_DATA_TYPE_NONE);
-       /* if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index)) != 0 ||
-            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_ENUM, access)) != 0 ||
-            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_NONE, empty)) != 0)
-        {
-            return ret;
-        }*/
     }
     cnt = pItem->GetMethodCount();
     data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
@@ -120,8 +112,6 @@ int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMS
 		data.SetUInt8(index);
 		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
 		data.SetUInt8(access);
-        /*GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index);
-        GXHelpers::SetData(data, DLMS_DATA_TYPE_ENUM, access);*/
     }
     return DLMS_ERROR_CODE_OK;
 }
