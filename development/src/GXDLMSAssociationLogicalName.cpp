@@ -165,13 +165,16 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 					//If PDU is full.
 					if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
 					{
+						m_ObjectList.FreeConstructedObj();
+						tmp_obj = nullptr;
 						break;
 					}
 				}
 			}
 		}
-		tmp_obj = nullptr;
 		m_ObjectList.FreeConstructedObj();
+		tmp_obj = nullptr;
+		
     }
 	if (data.GetSize() < settings.GetMaxPduSize() || e.GetSkipMaxPduSize())
 	{

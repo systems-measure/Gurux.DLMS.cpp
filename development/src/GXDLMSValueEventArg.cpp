@@ -46,7 +46,7 @@ void CGXDLMSValueEventArg::SetTarget(CGXDLMSObject* value)
     m_Target = value;
 }
 
-int CGXDLMSValueEventArg::GetIndex()
+unsigned char& CGXDLMSValueEventArg::GetIndex()
 {
     return m_Index;
 }
@@ -76,7 +76,7 @@ void CGXDLMSValueEventArg::SetHandled(bool value)
     m_Handled = value;
 }
 
-int CGXDLMSValueEventArg::GetSelector()
+unsigned char& CGXDLMSValueEventArg::GetSelector()
 {
     return m_Selector;
 }
@@ -201,7 +201,7 @@ void CGXDLMSValueEventArg::SetRowToPdu(unsigned short value) {
     m_RowToPdu = value;
 }
 
-unsigned int CGXDLMSValueEventArg::GetRowEndIndex() {
+unsigned short& CGXDLMSValueEventArg::GetRowEndIndex() {
     return m_RowEndIndex;
 }
 

@@ -33,7 +33,69 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSObjectCollection.h"
+#include "../include/GXDLMSAssociationLogicalName.h"
+#include "../include/GXDLMSClock.h"
+#include "../include/GXDLMSData.h"
+#include "../include/GXDLMSRegister.h"
+#include "../include/GXDLMSDemandRegister.h"
+#include "../include/GXDLMSProfileGeneric.h"
+#include "../include/GXDLMSActivityCalendar.h"
+#include "../include/GXDLMSHdlcSetup.h"
+#include "../include/GXDLMSSpecialDaysTable.h"
+#include "../include/GXDLMSLimiter.h"
+#include "../include/GXDLMSScriptTable.h"
+#include "../include/GXDLMSPushSetup.h"
+#include "../include/GXDLMSDisconnectControl.h"
 #include <sstream>
+
+void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
+{
+	switch (type)
+	{
+	case DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR:
+		constructed_obj =  new CGXDLMSActivityCalendar();
+		break;
+	case DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME:
+		constructed_obj = new CGXDLMSAssociationLogicalName();
+		break;
+	case DLMS_OBJECT_TYPE_CLOCK:
+		constructed_obj = new CGXDLMSClock();
+		break;
+	case DLMS_OBJECT_TYPE_DATA:
+		constructed_obj = new CGXDLMSData();
+		break;
+	case DLMS_OBJECT_TYPE_DEMAND_REGISTER:
+		constructed_obj = new CGXDLMSDemandRegister();
+		break;
+	case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:
+		constructed_obj = new CGXDLMSIecHdlcSetup();
+		break;
+	case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
+		constructed_obj = new CGXDLMSDisconnectControl();
+		break;
+	case DLMS_OBJECT_TYPE_LIMITER:
+		constructed_obj = new CGXDLMSLimiter();
+		break;
+	case DLMS_OBJECT_TYPE_PROFILE_GENERIC:
+		constructed_obj = new CGXDLMSProfileGeneric();
+		break;
+	case DLMS_OBJECT_TYPE_REGISTER:
+		constructed_obj = new CGXDLMSRegister();
+		break;
+	case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
+		constructed_obj = new CGXDLMSScriptTable();
+		break;
+	case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
+		constructed_obj = new CGXDLMSSpecialDaysTable();
+		break;
+	case DLMS_OBJECT_TYPE_PUSH_SETUP:
+		constructed_obj = new CGXDLMSPushSetup();
+		break;
+	default:
+		constructed_obj = NULL;
+		break;
+	}
+}
 
 CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	constructed_obj = nullptr;
@@ -73,7 +135,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, std::str
 		{
 			if (type_callback != nullptr) {
 				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str());
-				constructed_obj = CGXDLMSObjectFactory::CreateObject(o_type);
+				CreateObject(o_type);
 				if (constructed_obj != NULL) {
 					GXHelpers::SetLogicalName(ln.c_str(), constructed_obj->m_LN);
 					if (init_callback != nullptr) {
@@ -111,7 +173,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, CGXByteB
 			GXHelpers::GetLogicalName(*it, ln);
 			if (type_callback != nullptr) {
 				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str());
-				constructed_obj = CGXDLMSObjectFactory::CreateObject(o_type);
+				CreateObject(o_type);
 				if (constructed_obj != NULL) {
 					memcpy(constructed_obj->m_LN, *it, 6);
 					if (init_callback != nullptr) {
@@ -150,6 +212,7 @@ int CGXDLMSObjectCollection::sizeRequiredObj() {
 void CGXDLMSObjectCollection::clear() {
 	std::vector<unsigned char*>::clear();
 	dlms_only_obj.clear();
+	FreeConstructedObj();
 }
 
 InitObjField CGXDLMSObjectCollection::GetInitCallback() {
@@ -179,6 +242,7 @@ void CGXDLMSObjectCollection::Free()
 	}
     std::vector<unsigned char*>::clear();
 	dlms_only_obj.clear();
+	FreeConstructedObj();
 }
 
 void CGXDLMSObjectCollection::FreeConstructedObj() {

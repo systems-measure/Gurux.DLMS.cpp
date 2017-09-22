@@ -39,7 +39,6 @@
 
 #include <vector>
 #include "GXDLMSObject.h"
-#include "GXDLMSObjectFactory.h"
 
 typedef void(*InitObjField)(CGXDLMSObject* constr_obj);
 
@@ -55,6 +54,8 @@ private:
 	InitObjField init_callback;
 
 	TypeObj type_callback;
+
+	void CreateObject(DLMS_OBJECT_TYPE type);
 public:
 	CGXDLMSObjectCollection();
 

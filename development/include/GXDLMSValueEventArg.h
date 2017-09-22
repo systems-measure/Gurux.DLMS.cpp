@@ -71,11 +71,11 @@ private:
     /**
     * Attribute index.
     */
-    int m_Index;
+	unsigned char m_Index;
     /**
     * Optional selector.
     */
-    int m_Selector;
+	unsigned char m_Selector;
     /**
     * Optional parameters.
     */
@@ -177,7 +177,7 @@ public:
     /**
     * @return Attribute index of queried object.
     */
-    int GetIndex();
+    unsigned char& GetIndex();
 
     void SetIndex(int value);
 
@@ -217,7 +217,7 @@ public:
     /**
     * @return Optional selector.
     */
-    int GetSelector();
+	unsigned char& GetSelector();
 
     /**
     * @param value
@@ -326,7 +326,7 @@ public:
     /**
     * @return Rows end index.
     */
-    unsigned int GetRowEndIndex();
+    unsigned short& GetRowEndIndex();
 
     /**
     * @param value
