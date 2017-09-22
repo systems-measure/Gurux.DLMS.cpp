@@ -854,7 +854,8 @@ int GetOctetString(CGXByteBuffer& buff, CGXDataInfo& info, bool knownType, CGXDL
     }
     else
     {
-        value.byteArr = new unsigned char[len];
+//        value.byteArr = new unsigned char[len];
+        value.byteArr =(unsigned char*)malloc(len);
         if ((ret = buff.Get(value.byteArr, len)) != 0)
         {
             return ret;
@@ -901,11 +902,11 @@ int GetString(CGXByteBuffer& buff, CGXDataInfo& info, bool knownType, CGXDLMSVar
         tmp[len] = '\0';
         if ((ret = buff.Get((unsigned char*)tmp, len)) != 0)
         {
-            delete tmp;
+            delete[] tmp;
             return ret;
         }
         value = tmp;
-        delete tmp;
+        delete[] tmp;
     }
     else
     {
