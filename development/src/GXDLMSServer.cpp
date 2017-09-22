@@ -77,7 +77,7 @@ CGXDLMSServer::~CGXDLMSServer()
 
 }
 
-CGXDLMSObjectCollection& CGXDLMSServer::GetItems()
+CGXDLMSObjectCollection*& CGXDLMSServer::GetItems()
 {
     return m_Settings.GetObjects();
 }
@@ -166,25 +166,25 @@ int CGXDLMSServer::Initialize()
     std::string ln;
 	CGXByteBuffer c_ln;
 	CGXDLMSObject* tmp_obj = nullptr;
-    for (CGXDLMSObjectCollection::iterator it = GetItems().begin(); it != GetItems().end(); ++it)
+    for (CGXDLMSObjectCollection::iterator it = GetItems()->begin(); it != GetItems()->end(); ++it)
     {
 		c_ln.Clear();
 		c_ln.Set(*it, 6);
-		tmp_obj = GetItems().FindByLN(DLMS_OBJECT_TYPE_ALL, c_ln);
+		tmp_obj = GetItems()->FindByLN(DLMS_OBJECT_TYPE_ALL, c_ln);
 		if (tmp_obj != NULL) {
 			tmp_obj->GetLogicalName(ln);
 			if (ln.size() == 0)
 			{
 				//Invalid Logical Name.
 				tmp_obj = nullptr;
-				GetItems().FreeConstructedObj();
+				GetItems()->FreeConstructedObj();
 				return DLMS_ERROR_CODE_INVALID_LOGICAL_NAME;
 			}
 			tmp_obj = nullptr;
-			GetItems().FreeConstructedObj();
+			GetItems()->FreeConstructedObj();
 		}
 	}
-	std::vector<CGXDLMSObject*> tmp_dlms_obj = GetItems().GetDlmsObj();
+	std::vector<CGXDLMSObject*> tmp_dlms_obj = GetItems()->GetDlmsObj();
 	for (std::vector<CGXDLMSObject*>::iterator it = tmp_dlms_obj.begin(); it != tmp_dlms_obj.end(); ++it) {
 		(*it)->GetLogicalName(ln);
 		if (ln.size() == 0)
@@ -192,7 +192,7 @@ int CGXDLMSServer::Initialize()
 			//Invalid Logical Name.
 			return DLMS_ERROR_CODE_INVALID_LOGICAL_NAME;
 		}
-		if ((*it)->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME
+		/*if ((*it)->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME
 		    && m_Settings.GetUseLogicalNameReferencing())
 		{
 		    CGXDLMSObjectCollection& list = ((CGXDLMSAssociationLogicalName*)*it)->GetObjectList();
@@ -202,9 +202,9 @@ int CGXDLMSServer::Initialize()
 				list.GetDlmsObj().insert(list.GetDlmsObj().end(), tmp_dlms_obj.begin(), tmp_dlms_obj.end());
 		    }
 		    associationObject = (*it);
-		}
+		}*/
 	}
-    if (associationObject == NULL)
+    /*if (associationObject == NULL)
     {
         if (GetUseLogicalNameReferencing())
         {
@@ -214,7 +214,7 @@ int CGXDLMSServer::Initialize()
             list.insert(list.end(), GetItems().begin(), GetItems().end());
 			list.GetDlmsObj().insert(list.GetDlmsObj().end(), tmp_dlms_obj.begin(), tmp_dlms_obj.end());
         }
-    }
+    }*/
     
     return 0;
 }
@@ -499,7 +499,7 @@ int CGXDLMSServer::HandleSetRequest(
     int ret;
     unsigned char index, ch;
     unsigned short tmp;
-	GetItems().FreeConstructedObj();
+	GetItems()->FreeConstructedObj();
 	if ((ret = data.GetUInt16(&tmp)) != 0)
     {
         return ret;
@@ -557,7 +557,7 @@ int CGXDLMSServer::HandleSetRequest(
             return ret;
         }
     }
-	CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);
+	CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
     if (obj == NULL)
     {
         std::string name;
@@ -598,7 +598,7 @@ int CGXDLMSServer::HandleSetRequest(
 						{
 							p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 							obj = nullptr;
-							GetItems().FreeConstructedObj();
+							GetItems()->FreeConstructedObj();
 							return ret;
 						}
 						if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
@@ -610,7 +610,7 @@ int CGXDLMSServer::HandleSetRequest(
 							{
 								p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 								obj = nullptr;
-								GetItems().FreeConstructedObj();
+								GetItems()->FreeConstructedObj();
 								return ret;
 							}
 						}
@@ -638,7 +638,7 @@ int CGXDLMSServer::HandleSetRequest(
     }
 	if(m_Transaction == nullptr){
 		obj = nullptr;
-		GetItems().FreeConstructedObj();
+		GetItems()->FreeConstructedObj();
 	}
     return ret;
 }
@@ -709,7 +709,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             }
             if (m_Transaction != NULL)
             {
-				GetItems().FreeConstructedObj();
+				GetItems()->FreeConstructedObj();
                 delete m_Transaction;
                 m_Transaction = NULL;
             }
@@ -836,7 +836,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     unsigned char attributeIndex;
     int ret;
     CGXByteBuffer ln; 
-	GetItems().FreeConstructedObj();
+	GetItems()->FreeConstructedObj();
     // CI
     unsigned short tmp;
     if ((ret = data.GetUInt16(&tmp)) != 0)
@@ -851,7 +851,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
         status = (DLMS_ERROR_CODE)ret;
     }
 	else {
-		CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);                        
+		CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
 		if (obj == NULL)
 		{
 			std::string name;
@@ -870,7 +870,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 			if ((ret = data.GetUInt8(&selection)) != 0)
 			{
 				obj = nullptr;
-				GetItems().FreeConstructedObj();
+				GetItems()->FreeConstructedObj();
 				return ret;
 			}
 			CGXDLMSVariant parameters;
@@ -879,14 +879,14 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				if ((ret = data.GetUInt8(&selector)) != 0)
 				{
 					obj = nullptr;
-					GetItems().FreeConstructedObj();
+					GetItems()->FreeConstructedObj();
 					return ret;
 				}
 				CGXDataInfo i;
 				if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
 				{
 					obj = nullptr;
-					GetItems().FreeConstructedObj();
+					GetItems()->FreeConstructedObj();
 					return ret;
 				}
 			}
@@ -953,7 +953,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 			delete m_Transaction;
 			m_Transaction = NULL;
 		}
-			GetItems().FreeConstructedObj();
+			GetItems()->FreeConstructedObj();
 	}
     return ret;
 }
@@ -1034,7 +1034,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
             }
             else
             {
-				GetItems().FreeConstructedObj();
+				GetItems()->FreeConstructedObj();
                 delete m_Transaction;
                 m_Transaction = NULL;
                 m_Settings.ResetBlockIndex();
@@ -1057,7 +1057,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
         return ret;
     }
     GXHelpers::SetObjectCount(cnt, bb);
-	GetItems().FreeConstructedObj();
+	GetItems()->FreeConstructedObj();
     for (pos = 0; pos != cnt; ++pos)
     {
         if ((ret = data.GetUInt16(&id)) != 0)
@@ -1071,7 +1071,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
         {
             return ret;
         }
-		CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);
+		CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
         if (obj == NULL)
         {
             std::string name;
@@ -1093,7 +1093,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
             if ((ret = data.GetUInt8(&selection)) != 0)
             {
 				obj = nullptr;
-				GetItems().FreeConstructedObj();
+				GetItems()->FreeConstructedObj();
                 return ret;
             }
             if (selection != 0)
@@ -1101,14 +1101,14 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
                 if ((ret = data.GetUInt8(&selector)) != 0)
                 {
 					obj = nullptr;
-					GetItems().FreeConstructedObj();
+					GetItems()->FreeConstructedObj();
                     return ret;
                 }
                 CGXDataInfo i;
                 if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
                 {
 					obj = nullptr;
-					GetItems().FreeConstructedObj();
+					GetItems()->FreeConstructedObj();
                     return ret;
                 }
             }
@@ -1136,7 +1136,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 		else if ((ret = CGXDLMS::AppendData((*it)->GetTarget(), (*it)->GetIndex(), bb, value)) != 0)
 		{
 			obj = nullptr;
-			GetItems().FreeConstructedObj();
+			GetItems()->FreeConstructedObj();
 			return DLMS_ERROR_CODE_HARDWARE_FAULT;
 		}
 		if (m_Settings.GetIndex() != m_Settings.GetCount())
@@ -1151,7 +1151,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 		}
 		list.clear();
 		obj = NULL;
-		GetItems().FreeConstructedObj();
+		GetItems()->FreeConstructedObj();
     }
     CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 3, NULL, &bb, 0xFF);
     return CGXDLMS::GetLNPdu(p, m_ReplyData);
@@ -1884,7 +1884,7 @@ int CGXDLMSServer::HandleMethodRequest(
     int ret;
     unsigned char ch, id;
     unsigned short tmp;
-	GetItems().FreeConstructedObj();
+	GetItems()->FreeConstructedObj();
     // Get type.
     if ((ret = data.GetUInt8(&ch)) != 0)
     {
@@ -1922,7 +1922,7 @@ int CGXDLMSServer::HandleMethodRequest(
             return ret;
         }
     }
-    CGXDLMSObject* obj = m_Settings.GetObjects().FindByLN(ci, ln);
+    CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
     if (obj == NULL)
     {
         std::string name;
@@ -1951,7 +1951,7 @@ int CGXDLMSServer::HandleMethodRequest(
 					if ((ret = obj->Invoke(m_Settings, *e)) != 0)
 					{
 						obj = nullptr;
-						GetItems().FreeConstructedObj();
+						GetItems()->FreeConstructedObj();
 						return ret;
 					}
 				}
@@ -1991,7 +1991,7 @@ int CGXDLMSServer::HandleMethodRequest(
     } else if(m_Settings.IsConnected() && obj->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME && id == 1) {
         Connected(connectionInfo);
     }
-	GetItems().FreeConstructedObj();
+	GetItems()->FreeConstructedObj();
     return ret;
 }
 

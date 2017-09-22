@@ -40,7 +40,7 @@
 /**
  Constructor.
 */
-CGXDLMSSapAssignment::CGXDLMSSapAssignment() : CGXDLMSObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT, "0.0.41.0.0.255")
+CGXDLMSSapAssignment::CGXDLMSSapAssignment() : CGXDLMSObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT, (std::string)"0.0.41.0.0.255")
 {
 }
 

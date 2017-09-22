@@ -42,7 +42,7 @@ CGXDLMSObject::CGXDLMSObject(DLMS_OBJECT_TYPE type, unsigned short sn)
 }
 
 //LN Constructor.
-CGXDLMSObject::CGXDLMSObject(DLMS_OBJECT_TYPE type, std::string ln)
+CGXDLMSObject::CGXDLMSObject(DLMS_OBJECT_TYPE type, std::string& ln)
 {
     Initialize(0, type, 0, NULL);
     GXHelpers::SetLogicalName(ln.c_str(), m_LN);
@@ -112,6 +112,7 @@ CGXDLMSObject::~CGXDLMSObject(void)
 {
     m_Attributes.clear();
     m_MethodAttributes.clear();
+	m_ReadTimes.clear();
 }
 
 bool CGXDLMSObject::GetDataValidity() {

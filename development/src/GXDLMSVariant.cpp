@@ -417,7 +417,7 @@ void CGXDLMSVariant::Clear()
         {
             assert(size != 0);
         }
-        free(byteArr);
+        std::free(byteArr);
         byteArr = NULL;
         size = 0;
     }

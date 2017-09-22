@@ -48,7 +48,7 @@ void CGXDLMSAutoAnswer::Init()
 /**
  Constructor.
 */
-CGXDLMSAutoAnswer::CGXDLMSAutoAnswer() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_ANSWER, "0.0.2.2.0.255")
+CGXDLMSAutoAnswer::CGXDLMSAutoAnswer() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_ANSWER, (std::string)"0.0.2.2.0.255")
 {
     Init();
 }

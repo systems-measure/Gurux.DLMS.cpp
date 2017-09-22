@@ -371,7 +371,7 @@ int CGXDLMSPushSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
             {
                 DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)it->Arr[0].ToInteger();
                 GXHelpers::GetLogicalName(it->Arr[1].byteArr, ln);
-                CGXDLMSObject* obj = settings.GetObjects().FindByLN(type, ln);
+                CGXDLMSObject* obj = settings.GetObjects()->FindByLN(type, ln);
                 if (obj == NULL)
                 {
                     obj = CGXDLMSObjectFactory::CreateObject(type);

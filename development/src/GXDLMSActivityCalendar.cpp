@@ -37,7 +37,7 @@
 #include "../include/GXDLMSActivityCalendar.h"
 #include <sstream>
 
-CGXDLMSActivityCalendar::CGXDLMSActivityCalendar() : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR, "0.0.13.0.0.255")
+CGXDLMSActivityCalendar::CGXDLMSActivityCalendar() : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR, (std::string)"0.0.13.0.0.255")
 {
 }
 

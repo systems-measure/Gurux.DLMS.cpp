@@ -489,7 +489,7 @@ public:
     /**
      * @return List of objects that meter supports.
      */
-    CGXDLMSObjectCollection& GetItems();
+    CGXDLMSObjectCollection*& GetItems();
 
     /**
      * @return Information from the connection size that server can handle.

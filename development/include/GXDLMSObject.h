@@ -87,7 +87,7 @@ public:
     CGXDLMSObject(DLMS_OBJECT_TYPE type, unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSObject(DLMS_OBJECT_TYPE type, std::string ln);
+    CGXDLMSObject(DLMS_OBJECT_TYPE type, std::string& ln);
     CGXDLMSObject(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer& ln);
 
     virtual ~CGXDLMSObject(void);

@@ -187,6 +187,19 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, CGXByteB
 	return NULL;
 }
 
+unsigned char* CGXDLMSObjectCollection::FindByLN(const char* ln) {
+	std::string ln2;
+	for (CGXDLMSObjectCollection::iterator it = this->begin(); it != end(); ++it)
+	{
+		GXHelpers::GetLogicalName(*it, ln2);
+		if (strcmp(ln2.c_str(), ln) == 0)
+		{
+			return *it;
+		}
+	}
+	return nullptr;
+}
+
 CGXDLMSObject* CGXDLMSObjectCollection::FindBySN(unsigned short sn)
 {
     return NULL;
@@ -210,6 +223,7 @@ int CGXDLMSObjectCollection::sizeRequiredObj() {
 }
 
 void CGXDLMSObjectCollection::clear() {
+	//Free();
 	std::vector<unsigned char*>::clear();
 	dlms_only_obj.clear();
 	FreeConstructedObj();
@@ -233,14 +247,18 @@ void CGXDLMSObjectCollection::SetTypeObjCallback(TypeObj type) {
 
 void CGXDLMSObjectCollection::Free()
 {
-    for (CGXDLMSObjectCollection::iterator it = begin(); it != end(); ++it)
-    {
-        delete (*it);
-    }
-	for (std::vector<CGXDLMSObject*>::iterator it = dlms_only_obj.begin(); it != dlms_only_obj.end(); ++it) {
-		delete (*it);
+	if (this->size() != 0) {
+		for (CGXDLMSObjectCollection::iterator it = begin(); it != end(); ++it)
+		{
+			delete (*it);
+		}
 	}
-    std::vector<unsigned char*>::clear();
+	if (dlms_only_obj.size() != 0) {
+		for (std::vector<CGXDLMSObject*>::iterator it = dlms_only_obj.begin(); it != dlms_only_obj.end(); ++it) {
+			delete (*it);
+		}
+	}
+	std::vector<unsigned char*>::clear();
 	dlms_only_obj.clear();
 	FreeConstructedObj();
 }

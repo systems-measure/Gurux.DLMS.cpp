@@ -44,7 +44,7 @@ void CGXDLMSAutoConnect::Init()
 }
 
 //Constructor.
-CGXDLMSAutoConnect::CGXDLMSAutoConnect() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, "0.0.2.1.0.255")
+CGXDLMSAutoConnect::CGXDLMSAutoConnect() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, (std::string)"0.0.2.1.0.255")
 {
     Init();
 }

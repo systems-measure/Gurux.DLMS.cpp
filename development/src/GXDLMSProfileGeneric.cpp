@@ -902,7 +902,7 @@ int CGXDLMSProfileGeneric::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
                 DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)(*it).Arr[0].ToInteger();
                 std::string ln;
                 GXHelpers::GetLogicalName((*it).Arr[1].byteArr, ln);
-                CGXDLMSObject* pObj = settings.GetObjects().FindByLN(type, ln);
+                CGXDLMSObject* pObj = settings.GetObjects()->FindByLN(type, ln);
                 if (pObj == NULL)
                 {
                     pObj = CGXDLMSObjectFactory::CreateObject(type, ln);
@@ -937,7 +937,7 @@ int CGXDLMSProfileGeneric::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
             GXHelpers::GetLogicalName(e.GetValue().Arr[1].byteArr, ln);
             m_SortObjectAttributeIndex = e.GetValue().Arr[2].ToInteger();
             m_SortObjectDataIndex = e.GetValue().Arr[3].ToInteger();
-            m_SortObject = settings.GetObjects().FindByLN(type, ln);
+            m_SortObject = settings.GetObjects()->FindByLN(type, ln);
             if (m_SortObject == NULL)
             {
                 m_SortObject = CGXDLMSObjectFactory::CreateObject(type, ln);

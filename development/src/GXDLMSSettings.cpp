@@ -61,7 +61,7 @@ CGXDLMSSettings::CGXDLMSSettings(bool isServer)
 //Destructor.
 CGXDLMSSettings::~CGXDLMSSettings()
 {
-    m_Objects.Free();
+    m_Objects = nullptr;
 }
 
 CGXByteBuffer& CGXDLMSSettings::GetCtoSChallenge()
@@ -385,7 +385,7 @@ int CGXDLMSSettings::SetLongInvokeID(unsigned long value)
     m_LongInvokeID = value;
     return 0;
 }
-CGXDLMSObjectCollection& CGXDLMSSettings::GetObjects()
+CGXDLMSObjectCollection*& CGXDLMSSettings::GetObjects()
 {
     return m_Objects;
 }

@@ -55,7 +55,7 @@ CGXDLMSNotify::CGXDLMSNotify(bool useLogicalNameReferencing,
     m_Settings.SetInterfaceType(interfaceType);
 }
 
-CGXDLMSObjectCollection& CGXDLMSNotify::GetObjects()
+CGXDLMSObjectCollection*& CGXDLMSNotify::GetObjects()
 {
     return m_Settings.GetObjects();
 }
@@ -219,11 +219,11 @@ int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std:
             {
                 return ret;
             }
-            obj = GetObjects().FindByLN((DLMS_OBJECT_TYPE)classID, ln.strVal);
+            obj = GetObjects()->FindByLN((DLMS_OBJECT_TYPE)classID, ln.strVal);
             if (obj == NULL)
             {
                 obj = CGXDLMSObjectFactory::CreateObject((DLMS_OBJECT_TYPE)classID, ln.strVal);
-                GetObjects().push_back(obj);
+                GetObjects()->push_back(obj);
             }
             items.push_back(std::pair<CGXDLMSObject*, unsigned char>(obj, it->Arr[2].ToInteger()));
         }

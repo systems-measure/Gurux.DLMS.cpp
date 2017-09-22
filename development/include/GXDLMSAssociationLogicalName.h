@@ -87,7 +87,7 @@ public:
      Constructor.
      @param ln Logical Name of the object.
     */
-    CGXDLMSAssociationLogicalName(std::string ln);
+    CGXDLMSAssociationLogicalName(std::string& ln);
 
     CGXDLMSObjectCollection& GetObjectList();
 

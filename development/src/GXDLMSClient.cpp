@@ -443,8 +443,8 @@ int CGXDLMSClient::ParseObjects(CGXByteBuffer& data, CGXDLMSObjectCollection& ob
             return ret;
         }
     }
-    m_Settings.GetObjects().Free();
-    m_Settings.GetObjects().insert(m_Settings.GetObjects().end(), objects.begin(), objects.end());
+    m_Settings.GetObjects()->Free();
+    m_Settings.GetObjects()->insert(m_Settings.GetObjects()->end(), objects.begin(), objects.end());
     return 0;
 }
 

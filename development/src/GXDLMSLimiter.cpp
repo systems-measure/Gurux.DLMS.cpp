@@ -520,7 +520,7 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
         DLMS_OBJECT_TYPE ot = (DLMS_OBJECT_TYPE)e.GetValue().Arr[0].ToInteger();
         std::string ln;
         GXHelpers::GetLogicalName(e.GetValue().Arr[1].byteArr, ln);
-        m_MonitoredValue = settings.GetObjects().FindByLN(ot, ln);
+        m_MonitoredValue = settings.GetObjects()->FindByLN(ot, ln);
         m_MonitoredAttributeIndex = e.GetValue().Arr[2].ToInteger();
     }
     else if (e.GetIndex() == 3)

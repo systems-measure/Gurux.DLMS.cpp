@@ -48,7 +48,7 @@ void CGXDLMSClock::Init()
 /**
  Constructor.
 */
-CGXDLMSClock::CGXDLMSClock() : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, "0.0.1.0.0.255")
+CGXDLMSClock::CGXDLMSClock() : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, (std::string)"0.0.1.0.0.255")
 {
     Init();
 }

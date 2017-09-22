@@ -44,7 +44,7 @@ void CGXDLMSIECOpticalPortSetup::Init()
 }
 
 //Constructor.
-CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP, "0.0.20.0.0.255")
+CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP, (std::string)"0.0.20.0.0.255")
 {
     Init();
 }
