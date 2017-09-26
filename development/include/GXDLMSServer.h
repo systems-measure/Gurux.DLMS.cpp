@@ -260,10 +260,7 @@ protected:
      */
     void SetCipher(CGXCipher* value);
 
-    /**
-    * @return Get settings.
-    */
-    CGXDLMSSettings& GetSettings();
+   
 
     /**
         * Check is data sent to this server.
@@ -430,6 +427,10 @@ protected:
 	bool IsLongTransaction();
 
 public:
+	/**
+	* @return Get settings.
+	*/
+	CGXDLMSSettings& GetSettings();
     /**
      * @return Client to Server challenge.
      */
