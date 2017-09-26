@@ -160,11 +160,11 @@ int CGXDLMSNotify::GenerateDataNotificationMessages(
         p.SetTime(time);
         ret = CGXDLMS::GetLnMessages(p, reply);
     }
-    else
+   /* else
     {
         CGXDLMSSNParameters p(&m_Settings, DLMS_COMMAND_DATA_NOTIFICATION, 1, 0, &data, NULL);
         ret = CGXDLMS::GetSnMessages(p, reply);
-    }
+    }*/
     return ret;
 }
 

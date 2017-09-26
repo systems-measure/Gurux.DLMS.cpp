@@ -395,7 +395,16 @@ int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(3);
         std::string ln;
-        CGXDLMSVariant type = 0;
+		unsigned char tmp[6];
+		GXHelpers::SetLogicalName(ln.c_str(), tmp);
+		data.SetUInt8(DLMS_DATA_TYPE_INT16);
+		data.SetUInt16(m_MonitoredValue->GetObjectType());
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(0x06);
+		data.Set(tmp, 6);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_MonitoredAttributeIndex);
+        /*CGXDLMSVariant type = 0;
         if (m_MonitoredValue != NULL)
         {
             m_MonitoredValue->GetLogicalName(ln);
@@ -404,12 +413,12 @@ int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
         CGXDLMSVariant index = m_MonitoredAttributeIndex;
         CGXDLMSVariant tmp;
         GXHelpers::SetLogicalName(ln.c_str(), tmp);
-        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT16, type)) != 0 ||
-            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, tmp)) != 0 ||
-            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, index)) != 0)
+        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT16		, type)) != 0 ||
+            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING	, tmp)) != 0 ||
+            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8			, index)) != 0)
         {
             return ret;
-        }
+        }*/
         e.SetValue(data);
     }
     else if (e.GetIndex() == 3)

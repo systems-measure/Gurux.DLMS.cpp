@@ -308,14 +308,18 @@ int CGXDLMSAutoAnswer::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg&
         CGXByteBuffer data;
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         GXHelpers::SetObjectCount(2, data);
-        CGXDLMSVariant in = m_NumberOfRingsInListeningWindow;
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_NumberOfRingsInListeningWindow);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_NumberOfRingsOutListeningWindow);
+        /*CGXDLMSVariant in = m_NumberOfRingsInListeningWindow;
         CGXDLMSVariant out = m_NumberOfRingsOutListeningWindow;
         int ret;
         if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, in)) != DLMS_ERROR_CODE_OK ||
             (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, out)) != DLMS_ERROR_CODE_OK)
         {
             return ret;
-        }
+        }*/
         e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }

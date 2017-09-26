@@ -68,14 +68,14 @@ CGXDLMSClient::CGXDLMSClient(bool UseLogicalNameReferencing,
             DLMS_CONFORMANCE_ACTION | DLMS_CONFORMANCE_MULTIPLE_REFERENCES |
             DLMS_CONFORMANCE_GET | DLMS_CONFORMANCE_GENERAL_PROTECTION));
     }
-    else
+    /*else
     {
         SetProposedConformance((DLMS_CONFORMANCE)(DLMS_CONFORMANCE_INFORMATION_REPORT |
             DLMS_CONFORMANCE_READ | DLMS_CONFORMANCE_UN_CONFIRMED_WRITE |
             DLMS_CONFORMANCE_WRITE | DLMS_CONFORMANCE_PARAMETERIZED_ACCESS |
             DLMS_CONFORMANCE_MULTIPLE_REFERENCES |
             DLMS_CONFORMANCE_GENERAL_PROTECTION));
-    }
+    }*/
 }
 
 CGXDLMSClient::~CGXDLMSClient()
@@ -211,64 +211,64 @@ int CGXDLMSClient::SNRMRequest(std::vector<CGXByteBuffer>& packets)
 }
 
 // SN referencing
-int CGXDLMSClient::ParseSNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects)
-{
-    int ret;
-    CGXDataInfo info;
-    //Get array tag.
-    unsigned char ch;
-    unsigned long cnt;
-    //Check that data is in the array
-    // Get array tag.
-    if ((ret = buff.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 1)
-    {
-        return DLMS_ERROR_CODE_INVALID_RESPONSE;
-    }
-    //get object count
-    CGXDLMSVariant value;
-    if ((ret = GXHelpers::GetObjectCount(buff, cnt)) != 0)
-    {
-        return ret;
-    }
-    for (unsigned long objPos = 0; objPos != cnt; ++objPos)
-    {
-        info.Clear();
-        if ((ret = GXHelpers::GetData(buff, info, value)) != 0)
-        {
-            return ret;
-        }
-        if (value.vt != DLMS_DATA_TYPE_STRUCTURE || value.Arr.size() != 4)
-        {
-            return DLMS_ERROR_CODE_INVALID_PARAMETER;
-        }
-        if (value.Arr[0].vt != DLMS_DATA_TYPE_INT16 ||
-            value.Arr[1].vt != DLMS_DATA_TYPE_UINT16 ||
-            value.Arr[2].vt != DLMS_DATA_TYPE_UINT8 ||
-            value.Arr[3].vt != DLMS_DATA_TYPE_OCTET_STRING)
-        {
-            return DLMS_ERROR_CODE_INVALID_PARAMETER;
-        }
-        short sn = value.Arr[0].ToInteger();
-        unsigned short class_id = (unsigned short)value.Arr[1].ToInteger();
-        unsigned char version = (unsigned char)value.Arr[2].ToInteger();
-        CGXDLMSVariant ln = value.Arr[3];
-        CGXDLMSObject* pObj = CGXDLMSObjectFactory::CreateObject((DLMS_OBJECT_TYPE)class_id);
-        if (pObj != NULL)
-        {
-            pObj->SetShortName(sn);
-            pObj->SetVersion(version);
-            int cnt = ln.GetSize();
-            assert(cnt == 6);
-            CGXDLMSObject::SetLogicalName(pObj, ln);
-            objects.push_back(pObj);
-        }
-    }
-    return 0;
-}
+//int CGXDLMSClient::ParseSNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects)
+//{
+//    int ret;
+//    CGXDataInfo info;
+//    //Get array tag.
+//    unsigned char ch;
+//    unsigned long cnt;
+//    //Check that data is in the array
+//    // Get array tag.
+//    if ((ret = buff.GetUInt8(&ch)) != 0)
+//    {
+//        return ret;
+//    }
+//    if (ch != 1)
+//    {
+//        return DLMS_ERROR_CODE_INVALID_RESPONSE;
+//    }
+//    //get object count
+//    CGXDLMSVariant value;
+//    if ((ret = GXHelpers::GetObjectCount(buff, cnt)) != 0)
+//    {
+//        return ret;
+//    }
+//    for (unsigned long objPos = 0; objPos != cnt; ++objPos)
+//    {
+//        info.Clear();
+//        if ((ret = GXHelpers::GetData(buff, info, value)) != 0)
+//        {
+//            return ret;
+//        }
+//        if (value.vt != DLMS_DATA_TYPE_STRUCTURE || value.Arr.size() != 4)
+//        {
+//            return DLMS_ERROR_CODE_INVALID_PARAMETER;
+//        }
+//        if (value.Arr[0].vt != DLMS_DATA_TYPE_INT16 ||
+//            value.Arr[1].vt != DLMS_DATA_TYPE_UINT16 ||
+//            value.Arr[2].vt != DLMS_DATA_TYPE_UINT8 ||
+//            value.Arr[3].vt != DLMS_DATA_TYPE_OCTET_STRING)
+//        {
+//            return DLMS_ERROR_CODE_INVALID_PARAMETER;
+//        }
+//        short sn = value.Arr[0].ToInteger();
+//        unsigned short class_id = (unsigned short)value.Arr[1].ToInteger();
+//        unsigned char version = (unsigned char)value.Arr[2].ToInteger();
+//        CGXDLMSVariant ln = value.Arr[3];
+//        CGXDLMSObject* pObj = CGXDLMSObjectFactory::CreateObject((DLMS_OBJECT_TYPE)class_id);
+//        if (pObj != NULL)
+//        {
+//            pObj->SetShortName(sn);
+//            pObj->SetVersion(version);
+//            int cnt = ln.GetSize();
+//            assert(cnt == 6);
+//            CGXDLMSObject::SetLogicalName(pObj, ln);
+//            objects.push_back(pObj);
+//        }
+//    }
+//    return 0;
+//}
 
 int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects)
 {
@@ -436,13 +436,13 @@ int CGXDLMSClient::ParseObjects(CGXByteBuffer& data, CGXDLMSObjectCollection& ob
             return ret;
         }
     }
-    else
+    /*else
     {
         if ((ret = ParseSNObjects(data, objects, onlyKnownObjects)) != 0)
         {
             return ret;
         }
-    }
+    }*/
     m_Settings.GetObjects()->Free();
     m_Settings.GetObjects()->insert(m_Settings.GetObjects()->end(), objects.begin(), objects.end());
     return 0;
@@ -715,11 +715,11 @@ int CGXDLMSClient::AARQRequest(std::vector<CGXByteBuffer>& packets)
         CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_AARQ, 0, &buff, NULL, 0xff);
         ret = CGXDLMS::GetLnMessages(p, packets);
     }
-    else
+    /*else
     {
         CGXDLMSSNParameters p(&m_Settings, DLMS_COMMAND_AARQ, 0, 0, NULL, &buff);
         ret = CGXDLMS::GetSnMessages(p, packets);
-    }
+    }*/
     return ret;
 }
 
@@ -1563,11 +1563,11 @@ int CGXDLMSClient::ReadRowsByEntry(
         tmp = 1;
         GXHelpers::SetData(buff, DLMS_DATA_TYPE_UINT16, tmp);
     }
-    else
+    /*else
     {
         tmp = 0;
         GXHelpers::SetData(buff, DLMS_DATA_TYPE_UINT16, tmp);
-    }
+    }*/
     tmp = 0;
     GXHelpers::SetData(buff, DLMS_DATA_TYPE_UINT16, tmp);
 	std::string name = pg->GetName();

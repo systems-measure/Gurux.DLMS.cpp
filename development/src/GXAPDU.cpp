@@ -119,7 +119,7 @@ int GenerateApplicationContextName(
             data.Set(LOGICAL_NAME_OBJECT_ID, sizeof(LOGICAL_NAME_OBJECT_ID));
         }
     }
-    else
+    /*else
     {
         if (ciphered)
         {
@@ -129,7 +129,7 @@ int GenerateApplicationContextName(
         {
             data.Set(SHORT_NAME_OBJECT_ID, sizeof(SHORT_NAME_OBJECT_ID));
         }
-    }
+    }*/
     // Add system title.
     if (!settings.IsServer() &&
         (ciphered || settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC))
@@ -576,15 +576,15 @@ int ParseApplicationContextName(
             return 0;
         }
     }
-    if (buff.Compare((unsigned char*)SHORT_NAME_OBJECT_ID, sizeof(SHORT_NAME_OBJECT_ID)))
-    {
-        return 0;
-    }
-    // If ciphering is used.
-    if (!buff.Compare((unsigned char*)SHORT_NAME_OBJECT_ID_WITH_CIPHERING, sizeof(SHORT_NAME_OBJECT_ID_WITH_CIPHERING)))
-    {
-        return DLMS_ERROR_CODE_FALSE;
-    }
+    //if (buff.Compare((unsigned char*)SHORT_NAME_OBJECT_ID, sizeof(SHORT_NAME_OBJECT_ID)))
+    //{
+    //    return 0;
+    //}
+    //// If ciphering is used.
+    //if (!buff.Compare((unsigned char*)SHORT_NAME_OBJECT_ID_WITH_CIPHERING, sizeof(SHORT_NAME_OBJECT_ID_WITH_CIPHERING)))
+    //{
+    //    return DLMS_ERROR_CODE_FALSE;
+    //}
     return 0;
 }
 
@@ -776,10 +776,10 @@ int GetUserInformation(
 		{
 			data.SetUInt16(0x0007);
 		}
-		else
+		/*else
 		{
 			data.SetUInt16(0xFA00);
-		}
+		}*/
 		if (cipher != NULL && cipher->IsCiphered())
 		{
 			CGXByteBuffer tmp(data);

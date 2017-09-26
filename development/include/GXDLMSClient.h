@@ -49,7 +49,7 @@ private:
     bool m_IsAuthenticationRequired;
     static void UpdateOBISCodes(CGXDLMSObjectCollection& objects);
     // SN referencing
-    int ParseSNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects);
+    //int ParseSNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects);
     /**
     * Parse LN objects.
     *

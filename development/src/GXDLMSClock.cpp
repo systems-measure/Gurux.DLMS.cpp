@@ -302,12 +302,11 @@ int CGXDLMSClock::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(tmp);
+        unsigned char tmp[6];
+		CGXByteBuffer bb;
+		GetLogicalName(tmp);
+		bb.Set(tmp, 6);
+        e.SetValue(bb);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)

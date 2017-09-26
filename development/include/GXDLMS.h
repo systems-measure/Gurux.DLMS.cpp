@@ -155,9 +155,9 @@ public:
     *            Generated messages.
     * @return    Status code.
     */
-    static int GetSnMessages(
+    /*static int GetSnMessages(
         CGXDLMSSNParameters& p,
-        std::vector<CGXByteBuffer>& reply);
+        std::vector<CGXByteBuffer>& reply);*/
 
     /**
     * Handle General block transfer message.
@@ -199,9 +199,9 @@ public:
     * @param p
     * @param reply
     */
-    static int GetSNPdu(
+  /*  static int GetSNPdu(
         CGXDLMSSNParameters& p,
-        CGXByteBuffer& reply);
+        CGXByteBuffer& reply);*/
 
 
     /////////////////////////////////////////////////////////////////////////////
