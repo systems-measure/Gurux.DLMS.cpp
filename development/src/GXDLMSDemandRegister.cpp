@@ -59,7 +59,7 @@ CGXDLMSDemandRegister::CGXDLMSDemandRegister() : CGXDLMSObject(DLMS_OBJECT_TYPE_
 
  @param ln Logical Name of the object.
 */
-CGXDLMSDemandRegister::CGXDLMSDemandRegister(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DEMAND_REGISTER, ln)
+CGXDLMSDemandRegister::CGXDLMSDemandRegister(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DEMAND_REGISTER, ln)
 {
     m_Period = m_NumberOfPeriods = m_Unit = m_Scaler = 0;
 }

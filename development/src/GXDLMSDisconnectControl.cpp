@@ -49,7 +49,7 @@ CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(unsigned short sn) : CGXDLMSO
 }
 
 //LN Constructor.
-CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL, ln)
+CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL, ln)
 {
 
 }

@@ -47,7 +47,7 @@ CGXDLMSScriptTable::CGXDLMSScriptTable(unsigned short sn) : CGXDLMSObject(DLMS_O
 }
 
 //LN Constructor.
-CGXDLMSScriptTable::CGXDLMSScriptTable(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCRIPT_TABLE, ln)
+CGXDLMSScriptTable::CGXDLMSScriptTable(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCRIPT_TABLE, ln)
 {
 
 }

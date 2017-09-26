@@ -52,7 +52,7 @@ CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(unsigned short sn) : CGXDLMSObject(DLMS
 }
 
 //LN Constructor.
-CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP, ln)
+CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP, ln)
 {
     m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
     m_WindowSizeTransmit = m_WindowSizeReceive = 1;

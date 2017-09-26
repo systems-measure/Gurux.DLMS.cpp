@@ -50,7 +50,7 @@ public:
     CGXDLMSScriptTable(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSScriptTable(std::string ln);
+    CGXDLMSScriptTable(const char* ln);
 
     //Destructor.
     ~CGXDLMSScriptTable();

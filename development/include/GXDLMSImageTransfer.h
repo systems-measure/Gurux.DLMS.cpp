@@ -54,7 +54,7 @@ public:
     CGXDLMSImageTransfer(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSImageTransfer(std::string ln);
+    CGXDLMSImageTransfer(const char* ln);
 
     /**
      Holds the ImageBlockSize, expressed in octets,

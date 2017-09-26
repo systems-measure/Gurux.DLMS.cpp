@@ -54,10 +54,10 @@ CGXDLMSPushSetup::CGXDLMSPushSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJEC
 }
 
 //LN Constructor.
-CGXDLMSPushSetup::CGXDLMSPushSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP, ln)
+CGXDLMSPushSetup::CGXDLMSPushSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP, ln)
 {
     m_RandomisationStartInterval = m_NumberOfRetries = m_RepetitionDelay = 0;
-    GXHelpers::SetLogicalName(ln.c_str(), m_LN);
+    GXHelpers::SetLogicalName(ln, m_LN);
 }
 
 DLMS_SERVICE_TYPE CGXDLMSPushSetup::GetService()

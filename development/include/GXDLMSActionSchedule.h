@@ -57,7 +57,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSActionSchedule(std::string ln);
+    CGXDLMSActionSchedule(const char* ln);
 
     /**
      Constructor.

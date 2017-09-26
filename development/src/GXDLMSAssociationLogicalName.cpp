@@ -222,7 +222,7 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 /**
  Constructor.
 */
-CGXDLMSAssociationLogicalName::CGXDLMSAssociationLogicalName() : CGXDLMSObject(DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME, (std::string)"0.0.40.0.0.255")
+CGXDLMSAssociationLogicalName::CGXDLMSAssociationLogicalName() : CGXDLMSObject(DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME, "0.0.40.0.0.255")
 {
     Init();
 }
@@ -231,7 +231,7 @@ CGXDLMSAssociationLogicalName::CGXDLMSAssociationLogicalName() : CGXDLMSObject(D
  Constructor.
  @param ln Logical Name of the object.
 */
-CGXDLMSAssociationLogicalName::CGXDLMSAssociationLogicalName(std::string& ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME, ln)
+CGXDLMSAssociationLogicalName::CGXDLMSAssociationLogicalName(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME, ln)
 {
     Init();
 }

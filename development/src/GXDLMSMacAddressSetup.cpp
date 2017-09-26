@@ -38,7 +38,7 @@
 /**
  Constructor.
 */
-CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, (std::string)"0.0.25.2.0.255")
+CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, "0.0.25.2.0.255")
 {
 }
 
@@ -47,7 +47,7 @@ CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup() : CGXDLMSObject(DLMS_OBJECT_TYP
 
  @param ln Logical Name of the object.
 */
-CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, ln)
+CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, ln)
 {
 }
 

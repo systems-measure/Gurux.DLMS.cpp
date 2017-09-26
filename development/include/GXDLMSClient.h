@@ -75,7 +75,7 @@ private:
     * Returns error status.
     */
     int Read(
-        CGXDLMSVariant& name,
+		std::string& name,
         DLMS_OBJECT_TYPE objectType,
         int attributeOrdinal,
         CGXByteBuffer* data,
@@ -305,7 +305,7 @@ public:
     * Returns error status.
     */
     int Read(
-        CGXDLMSVariant& name,
+		std::string& name,
         DLMS_OBJECT_TYPE objectType,
         int attributeOrdinal,
         std::vector<CGXByteBuffer>& reply);
@@ -365,7 +365,7 @@ public:
     * Returns error status.
     */
     int Write(
-        CGXDLMSVariant& name,
+		std::string& name,
         DLMS_OBJECT_TYPE objectType,
         int index,
         CGXDLMSVariant& data,
@@ -441,7 +441,7 @@ public:
     * @return DLMS action message.
     */
     int Method(
-        CGXDLMSVariant name,
+		std::string name,
         DLMS_OBJECT_TYPE objectType,
         int methodIndex,
         CGXDLMSVariant& data,

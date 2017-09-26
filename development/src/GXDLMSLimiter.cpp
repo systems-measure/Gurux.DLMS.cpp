@@ -58,7 +58,7 @@ CGXDLMSLimiter::CGXDLMSLimiter(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TY
 }
 
 //LN Constructor.
-CGXDLMSLimiter::CGXDLMSLimiter(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_LIMITER, ln)
+CGXDLMSLimiter::CGXDLMSLimiter(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_LIMITER, ln)
 {
     m_MonitoredValue = NULL;
     m_MinOverThresholdDuration = 0;
@@ -218,7 +218,7 @@ void CGXDLMSLimiter::GetValues(std::vector<std::string>& values)
     values.push_back(ln);
     if (m_MonitoredValue != NULL)
     {
-        values.push_back(m_MonitoredValue->GetName().ToString());
+        values.push_back(m_MonitoredValue->GetName());
     }
     else
     {

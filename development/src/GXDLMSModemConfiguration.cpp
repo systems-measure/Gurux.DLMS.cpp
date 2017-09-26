@@ -61,7 +61,7 @@ void CGXDLMSModemConfiguration::Init()
 }
 
 // Constructor.
-CGXDLMSModemConfiguration::CGXDLMSModemConfiguration() : CGXDLMSObject(DLMS_OBJECT_TYPE_MODEM_CONFIGURATION, (std::string)"0.0.2.0.0.255")
+CGXDLMSModemConfiguration::CGXDLMSModemConfiguration() : CGXDLMSObject(DLMS_OBJECT_TYPE_MODEM_CONFIGURATION, "0.0.2.0.0.255")
 {
     Init();
 }
@@ -70,7 +70,7 @@ CGXDLMSModemConfiguration::CGXDLMSModemConfiguration() : CGXDLMSObject(DLMS_OBJE
  Constructor.
  @param ln Logical Name of the object.
 */
-CGXDLMSModemConfiguration::CGXDLMSModemConfiguration(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MODEM_CONFIGURATION, ln)
+CGXDLMSModemConfiguration::CGXDLMSModemConfiguration(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MODEM_CONFIGURATION, ln)
 {
     Init();
 }

@@ -63,7 +63,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSDemandRegister(std::string ln);
+    CGXDLMSDemandRegister(const char* ln);
 
     /**
      Constructor.

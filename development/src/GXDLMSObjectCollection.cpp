@@ -287,7 +287,7 @@ std::string CGXDLMSObjectCollection::ToString()
 		ln.Clear();
 		ln.Set(*it, 6);
 		tmp_obj = FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
-        std::string str = tmp_obj->GetName().ToString();
+        std::string str = tmp_obj->GetName();
         sb.write(str.c_str(), str.size());
 		tmp_obj = NULL;
 		FreeConstructedObj();
@@ -299,7 +299,7 @@ std::string CGXDLMSObjectCollection::ToString()
 			sb << ", ";
 		}
 		empty = false;
-		std::string str = (*it)->GetName().ToString();
+		std::string str = (*it)->GetName();
 		sb.write(str.c_str(), str.size());
 	}
     sb << ']';

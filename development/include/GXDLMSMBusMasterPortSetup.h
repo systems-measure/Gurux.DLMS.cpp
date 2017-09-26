@@ -48,7 +48,7 @@ public:
     CGXDLMSMBusMasterPortSetup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSMBusMasterPortSetup(std::string ln);
+    CGXDLMSMBusMasterPortSetup(const char* ln);
 
     // The communication speed supported by the port.
     DLMS_BAUD_RATE GetCommSpeed();

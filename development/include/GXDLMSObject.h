@@ -87,7 +87,7 @@ public:
     CGXDLMSObject(DLMS_OBJECT_TYPE type, unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSObject(DLMS_OBJECT_TYPE type, std::string& ln);
+    CGXDLMSObject(DLMS_OBJECT_TYPE type, const char* ln);
     CGXDLMSObject(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer& ln);
 
     virtual ~CGXDLMSObject(void);
@@ -98,7 +98,7 @@ public:
 	void SetDataValidity(bool validity);
 
     //Get Object's Logical or Short Name as a std::string.
-    CGXDLMSVariant GetName();
+    std::string GetName();
 
     int SetName(CGXDLMSVariant& value);
 

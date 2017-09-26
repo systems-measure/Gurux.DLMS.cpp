@@ -48,7 +48,7 @@ CGXDLMSMBusClient::CGXDLMSMBusClient(unsigned short sn) : CGXDLMSObject(DLMS_OBJ
 }
 
 //LN Constructor.
-CGXDLMSMBusClient::CGXDLMSMBusClient(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, ln)
+CGXDLMSMBusClient::CGXDLMSMBusClient(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, ln)
 {
 
 }

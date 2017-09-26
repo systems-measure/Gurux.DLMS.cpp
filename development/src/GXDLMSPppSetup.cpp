@@ -49,7 +49,7 @@ CGXDLMSPppSetup::CGXDLMSPppSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_
 }
 
 //LN Constructor.
-CGXDLMSPppSetup::CGXDLMSPppSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PPP_SETUP, ln)
+CGXDLMSPppSetup::CGXDLMSPppSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PPP_SETUP, ln)
 {
     m_Authentication = PPP_AUTHENTICATION_TYPE_NONE;
 }

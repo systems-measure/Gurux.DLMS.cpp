@@ -799,7 +799,8 @@ unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
 {
     //DLMS_DATA_TYPE dt;
 	std::vector<DLMS_DATA_TYPE> dt;
-	pType type = (pType)GetTypeProfile(pg->GetName().strVal);
+	std::string ln = pg->GetName();
+	pType type = (pType)GetTypeProfile(ln);
 	GetProfileCaptureObjectsTypes(dt, type);
     int rowsize = 0;
     // Count how many rows we can fit to one PDU.

@@ -55,7 +55,7 @@ public:
      Constructor.
      @param ln Logical Name of the object.
     */
-    CGXDLMSModemConfiguration(std::string ln);
+    CGXDLMSModemConfiguration(const char* ln);
 
     /**
      Constructor.

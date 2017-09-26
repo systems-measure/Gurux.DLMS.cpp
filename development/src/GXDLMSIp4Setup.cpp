@@ -72,7 +72,7 @@ CGXDLMSIp4Setup::CGXDLMSIp4Setup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_
 }
 
 //LN Constructor.
-CGXDLMSIp4Setup::CGXDLMSIp4Setup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP, ln)
+CGXDLMSIp4Setup::CGXDLMSIp4Setup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP, ln)
 {
     m_IPAddress.empty();
     m_SubnetMask = 0;

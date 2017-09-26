@@ -48,7 +48,7 @@ CGXDLMSMessageHandler::CGXDLMSMessageHandler(unsigned short sn) : CGXDLMSObject(
 }
 
 //LN Constructor.
-CGXDLMSMessageHandler::CGXDLMSMessageHandler(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MESSAGE_HANDLER, ln)
+CGXDLMSMessageHandler::CGXDLMSMessageHandler(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MESSAGE_HANDLER, ln)
 {
 
 }

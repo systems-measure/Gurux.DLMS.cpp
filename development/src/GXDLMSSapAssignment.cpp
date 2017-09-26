@@ -40,7 +40,7 @@
 /**
  Constructor.
 */
-CGXDLMSSapAssignment::CGXDLMSSapAssignment() : CGXDLMSObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT, (std::string)"0.0.41.0.0.255")
+CGXDLMSSapAssignment::CGXDLMSSapAssignment() : CGXDLMSObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT, "0.0.41.0.0.255")
 {
 }
 
@@ -49,7 +49,7 @@ CGXDLMSSapAssignment::CGXDLMSSapAssignment() : CGXDLMSObject(DLMS_OBJECT_TYPE_SA
 
  @param ln Logical Name of the object.
 */
-CGXDLMSSapAssignment::CGXDLMSSapAssignment(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT, ln)
+CGXDLMSSapAssignment::CGXDLMSSapAssignment(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT, ln)
 {
 }
 

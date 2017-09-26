@@ -396,7 +396,7 @@ CGXDLMSProfileGeneric::CGXDLMSProfileGeneric(unsigned short sn, CGXDLMSVariant v
 
  @param ln Logical Name of the object.
 */
-CGXDLMSProfileGeneric::CGXDLMSProfileGeneric(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PROFILE_GENERIC, ln)
+CGXDLMSProfileGeneric::CGXDLMSProfileGeneric(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PROFILE_GENERIC, ln)
 {
     Init();
 }
@@ -572,7 +572,7 @@ void CGXDLMSProfileGeneric::GetValues(std::vector<std::string>& values)
             sb << ", ";
         }
         empty = false;
-        std::string str = it->first->GetName().ToString();
+        std::string str = it->first->GetName();
         sb.write(str.c_str(), str.size());
     }
     sb << ']';
@@ -586,7 +586,7 @@ void CGXDLMSProfileGeneric::GetValues(std::vector<std::string>& values)
     }
     else
     {
-        values.push_back(m_SortObject->GetName().ToString());
+        values.push_back(m_SortObject->GetName());
     }
     values.push_back(CGXDLMSVariant(m_EntriesInUse).ToString());
     values.push_back(CGXDLMSVariant(m_ProfileEntries).ToString());

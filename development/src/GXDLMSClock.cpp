@@ -48,7 +48,7 @@ void CGXDLMSClock::Init()
 /**
  Constructor.
 */
-CGXDLMSClock::CGXDLMSClock() : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, (std::string)"0.0.1.0.0.255")
+CGXDLMSClock::CGXDLMSClock() : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, "0.0.1.0.0.255")
 {
     Init();
 }
@@ -57,7 +57,7 @@ CGXDLMSClock::CGXDLMSClock() : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, (std::strin
 Constructor.
 @param ln Logical Name of the object.
 */
-CGXDLMSClock::CGXDLMSClock(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
+CGXDLMSClock::CGXDLMSClock(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
 {
     Init();
 }
@@ -67,7 +67,7 @@ CGXDLMSClock::CGXDLMSClock(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOC
  @param ln Logical Name of the object.
  @param sn Short Name of the object.
 */
-CGXDLMSClock::CGXDLMSClock(std::string ln, int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
+CGXDLMSClock::CGXDLMSClock(const char* ln, int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
 {
     Init();
     SetShortName(sn);

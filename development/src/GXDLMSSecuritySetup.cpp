@@ -49,7 +49,7 @@ CGXDLMSSecuritySetup::CGXDLMSSecuritySetup(unsigned short sn) : CGXDLMSObject(DL
 }
 
 //LN Constructor.
-CGXDLMSSecuritySetup::CGXDLMSSecuritySetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP, ln)
+CGXDLMSSecuritySetup::CGXDLMSSecuritySetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP, ln)
 {
 
 }

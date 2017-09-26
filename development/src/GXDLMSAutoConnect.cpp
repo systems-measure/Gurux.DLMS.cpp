@@ -44,7 +44,7 @@ void CGXDLMSAutoConnect::Init()
 }
 
 //Constructor.
-CGXDLMSAutoConnect::CGXDLMSAutoConnect() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, (std::string)"0.0.2.1.0.255")
+CGXDLMSAutoConnect::CGXDLMSAutoConnect() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, "0.0.2.1.0.255")
 {
     Init();
 }
@@ -56,7 +56,7 @@ CGXDLMSAutoConnect::CGXDLMSAutoConnect(unsigned short sn) : CGXDLMSObject(DLMS_O
 }
 
 //LN Constructor.
-CGXDLMSAutoConnect::CGXDLMSAutoConnect(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, ln)
+CGXDLMSAutoConnect::CGXDLMSAutoConnect(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, ln)
 {
     Init();
 }
