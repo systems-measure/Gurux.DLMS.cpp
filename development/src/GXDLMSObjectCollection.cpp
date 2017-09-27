@@ -99,6 +99,7 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 
 CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	constructed_obj = nullptr;
+	idx_constructed_obj = new uint8_t(0);
 	init_callback = nullptr;
 	type_callback = nullptr;
 }
@@ -112,6 +113,7 @@ CGXDLMSObjectCollection::~CGXDLMSObjectCollection()
 	if (init_callback != nullptr) {
 		init_callback = nullptr;
 	}
+	delete idx_constructed_obj;
 }
 
 CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, std::string& ln)
@@ -134,12 +136,12 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, std::str
 		if (strcmp(ln2.c_str(), pLn) == 0)
 		{
 			if (type_callback != nullptr) {
-				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str());
+				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str(), idx_constructed_obj);
 				CreateObject(o_type);
 				if (constructed_obj != NULL) {
 					GXHelpers::SetLogicalName(ln.c_str(), constructed_obj->m_LN);
 					if (init_callback != nullptr) {
-						init_callback(constructed_obj);
+						init_callback(constructed_obj, idx_constructed_obj);
 						return constructed_obj;
 					}
 				}
@@ -172,12 +174,12 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, CGXByteB
 			std::string ln;
 			GXHelpers::GetLogicalName(*it, ln);
 			if (type_callback != nullptr) {
-				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str());
+				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str(), idx_constructed_obj);
 				CreateObject(o_type);
 				if (constructed_obj != NULL) {
 					memcpy(constructed_obj->m_LN, *it, 6);
 					if (init_callback != nullptr) {
-						init_callback(constructed_obj);
+						init_callback(constructed_obj, idx_constructed_obj);
 						return constructed_obj;
 					}
 				}
@@ -226,6 +228,7 @@ void CGXDLMSObjectCollection::clear() {
 	//Free();
 	std::vector<unsigned char*>::clear();
 	dlms_only_obj.clear();
+	*idx_constructed_obj = 0;
 	FreeConstructedObj();
 }
 
@@ -260,6 +263,7 @@ void CGXDLMSObjectCollection::Free()
 	}
 	std::vector<unsigned char*>::clear();
 	dlms_only_obj.clear();
+	*idx_constructed_obj = 0;
 	FreeConstructedObj();
 }
 

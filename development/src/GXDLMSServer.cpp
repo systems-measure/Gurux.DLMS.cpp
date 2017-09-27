@@ -48,10 +48,12 @@
 
 CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
     DLMS_INTERFACE_TYPE type) : m_Transaction(NULL), m_Settings(true),    
-    m_LinkEstablished(false)    
+    m_LinkEstablished(false)
 {
     m_Settings.SetUseLogicalNameReferencing(logicalNameReferencing);
     m_Settings.SetInterfaceType(type);
+	m_CurrentALN = new CGXDLMSAssociationLogicalName("0.0.40.0.0.255");
+	m_CurrentALN->SetDataValidity(true);
     if (GetUseLogicalNameReferencing())
     {
         SetConformance((DLMS_CONFORMANCE)(DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_ACTION |
@@ -74,7 +76,7 @@ CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
 
 CGXDLMSServer::~CGXDLMSServer()
 {
-
+	delete m_CurrentALN;
 }
 
 CGXDLMSObjectCollection*& CGXDLMSServer::GetItems()
@@ -498,7 +500,7 @@ int CGXDLMSServer::HandleSetRequest(
     int ret;
     unsigned char index, ch;
     unsigned short tmp;
-	GetItems()->FreeConstructedObj();
+	m_CurrentALN->GetObjectList().FreeConstructedObj();
 	if ((ret = data.GetUInt16(&tmp)) != 0)
     {
         return ret;
@@ -556,7 +558,7 @@ int CGXDLMSServer::HandleSetRequest(
             return ret;
         }
     }
-	CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
+	CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
     if (obj == NULL)
     {
         std::string name;
@@ -597,7 +599,7 @@ int CGXDLMSServer::HandleSetRequest(
 						{
 							p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 							obj = nullptr;
-							GetItems()->FreeConstructedObj();
+							m_CurrentALN->GetObjectList().FreeConstructedObj();
 							return ret;
 						}
 						if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
@@ -609,7 +611,7 @@ int CGXDLMSServer::HandleSetRequest(
 							{
 								p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 								obj = nullptr;
-								GetItems()->FreeConstructedObj();
+								m_CurrentALN->GetObjectList().FreeConstructedObj();
 								return ret;
 							}
 						}
@@ -637,7 +639,7 @@ int CGXDLMSServer::HandleSetRequest(
     }
 	if(m_Transaction == nullptr){
 		obj = nullptr;
-		GetItems()->FreeConstructedObj();
+		m_CurrentALN->GetObjectList().FreeConstructedObj();
 	}
     return ret;
 }
@@ -708,7 +710,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             }
             if (m_Transaction != NULL)
             {
-				GetItems()->FreeConstructedObj();
+				m_CurrentALN->GetObjectList().FreeConstructedObj();
                 delete m_Transaction;
                 m_Transaction = NULL;
             }
@@ -800,8 +802,10 @@ unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
 	std::vector<DLMS_DATA_TYPE> dt;
 	std::string ln = pg->GetName();
 	pType type = (pType)GetTypeProfile(ln);
-	GetProfileCaptureObjectsTypes(dt, type);
-    int rowsize = 0;
+	if (type != PROFILE_TYPE_UNKOWN) {
+		GetProfileCaptureObjectsTypes(dt, type);
+	}
+	int rowsize = 0;
     // Count how many rows we can fit to one PDU.
     for (std::vector<DLMS_DATA_TYPE>::iterator it = dt.begin();
         it != dt.end(); ++it)
@@ -837,7 +841,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     unsigned char attributeIndex;
     int ret;
     CGXByteBuffer ln; 
-	GetItems()->FreeConstructedObj();
+	m_CurrentALN->GetObjectList().FreeConstructedObj();
     // CI
     unsigned short tmp;
     if ((ret = data.GetUInt16(&tmp)) != 0)
@@ -852,7 +856,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
         status = (DLMS_ERROR_CODE)ret;
     }
 	else {
-		CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
+		CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
 		if (obj == NULL)
 		{
 			std::string name;
@@ -871,7 +875,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 			if ((ret = data.GetUInt8(&selection)) != 0)
 			{
 				obj = nullptr;
-				GetItems()->FreeConstructedObj();
+				m_CurrentALN->GetObjectList().FreeConstructedObj();
 				return ret;
 			}
 			CGXDLMSVariant parameters;
@@ -880,14 +884,14 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				if ((ret = data.GetUInt8(&selector)) != 0)
 				{
 					obj = nullptr;
-					GetItems()->FreeConstructedObj();
+					m_CurrentALN->GetObjectList().FreeConstructedObj();
 					return ret;
 				}
 				CGXDataInfo i;
 				if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
 				{
 					obj = nullptr;
-					GetItems()->FreeConstructedObj();
+					m_CurrentALN->GetObjectList().FreeConstructedObj();
 					return ret;
 				}
 			}
@@ -954,7 +958,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 			delete m_Transaction;
 			m_Transaction = NULL;
 		}
-			GetItems()->FreeConstructedObj();
+		m_CurrentALN->GetObjectList().FreeConstructedObj();
 	}
     return ret;
 }
@@ -1035,7 +1039,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
             }
             else
             {
-				GetItems()->FreeConstructedObj();
+				m_CurrentALN->GetObjectList().FreeConstructedObj();
                 delete m_Transaction;
                 m_Transaction = NULL;
                 m_Settings.ResetBlockIndex();
@@ -1058,7 +1062,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
         return ret;
     }
     GXHelpers::SetObjectCount(cnt, bb);
-	GetItems()->FreeConstructedObj();
+	m_CurrentALN->GetObjectList().FreeConstructedObj();
     for (pos = 0; pos != cnt; ++pos)
     {
         if ((ret = data.GetUInt16(&id)) != 0)
@@ -1072,7 +1076,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
         {
             return ret;
         }
-		CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
+		CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
         if (obj == NULL)
         {
             std::string name;
@@ -1094,7 +1098,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
             if ((ret = data.GetUInt8(&selection)) != 0)
             {
 				obj = nullptr;
-				GetItems()->FreeConstructedObj();
+				m_CurrentALN->GetObjectList().FreeConstructedObj();
                 return ret;
             }
             if (selection != 0)
@@ -1102,14 +1106,14 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
                 if ((ret = data.GetUInt8(&selector)) != 0)
                 {
 					obj = nullptr;
-					GetItems()->FreeConstructedObj();
+					m_CurrentALN->GetObjectList().FreeConstructedObj();
                     return ret;
                 }
                 CGXDataInfo i;
                 if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
                 {
 					obj = nullptr;
-					GetItems()->FreeConstructedObj();
+					m_CurrentALN->GetObjectList().FreeConstructedObj();
                     return ret;
                 }
             }
@@ -1137,7 +1141,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 		else if ((ret = CGXDLMS::AppendData((*it)->GetTarget(), (*it)->GetIndex(), bb, value)) != 0)
 		{
 			obj = nullptr;
-			GetItems()->FreeConstructedObj();
+			m_CurrentALN->GetObjectList().FreeConstructedObj();
 			return DLMS_ERROR_CODE_HARDWARE_FAULT;
 		}
 		if (m_Settings.GetIndex() != m_Settings.GetCount())
@@ -1152,7 +1156,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 		}
 		list.clear();
 		obj = NULL;
-		GetItems()->FreeConstructedObj();
+		m_CurrentALN->GetObjectList().FreeConstructedObj();
     }
     CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 3, NULL, &bb, 0xFF);
     return CGXDLMS::GetLNPdu(p, m_ReplyData);
@@ -1550,13 +1554,13 @@ int CGXDLMSServer::ReturnSNError(DLMS_COMMAND cmd, DLMS_ERROR_CODE error)
 
 int CGXDLMSServer::HandleReadRequest(CGXByteBuffer& data)
 {
-	//if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
-	//{
-	//	GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_READ,
-	//		DLMS_SERVICE_ERROR_SERVICE,
-	//		DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
-	//	return 0;
-	//}
+	if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
+	{
+		GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_READ,
+			DLMS_SERVICE_ERROR_SERVICE,
+			DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
+		return 0;
+	}
  //   CGXByteBuffer bb;
  //   int ret;
  //   unsigned char ch;
@@ -1644,14 +1648,14 @@ int CGXDLMSServer::HandleReadRequest(CGXByteBuffer& data)
 
 int CGXDLMSServer::HandleWriteRequest(CGXByteBuffer& data)
 {
-    //// Return error if connection is not established.
-    //if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
-    //{
-    //    GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_WRITE,
-    //        DLMS_SERVICE_ERROR_SERVICE,
-    //        DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
-    //    return 0;
-    //}
+    // Return error if connection is not established.
+    if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
+    {
+        GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_WRITE,
+            DLMS_SERVICE_ERROR_SERVICE,
+            DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
+        return 0;
+    }
     //int ret;
     //unsigned char ch;
     //unsigned short sn;
@@ -1886,7 +1890,7 @@ int CGXDLMSServer::HandleMethodRequest(
     int ret;
     unsigned char ch, id;
     unsigned short tmp;
-	GetItems()->FreeConstructedObj();
+	m_CurrentALN->GetObjectList().FreeConstructedObj();
     // Get type.
     if ((ret = data.GetUInt8(&ch)) != 0)
     {
@@ -1924,7 +1928,7 @@ int CGXDLMSServer::HandleMethodRequest(
             return ret;
         }
     }
-    CGXDLMSObject* obj = m_Settings.GetObjects()->FindByLN(ci, ln);
+    CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
     if (obj == NULL)
     {
         std::string name;
@@ -1953,7 +1957,7 @@ int CGXDLMSServer::HandleMethodRequest(
 					if ((ret = obj->Invoke(m_Settings, *e)) != 0)
 					{
 						obj = nullptr;
-						GetItems()->FreeConstructedObj();
+						m_CurrentALN->GetObjectList().FreeConstructedObj();
 						return ret;
 					}
 				}
@@ -1993,7 +1997,7 @@ int CGXDLMSServer::HandleMethodRequest(
     } else if(m_Settings.IsConnected() && obj->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME && id == 1) {
         Connected(connectionInfo);
     }
-	GetItems()->FreeConstructedObj();
+	m_CurrentALN->GetObjectList().FreeConstructedObj();
     return ret;
 }
 

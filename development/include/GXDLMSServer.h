@@ -253,6 +253,10 @@ protected:
      * Server Settings.
      */
     CGXDLMSSettings m_Settings;
+	/**
+	* Server Current ALN.
+	*/
+	CGXDLMSAssociationLogicalName *m_CurrentALN;
 
     /**
      * @param value

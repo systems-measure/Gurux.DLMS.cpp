@@ -397,7 +397,12 @@ int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 		unsigned char tmp[6];
 		GXHelpers::SetLogicalName(ln.c_str(), tmp);
 		data.SetUInt8(DLMS_DATA_TYPE_INT16);
-		data.SetUInt16(m_MonitoredValue->GetObjectType());
+		if (m_MonitoredValue != NULL) {
+			data.SetUInt16(m_MonitoredValue->GetObjectType());
+		}
+		else {
+			data.SetUInt16(0);
+		}
 		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
 		data.SetUInt8(0x06);
 		data.Set(tmp, 6);
