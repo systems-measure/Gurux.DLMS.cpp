@@ -301,7 +301,6 @@ int CGXDLMSClock::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     if (e.GetIndex() == 1)
     {
-        int ret;
         unsigned char tmp[6];
 		CGXByteBuffer bb;
 		GetLogicalName(tmp);

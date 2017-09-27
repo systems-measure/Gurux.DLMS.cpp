@@ -161,7 +161,6 @@ bool CGXDLMSServer::IsLongTransaction() {
 
 int CGXDLMSServer::Initialize()
 {
-    CGXDLMSObject* associationObject = NULL;
     m_Initialized = true;
     std::string ln;
 	CGXByteBuffer c_ln;

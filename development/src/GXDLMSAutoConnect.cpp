@@ -295,7 +295,6 @@ int CGXDLMSAutoConnect::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
         e.SetByteArray(true);
         CGXByteBuffer data;
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        int ret;
         unsigned long cnt = (unsigned long)m_Destinations.size();
         //Add count
         GXHelpers::SetObjectCount(cnt, data);
