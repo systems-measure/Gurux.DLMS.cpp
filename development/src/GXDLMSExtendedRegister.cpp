@@ -45,7 +45,7 @@ bool CGXDLMSExtendedRegister::IsRead(int index)
     return CGXDLMSObject::IsRead(index);
 }
 //Constructor.
-CGXDLMSExtendedRegister::CGXDLMSExtendedRegister(void) : CGXDLMSRegister(DLMS_OBJECT_TYPE_EXTENDED_REGISTER, 0)
+CGXDLMSExtendedRegister::CGXDLMSExtendedRegister(void) : CGXDLMSRegister(DLMS_OBJECT_TYPE_EXTENDED_REGISTER, (unsigned short)0)
 {
 }
 
@@ -55,7 +55,7 @@ CGXDLMSExtendedRegister::CGXDLMSExtendedRegister(unsigned short sn) : CGXDLMSReg
 }
 
 //LN Constructor.
-CGXDLMSExtendedRegister::CGXDLMSExtendedRegister(std::string ln) : CGXDLMSRegister(DLMS_OBJECT_TYPE_EXTENDED_REGISTER, ln)
+CGXDLMSExtendedRegister::CGXDLMSExtendedRegister(const char* ln) : CGXDLMSRegister(DLMS_OBJECT_TYPE_EXTENDED_REGISTER, ln)
 {
 }
 

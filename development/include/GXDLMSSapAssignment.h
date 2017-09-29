@@ -51,7 +51,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSSapAssignment(std::string ln);
+    CGXDLMSSapAssignment(const char* ln);
 
     /**
      Constructor.

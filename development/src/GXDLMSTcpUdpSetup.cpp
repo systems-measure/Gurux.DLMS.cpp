@@ -59,7 +59,7 @@ CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_TCP_UD
 
  @param ln Logical Name of the object.
 */
-CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_TCP_UDP_SETUP, ln)
+CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_TCP_UDP_SETUP, ln)
 {
     Init();
 }

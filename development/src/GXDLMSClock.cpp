@@ -57,7 +57,7 @@ CGXDLMSClock::CGXDLMSClock() : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, "0.0.1.0.0.
 Constructor.
 @param ln Logical Name of the object.
 */
-CGXDLMSClock::CGXDLMSClock(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
+CGXDLMSClock::CGXDLMSClock(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
 {
     Init();
 }
@@ -67,7 +67,7 @@ CGXDLMSClock::CGXDLMSClock(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOC
  @param ln Logical Name of the object.
  @param sn Short Name of the object.
 */
-CGXDLMSClock::CGXDLMSClock(std::string ln, int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
+CGXDLMSClock::CGXDLMSClock(const char* ln, int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
 {
     Init();
     SetShortName(sn);
@@ -301,13 +301,11 @@ int CGXDLMSClock::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     if (e.GetIndex() == 1)
     {
-        int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(tmp);
+        unsigned char tmp[6];
+		CGXByteBuffer bb;
+		GetLogicalName(tmp);
+		bb.Set(tmp, 6);
+        e.SetValue(bb);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)

@@ -57,7 +57,7 @@ public:
     CGXDLMSPushSetup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSPushSetup(std::string ln);
+    CGXDLMSPushSetup(const char* ln);
 
     /**
         Defines the list of attributes or objects to be pushed.

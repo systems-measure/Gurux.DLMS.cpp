@@ -53,7 +53,7 @@ public:
     CGXDLMSExtendedRegister(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSExtendedRegister(std::string ln);
+    CGXDLMSExtendedRegister(const char* ln);
 
     /**
      Status of COSEM Extended Register object.

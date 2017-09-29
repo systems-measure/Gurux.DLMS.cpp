@@ -52,7 +52,7 @@ public:
 
 
     //LN Constructor.
-    CGXDLMSSecuritySetup(std::string ln);
+    CGXDLMSSecuritySetup(const char* ln);
 
     //Use DLMS_SECURITY_POLICY for version 0 and DLMS_SECURITY_POLICY1 for version 1.
     unsigned char GetSecurityPolicy();

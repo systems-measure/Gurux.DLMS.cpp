@@ -51,10 +51,10 @@ public:
     CGXDLMSData(unsigned short sn, CGXDLMSVariant value);
 
     //LN Constructor.
-    CGXDLMSData(std::string ln);
+    CGXDLMSData(const char* ln);
 
     //LN Constructor.
-    CGXDLMSData(std::string ln, CGXDLMSVariant value);
+    CGXDLMSData(const char* ln, CGXDLMSVariant value);
 
     // Get value of COSEM Data object.
     CGXDLMSVariant GetValue();

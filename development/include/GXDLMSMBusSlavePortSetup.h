@@ -52,7 +52,7 @@ public:
     CGXDLMSMBusSlavePortSetup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSMBusSlavePortSetup(std::string ln);
+    CGXDLMSMBusSlavePortSetup(const char* ln);
 
     /**
      Defines the baud rate for the opening sequence.

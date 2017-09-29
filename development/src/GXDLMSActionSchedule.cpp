@@ -56,7 +56,7 @@ CGXDLMSActionSchedule::CGXDLMSActionSchedule() : CGXDLMSObject(DLMS_OBJECT_TYPE_
 
  @param ln Logical Name of the object.
 */
-CGXDLMSActionSchedule::CGXDLMSActionSchedule(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTION_SCHEDULE, ln)
+CGXDLMSActionSchedule::CGXDLMSActionSchedule(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTION_SCHEDULE, ln)
 {
     Init();
 }

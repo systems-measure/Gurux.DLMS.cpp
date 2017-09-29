@@ -56,7 +56,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSTcpUdpSetup(std::string ln);
+    CGXDLMSTcpUdpSetup(const char* ln);
 
 
     /**

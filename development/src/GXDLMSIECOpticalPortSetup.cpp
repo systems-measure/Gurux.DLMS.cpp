@@ -56,7 +56,7 @@ CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup(unsigned short sn) : CGXD
 }
 
 //LN Constructor.
-CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP, ln)
+CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP, ln)
 {
     Init();
 }

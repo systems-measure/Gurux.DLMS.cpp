@@ -56,7 +56,7 @@ CGXDLMSAutoConnect::CGXDLMSAutoConnect(unsigned short sn) : CGXDLMSObject(DLMS_O
 }
 
 //LN Constructor.
-CGXDLMSAutoConnect::CGXDLMSAutoConnect(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, ln)
+CGXDLMSAutoConnect::CGXDLMSAutoConnect(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, ln)
 {
     Init();
 }
@@ -295,18 +295,20 @@ int CGXDLMSAutoConnect::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
         e.SetByteArray(true);
         CGXByteBuffer data;
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        int ret;
         unsigned long cnt = (unsigned long)m_Destinations.size();
         //Add count
         GXHelpers::SetObjectCount(cnt, data);
         for (std::vector< std::string >::iterator it = m_Destinations.begin(); it != m_Destinations.end(); ++it)
         {
-            CGXDLMSVariant value;
-            e.GetValue().Add(&(*it)[0], (int)it->size());
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, value)) != 0) //destination
-            {
-                return ret;
-            }
+			data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+			GXHelpers::SetObjectCount(it->size(), data);
+			data.Set(it->c_str(), it->size());
+            //CGXDLMSVariant value;
+            //e.GetValue().Add(&(*it)[0], (int)it->size());
+            //if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, value)) != 0) //destination
+            //{
+            //    return ret;
+            //}
         }
         e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
@@ -358,7 +360,7 @@ int CGXDLMSAutoConnect::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
         {
             CGXDLMSVariant value;
             CGXDLMSClient::ChangeType(*item, DLMS_DATA_TYPE_STRING, value);
-            items.push_back(e.GetValue().ToString());
+            items.push_back(value.ToString());
         }
         SetDestinations(items);
         return DLMS_ERROR_CODE_OK;

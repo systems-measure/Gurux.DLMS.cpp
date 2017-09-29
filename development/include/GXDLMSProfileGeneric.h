@@ -146,7 +146,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSProfileGeneric(std::string ln);
+    CGXDLMSProfileGeneric(const char* ln);
 
     /**
      Destructor.

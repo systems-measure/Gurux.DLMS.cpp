@@ -48,7 +48,7 @@ CGXDLMSSchedule::CGXDLMSSchedule(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_
 }
 
 //LN Constructor.
-CGXDLMSSchedule::CGXDLMSSchedule(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, ln)
+CGXDLMSSchedule::CGXDLMSSchedule(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, ln)
 {
 
 }

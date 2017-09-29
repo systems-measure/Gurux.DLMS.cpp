@@ -51,7 +51,7 @@ public:
     CGXDLMSDisconnectControl(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSDisconnectControl(std::string ln);
+    CGXDLMSDisconnectControl(const char* ln);
 
     /**
      Output state of COSEM Disconnect Control object.

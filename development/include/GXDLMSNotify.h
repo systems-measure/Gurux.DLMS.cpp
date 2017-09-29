@@ -87,7 +87,7 @@ public:
     /**
      * @return Get list of meter's objects.
      */
-    CGXDLMSObjectCollection& GetObjects();
+    CGXDLMSObjectCollection*& GetObjects();
 
     /**
      * @return Information from the connection size that server can handle.

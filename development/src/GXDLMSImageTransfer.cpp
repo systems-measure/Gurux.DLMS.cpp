@@ -55,7 +55,7 @@ CGXDLMSImageTransfer::CGXDLMSImageTransfer(unsigned short sn) : CGXDLMSObject(DL
 }
 
 //LN Constructor.
-CGXDLMSImageTransfer::CGXDLMSImageTransfer(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IMAGE_TRANSFER, ln)
+CGXDLMSImageTransfer::CGXDLMSImageTransfer(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IMAGE_TRANSFER, ln)
 {
     m_ImageBlockSize = 0;
     m_ImageFirstNotTransferredBlockNumber = 0;

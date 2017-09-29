@@ -49,7 +49,7 @@ CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJEC
 }
 
 //LN Constructor.
-CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
+CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
 {
     m_PINCode = 0;
 }

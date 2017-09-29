@@ -47,7 +47,7 @@ CGXDLMSRegisterMonitor::CGXDLMSRegisterMonitor() : CGXDLMSObject(DLMS_OBJECT_TYP
 
  @param ln Logical Name of the object.
 */
-CGXDLMSRegisterMonitor::CGXDLMSRegisterMonitor(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER_MONITOR, ln)
+CGXDLMSRegisterMonitor::CGXDLMSRegisterMonitor(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER_MONITOR, ln)
 {
 }
 

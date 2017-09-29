@@ -49,7 +49,7 @@ CGXDLMSRegisterActivation::CGXDLMSRegisterActivation(unsigned short sn) : CGXDLM
 }
 
 //LN Constructor.
-CGXDLMSRegisterActivation::CGXDLMSRegisterActivation(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER_ACTIVATION, ln)
+CGXDLMSRegisterActivation::CGXDLMSRegisterActivation(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER_ACTIVATION, ln)
 {
 
 }

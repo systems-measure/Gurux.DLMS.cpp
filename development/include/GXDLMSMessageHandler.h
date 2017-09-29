@@ -52,7 +52,7 @@ public:
     CGXDLMSMessageHandler(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSMessageHandler(std::string ln);
+    CGXDLMSMessageHandler(const char* ln);
 
     /**
     Listening Window.

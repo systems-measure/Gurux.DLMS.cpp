@@ -59,7 +59,7 @@ public:
     CGXDLMSIp4Setup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSIp4Setup(std::string ln);
+    CGXDLMSIp4Setup(const char* ln);
 
     std::string& GetDataLinkLayerReference();
     void SetDataLinkLayerReference(std::string value);

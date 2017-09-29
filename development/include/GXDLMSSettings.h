@@ -144,7 +144,7 @@ class CGXDLMSSettings
     unsigned long m_BlockIndex;
 
     // List of server or client objects.
-    CGXDLMSObjectCollection m_Objects;
+    CGXDLMSObjectCollection* m_Objects;
 
     /**
      * Cipher interface that is used to cipher PDU.
@@ -305,7 +305,7 @@ public:
     int SetLongInvokeID(unsigned long value);
 
     // Collection of the objects.
-    CGXDLMSObjectCollection& GetObjects();
+    CGXDLMSObjectCollection*& GetObjects();
 
     // Get Is custom challenges used.
     bool IsCustomChallenges();

@@ -56,7 +56,7 @@ public:
     CGXDLMSIecHdlcSetup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSIecHdlcSetup(std::string ln);
+    CGXDLMSIecHdlcSetup(const char* ln);
 
     DLMS_BAUD_RATE GetCommunicationSpeed();
 

@@ -73,7 +73,7 @@ public:
     CGXDLMSPppSetup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSPppSetup(std::string ln);
+    CGXDLMSPppSetup(const char* ln);
 
     PPP_AUTHENTICATION_TYPE GetAuthentication();
     void SetAuthentication(PPP_AUTHENTICATION_TYPE value);

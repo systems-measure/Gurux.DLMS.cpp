@@ -48,7 +48,7 @@ protected:
     CGXDLMSRegister(DLMS_OBJECT_TYPE type, unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSRegister(DLMS_OBJECT_TYPE type, std::string ln);
+    CGXDLMSRegister(DLMS_OBJECT_TYPE type, const char* ln);
 
     bool IsRead(int index);
 
@@ -63,10 +63,10 @@ public:
     CGXDLMSRegister(unsigned short sn, double scaler, int unit, CGXDLMSVariant value);
 
     //LN Constructor.
-    CGXDLMSRegister(std::string ln);
+    CGXDLMSRegister(const char* ln);
 
     //LN Constructor.
-    CGXDLMSRegister(std::string ln, double scaler, int unit, CGXDLMSVariant value);
+    CGXDLMSRegister(const char* ln, double scaler, int unit, CGXDLMSVariant value);
 
     /// <summary>
     /// Get value of COSEM Data object.

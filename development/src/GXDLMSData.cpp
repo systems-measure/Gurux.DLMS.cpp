@@ -52,13 +52,13 @@ CGXDLMSData::CGXDLMSData(unsigned short sn, CGXDLMSVariant value) : CGXDLMSObjec
 }
 
 //LN Constructor.
-CGXDLMSData::CGXDLMSData(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
+CGXDLMSData::CGXDLMSData(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
 {
 
 }
 
 //LN Constructor.
-CGXDLMSData::CGXDLMSData(std::string ln, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
+CGXDLMSData::CGXDLMSData(const char* ln, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
 {
     m_Value = value;
 }

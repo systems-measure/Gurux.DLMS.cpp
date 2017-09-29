@@ -40,14 +40,16 @@
 #include <vector>
 #include "GXDLMSObject.h"
 
-typedef void(*InitObjField)(CGXDLMSObject* constr_obj);
+typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint8_t* idx_cnstrd);
 
-typedef unsigned char(*TypeObj)(const char* obis);
+typedef unsigned char(*TypeObj)(const char* obis, uint8_t* idx_cnstrd);
 
 class CGXDLMSObjectCollection : public std::vector<unsigned char*>
 {
 private:
 	CGXDLMSObject* constructed_obj;
+
+	uint8_t* idx_constructed_obj;
 
 	std::vector<CGXDLMSObject*> dlms_only_obj;
 
@@ -62,6 +64,8 @@ public:
     ~CGXDLMSObjectCollection();
 
     CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, std::string& ln);
+
+	unsigned char* FindByLN(const char* ln);
 
     CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, CGXByteBuffer& ln);
 

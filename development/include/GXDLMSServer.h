@@ -253,6 +253,10 @@ protected:
      * Server Settings.
      */
     CGXDLMSSettings m_Settings;
+	/**
+	* Server Current ALN.
+	*/
+	CGXDLMSAssociationLogicalName *m_CurrentALN;
 
     /**
      * @param value
@@ -260,10 +264,7 @@ protected:
      */
     void SetCipher(CGXCipher* value);
 
-    /**
-    * @return Get settings.
-    */
-    CGXDLMSSettings& GetSettings();
+   
 
     /**
         * Check is data sent to this server.
@@ -430,6 +431,10 @@ protected:
 	bool IsLongTransaction();
 
 public:
+	/**
+	* @return Get settings.
+	*/
+	CGXDLMSSettings& GetSettings();
     /**
      * @return Client to Server challenge.
      */
@@ -489,7 +494,7 @@ public:
     /**
      * @return List of objects that meter supports.
      */
-    CGXDLMSObjectCollection& GetItems();
+    CGXDLMSObjectCollection*& GetItems();
 
     /**
      * @return Information from the connection size that server can handle.

@@ -49,7 +49,7 @@ CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, unsigned short sn) : CGX
 }
 
 //LN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, std::string ln) : CGXDLMSObject(type, ln)
+CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, const char* ln) : CGXDLMSObject(type, ln)
 {
     Init();
 }
@@ -83,13 +83,13 @@ CGXDLMSRegister::CGXDLMSRegister(unsigned short sn, double scaler, int unit, CGX
 }
 
 //LN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
+CGXDLMSRegister::CGXDLMSRegister(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
 {
     Init();
 }
 
 //LN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(std::string ln, double scaler, int unit, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
+CGXDLMSRegister::CGXDLMSRegister(const char* ln, double scaler, int unit, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
 {
     m_Value = value;
     Init();

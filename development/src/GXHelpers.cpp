@@ -809,6 +809,7 @@ int GetUtfString(CGXByteBuffer& buff, CGXDataInfo& info, bool knownType, CGXDLMS
         tmp = new wchar_t[len];
         buff.Get((unsigned char*)tmp, 2 * len);
         value.strUtfVal.append(tmp, len);
+		delete[] tmp;
     }
     else
     {

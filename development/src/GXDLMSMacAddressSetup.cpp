@@ -47,7 +47,7 @@ CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup() : CGXDLMSObject(DLMS_OBJECT_TYP
 
  @param ln Logical Name of the object.
 */
-CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, ln)
+CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, ln)
 {
 }
 

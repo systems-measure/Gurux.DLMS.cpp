@@ -70,7 +70,7 @@ CGXDLMSModemConfiguration::CGXDLMSModemConfiguration() : CGXDLMSObject(DLMS_OBJE
  Constructor.
  @param ln Logical Name of the object.
 */
-CGXDLMSModemConfiguration::CGXDLMSModemConfiguration(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MODEM_CONFIGURATION, ln)
+CGXDLMSModemConfiguration::CGXDLMSModemConfiguration(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MODEM_CONFIGURATION, ln)
 {
     Init();
 }

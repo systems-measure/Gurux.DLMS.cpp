@@ -49,7 +49,7 @@ CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable(unsigned short sn) : CGXDLMSObj
 }
 
 //LN Constructor.
-CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE, ln)
+CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE, ln)
 {
 
 }

@@ -46,7 +46,7 @@ CGXDLMSActivityCalendar::CGXDLMSActivityCalendar(unsigned short sn) : CGXDLMSObj
 
 }
 
-CGXDLMSActivityCalendar::CGXDLMSActivityCalendar(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR, ln)
+CGXDLMSActivityCalendar::CGXDLMSActivityCalendar(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR, ln)
 {
 
 }

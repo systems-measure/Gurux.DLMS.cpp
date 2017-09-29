@@ -396,7 +396,7 @@ CGXDLMSProfileGeneric::CGXDLMSProfileGeneric(unsigned short sn, CGXDLMSVariant v
 
  @param ln Logical Name of the object.
 */
-CGXDLMSProfileGeneric::CGXDLMSProfileGeneric(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PROFILE_GENERIC, ln)
+CGXDLMSProfileGeneric::CGXDLMSProfileGeneric(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PROFILE_GENERIC, ln)
 {
     Init();
 }
@@ -572,7 +572,7 @@ void CGXDLMSProfileGeneric::GetValues(std::vector<std::string>& values)
             sb << ", ";
         }
         empty = false;
-        std::string str = it->first->GetName().ToString();
+        std::string str = it->first->GetName();
         sb.write(str.c_str(), str.size());
     }
     sb << ']';
@@ -586,7 +586,7 @@ void CGXDLMSProfileGeneric::GetValues(std::vector<std::string>& values)
     }
     else
     {
-        values.push_back(m_SortObject->GetName().ToString());
+        values.push_back(m_SortObject->GetName());
     }
     values.push_back(CGXDLMSVariant(m_EntriesInUse).ToString());
     values.push_back(CGXDLMSVariant(m_ProfileEntries).ToString());
@@ -902,7 +902,7 @@ int CGXDLMSProfileGeneric::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
                 DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)(*it).Arr[0].ToInteger();
                 std::string ln;
                 GXHelpers::GetLogicalName((*it).Arr[1].byteArr, ln);
-                CGXDLMSObject* pObj = settings.GetObjects().FindByLN(type, ln);
+                CGXDLMSObject* pObj = settings.GetObjects()->FindByLN(type, ln);
                 if (pObj == NULL)
                 {
                     pObj = CGXDLMSObjectFactory::CreateObject(type, ln);
@@ -937,7 +937,7 @@ int CGXDLMSProfileGeneric::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
             GXHelpers::GetLogicalName(e.GetValue().Arr[1].byteArr, ln);
             m_SortObjectAttributeIndex = e.GetValue().Arr[2].ToInteger();
             m_SortObjectDataIndex = e.GetValue().Arr[3].ToInteger();
-            m_SortObject = settings.GetObjects().FindByLN(type, ln);
+            m_SortObject = settings.GetObjects()->FindByLN(type, ln);
             if (m_SortObject == NULL)
             {
                 m_SortObject = CGXDLMSObjectFactory::CreateObject(type, ln);
