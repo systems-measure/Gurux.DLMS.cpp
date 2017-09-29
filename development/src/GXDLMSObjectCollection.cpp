@@ -224,6 +224,16 @@ int CGXDLMSObjectCollection::sizeRequiredObj() {
 	return dlms_only_obj.size();
 }
 
+std::vector<CGXDLMSObject*>::iterator CGXDLMSObjectCollection::insert(std::vector<CGXDLMSObject*>::const_iterator where,
+	std::vector<CGXDLMSObject*>::const_iterator first, std::vector<CGXDLMSObject*>::const_iterator last) {
+	return dlms_only_obj.insert(where, first, last);
+}
+
+std::vector<unsigned char*>::iterator CGXDLMSObjectCollection::insert(std::vector<unsigned char*>::const_iterator where,
+	std::vector<unsigned char*>::const_iterator first, std::vector<unsigned char*>::const_iterator last) {
+	return std::vector<unsigned char*>::insert(where, first, last);
+}
+
 void CGXDLMSObjectCollection::clear() {
 	//Free();
 	std::vector<unsigned char*>::clear();

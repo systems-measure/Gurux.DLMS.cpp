@@ -81,6 +81,12 @@ public:
 
 	void clear();
 
+	std::vector<CGXDLMSObject*>::iterator insert(std::vector<CGXDLMSObject*>::const_iterator where, 
+		std::vector<CGXDLMSObject*>::const_iterator first, std::vector<CGXDLMSObject*>::const_iterator last);
+
+	std::vector<unsigned char*>::iterator insert(std::vector<unsigned char*>::const_iterator where,
+		std::vector<unsigned char*>::const_iterator first, std::vector<unsigned char*>::const_iterator last);
+
 	InitObjField GetInitCallback();
 
 	void SetInitCallback(InitObjField init);
