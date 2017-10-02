@@ -53,11 +53,7 @@ class CGXDLMSServer
     friend class CGXDLMSAssociationShortName;
 private:
     CGXReplyData m_Info;
-    /**
-     * Received data.
-     */
-    CGXByteBuffer m_ReceivedData;
-
+ 
     /**
      * Reply data.
      */
@@ -249,10 +245,16 @@ private:
     */
     int UpdateShortNames(bool force);
 protected:
+	/**
+	* Received data.
+	*/
+	CGXByteBuffer m_ReceivedData;
+
     /**
      * Server Settings.
      */
     CGXDLMSSettings m_Settings;
+
 	/**
 	* Server Current ALN.
 	*/
@@ -546,56 +548,56 @@ public:
      */
     void Reset();
 
-    /**
-     * Handles client request.
-     *
-     * @param data
-     *            Received data from the client.
-     * @return Response to the request. Response is NULL if request packet is
-     *         not complete.
-     */
-    int HandleRequest(
-        CGXByteBuffer& data,
-        CGXByteBuffer& reply);
+    ///**
+    // * Handles client request.
+    // *
+    // * @param data
+    // *            Received data from the client.
+    // * @return Response to the request. Response is NULL if request packet is
+    // *         not complete.
+    // */
+    //int HandleRequest(
+    //    CGXByteBuffer& data,
+    //    CGXByteBuffer& reply);
 
-    /**
-    * Handles client request.
-    *
-    * @param data
-    *            Received data from the client.
-    * @return Response to the request. Response is NULL if request packet is
-    *         not complete.
-    */
-    int HandleRequest(
-        CGXDLMSConnectionEventArgs& connectionInfo,
-        CGXByteBuffer& data,
-        CGXByteBuffer& reply);
+    ///**
+    //* Handles client request.
+    //*
+    //* @param data
+    //*            Received data from the client.
+    //* @return Response to the request. Response is NULL if request packet is
+    //*         not complete.
+    //*/
+    //int HandleRequest(
+    //    CGXDLMSConnectionEventArgs& connectionInfo,
+    //    CGXByteBuffer& data,
+    //    CGXByteBuffer& reply);
 
-    /**
-     * Handles client request.
-     *
-     * @param data
-     *            Received data from the client.
-     * @return Response to the request. Response is NULL if request packet is
-     *         not complete.
-     */
-    int HandleRequest(
-        unsigned char* data,
-        unsigned short size,
-        CGXByteBuffer& reply);
+    ///**
+    // * Handles client request.
+    // *
+    // * @param data
+    // *            Received data from the client.
+    // * @return Response to the request. Response is NULL if request packet is
+    // *         not complete.
+    // */
+    //int HandleRequest(
+    //    unsigned char* data,
+    //    unsigned short size,
+    //    CGXByteBuffer& reply);
 
-    /**
-     * Handles client request.
-     *
-     * @param data
-     *            Received data from the client.
-     * @return Response to the request. Response is NULL if request packet is
-     *         not complete.
-     */
+    ///**
+    // * Handles client request.
+    // *
+    // * @param data
+    // *            Received data from the client.
+    // * @return Response to the request. Response is NULL if request packet is
+    // *         not complete.
+    // */
     int HandleRequest(
-        CGXDLMSConnectionEventArgs& connectionInfo,
-        unsigned char* data,
-        unsigned short size,
+        /*CGXDLMSConnectionEventArgs& connectionInfo,*/
+        /*unsigned char* data,
+        unsigned short size,*/
         CGXByteBuffer& reply);
 
 
