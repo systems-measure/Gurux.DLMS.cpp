@@ -42,7 +42,7 @@
 class CGXDLMSAssociationLogicalName : public CGXDLMSObject
 {
 private:
-
+	unsigned char m_pos;
     DLMS_DLMS_ASSOCIATION_STATUS m_AssociationStatus;
     CGXDLMSObjectCollection m_ObjectList;
     unsigned char m_ClientSAP;

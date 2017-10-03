@@ -123,11 +123,11 @@ int CGXDLMSAssociationLogicalName::GetObjects(
     CGXByteBuffer& data)
 {
     int ret;
-    static unsigned long pos = 0;
+    /*static unsigned long pos = 0;*/
     //Add count only for first time.
     if (settings.GetIndex() == 0)
     {
-		pos = 0;
+		m_pos = 0;
         settings.SetCount((unsigned short)m_ObjectList.size() + m_ObjectList.sizeRequiredObj());
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         //Add count
@@ -135,17 +135,17 @@ int CGXDLMSAssociationLogicalName::GetObjects(
     }
 	CGXDLMSObject* tmp_obj = nullptr;
 	CGXByteBuffer ln;
-	if (pos < m_ObjectList.size()) {
+	if (m_pos < m_ObjectList.size()) {
 		CGXDLMSObjectCollection::iterator it = m_ObjectList.begin();
-		it += pos;
+		it += m_pos;
 		for (it; it != m_ObjectList.end(); ++it)
 		{
 			ln.Clear();
 			ln.Set(*it, 6);
 			tmp_obj = m_ObjectList.FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
 			if (tmp_obj != NULL) {
-				++pos;
-				if (!(pos <= settings.GetIndex()))
+				++m_pos;
+				if (m_pos <= settings.GetCount())
 				{
 					data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
 					data.SetUInt8(4);//Count
@@ -185,10 +185,10 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 	{
 		std::vector<CGXDLMSObject*> tmp_dlms_obj = m_ObjectList.GetDlmsObj();
 		std::vector<CGXDLMSObject*>::iterator it = tmp_dlms_obj.begin();
-		it += pos - m_ObjectList.size();
+		it += m_pos - m_ObjectList.size();
 		for (; it != tmp_dlms_obj.end(); ++it) {
-			++pos;
-			if (!(pos <= settings.GetIndex()))
+			++m_pos;
+			if (m_pos <= settings.GetCount())
 			{
 				data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
 				data.SetUInt8(4);//Count

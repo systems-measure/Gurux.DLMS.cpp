@@ -63,14 +63,6 @@ CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
             DLMS_CONFORMANCE_ACTION | DLMS_CONFORMANCE_MULTIPLE_REFERENCES |
             DLMS_CONFORMANCE_GET | DLMS_CONFORMANCE_GENERAL_PROTECTION));
     }
-    /*else
-    {
-        SetConformance((DLMS_CONFORMANCE)(DLMS_CONFORMANCE_INFORMATION_REPORT |
-            DLMS_CONFORMANCE_READ | DLMS_CONFORMANCE_UN_CONFIRMED_WRITE |
-            DLMS_CONFORMANCE_WRITE | DLMS_CONFORMANCE_PARAMETERIZED_ACCESS |
-            DLMS_CONFORMANCE_MULTIPLE_REFERENCES |
-            DLMS_CONFORMANCE_GENERAL_PROTECTION));
-    }*/
     Reset();
 }
 
@@ -2062,46 +2054,47 @@ bool CGXDLMSServer::CheckCtlField(unsigned char ctl,
     return true;
 }
 
-int CGXDLMSServer::HandleRequest(
-    CGXByteBuffer& data,
-    CGXByteBuffer& reply)
-{
-    return HandleRequest(
-        data.GetData(),
-        (unsigned short)(data.GetSize() - data.GetPosition()),
-        reply);
-}
+//int CGXDLMSServer::HandleRequest(
+//    CGXByteBuffer& data,
+//    CGXByteBuffer& reply)
+//{
+//    return HandleRequest(
+//        data.GetData(),
+//        (unsigned short)(data.GetSize() - data.GetPosition()),
+//        reply);
+//}
+//
+//int CGXDLMSServer::HandleRequest(
+//    CGXDLMSConnectionEventArgs& connectionInfo,
+//    CGXByteBuffer& data,
+//    CGXByteBuffer& reply)
+//{
+//    return HandleRequest(
+//        connectionInfo,
+//        data.GetData(),
+//        (unsigned short)(data.GetSize() - data.GetPosition()),
+//        reply);
+//}
+//
+//int CGXDLMSServer::HandleRequest(
+//    unsigned char* buff,
+//    unsigned short size,
+//    CGXByteBuffer& reply)
+//{
+//    CGXDLMSConnectionEventArgs connectionInfo;
+//    return HandleRequest(connectionInfo, buff, size, reply);
+//}
 
 int CGXDLMSServer::HandleRequest(
-    CGXDLMSConnectionEventArgs& connectionInfo,
-    CGXByteBuffer& data,
+    /*CGXDLMSConnectionEventArgs& connectionInfo,*/
+    /*unsigned char* buff,
+    unsigned short size,*/
     CGXByteBuffer& reply)
-{
-    return HandleRequest(
-        connectionInfo,
-        data.GetData(),
-        (unsigned short)(data.GetSize() - data.GetPosition()),
-        reply);
-}
-
-int CGXDLMSServer::HandleRequest(
-    unsigned char* buff,
-    unsigned short size,
-    CGXByteBuffer& reply)
-{
-    CGXDLMSConnectionEventArgs connectionInfo;
-    return HandleRequest(connectionInfo, buff, size, reply);
-}
-
-int CGXDLMSServer::HandleRequest(
-    CGXDLMSConnectionEventArgs& connectionInfo,
-    unsigned char* buff,
-    unsigned short size,
-    CGXByteBuffer& reply)
-{        
+{   
+	CGXDLMSConnectionEventArgs connectionInfo;
     int ret;        
     reply.Clear();
-    if (buff == NULL || size == 0)
+    if (m_ReceivedData.GetData() == NULL || m_ReceivedData.GetSize() == 0)
     {
         return 0;
     }
@@ -2110,7 +2103,7 @@ int CGXDLMSServer::HandleRequest(
         //Server not Initialized.
         return DLMS_ERROR_CODE_NOT_INITIALIZED;
     }
-    m_ReceivedData.Set(buff, size);
+    //m_ReceivedData.Set(buff, size);
     bool first = m_Settings.GetServerAddress() == 0
         && m_Settings.GetClientAddress() == 0;
     if ((ret = CGXDLMS::GetData(m_Settings, m_ReceivedData, m_Info)) != 0)
