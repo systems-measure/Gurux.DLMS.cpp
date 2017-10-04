@@ -179,7 +179,7 @@ public:
     */
     unsigned char& GetIndex();
 
-    void SetIndex(int value);
+    void SetIndex(unsigned char value);
 
     /**
     * @return CGXDLMSVariant value.
@@ -223,7 +223,7 @@ public:
     * @param value
     *           Selector.
     */
-    void SetSelector(int value);
+    void SetSelector(unsigned char& value);
 
     /**
     * @return Optional parameters.
