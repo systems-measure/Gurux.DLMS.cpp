@@ -112,30 +112,6 @@ private:
         CGXByteBuffer& data,
         CGXDLMSLNParameters& p);
 
-    /**
-    * Handle read Block in blocks.
-    *
-    * @param data
-    *            Received data.
-    */
-    int HandleReadBlockNumberAccess(
-        CGXByteBuffer& data);
-
-    int HandleReadDataBlockAccess(
-        DLMS_COMMAND command,
-        CGXByteBuffer& data,
-        int cnt);
-
-    int ReturnSNError(
-        DLMS_COMMAND cmd,
-        DLMS_ERROR_CODE error);
-
-    int HandleRead(
-        DLMS_VARIABLE_ACCESS_SPECIFICATION type,
-        CGXByteBuffer& data,
-        CGXDLMSValueEventCollection& list,
-        std::vector<CGXDLMSValueEventArg*>& reads,
-        std::vector<CGXDLMSValueEventArg*>& actions);
 
     /**
     * Reset settings when connection is made or close.
@@ -178,20 +154,6 @@ private:
     */
     int HandleGetRequest(
         CGXByteBuffer& data);
-
-    /**
-    * Handle read request.
-    */
-    int HandleReadRequest(CGXByteBuffer& data);
-
-    /**
-    * Handle write request.
-    *
-    * @param reply
-    *            Received data from the client.
-    * @return Reply.
-    */
-    int HandleWriteRequest(CGXByteBuffer& data);
 
     /**
     * Handle action request.
