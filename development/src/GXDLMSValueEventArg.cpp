@@ -51,7 +51,7 @@ unsigned char& CGXDLMSValueEventArg::GetIndex()
     return m_Index;
 }
 
-void CGXDLMSValueEventArg::SetIndex(int value)
+void CGXDLMSValueEventArg::SetIndex(unsigned char value)
 {
     m_Index = value;
 }
@@ -81,7 +81,7 @@ unsigned char& CGXDLMSValueEventArg::GetSelector()
     return m_Selector;
 }
 
-void CGXDLMSValueEventArg::SetSelector(int value)
+void CGXDLMSValueEventArg::SetSelector(unsigned char& value)
 {
     m_Selector = value;
 }
