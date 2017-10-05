@@ -45,6 +45,41 @@
 #define __VARIANT_NAME_2
 #define __VARIANT_NAME_3
 
+struct VarInfo {
+	DLMS_DATA_TYPE type;
+	unsigned long size;
+};
+
+struct cVariant {
+	unsigned char *byteArr;
+	unsigned short position;
+	unsigned long size;
+};
+
+class CArtVariant: public cVariant
+{
+public:
+	CArtVariant();
+	~CArtVariant();
+	CArtVariant(unsigned char* buff, unsigned long size_buff);
+
+	void Set(unsigned char* buff, unsigned long size);
+	unsigned char* GetCurPtr();
+
+	bool IncreasePosition(unsigned short diff);
+
+	unsigned char GetUInt8(unsigned char* value);
+	unsigned char GetUInt16(unsigned short* value);
+	unsigned char GetUInt32(unsigned long* value);
+	unsigned char GetUInt64(unsigned long long* value);
+
+	void GetVar(VarInfo& v_info);
+	unsigned char GetObjectCount(unsigned long& count);
+
+	void Clear();
+
+};
+
 class CGXDLMSVariant;
 
 struct dlmsVARIANT

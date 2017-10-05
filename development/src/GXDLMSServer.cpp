@@ -185,30 +185,7 @@ int CGXDLMSServer::Initialize()
 			//Invalid Logical Name.
 			return DLMS_ERROR_CODE_INVALID_LOGICAL_NAME;
 		}
-		/*if ((*it)->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME
-		    && m_Settings.GetUseLogicalNameReferencing())
-		{
-		    CGXDLMSObjectCollection& list = ((CGXDLMSAssociationLogicalName*)*it)->GetObjectList();
-		    if (list.size() + list.sizeRequiredObj() == 0)
-		    {
-		        list.insert(list.end(), GetItems().begin(), GetItems().end());
-				list.GetDlmsObj().insert(list.GetDlmsObj().end(), tmp_dlms_obj.begin(), tmp_dlms_obj.end());
-		    }
-		    associationObject = (*it);
-		}*/
-	}
-    /*if (associationObject == NULL)
-    {
-        if (GetUseLogicalNameReferencing())
-        {
-            CGXDLMSAssociationLogicalName* it2 = (CGXDLMSAssociationLogicalName*)CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME);
-            CGXDLMSObjectCollection& list = it2->GetObjectList();
-            GetItems().push_back(it2);
-            list.insert(list.end(), GetItems().begin(), GetItems().end());
-			list.GetDlmsObj().insert(list.GetDlmsObj().end(), tmp_dlms_obj.begin(), tmp_dlms_obj.end());
-        }
-    }*/
-    
+	}    
     return 0;
 }
 
@@ -461,13 +438,6 @@ int ReportError(CGXDLMSSettings& settings, DLMS_COMMAND command, DLMS_ERROR_CODE
             NULL, NULL, error);
         ret = CGXDLMS::GetLNPdu(p, data);
     }
-    /*else
-    {
-        CGXByteBuffer bb;
-        bb.SetUInt8(error);
-        CGXDLMSSNParameters p(&settings, cmd, 1, 1, NULL, &bb);
-        ret = CGXDLMS::GetSNPdu(p, data);
-    }*/
     if (ret == 0)
     {
         if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER)

@@ -69,6 +69,8 @@ public:
         */
     static int GetData(CGXByteBuffer& data, CGXDataInfo& info, CGXDLMSVariant& value);
 
+	static int GetDataSA(CGXByteBuffer& data, CArtVariant& value);
+
     static void GetLogicalName(unsigned char* buff, std::string& ln)
     {
         int dataSize;

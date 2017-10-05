@@ -35,6 +35,168 @@
 #include "../include/errorcodes.h"
 #include "../include/GXHelpers.h"
 
+#include "Helper\Helper.h"
+
+
+CArtVariant::CArtVariant() {
+	byteArr = nullptr;
+	size = 0;
+	position = 0;
+}
+
+CArtVariant::CArtVariant(unsigned char* buff, unsigned long size_buff) {
+	byteArr = buff;
+	size = size_buff;
+	position = 0;
+}
+
+void CArtVariant::Set(unsigned char* buff, unsigned long size_buff) {
+	byteArr = (unsigned char*)realloc(byteArr,size + size_buff);
+	memcpy(byteArr + size, buff, size_buff);
+	size += size_buff;
+}
+
+unsigned char*  CArtVariant::GetCurPtr() {
+	return (byteArr + position);
+}
+
+bool  CArtVariant::IncreasePosition(unsigned short diff) {
+	if (position + diff <= size) {
+		position += diff;
+		return true;
+	}
+	return false;
+}
+
+void CArtVariant::GetVar(VarInfo& v_info) {
+	v_info.type = (DLMS_DATA_TYPE)*(byteArr + position);
+	++position;
+	char type_size = spodesSizeof(v_info.type);
+	switch (type_size) {
+	case -1: {
+		GetObjectCount(v_info.size);
+		break;
+	}
+	case -2: {
+		v_info.size = 0;
+		break;
+	}
+	default: {
+		v_info.size = type_size;
+		break;
+	}
+	}
+}
+
+unsigned char CArtVariant::GetUInt8(unsigned char* value) {
+	if (position >= size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = byteArr[position];
+	++position;
+	return 0;
+}
+
+unsigned char CArtVariant::GetUInt16(unsigned short* value) {
+	if (position + 2 >= size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = (((byteArr[position] & 0xFF) << 8) | (byteArr[position + 1] & 0xFF));
+	position += 2;
+	return 0;
+}
+
+unsigned char CArtVariant::GetUInt32(unsigned long* value) {
+	if (position + 4 > size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = byteArr[position] << 24 |
+		byteArr[position + 1] << 16 |
+		byteArr[position + 2] << 8 |
+		byteArr[position + 3];
+	position += 4;
+	return 0;
+}
+
+unsigned char CArtVariant::GetUInt64(unsigned long long* value) {
+	if (position + 8 > size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = (unsigned long long)byteArr[position] << 56 |
+		(unsigned long long) byteArr[position + 1] << 48 |
+		(unsigned long long) byteArr[position + 2] << 40 |
+		(unsigned long long) byteArr[position + 3] << 32 |
+		(unsigned long long) byteArr[position + 4] << 24 |
+		(unsigned long long) byteArr[position + 5] << 16 |
+		(unsigned long long) byteArr[position + 6] << 8 |
+		(unsigned long long) byteArr[position + 7];
+	return 0;
+}
+
+unsigned char CArtVariant::GetObjectCount(unsigned long& count)
+{
+	int ret;
+	unsigned char cnt;
+	if ((ret = GetUInt8(&cnt)) != 0)
+	{
+		return ret;
+	}
+	switch (cnt) {
+	case 0x81: {
+		if ((ret = GetUInt8(&cnt)) != 0)
+		{
+			return ret;
+		}
+		count = cnt;
+		return DLMS_ERROR_CODE_OK;
+	}
+	case 0x82: {
+		unsigned short tmp;
+		if ((ret = GetUInt16(&tmp)) != 0)
+		{
+			return ret;
+		}
+		count = tmp;
+		return DLMS_ERROR_CODE_OK;
+	}
+	case 0x84: {
+		unsigned long tmp;
+		if ((ret = GetUInt32(&tmp)) != 0)
+		{
+			return ret;
+		}
+		count = tmp;
+		return DLMS_ERROR_CODE_OK;
+	}
+	default: {
+		count = cnt;
+		return DLMS_ERROR_CODE_OK;
+	}
+	}	
+}
+
+void CArtVariant::Clear() {
+	if (byteArr != nullptr) {
+		std::free(byteArr);
+		byteArr = nullptr;
+	}
+	size = 0;
+	position = 0;
+}
+
+CArtVariant::~CArtVariant() {
+	Clear();
+}
+
+
+
+
+
+
 int CGXDLMSVariant::Convert(CGXDLMSVariant* item, DLMS_DATA_TYPE type)
 {
     if (item->vt == type)
