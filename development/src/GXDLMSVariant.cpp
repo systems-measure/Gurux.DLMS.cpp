@@ -123,7 +123,7 @@ bool CArtVariant::DecreasePosition(unsigned short diff) {
 void CArtVariant::GetVar(VarInfo& v_info) {
 	v_info.vt = (DLMS_DATA_TYPE)*(byteArr + position);
 	++position;
-	char type_size = spodesSizeof(v_info.vt);
+	int8_t type_size = spodesSizeof(v_info.vt);
 	switch (type_size) {
 	case -1: {
 		GetObjectCount(v_info.size);
