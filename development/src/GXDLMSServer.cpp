@@ -1282,7 +1282,6 @@ int CGXDLMSServer::HandleCommand(
 			GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_WRITE,
 				DLMS_SERVICE_ERROR_SERVICE,
 				DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
-			return 0;
 		}
         break;
     case DLMS_COMMAND_GET_REQUEST:
@@ -1297,7 +1296,6 @@ int CGXDLMSServer::HandleCommand(
 			GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_READ,
 				DLMS_SERVICE_ERROR_SERVICE,
 				DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
-			return 0;
 		}
         break;
     case DLMS_COMMAND_METHOD_REQUEST:
