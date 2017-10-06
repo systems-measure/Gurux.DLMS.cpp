@@ -458,7 +458,7 @@ int CGXDLMSServer::HandleSetRequest(
     CGXDLMSLNParameters& p)
 {
     CGXDataInfo i;
-    CGXDLMSVariant value;
+    CArtVariant value;
     int ret;
     unsigned char index, ch;
     unsigned short tmp;
@@ -514,7 +514,7 @@ int CGXDLMSServer::HandleSetRequest(
     if (!p.IsMultipleBlocks())
     {
         m_Settings.ResetBlockIndex();
-        ret = GXHelpers::GetData(data, i, value);
+        ret = GXHelpers::GetDataCA(data, value);
         if (ret != 0)
         {
             return ret;
@@ -536,9 +536,7 @@ int CGXDLMSServer::HandleSetRequest(
     else
     {
         CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, index);
-        e->SetValue(value);
         CGXDLMSValueEventCollection list;
-        list.push_back(e);
         DLMS_ACCESS_MODE am = GetAttributeAccess(e);
         // If write is denied.
         if (am != DLMS_ACCESS_MODE_WRITE && am != DLMS_ACCESS_MODE_READ_WRITE)
@@ -549,11 +547,15 @@ int CGXDLMSServer::HandleSetRequest(
         else
         {
 			if (p.IsMultipleBlocks()) {
+				e->SetValue(value);
+				list.push_back(e);
 				m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
 			}
 			else {
-				if (value.vt != DLMS_DATA_TYPE_NONE) {
-					if (value.vt == DLMS_DATA_TYPE_OCTET_STRING)
+				VarInfo v_info;
+				value.GetVar(v_info);
+				if (v_info.vt != DLMS_DATA_TYPE_NONE) {
+					if (v_info.vt == DLMS_DATA_TYPE_OCTET_STRING)
 					{
 						DLMS_DATA_TYPE dt;
 						ret = obj->GetDataType(index, dt);
@@ -566,18 +568,22 @@ int CGXDLMSServer::HandleSetRequest(
 						}
 						if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
 						{
-							CGXByteBuffer tmp;
-							tmp.Set(value.byteArr, value.GetSize());
-							value.Clear();
-							if ((ret = CGXDLMSClient::ChangeType(tmp, dt, value)) != 0)
+							CArtVariant tmp;
+							if ((ret = value.ChangeType(v_info.size, dt, tmp)) != 0)
 							{
+								value.Clear();
+								tmp.Clear();
 								p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 								obj = nullptr;
 								m_CurrentALN->GetObjectList().FreeConstructedObj();
 								return ret;
 							}
+							value = tmp;
 						}
 					}
+					value.position = 0;
+					e->SetValue(value);
+					list.push_back(e);
 					if (p.IsMultipleBlocks())
 					{
 						m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
@@ -641,27 +647,29 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
         // If all data is received.
         if (!p.IsMultipleBlocks())
         {
-            CGXDLMSVariant value;
-            if ((ret != GXHelpers::GetData(m_Transaction->GetData(), reply, value)) != 0)
+            CArtVariant value;
+            if ((ret != GXHelpers::GetDataCA(m_Transaction->GetData(), value)) != 0)
             {
                 return ret;
             }
             CGXDLMSValueEventArg * target = *m_Transaction->GetTargets().begin();
-            if (value.vt == DLMS_DATA_TYPE_OCTET_STRING)
+			VarInfo v_info;
+			value.GetVar(v_info);
+            if (v_info.vt == DLMS_DATA_TYPE_OCTET_STRING)
             {
                 DLMS_DATA_TYPE dt;
                 ret = target->GetTarget()->GetDataType(target->GetIndex(), dt);
                 if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
                 {
-                    CGXByteBuffer bb;
-                    bb.Set(value.byteArr, value.GetSize());
-                    value.Clear();
-                    if ((ret = CGXDLMSClient::ChangeType(bb, dt, value)) != 0)
+					CArtVariant bb;
+                    if ((ret = value.ChangeType(v_info.size, dt, bb)) != 0)
                     {
                         return ret;
                     }
+					value = bb;
                 }
             }
+			value.position = 0;
             target->SetValue(value);
             PreWrite(m_Transaction->GetTargets());
 			p.SetStatus(target->GetError());

@@ -45,15 +45,18 @@
 #define __VARIANT_NAME_2
 #define __VARIANT_NAME_3
 
+class CArtVariant;
+
 struct VarInfo {
-	DLMS_DATA_TYPE type;
+	DLMS_DATA_TYPE vt;
 	unsigned long size;
 };
 
 struct cVariant {
 	unsigned char *byteArr;
-	unsigned short position;
+	unsigned long position;
 	unsigned long size;
+	unsigned long capacity;
 };
 
 class CArtVariant: public cVariant
@@ -61,20 +64,36 @@ class CArtVariant: public cVariant
 public:
 	CArtVariant();
 	~CArtVariant();
-	CArtVariant(unsigned char* buff, unsigned long size_buff);
+	CArtVariant(const CArtVariant& value);
+	CArtVariant(unsigned char*& buff, unsigned long& size_buff);
+
+	//Move
+	CArtVariant& operator=(CArtVariant& value);
 
 	void Set(unsigned char* buff, unsigned long size);
 	unsigned char* GetCurPtr();
 
+	bool Reserve(unsigned long new_size);
+
 	bool IncreasePosition(unsigned short diff);
+
+	bool DecreasePosition(unsigned short diff);
 
 	unsigned char GetUInt8(unsigned char* value);
 	unsigned char GetUInt16(unsigned short* value);
 	unsigned char GetUInt32(unsigned long* value);
 	unsigned char GetUInt64(unsigned long long* value);
 
+	void SetUInt8(unsigned char item);
+	void SetUInt16(unsigned short item);
+	void SetUInt32(unsigned long item);
+	void SetUInt64(unsigned long long item);
+
 	void GetVar(VarInfo& v_info);
+	unsigned char ChangeType(unsigned long src_size, DLMS_DATA_TYPE type, CArtVariant& new_value);
+
 	unsigned char GetObjectCount(unsigned long& count);
+	void SetObjectCount(unsigned long count);
 
 	void Clear();
 

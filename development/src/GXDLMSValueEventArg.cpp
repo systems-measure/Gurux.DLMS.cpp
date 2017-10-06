@@ -56,14 +56,25 @@ void CGXDLMSValueEventArg::SetIndex(unsigned char value)
     m_Index = value;
 }
 
+CArtVariant& CGXDLMSValueEventArg::GetCAValue()
+{
+	return c_Value;
+}
+
 CGXDLMSVariant& CGXDLMSValueEventArg::GetValue()
 {
     return m_Value;
 }
 
+
 void CGXDLMSValueEventArg::SetValue(CGXDLMSVariant value)
 {
     m_Value = value;
+}
+
+void CGXDLMSValueEventArg::SetValue(CArtVariant& value) 
+{
+	c_Value = value;
 }
 
 bool CGXDLMSValueEventArg::GetHandled()

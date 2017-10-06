@@ -1165,7 +1165,7 @@ int GXHelpers::GetData(
     return ret;
 }
 
-int GXHelpers::GetDataSA(CGXByteBuffer& data, CArtVariant& value) {
+int GXHelpers::GetDataCA(CGXByteBuffer& data, CArtVariant& value) {
 	if (data.GetPosition() == data.GetSize())
 	{
 		return 0;

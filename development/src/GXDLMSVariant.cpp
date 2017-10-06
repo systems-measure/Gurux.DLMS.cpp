@@ -42,22 +42,66 @@ CArtVariant::CArtVariant() {
 	byteArr = nullptr;
 	size = 0;
 	position = 0;
+	capacity = 0;
 }
 
-CArtVariant::CArtVariant(unsigned char* buff, unsigned long size_buff) {
+CArtVariant::CArtVariant(unsigned char*& buff, unsigned long& size_buff) {
 	byteArr = buff;
 	size = size_buff;
+	capacity = size_buff;
 	position = 0;
+	buff = nullptr;
+	size_buff = 0;
+}
+
+CArtVariant::CArtVariant(const CArtVariant& value) {
+	if (value.byteArr != nullptr && value.size != 0) {
+		std::free(byteArr);
+		size = value.size;
+		capacity = size;
+		byteArr = (unsigned char*)malloc(size);
+		memcpy(byteArr, value.byteArr, size);
+		position = 0;
+	}
+}
+
+CArtVariant& CArtVariant::operator=(CArtVariant& value) {
+	if (this != &value) {
+		if (byteArr != nullptr) {
+			std::free(byteArr);
+		}
+		byteArr = value.byteArr;
+		size = value.size;
+		position = value.position;
+		capacity = value.capacity;
+		value.byteArr = nullptr;
+		value.size = 0;
+		value.position = 0;
+		value.capacity = 0;
+	}
+	return *this;
 }
 
 void CArtVariant::Set(unsigned char* buff, unsigned long size_buff) {
-	byteArr = (unsigned char*)realloc(byteArr,size + size_buff);
+	if (size + size_buff > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + size_buff);
+		capacity = size + size_buff;
+	}
 	memcpy(byteArr + size, buff, size_buff);
 	size += size_buff;
 }
 
 unsigned char*  CArtVariant::GetCurPtr() {
 	return (byteArr + position);
+}
+
+bool CArtVariant::Reserve(unsigned long new_size) {
+	if (new_size > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, new_size);
+		capacity = new_size;
+		return true;
+	}
+	return false;
 }
 
 bool  CArtVariant::IncreasePosition(unsigned short diff) {
@@ -68,10 +112,18 @@ bool  CArtVariant::IncreasePosition(unsigned short diff) {
 	return false;
 }
 
+bool CArtVariant::DecreasePosition(unsigned short diff) {
+	if (position - diff < 0) {
+		return false;
+	}
+	position -= diff;
+	return true;
+}
+
 void CArtVariant::GetVar(VarInfo& v_info) {
-	v_info.type = (DLMS_DATA_TYPE)*(byteArr + position);
+	v_info.vt = (DLMS_DATA_TYPE)*(byteArr + position);
 	++position;
-	char type_size = spodesSizeof(v_info.type);
+	char type_size = spodesSizeof(v_info.vt);
 	switch (type_size) {
 	case -1: {
 		GetObjectCount(v_info.size);
@@ -84,6 +136,31 @@ void CArtVariant::GetVar(VarInfo& v_info) {
 	default: {
 		v_info.size = type_size;
 		break;
+	}
+	}
+}
+
+unsigned char CArtVariant::ChangeType(unsigned long src_size, DLMS_DATA_TYPE type, CArtVariant& new_value) {
+	int8_t type_size = spodesSizeof(type);
+	switch (type_size) {
+	case -2: {
+		return DLMS_ERROR_CODE_INVALID_PARAMETER;
+	}
+	case -1: {
+			Reserve(src_size + 2);
+			SetUInt8(type);
+			SetObjectCount(src_size);
+			new_value.Set(GetCurPtr(), src_size);
+			return DLMS_ERROR_CODE_OK;
+	}
+	case 0: {
+		return DLMS_ERROR_CODE_UNMATCH_TYPE;
+	}
+	default: {
+		Reserve(type_size + 1);
+		SetUInt8(type);
+		new_value.Set(GetCurPtr(), type_size);
+		return DLMS_ERROR_CODE_OK;
 	}
 	}
 }
@@ -137,6 +214,57 @@ unsigned char CArtVariant::GetUInt64(unsigned long long* value) {
 	return 0;
 }
 
+void CArtVariant::SetUInt8(unsigned char item)
+{
+	if (size == capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 1);
+		++capacity;
+	}
+	byteArr[size] = item;
+	++size;
+}
+
+void CArtVariant::SetUInt16(unsigned short item)
+{
+	if (size + 2 > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 2);
+		capacity += 2;
+	}
+	byteArr[size] = (item >> 8) & 0xFF;
+	byteArr[size + 1] = item & 0xFF;
+	size += 2;
+}
+
+void CArtVariant::SetUInt32( unsigned long item)
+{
+	if (size + 4 > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 4);
+		capacity += 4;
+	}
+	byteArr[size] = (item >> 24) & 0xFF;
+	byteArr[size + 1] = (item >> 16) & 0xFF;
+	byteArr[size + 2] = (item >> 8) & 0xFF;
+	byteArr[size + 3] = item & 0xFF;
+	size += 4;
+}
+
+void CArtVariant::SetUInt64(unsigned long long item)
+{
+	if (size + 8 > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 8);
+		capacity += 8;
+	}
+	byteArr[size] = (unsigned char)((item >> 56) & 0xFF);
+	byteArr[size + 1] = (item >> 48) & 0xFF;
+	byteArr[size + 2] = (item >> 40) & 0xFF;
+	byteArr[size + 3] = (item >> 32) & 0xFF;
+	byteArr[size + 4] = (item >> 24) & 0xFF;
+	byteArr[size + 5] = (item >> 16) & 0xFF;
+	byteArr[size + 6] = (item >> 8) & 0xFF;
+	byteArr[size + 7] = item & 0xFF;
+	size += 8;
+}
+
 unsigned char CArtVariant::GetObjectCount(unsigned long& count)
 {
 	int ret;
@@ -179,6 +307,29 @@ unsigned char CArtVariant::GetObjectCount(unsigned long& count)
 	}	
 }
 
+void CArtVariant::SetObjectCount(unsigned long count)
+{
+	if (count < 0x80)
+	{
+		SetUInt8((unsigned char)count);
+	}
+	else if (count < 0x100)
+	{
+		SetUInt8(0x81);
+		SetUInt8((unsigned char)count);
+	}
+	else if (count < 0x10000)
+	{
+		SetUInt8(0x82);
+		SetUInt16((unsigned short)count);
+	}
+	else
+	{
+		SetUInt8(0x84);
+		SetUInt32(count);
+	}
+}
+
 void CArtVariant::Clear() {
 	if (byteArr != nullptr) {
 		std::free(byteArr);
@@ -186,6 +337,7 @@ void CArtVariant::Clear() {
 	}
 	size = 0;
 	position = 0;
+	capacity = 0;
 }
 
 CArtVariant::~CArtVariant() {

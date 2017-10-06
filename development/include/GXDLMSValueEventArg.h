@@ -56,6 +56,8 @@ class CGXDLMSValueEventArg
     friend class CGXDLMSAssociationShortName;
 
 private:
+
+	CArtVariant c_Value;
     /**
     * CGXDLMSVariant value.
     */
@@ -167,6 +169,8 @@ private:
     */
     CGXDLMSServer* GetServer();
 public:
+
+	CArtVariant& GetCAValue();
     /**
     * @return Target DLMS object.
     */
@@ -191,6 +195,12 @@ public:
     *            CGXDLMSVariant value.
     */
     void SetValue(CGXDLMSVariant value);
+
+	/**
+	* @param value
+	*            CArtVariant value.
+	*/
+	void SetValue(CArtVariant& value);
 
     /**
     * @return Data type of the value.
