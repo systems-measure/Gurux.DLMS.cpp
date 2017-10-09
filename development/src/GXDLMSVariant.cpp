@@ -35,6 +35,320 @@
 #include "../include/errorcodes.h"
 #include "../include/GXHelpers.h"
 
+#include "Helper\Helper.h"
+
+
+CArtVariant::CArtVariant() {
+	byteArr = nullptr;
+	size = 0;
+	position = 0;
+	capacity = 0;
+}
+
+CArtVariant::CArtVariant(unsigned char*& buff, unsigned long& size_buff) {
+	byteArr = buff;
+	size = size_buff;
+	capacity = size_buff;
+	position = 0;
+	buff = nullptr;
+	size_buff = 0;
+}
+
+CArtVariant::CArtVariant(const CArtVariant& value) {
+	if (value.byteArr != nullptr && value.size != 0) {
+		std::free(byteArr);
+		size = value.size;
+		capacity = size;
+		byteArr = (unsigned char*)malloc(size);
+		memcpy(byteArr, value.byteArr, size);
+		position = 0;
+	}
+}
+
+CArtVariant& CArtVariant::operator=(CArtVariant& value) {
+	if (this != &value) {
+		if (byteArr != nullptr) {
+			std::free(byteArr);
+		}
+		byteArr = value.byteArr;
+		size = value.size;
+		position = value.position;
+		capacity = value.capacity;
+		value.byteArr = nullptr;
+		value.size = 0;
+		value.position = 0;
+		value.capacity = 0;
+	}
+	return *this;
+}
+
+void CArtVariant::Set(unsigned char* buff, unsigned long size_buff) {
+	if (size + size_buff > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + size_buff);
+		capacity = size + size_buff;
+	}
+	memcpy(byteArr + size, buff, size_buff);
+	size += size_buff;
+}
+
+unsigned char*  CArtVariant::GetCurPtr() {
+	return (byteArr + position);
+}
+
+bool CArtVariant::Reserve(unsigned long new_size) {
+	if (new_size > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, new_size);
+		capacity = new_size;
+		return true;
+	}
+	return false;
+}
+
+bool  CArtVariant::IncreasePosition(unsigned short diff) {
+	if (position + diff <= size) {
+		position += diff;
+		return true;
+	}
+	return false;
+}
+
+bool CArtVariant::DecreasePosition(unsigned short diff) {
+	if (position - diff < 0) {
+		return false;
+	}
+	position -= diff;
+	return true;
+}
+
+void CArtVariant::GetVar(VarInfo& v_info) {
+	v_info.vt = (DLMS_DATA_TYPE)*(byteArr + position);
+	++position;
+	int8_t type_size = spodesSizeof(v_info.vt);
+	switch (type_size) {
+	case -1: {
+		GetObjectCount(v_info.size);
+		break;
+	}
+	case -2: {
+		v_info.size = 0;
+		break;
+	}
+	default: {
+		v_info.size = type_size;
+		break;
+	}
+	}
+}
+
+unsigned char CArtVariant::ChangeType(unsigned long src_size, DLMS_DATA_TYPE type, CArtVariant& new_value) {
+	int8_t type_size = spodesSizeof(type);
+	switch (type_size) {
+	case -2: {
+		return DLMS_ERROR_CODE_INVALID_PARAMETER;
+	}
+	case -1: {
+			Reserve(src_size + 2);
+			SetUInt8(type);
+			SetObjectCount(src_size);
+			new_value.Set(GetCurPtr(), src_size);
+			return DLMS_ERROR_CODE_OK;
+	}
+	case 0: {
+		return DLMS_ERROR_CODE_UNMATCH_TYPE;
+	}
+	default: {
+		Reserve(type_size + 1);
+		SetUInt8(type);
+		new_value.Set(GetCurPtr(), type_size);
+		return DLMS_ERROR_CODE_OK;
+	}
+	}
+}
+
+unsigned char CArtVariant::GetUInt8(unsigned char* value) {
+	if (position >= size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = byteArr[position];
+	++position;
+	return 0;
+}
+
+unsigned char CArtVariant::GetUInt16(unsigned short* value) {
+	if (position + 2 >= size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = (((byteArr[position] & 0xFF) << 8) | (byteArr[position + 1] & 0xFF));
+	position += 2;
+	return 0;
+}
+
+unsigned char CArtVariant::GetUInt32(unsigned long* value) {
+	if (position + 4 > size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = byteArr[position] << 24 |
+		byteArr[position + 1] << 16 |
+		byteArr[position + 2] << 8 |
+		byteArr[position + 3];
+	position += 4;
+	return 0;
+}
+
+unsigned char CArtVariant::GetUInt64(unsigned long long* value) {
+	if (position + 8 > size)
+	{
+		return DLMS_ERROR_CODE_OUTOFMEMORY;
+	}
+	*value = (unsigned long long)byteArr[position] << 56 |
+		(unsigned long long) byteArr[position + 1] << 48 |
+		(unsigned long long) byteArr[position + 2] << 40 |
+		(unsigned long long) byteArr[position + 3] << 32 |
+		(unsigned long long) byteArr[position + 4] << 24 |
+		(unsigned long long) byteArr[position + 5] << 16 |
+		(unsigned long long) byteArr[position + 6] << 8 |
+		(unsigned long long) byteArr[position + 7];
+	return 0;
+}
+
+void CArtVariant::SetUInt8(unsigned char item)
+{
+	if (size == capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 1);
+		++capacity;
+	}
+	byteArr[size] = item;
+	++size;
+}
+
+void CArtVariant::SetUInt16(unsigned short item)
+{
+	if (size + 2 > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 2);
+		capacity += 2;
+	}
+	byteArr[size] = (item >> 8) & 0xFF;
+	byteArr[size + 1] = item & 0xFF;
+	size += 2;
+}
+
+void CArtVariant::SetUInt32( unsigned long item)
+{
+	if (size + 4 > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 4);
+		capacity += 4;
+	}
+	byteArr[size] = (item >> 24) & 0xFF;
+	byteArr[size + 1] = (item >> 16) & 0xFF;
+	byteArr[size + 2] = (item >> 8) & 0xFF;
+	byteArr[size + 3] = item & 0xFF;
+	size += 4;
+}
+
+void CArtVariant::SetUInt64(unsigned long long item)
+{
+	if (size + 8 > capacity) {
+		byteArr = (unsigned char*)realloc(byteArr, size + 8);
+		capacity += 8;
+	}
+	byteArr[size] = (unsigned char)((item >> 56) & 0xFF);
+	byteArr[size + 1] = (item >> 48) & 0xFF;
+	byteArr[size + 2] = (item >> 40) & 0xFF;
+	byteArr[size + 3] = (item >> 32) & 0xFF;
+	byteArr[size + 4] = (item >> 24) & 0xFF;
+	byteArr[size + 5] = (item >> 16) & 0xFF;
+	byteArr[size + 6] = (item >> 8) & 0xFF;
+	byteArr[size + 7] = item & 0xFF;
+	size += 8;
+}
+
+unsigned char CArtVariant::GetObjectCount(unsigned long& count)
+{
+	int ret;
+	unsigned char cnt;
+	if ((ret = GetUInt8(&cnt)) != 0)
+	{
+		return ret;
+	}
+	switch (cnt) {
+	case 0x81: {
+		if ((ret = GetUInt8(&cnt)) != 0)
+		{
+			return ret;
+		}
+		count = cnt;
+		return DLMS_ERROR_CODE_OK;
+	}
+	case 0x82: {
+		unsigned short tmp;
+		if ((ret = GetUInt16(&tmp)) != 0)
+		{
+			return ret;
+		}
+		count = tmp;
+		return DLMS_ERROR_CODE_OK;
+	}
+	case 0x84: {
+		unsigned long tmp;
+		if ((ret = GetUInt32(&tmp)) != 0)
+		{
+			return ret;
+		}
+		count = tmp;
+		return DLMS_ERROR_CODE_OK;
+	}
+	default: {
+		count = cnt;
+		return DLMS_ERROR_CODE_OK;
+	}
+	}	
+}
+
+void CArtVariant::SetObjectCount(unsigned long count)
+{
+	if (count < 0x80)
+	{
+		SetUInt8((unsigned char)count);
+	}
+	else if (count < 0x100)
+	{
+		SetUInt8(0x81);
+		SetUInt8((unsigned char)count);
+	}
+	else if (count < 0x10000)
+	{
+		SetUInt8(0x82);
+		SetUInt16((unsigned short)count);
+	}
+	else
+	{
+		SetUInt8(0x84);
+		SetUInt32(count);
+	}
+}
+
+void CArtVariant::Clear() {
+	if (byteArr != nullptr) {
+		std::free(byteArr);
+		byteArr = nullptr;
+	}
+	size = 0;
+	position = 0;
+	capacity = 0;
+}
+
+CArtVariant::~CArtVariant() {
+	Clear();
+}
+
+
+
+
+
+
 int CGXDLMSVariant::Convert(CGXDLMSVariant* item, DLMS_DATA_TYPE type)
 {
     if (item->vt == type)

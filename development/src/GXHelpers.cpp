@@ -1166,6 +1166,15 @@ int GXHelpers::GetData(
     return ret;
 }
 
+int GXHelpers::GetDataCA(CGXByteBuffer& data, CArtVariant& value) {
+	if (data.GetPosition() == data.GetSize())
+	{
+		return 0;
+	}
+	value.Set(data.GetData() + data.GetPosition(), data.GetSize() - data.GetPosition());
+	return 0;
+}
+
 /**
     * Convert time to DLMS bytes.
     *
