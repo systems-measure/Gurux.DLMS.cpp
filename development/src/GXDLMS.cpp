@@ -339,7 +339,7 @@ int CGXDLMS::GetHdlcFrame(
     }
     else
     {
-        len = frameSize;
+        len = frameSize - 2;
         // More data to left.
         reply.SetUInt8(0xA8 | ((len >> 8) & 0x7));
     }
@@ -352,7 +352,7 @@ int CGXDLMS::GetHdlcFrame(
     else
     { 
 		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
-			reply.SetUInt8((unsigned char)(frameSize - 2));
+			reply.SetUInt8((unsigned char)((frameSize - 2) & 0xFF));
 			len = (frameSize ) - ( 9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
 		}
 		else {
