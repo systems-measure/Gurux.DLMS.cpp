@@ -117,7 +117,7 @@ int CGXDLMSServer::GetInvokeID()
     return m_Settings.GetInvokeID();
 }
 
-CGXDLMSLimits CGXDLMSServer::GetLimits()
+CGXDLMSLimits& CGXDLMSServer::GetLimits()
 {
     return m_Settings.GetLimits();
 }
@@ -156,6 +156,12 @@ bool CGXDLMSServer::IsLongTransaction() {
 int CGXDLMSServer::Initialize()
 {
     m_Initialized = true;
+
+	m_Settings.GetLimits().SetWindowSizeRX(1);
+	m_Settings.GetLimits().SetWindowSizeTX(1);
+	m_Settings.GetLimits().SetMaxInfoRX(256);
+	m_Settings.GetLimits().SetMaxInfoTX(256);
+
     std::string ln;
 	CGXByteBuffer c_ln;
 	CGXDLMSObject* tmp_obj = nullptr;
@@ -219,6 +225,10 @@ void CGXDLMSServer::Reset(bool connected)
         m_Settings.SetClientAddress(0);
         m_LinkEstablished = false;
     }
+	m_Settings.GetLimits().SetWindowSizeRX(1);
+	m_Settings.GetLimits().SetWindowSizeTX(1);
+	m_Settings.GetLimits().SetMaxInfoRX(256);
+	m_Settings.GetLimits().SetMaxInfoTX(256);
 
     m_Settings.SetAuthentication(DLMS_AUTHENTICATION_NONE);
     if (m_Settings.GetCipher() != NULL)
@@ -307,48 +317,165 @@ int CGXDLMSServer::HandleAarqRequest(
  *
  * @return Returns returned UA packet.
  */
-int CGXDLMSServer::HandleSnrmRequest(CGXDLMSSettings& settings, CGXByteBuffer& reply)
-{
-    int ret;
-    unsigned long serverAddress, clientAddress;
-    serverAddress = m_Settings.GetServerAddress();
-    clientAddress = m_Settings.GetClientAddress();
-    Reset();
-    m_Settings.SetServerAddress(serverAddress);
-    m_Settings.SetClientAddress(clientAddress);
+unsigned char ParseSNRM(CGXByteBuffer& data, CGXDLMSLimits& lms) {
+	if (data.GetSize() == 0) {
+		if (lms.GetMaxInfoTX() > lms.DEFAULT_MAX_INFO_TX) {
+			lms.DefaultInfoTX();
+		}
+		if (lms.GetMaxInfoRX() > lms.DEFAULT_MAX_INFO_RX) {
+			lms.DefaultInfoRX();
+		}
+		if (lms.GetWindowSizeTX() > lms.DEFAULT_WINDOWS_SIZE_TX) {
+			lms.DefaultWindowSizeTX();
+		}
+		if (lms.GetWindowSizeRX() > lms.DEFAULT_WINDOWS_SIZE_RX) {
+			lms.DefaultWindowSizeRX();
+		}
+		return 0;
+	}
+	else {
+		unsigned char ch, id, len;
+		unsigned short ui;
+		unsigned long ul;
+		unsigned char ret;
+		unsigned char fl[4];
+		memset(fl, 0, 4);
+		if ((ret = data.GetUInt8(&ch)) != 0)
+		{
+			return ret;
+		}
+		if ((ret = data.GetUInt8(&ch)) != 0)
+		{
+			return ret;
+		}
+		if ((ret = data.GetUInt8(&ch)) != 0)
+		{
+			return ret;
+		}
+		unsigned int value;
+		while (data.GetPosition() < data.GetSize())
+		{
+			if ((ret = data.GetUInt8(&id)) != 0)
+			{
+				return ret;
+			}
+			if ((ret = data.GetUInt8(&len)) != 0)
+			{
+				return ret;
+			}
+			switch (len)
+			{
+			case 1:
+				if ((ret = data.GetUInt8(&ch)) != 0)
+				{
+					return ret;
+				}
+				value = ch;
+				break;
+			case 2:
+				if ((ret = data.GetUInt16(&ui)) != 0)
+				{
+					return ret;
+				}
+				value = ui;
+				break;
+			case 4:
+				if ((ret = data.GetUInt32(&ul)) != 0)
+				{
+					return ret;
+				}
+				value = ul;
+				break;
+			default:
+				return DLMS_ERROR_CODE_INVALID_PARAMETER;
+			}
+			switch (id)
+			{
+			case HDLC_INFO_MAX_INFO_TX:
+				if (value < lms.GetMaxInfoRX()) {
+					lms.SetMaxInfoRX(value);
+				}
+				break;
+			case HDLC_INFO_MAX_INFO_RX:
+				if (value < lms.GetMaxInfoTX()) {
+					lms.SetMaxInfoTX(value);
+				}
+				break;
+			case HDLC_INFO_WINDOW_SIZE_TX:
+				if (value < lms.GetWindowSizeRX()) {
+					lms.SetWindowSizeRX(value);
+				}
+				break;
+			case HDLC_INFO_WINDOW_SIZE_RX:
+				if (value < lms.GetWindowSizeRX()) {
+					lms.SetWindowSizeTX(value);
+				}
+				break;
+			default:
+				ret = DLMS_ERROR_CODE_INVALID_PARAMETER;
+				break;
+			}
+			fl[id - 5] = 1;
+		}
+		for (unsigned char i = 0; i < 4; ++i) {
+			if (fl[i] != 1) {
+				switch (i + 5)
+				{
+				case HDLC_INFO_MAX_INFO_TX:
+					if (lms.DEFAULT_MAX_INFO_RX < lms.GetMaxInfoRX()) {
+						lms.DefaultInfoRX();
+					}
+					break;
+				case HDLC_INFO_MAX_INFO_RX:
+					if (lms.DEFAULT_MAX_INFO_TX < lms.GetMaxInfoTX()) {
+						lms.DefaultInfoTX();
+					}
+					break;
+				case HDLC_INFO_WINDOW_SIZE_TX:
+					if (lms.DEFAULT_WINDOWS_SIZE_RX < lms.GetWindowSizeRX()) {
+						lms.DefaultWindowSizeRX();
+					}
+					break;
+				case HDLC_INFO_WINDOW_SIZE_RX:
+					if (lms.DEFAULT_WINDOWS_SIZE_TX < lms.GetWindowSizeRX()) {
+						lms.DefaultWindowSizeTX();
+					}
+					break;
+				}
+			}
+		}
+		return ret;
+	}
+}
 
+int CGXDLMSServer::HandleSnrmRequest(CGXByteBuffer& data, CGXDLMSSettings& settings, CGXByteBuffer& reply)
+{
+    Reset(true);
+	m_LinkEstablished = false;
+	unsigned char ret = ParseSNRM(data, GetLimits());
+	if (ret != 0) {
+		return ret;
+	}
     reply.SetUInt8(0x81); // FromatID
     reply.SetUInt8(0x80); // GroupID
-    reply.SetUInt8(0); // Length
+    reply.SetUInt8(0x14); // Length
     reply.SetUInt8(HDLC_INFO_MAX_INFO_TX);
-    reply.SetUInt8(settings.GetLimits().GetMaxInfoTX().GetSize());
-    if ((ret = settings.GetLimits().GetMaxInfoTX().GetBytes(reply)) != 0)
-    {
-        return ret;
-    }
+    reply.SetUInt8(2);
+	reply.SetUInt16(GetLimits().GetMaxInfoTX());
 
     reply.SetUInt8(HDLC_INFO_MAX_INFO_RX);
-    reply.SetUInt8(settings.GetLimits().GetMaxInfoRX().GetSize());
-    if ((ret = settings.GetLimits().GetMaxInfoRX().GetBytes(reply)) != 0)
-    {
-        return ret;
-    }
+    reply.SetUInt8(2);
+	reply.SetUInt16(GetLimits().GetMaxInfoRX());
 
     reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_TX);
-    reply.SetUInt8(settings.GetLimits().GetWindowSizeTX().GetSize());
-    if ((ret = settings.GetLimits().GetWindowSizeTX().GetBytes(reply)) != 0)
-    {
-        return ret;
-    }
+    reply.SetUInt8(4);
+	reply.SetUInt32(GetLimits().GetWindowSizeTX());
+
     reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_RX);
-    reply.SetUInt8(settings.GetLimits().GetWindowSizeRX().GetSize());
-    if ((ret = settings.GetLimits().GetWindowSizeRX().GetBytes(reply)) != 0)
-    {
-        return ret;
-    }
-    int len = reply.GetSize() - 3;
-    reply.SetUInt8(2, len); // Length
-    return ret;
+	reply.SetUInt8(4);
+	reply.SetUInt32(GetLimits().GetWindowSizeRX());
+
+    return 0;
 }
 
 /**
@@ -358,7 +485,6 @@ int CGXDLMSServer::HandleSnrmRequest(CGXDLMSSettings& settings, CGXByteBuffer& r
  */
 int GenerateDisconnectRequest(CGXDLMSSettings& settings, CGXByteBuffer& reply)
 {
-    int ret;
     if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER)
     {
         reply.SetUInt8(0x63);
@@ -368,38 +494,23 @@ int GenerateDisconnectRequest(CGXDLMSSettings& settings, CGXByteBuffer& reply)
     {
         reply.SetUInt8(0x81); // FromatID
         reply.SetUInt8(0x80); // GroupID
-        reply.SetUInt8(0); // Length
+		reply.SetUInt8(0x14); // Length
 
-        reply.SetUInt8(HDLC_INFO_MAX_INFO_TX);
-        reply.SetUInt8(settings.GetLimits().GetMaxInfoTX().GetSize());
-        if ((ret = settings.GetLimits().GetMaxInfoTX().GetBytes(reply)) != 0)
-        {
-            return ret;
-        }
+		reply.SetUInt8(HDLC_INFO_MAX_INFO_TX);
+		reply.SetUInt8(2);
+		reply.SetUInt16(settings.GetLimits().GetMaxInfoTX());
 
-        reply.SetUInt8(HDLC_INFO_MAX_INFO_RX);
-        reply.SetUInt8(settings.GetLimits().GetMaxInfoRX().GetSize());
-        if ((ret = settings.GetLimits().GetMaxInfoRX().GetBytes(reply)) != 0)
-        {
-            return ret;
-        }
+		reply.SetUInt8(HDLC_INFO_MAX_INFO_RX);
+		reply.SetUInt8(2);
+		reply.SetUInt16(settings.GetLimits().GetMaxInfoRX());
 
-        reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_TX);
-        reply.SetUInt8(settings.GetLimits().GetWindowSizeTX().GetSize());
-        if ((ret = settings.GetLimits().GetWindowSizeTX().GetBytes(reply)) != 0)
-        {
-            return ret;
-        }
+		reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_TX);
+		reply.SetUInt8(4);
+		reply.SetUInt32(settings.GetLimits().GetWindowSizeTX());
 
-        reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_RX);
-        reply.SetUInt8(settings.GetLimits().GetWindowSizeRX().GetSize());
-        if ((ret = settings.GetLimits().GetWindowSizeRX().GetBytes(reply)) != 0)
-        {
-            return ret;
-        }
-
-        int len = reply.GetSize() - 3;
-        reply.SetUInt8(2, len); // Length.
+		reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_RX);
+		reply.SetUInt8(4);
+		reply.SetUInt32(settings.GetLimits().GetWindowSizeRX());
     }
     return 0;
 }
@@ -1222,7 +1333,7 @@ int CGXDLMSServer::HandleCommand(
         ret = HandleMethodRequest(data, connectionInfo);
         break;
     case DLMS_COMMAND_SNRM:        
-        ret = HandleSnrmRequest(m_Settings, m_ReplyData);
+        ret = HandleSnrmRequest(data, m_Settings, m_ReplyData);
         if(ret == 0) {
             frame = DLMS_COMMAND_UA;
             m_LinkEstablished = true;

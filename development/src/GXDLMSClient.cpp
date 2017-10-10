@@ -157,52 +157,38 @@ int CGXDLMSClient::SNRMRequest(std::vector<CGXByteBuffer>& packets)
     // Length is updated later.
     data.SetUInt8(0);
     // If custom HDLC parameters are used.
-    if (CGXDLMSLimits::DEFAULT_MAX_INFO_TX != GetLimits().GetMaxInfoTX().ToInteger())
+    if (CGXDLMSLimits::DEFAULT_MAX_INFO_TX != GetLimits().GetMaxInfoTX())
     {
         data.SetUInt8(HDLC_INFO_MAX_INFO_TX);
-        data.SetUInt8(GetLimits().GetMaxInfoTX().GetSize());
-        if ((ret = GetLimits().GetMaxInfoTX().GetBytes(data)) != 0)
-        {
-            return ret;
-        }
+        data.SetUInt8(2);
+		data.SetUInt16(GetLimits().GetMaxInfoTX());
     }
-    if (CGXDLMSLimits::DEFAULT_MAX_INFO_RX != GetLimits().GetMaxInfoRX().ToInteger())
+    if (CGXDLMSLimits::DEFAULT_MAX_INFO_RX != GetLimits().GetMaxInfoRX())
     {
         data.SetUInt8(HDLC_INFO_MAX_INFO_RX);
-        data.SetUInt8(GetLimits().GetMaxInfoRX().GetSize());
-        if ((ret = GetLimits().GetMaxInfoRX().GetBytes(data)) != 0)
-        {
-            return ret;
-        }
+        data.SetUInt8(2);
+		data.SetUInt16(GetLimits().GetMaxInfoRX());
     }
-    if (CGXDLMSLimits::DEFAULT_WINDOWS_SIZE_TX != GetLimits().GetWindowSizeTX().ToInteger())
+    if (CGXDLMSLimits::DEFAULT_WINDOWS_SIZE_TX != GetLimits().GetWindowSizeTX())
     {
         data.SetUInt8(HDLC_INFO_WINDOW_SIZE_TX);
-        data.SetUInt8(GetLimits().GetWindowSizeTX().GetSize());
-        if ((ret = GetLimits().GetWindowSizeTX().GetBytes(data)) != 0)
-        {
-            return ret;
-        }
+        data.SetUInt8(2);
+		data.SetUInt32(GetLimits().GetWindowSizeTX());
     }
-    if (CGXDLMSLimits::DEFAULT_WINDOWS_SIZE_RX != GetLimits().GetWindowSizeRX().ToInteger())
+    if (CGXDLMSLimits::DEFAULT_WINDOWS_SIZE_RX != GetLimits().GetWindowSizeRX())
     {
         data.SetUInt8(HDLC_INFO_WINDOW_SIZE_RX);
-        data.SetUInt8(GetLimits().GetWindowSizeRX().ToInteger());
-        if ((ret = GetLimits().GetWindowSizeRX().GetBytes(data)) != 0)
-        {
-            return ret;
-        }
+        data.SetUInt8(4);
+		data.SetUInt32(GetLimits().GetWindowSizeRX());
     }
     // If default HDLC parameters are not used.
-    if (data.GetSize() != 3)
+    if (data.GetSize() == 3)
     {
-        // Length.
-        data.SetUInt8(2, (unsigned char)(data.GetSize() - 3));
+		data.Clear();
     }
-    else
-    {
-        data.Clear();
-    }
+	else {
+		data.SetUInt8(2, data.GetSize() - 3);
+	}
     m_Settings.ResetFrameSequence();
     CGXByteBuffer reply;
     ret = CGXDLMS::GetHdlcFrame(m_Settings, DLMS_COMMAND_SNRM, &data, reply);
@@ -210,65 +196,6 @@ int CGXDLMSClient::SNRMRequest(std::vector<CGXByteBuffer>& packets)
     return ret;
 }
 
-// SN referencing
-//int CGXDLMSClient::ParseSNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects)
-//{
-//    int ret;
-//    CGXDataInfo info;
-//    //Get array tag.
-//    unsigned char ch;
-//    unsigned long cnt;
-//    //Check that data is in the array
-//    // Get array tag.
-//    if ((ret = buff.GetUInt8(&ch)) != 0)
-//    {
-//        return ret;
-//    }
-//    if (ch != 1)
-//    {
-//        return DLMS_ERROR_CODE_INVALID_RESPONSE;
-//    }
-//    //get object count
-//    CGXDLMSVariant value;
-//    if ((ret = GXHelpers::GetObjectCount(buff, cnt)) != 0)
-//    {
-//        return ret;
-//    }
-//    for (unsigned long objPos = 0; objPos != cnt; ++objPos)
-//    {
-//        info.Clear();
-//        if ((ret = GXHelpers::GetData(buff, info, value)) != 0)
-//        {
-//            return ret;
-//        }
-//        if (value.vt != DLMS_DATA_TYPE_STRUCTURE || value.Arr.size() != 4)
-//        {
-//            return DLMS_ERROR_CODE_INVALID_PARAMETER;
-//        }
-//        if (value.Arr[0].vt != DLMS_DATA_TYPE_INT16 ||
-//            value.Arr[1].vt != DLMS_DATA_TYPE_UINT16 ||
-//            value.Arr[2].vt != DLMS_DATA_TYPE_UINT8 ||
-//            value.Arr[3].vt != DLMS_DATA_TYPE_OCTET_STRING)
-//        {
-//            return DLMS_ERROR_CODE_INVALID_PARAMETER;
-//        }
-//        short sn = value.Arr[0].ToInteger();
-//        unsigned short class_id = (unsigned short)value.Arr[1].ToInteger();
-//        unsigned char version = (unsigned char)value.Arr[2].ToInteger();
-//        CGXDLMSVariant ln = value.Arr[3];
-//        CGXDLMSObject* pObj = CGXDLMSObjectFactory::CreateObject((DLMS_OBJECT_TYPE)class_id);
-//        if (pObj != NULL)
-//        {
-//            pObj->SetShortName(sn);
-//            pObj->SetVersion(version);
-//            int cnt = ln.GetSize();
-//            assert(cnt == 6);
-//            CGXDLMSObject::SetLogicalName(pObj, ln);
-//            objects.push_back(pObj);
-//        }
-//    }
-//    return 0;
-//}
 
 int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& objects, bool onlyKnownObjects)
 {
@@ -619,7 +546,7 @@ int CGXDLMSClient::ParseUAResponse(CGXByteBuffer& data)
     {
         return ret;
     }
-    CGXDLMSVariant value;
+    unsigned int value;
     while (data.GetPosition() < data.GetSize())
     {
         if ((ret = data.GetUInt8(&id)) != 0)

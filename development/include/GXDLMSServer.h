@@ -77,7 +77,7 @@ private:
     *
     * @return Returns returned UA packet.
     */
-    int HandleSnrmRequest(CGXDLMSSettings& settings, CGXByteBuffer& reply);
+    int HandleSnrmRequest(CGXByteBuffer& data, CGXDLMSSettings& settings, CGXByteBuffer& reply);
 
     /**
     * Handle get request normal command.
@@ -463,7 +463,7 @@ public:
     /**
      * @return Information from the connection size that server can handle.
      */
-    CGXDLMSLimits GetLimits();
+    CGXDLMSLimits& GetLimits();
 
     /**
      * Retrieves the maximum size of received PDU. PDU size tells maximum size

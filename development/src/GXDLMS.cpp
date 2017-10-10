@@ -325,13 +325,13 @@ int CGXDLMS::GetHdlcFrame(
 
     // Add BOP
     reply.SetUInt8(HDLC_FRAME_START_END);
-    frameSize = settings.GetLimits().GetMaxInfoTX().ToInteger();
+    frameSize = settings.GetLimits().GetMaxInfoTX();
     // If no data
     if (data == NULL || data->GetSize() == 0)
     {
         reply.SetUInt8(0xA0);
     }
-    else if (data->GetSize() - data->GetPosition() <= frameSize)
+    else if (data->GetSize() - data->GetPosition() <= frameSize - (9 + primaryAddress.GetSize() + secondaryAddress.GetSize()))
     {
         len = data->GetSize() - data->GetPosition();
         // Is last packet.
@@ -350,9 +350,14 @@ int CGXDLMS::GetHdlcFrame(
             secondaryAddress.GetSize() + len));
     }
     else
-    {
-        reply.SetUInt8((unsigned char)(7 + primaryAddress.GetSize() +
-            secondaryAddress.GetSize() + len));
+    { 
+		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
+			reply.SetUInt8((unsigned char)(frameSize - 2));
+			len = (frameSize ) - ( 9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
+		}
+		else {
+			reply.SetUInt8((unsigned char)(len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize()));
+		}
     }
     // Add primary address.
     reply.Set(&primaryAddress);
