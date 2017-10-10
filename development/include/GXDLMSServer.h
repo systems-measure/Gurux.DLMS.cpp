@@ -518,57 +518,9 @@ public:
     // * @return Response to the request. Response is NULL if request packet is
     // *         not complete.
     // */
-    //int HandleRequest(
-    //    CGXByteBuffer& data,
-    //    CGXByteBuffer& reply);
-
-    ///**
-    //* Handles client request.
-    //*
-    //* @param data
-    //*            Received data from the client.
-    //* @return Response to the request. Response is NULL if request packet is
-    //*         not complete.
-    //*/
-    //int HandleRequest(
-    //    CGXDLMSConnectionEventArgs& connectionInfo,
-    //    CGXByteBuffer& data,
-    //    CGXByteBuffer& reply);
-
-    ///**
-    // * Handles client request.
-    // *
-    // * @param data
-    // *            Received data from the client.
-    // * @return Response to the request. Response is NULL if request packet is
-    // *         not complete.
-    // */
-    //int HandleRequest(
-    //    unsigned char* data,
-    //    unsigned short size,
-    //    CGXByteBuffer& reply);
-
-    ///**
-    // * Handles client request.
-    // *
-    // * @param data
-    // *            Received data from the client.
-    // * @return Response to the request. Response is NULL if request packet is
-    // *         not complete.
-    // */
     int HandleRequest(
-        /*CGXDLMSConnectionEventArgs& connectionInfo,*/
-        /*unsigned char* data,
-        unsigned short size,*/
         CGXByteBuffer& reply);
 
-
-    /**
-    * Find Short Name object.
-    *
-    * @param sn
-    */
-    int FindSNObject(int sn, CGXSNInfo& i);
 
     /**
     * Server will tell what functionality is available for the client.

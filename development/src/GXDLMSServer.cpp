@@ -768,7 +768,6 @@ int CGXDLMSServer::HandleSetRequest(CGXByteBuffer& data)
 
 unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
 {
-    //DLMS_DATA_TYPE dt;
 	std::vector<DLMS_DATA_TYPE> dt;
 	std::string ln = pg->GetName();
 	pType type = (pType)GetTypeProfile(ln);
@@ -1184,85 +1183,6 @@ int CGXDLMSServer::HandleGetRequest(
     return ret;
 }
 
-/**
- * Find Short Name object.
- *
- * @param sn
- */
-int CGXDLMSServer::FindSNObject(int sn, CGXSNInfo& i)
-{
-    return 0;
-}
-
-/**
-* Get data for Read command.
-*
-* @param settings
-*            DLMS settings.
-* @param list
-*            received objects.
-* @param data
-*            Data as byte array.
-* @param type
-*            Response type.
-*/
-int GetReadData(CGXDLMSSettings& settings,
-    std::vector<CGXDLMSValueEventArg*>& list,
-    CGXByteBuffer& data,
-    DLMS_SINGLE_READ_RESPONSE& type)
-{
-    int ret;
-    unsigned char first = 1;
-    type = DLMS_SINGLE_READ_RESPONSE_DATA;
-    for (std::vector<CGXDLMSValueEventArg*>::iterator e = list.begin(); e != list.end(); ++e)
-    {
-        if (!(*e)->GetHandled())
-        {
-            // If action.
-            if ((*e)->IsAction())
-            {
-                ret = (*e)->GetTarget()->Invoke(settings, *(*e));
-            }
-            else
-            {
-                ret = (*e)->GetTarget()->GetValue(settings, *(*e));
-            }
-        }
-        if (ret != 0)
-        {
-            return ret;
-        }
-        CGXDLMSVariant& value = (*e)->GetValue();
-        if ((*e)->GetError() == DLMS_ERROR_CODE_OK)
-        {
-            if (!first && list.size() != 1)
-            {
-                data.SetUInt8(DLMS_SINGLE_READ_RESPONSE_DATA);
-            }
-            // If action.
-            if ((*e)->IsAction() || ((*e)->IsByteArray() && value.vt == DLMS_DATA_TYPE_OCTET_STRING))
-            {
-                data.Set(value.byteArr, value.size);
-            }
-            else
-            {
-                CGXDLMS::AppendData((*e)->GetTarget(), (*e)->GetIndex(), data, value);
-            }
-        }
-        else
-        {
-            if (!first && list.size() != 1)
-            {
-                data.SetUInt8(DLMS_SINGLE_READ_RESPONSE_DATA_ACCESS_ERROR);
-            }
-            data.SetUInt8((*e)->GetError());
-            type = DLMS_SINGLE_READ_RESPONSE_DATA_ACCESS_ERROR;
-        }
-        first = false;
-    }
-    return 0;
-}
-
 int CGXDLMSServer::HandleCommand(
     CGXDLMSConnectionEventArgs& connectionInfo,
     DLMS_COMMAND cmd,
@@ -1549,41 +1469,7 @@ bool CGXDLMSServer::CheckCtlField(unsigned char ctl,
     return true;
 }
 
-//int CGXDLMSServer::HandleRequest(
-//    CGXByteBuffer& data,
-//    CGXByteBuffer& reply)
-//{
-//    return HandleRequest(
-//        data.GetData(),
-//        (unsigned short)(data.GetSize() - data.GetPosition()),
-//        reply);
-//}
-//
-//int CGXDLMSServer::HandleRequest(
-//    CGXDLMSConnectionEventArgs& connectionInfo,
-//    CGXByteBuffer& data,
-//    CGXByteBuffer& reply)
-//{
-//    return HandleRequest(
-//        connectionInfo,
-//        data.GetData(),
-//        (unsigned short)(data.GetSize() - data.GetPosition()),
-//        reply);
-//}
-//
-//int CGXDLMSServer::HandleRequest(
-//    unsigned char* buff,
-//    unsigned short size,
-//    CGXByteBuffer& reply)
-//{
-//    CGXDLMSConnectionEventArgs connectionInfo;
-//    return HandleRequest(connectionInfo, buff, size, reply);
-//}
-
 int CGXDLMSServer::HandleRequest(
-    /*CGXDLMSConnectionEventArgs& connectionInfo,*/
-    /*unsigned char* buff,
-    unsigned short size,*/
     CGXByteBuffer& reply)
 {   
 	CGXDLMSConnectionEventArgs connectionInfo;
@@ -1598,7 +1484,6 @@ int CGXDLMSServer::HandleRequest(
         //Server not Initialized.
         return DLMS_ERROR_CODE_NOT_INITIALIZED;
     }
-    //m_ReceivedData.Set(buff, size);
     bool first = m_Settings.GetServerAddress() == 0
         && m_Settings.GetClientAddress() == 0;
     if ((ret = CGXDLMS::GetData(m_Settings, m_ReceivedData, m_Info)) != 0)
