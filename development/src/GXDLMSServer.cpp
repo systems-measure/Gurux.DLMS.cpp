@@ -1606,6 +1606,7 @@ int CGXDLMSServer::HandleRequest(
         }
 		else {
 			m_ReceivedData.Clear();
+			m_Info.Clear();
 		}
         return ret;
     }
