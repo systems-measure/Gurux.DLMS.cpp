@@ -615,7 +615,7 @@ void AddWeekProfileTable(std::vector<CGXDLMSWeekProfile*>& items, std::vector<CG
 
 void AddDayProfileTable(std::vector<CGXDLMSDayProfile*>& items, std::vector<CGXDLMSVariant>& list)
 {
-    for (std::vector<CGXDLMSDayProfile*>::iterator item = items.begin(); item != items.end(); ++item)
+    /*for (std::vector<CGXDLMSDayProfile*>::iterator item = items.begin(); item != items.end(); ++item)
     {
         delete *item;
     }
@@ -638,7 +638,7 @@ void AddDayProfileTable(std::vector<CGXDLMSDayProfile*>& items, std::vector<CGXD
             it->GetDaySchedules().push_back(ac);
         }
         items.push_back(it);
-    }
+    }*/
 }
 
 // Set value of given attribute.
@@ -646,7 +646,7 @@ int CGXDLMSActivityCalendar::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {

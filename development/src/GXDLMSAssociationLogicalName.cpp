@@ -445,6 +445,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
     // Check reply_to_HLS_authentication
     if (e.GetIndex() == 1)
     {
+		e.SetByteArray(true);
         int ret;
         unsigned long ic = 0;
         CGXByteBuffer* readSecret;
@@ -468,7 +469,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
             readSecret = &m_HlsSecret;
         }
         CGXByteBuffer serverChallenge;
-        if ((ret = CGXSecure::Secure(settings, settings.GetCipher(), ic,
+		if ((ret = CGXSecure::Secure(settings, settings.GetCipher(), ic,
             settings.GetStoCChallenge(), *readSecret, serverChallenge)) != 0)
         {
             return ret;
@@ -489,6 +490,13 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
             {
                 return ret;
             }
+			if (serverChallenge.GetSize() + 2 > serverChallenge.Capacity()) {
+				serverChallenge.Capacity(serverChallenge.GetSize() + 2);
+			}
+			serverChallenge.SetSize(serverChallenge.GetSize() + 2);
+			serverChallenge.Move(0, 2, serverChallenge.GetSize() - 2);
+			serverChallenge.SetUInt8(0, DLMS_DATA_TYPE_OCTET_STRING);
+			serverChallenge.SetUInt8(1, serverChallenge.GetSize() - 2);
             e.SetValue(serverChallenge);
             settings.SetConnected(true);
         }
@@ -691,7 +699,7 @@ int CGXDLMSAssociationLogicalName::SetValue(CGXDLMSSettings& settings, CGXDLMSVa
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {

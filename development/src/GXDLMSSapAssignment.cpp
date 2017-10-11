@@ -194,7 +194,7 @@ int CGXDLMSSapAssignment::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     if (e.GetIndex() == 2)
     {

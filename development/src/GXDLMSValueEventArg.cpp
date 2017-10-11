@@ -77,6 +77,10 @@ void CGXDLMSValueEventArg::SetValue(CArtVariant& value)
 	c_Value = value;
 }
 
+void CGXDLMSValueEventArg::SetValue(CGXByteBuffer& value) {
+	c_Value = value;
+}
+
 bool CGXDLMSValueEventArg::GetHandled()
 {
     return m_Handled;

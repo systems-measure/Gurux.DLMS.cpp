@@ -206,7 +206,7 @@ int CGXDLMSScriptTable::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {

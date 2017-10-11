@@ -265,12 +265,23 @@ int CGXDLMSActionSchedule::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        GXHelpers::GetLogicalName(e.GetValue().Arr[0].byteArr, m_ExecutedScriptLogicalName);
-        SetExecutedScriptSelector(e.GetValue().Arr[1].ToInteger());
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		if (v_info.vt != DLMS_DATA_TYPE_OCTET_STRING || v_info.size != 6) {
+			return DLMS_ERROR_CODE_INVALID_PARAMETER;
+		}
+        GXHelpers::GetLogicalName(e.GetCAValue().GetCurPtr(), m_ExecutedScriptLogicalName);
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long value;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, value)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+	    SetExecutedScriptSelector(value);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 3)

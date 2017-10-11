@@ -82,6 +82,25 @@ CArtVariant& CArtVariant::operator=(CArtVariant& value) {
 	return *this;
 }
 
+CArtVariant& CArtVariant::operator=(CGXByteBuffer& value) {
+	if (this->byteArr != value.GetData()) {
+		if (byteArr != nullptr) {
+			std::free(byteArr);
+		}
+		byteArr = value.GetData();
+		size = value.GetSize();
+		position = value.GetPosition();
+		capacity = value.Capacity();
+		value.GetData() = nullptr;
+		value.Capacity(0);
+	}
+	else {
+		value.GetData() = nullptr;
+		value.Capacity(0);
+	}
+	return *this;
+}
+
 void CArtVariant::Set(unsigned char* buff, unsigned long size_buff) {
 	if (size + size_buff > capacity) {
 		byteArr = (unsigned char*)realloc(byteArr, size + size_buff);
@@ -163,6 +182,35 @@ unsigned char CArtVariant::ChangeType(unsigned long src_size, DLMS_DATA_TYPE typ
 		return DLMS_ERROR_CODE_OK;
 	}
 	}
+}
+
+unsigned char CArtVariant::GetUInt(unsigned char size, unsigned long long& value) {
+	unsigned char ret = DLMS_ERROR_CODE_INVALID_PARAMETER;
+	switch (size) {
+	case 1: {
+		unsigned char tmp;
+		ret = GetUInt8(&tmp);
+		value = tmp;
+		return ret;
+	}
+	case 2: {
+		unsigned short tmp;
+		ret = GetUInt16(&tmp);
+		value = tmp;
+		return ret;
+	}
+	case 4: {
+		unsigned long tmp;
+		ret = GetUInt32(&tmp);
+		value = tmp;
+		return ret;
+	}
+	case 8: {
+		ret = GetUInt64(&value);
+		return ret;
+	}
+	}
+	return ret;
 }
 
 unsigned char CArtVariant::GetUInt8(unsigned char* value) {

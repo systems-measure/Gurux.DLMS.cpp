@@ -143,7 +143,7 @@ public:
 
     int Get(unsigned char* value, unsigned long count);
 
-    unsigned char* GetData();
+    unsigned char*& GetData();
 
     void ToArray(unsigned char*& value, unsigned long& count);
 

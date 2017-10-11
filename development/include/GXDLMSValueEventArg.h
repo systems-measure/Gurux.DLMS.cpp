@@ -202,6 +202,8 @@ public:
 	*/
 	void SetValue(CArtVariant& value);
 
+	void SetValue(CGXByteBuffer& value);
+
     /**
     * @return Data type of the value.
     */

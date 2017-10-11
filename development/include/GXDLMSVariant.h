@@ -69,6 +69,7 @@ public:
 
 	//Move
 	CArtVariant& operator=(CArtVariant& value);
+	CArtVariant& operator=(CGXByteBuffer& value);
 
 	void Set(unsigned char* buff, unsigned long size);
 	unsigned char* GetCurPtr();
@@ -79,6 +80,7 @@ public:
 
 	bool DecreasePosition(unsigned short diff);
 
+	unsigned char GetUInt(unsigned char size, unsigned long long& value);
 	unsigned char GetUInt8(unsigned char* value);
 	unsigned char GetUInt16(unsigned short* value);
 	unsigned char GetUInt32(unsigned long* value);

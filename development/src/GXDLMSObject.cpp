@@ -70,9 +70,11 @@ int CGXDLMSObject::GetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value)
     return DLMS_ERROR_CODE_OK;
 }
 
-int CGXDLMSObject::SetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value)
+int CGXDLMSObject::SetLogicalName(CGXDLMSObject * target, CArtVariant& value)
 {
-    if (value.vt != DLMS_DATA_TYPE_OCTET_STRING || value.GetSize() != 6)
+	VarInfo v_info;
+	value.GetVar(v_info);
+    if (v_info.vt != DLMS_DATA_TYPE_OCTET_STRING || v_info.size != 6)
     {
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }

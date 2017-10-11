@@ -71,7 +71,7 @@ protected:
     bool IsRead(int index);
     bool CanRead(int index);
     static int GetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value);
-    static int SetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value);
+    static int SetLogicalName(CGXDLMSObject * target, CArtVariant& value);
 public:
 
     static bool IsLogicalNameEmpty(unsigned char* pLN)

@@ -341,7 +341,12 @@ int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& 
                 // method_access_item End
                 cnt = ln.GetSize();
                 assert(cnt == 6);
-                if ((ret = CGXDLMSObject::SetLogicalName(pObj, ln)) != 0)
+				CArtVariant ln_v;
+				ln_v.Reserve(8);
+				ln_v.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+				ln_v.SetUInt8(6);
+				ln_v.Set(ln.byteArr, 6);
+                if ((ret = CGXDLMSObject::SetLogicalName(pObj, ln_v)) != 0)
                 {
                     return ret;
                 }

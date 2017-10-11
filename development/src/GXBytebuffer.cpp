@@ -580,7 +580,7 @@ int CGXByteBuffer::Get(unsigned char* value, unsigned long count)
     return 0;
 }
 
-unsigned char* CGXByteBuffer::GetData()
+unsigned char*& CGXByteBuffer::GetData()
 {
     return m_Data;
 }

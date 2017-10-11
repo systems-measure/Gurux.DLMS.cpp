@@ -359,7 +359,7 @@ int CGXDLMSPushSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
@@ -369,16 +369,16 @@ int CGXDLMSPushSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
         {
             for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
             {
-                DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)it->Arr[0].ToInteger();
-                GXHelpers::GetLogicalName(it->Arr[1].byteArr, ln);
-                CGXDLMSObject* obj = settings.GetObjects()->FindByLN(type, ln);
-                if (obj == NULL)
-                {
-                    obj = CGXDLMSObjectFactory::CreateObject(type);
-                    CGXDLMSObject::SetLogicalName(obj, it->Arr[1]);
-                }
-                CGXDLMSCaptureObject co(it->Arr[2].ToInteger(), it->Arr[3].ToInteger());
-                m_PushObjectList.push_back(std::pair<CGXDLMSObject*, CGXDLMSCaptureObject>(obj, co));
+                //DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)it->Arr[0].ToInteger();
+                //GXHelpers::GetLogicalName(it->Arr[1].byteArr, ln);
+                //CGXDLMSObject* obj = settings.GetObjects()->FindByLN(type, ln);
+                ///*if (obj == NULL)
+                //{
+                //    obj = CGXDLMSObjectFactory::CreateObject(type);
+                //    CGXDLMSObject::SetLogicalName(obj, it->Arr[1]);
+                //}*/
+                //CGXDLMSCaptureObject co(it->Arr[2].ToInteger(), it->Arr[3].ToInteger());
+                //m_PushObjectList.push_back(std::pair<CGXDLMSObject*, CGXDLMSCaptureObject>(obj, co));
             }
         }
     }
