@@ -63,10 +63,11 @@ CGXDLMSObject::CGXDLMSObject(DLMS_OBJECT_TYPE type)
     Initialize(0, type, 0, NULL);
 }
 
-int CGXDLMSObject::GetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value)
+int CGXDLMSObject::GetLogicalName(CGXDLMSObject * target, CGXByteBuffer& value)
 {
-    value.Add(target->m_LN, 6);
-    value.vt = DLMS_DATA_TYPE_OCTET_STRING;
+	value.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+	value.SetUInt8(6);
+    value.Set(target->m_LN, 6);
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -87,7 +88,7 @@ void CGXDLMSObject::Initialize(short sn, unsigned short class_id, unsigned char 
     m_AttributeIndex = 0;
     m_DataIndex = 0;
 	m_DataValidity = false;
-    m_SN = sn;
+   // m_SN = sn;
     m_ObjectType = (DLMS_OBJECT_TYPE)class_id;
     m_Version = version;
     if (ln == NULL)
@@ -114,7 +115,7 @@ CGXDLMSObject::~CGXDLMSObject(void)
 {
     m_Attributes.clear();
     m_MethodAttributes.clear();
-	m_ReadTimes.clear();
+	//m_ReadTimes.clear();
 }
 
 bool CGXDLMSObject::GetDataValidity() {
@@ -128,10 +129,10 @@ void CGXDLMSObject::SetDataValidity(bool validity) {
 std::string CGXDLMSObject::GetName()
 {
 	std::string ln;
-    if (m_SN != 0)
+    /*if (m_SN != 0)
     {
 		return std::string{ (m_SN >> 8) && 0xFF, (m_SN) && 0xFF };
-    }
+    }*/
     GXHelpers::GetLogicalName(m_LN, ln);
     return ln;
 }
@@ -140,7 +141,7 @@ int CGXDLMSObject::SetName(CGXDLMSVariant& value)
 {
     if (value.vt == DLMS_DATA_TYPE_UINT16)
     {
-        m_SN = value.uiVal;
+       // m_SN = value.uiVal;
         return DLMS_ERROR_CODE_OK;
     }
     if (value.vt == DLMS_DATA_TYPE_STRING)
@@ -156,7 +157,7 @@ DLMS_OBJECT_TYPE CGXDLMSObject::GetObjectType()
     return m_ObjectType;
 }
 
-int CGXDLMSObject::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSObject::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index < 1)
     {
@@ -174,7 +175,7 @@ int CGXDLMSObject::GetDataType(int index, DLMS_DATA_TYPE& type)
     return DLMS_ERROR_CODE_OK;
 }
 
-int CGXDLMSObject::SetDataType(int index, DLMS_DATA_TYPE type)
+int CGXDLMSObject::SetDataType(unsigned char index, DLMS_DATA_TYPE type)
 {
     for (CGXAttributeCollection::iterator it = m_Attributes.begin(); it != m_Attributes.end(); ++it)
     {
@@ -190,7 +191,7 @@ int CGXDLMSObject::SetDataType(int index, DLMS_DATA_TYPE type)
     return DLMS_ERROR_CODE_OK;
 }
 
-DLMS_ACCESS_MODE CGXDLMSObject::GetAccess(int index)
+DLMS_ACCESS_MODE CGXDLMSObject::GetAccess(unsigned char index)
 {
     //LN is read only.
     if (index == 1)
@@ -208,7 +209,7 @@ DLMS_ACCESS_MODE CGXDLMSObject::GetAccess(int index)
 }
 
 // Set attribute access.
-void CGXDLMSObject::SetAccess(int index, DLMS_ACCESS_MODE access)
+void CGXDLMSObject::SetAccess(unsigned char index, DLMS_ACCESS_MODE access)
 {
     for (CGXAttributeCollection::iterator it = m_Attributes.begin(); it != m_Attributes.end(); ++it)
     {
@@ -223,7 +224,7 @@ void CGXDLMSObject::SetAccess(int index, DLMS_ACCESS_MODE access)
     m_Attributes.push_back(att);
 }
 
-DLMS_METHOD_ACCESS_MODE CGXDLMSObject::GetMethodAccess(int index)
+DLMS_METHOD_ACCESS_MODE CGXDLMSObject::GetMethodAccess(unsigned char index)
 {
     for (CGXAttributeCollection::iterator it = m_MethodAttributes.begin(); it != m_MethodAttributes.end(); ++it)
     {
@@ -235,7 +236,7 @@ DLMS_METHOD_ACCESS_MODE CGXDLMSObject::GetMethodAccess(int index)
     return DLMS_METHOD_ACCESS_MODE_ACCESS;
 }
 
-void CGXDLMSObject::SetMethodAccess(int index, DLMS_METHOD_ACCESS_MODE access)
+void CGXDLMSObject::SetMethodAccess(unsigned char index, DLMS_METHOD_ACCESS_MODE access)
 {
     for (CGXAttributeCollection::iterator it = m_MethodAttributes.begin(); it != m_MethodAttributes.end(); ++it)
     {
@@ -250,7 +251,7 @@ void CGXDLMSObject::SetMethodAccess(int index, DLMS_METHOD_ACCESS_MODE access)
     m_MethodAttributes.push_back(att);
 }
 
-int CGXDLMSObject::GetUIDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSObject::GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     for (CGXAttributeCollection::iterator it = m_Attributes.begin(); it != m_Attributes.end(); ++it)
     {
@@ -264,7 +265,7 @@ int CGXDLMSObject::GetUIDataType(int index, DLMS_DATA_TYPE& type)
     return DLMS_ERROR_CODE_OK;
 }
 
-void CGXDLMSObject::SetUIDataType(int index, DLMS_DATA_TYPE type)
+void CGXDLMSObject::SetUIDataType(unsigned char index, DLMS_DATA_TYPE type)
 {
     for (CGXAttributeCollection::iterator it = m_Attributes.begin(); it != m_Attributes.end(); ++it)
     {
@@ -278,15 +279,15 @@ void CGXDLMSObject::SetUIDataType(int index, DLMS_DATA_TYPE type)
     m_Attributes.push_back(att);
 }
 
-unsigned short CGXDLMSObject::GetShortName()
-{
-    return m_SN;
-}
-
-void CGXDLMSObject::SetShortName(unsigned short value)
-{
-    m_SN = value;
-}
+//unsigned short CGXDLMSObject::GetShortName()
+//{
+//    return m_SN;
+//}
+//
+//void CGXDLMSObject::SetShortName(unsigned short value)
+//{
+//    m_SN = value;
+//}
 
 void CGXDLMSObject::GetLogicalName(std::string& ln)
 {
@@ -356,11 +357,12 @@ void CGXDLMSObject::SetDescription(std::string value)
 
 bool CGXDLMSObject::IsRead(int index)
 {
-    if (!CanRead(index))
+    /*if (!CanRead(index))
     {
         return true;
     }
-    return m_ReadTimes.find(index) != m_ReadTimes.end();
+    return m_ReadTimes.find(index) != m_ReadTimes.end();*/
+	return 0;
 }
 
 bool CGXDLMSObject::CanRead(int index)

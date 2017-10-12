@@ -77,8 +77,8 @@ public:
 	bool Reserve(unsigned long new_size);
 
 	bool IncreasePosition(unsigned short diff);
-
 	bool DecreasePosition(unsigned short diff);
+	bool SetPosition(unsigned long pos);
 
 	unsigned char GetUInt(unsigned char size, unsigned long long& value);
 	unsigned char GetUInt8(unsigned char* value);
@@ -86,10 +86,19 @@ public:
 	unsigned char GetUInt32(unsigned long* value);
 	unsigned char GetUInt64(unsigned long long* value);
 
+	unsigned char GetReal(unsigned char size, double& value);
+	unsigned char GetFloat(float* value);
+	unsigned char GetDouble(double* value);
+
 	void SetUInt8(unsigned char item);
 	void SetUInt16(unsigned short item);
 	void SetUInt32(unsigned long item);
 	void SetUInt64(unsigned long long item);
+
+	void SetFloat(float item);
+	void SetDouble(double item);
+
+	unsigned char Zero(unsigned short index, unsigned short count);
 
 	void GetVar(VarInfo& v_info);
 	unsigned char ChangeType(unsigned long src_size, DLMS_DATA_TYPE type, CArtVariant& new_value);

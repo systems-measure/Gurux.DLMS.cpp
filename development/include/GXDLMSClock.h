@@ -116,8 +116,8 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetUIDataType(int index, DLMS_DATA_TYPE& type);
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     /*
      * Returns value of given attribute.

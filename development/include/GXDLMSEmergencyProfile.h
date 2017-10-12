@@ -37,19 +37,19 @@
 
 class CGXDLMSEmergencyProfile
 {
-    int m_ID;
+    unsigned short m_ID;
     CGXDateTime m_ActivationTime;
-    int m_Duration;
+    unsigned long m_Duration;
 public:
 
-    int GetID();
-    void SetID(int value);
+	unsigned short GetID();
+    void SetID(unsigned short value);
 
     CGXDateTime& GetActivationTime();
     void SetActivationTime(CGXDateTime value);
 
-    int GetDuration();
-    void SetDuration(int value);
+	unsigned long GetDuration();
+    void SetDuration(unsigned long value);
 
     std::string ToString();
 };

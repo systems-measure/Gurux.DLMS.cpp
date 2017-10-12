@@ -58,10 +58,10 @@ class CGXDLMSValueEventArg
 private:
 
 	CArtVariant c_Value;
-    /**
-    * CGXDLMSVariant value.
-    */
-    CGXDLMSVariant m_Value;
+    ///**
+    //* CGXDLMSVariant value.
+    //*/
+    //CGXDLMSVariant m_Value;
     /**
     * Is request handled.
     */
@@ -185,16 +185,16 @@ public:
 
     void SetIndex(unsigned char value);
 
-    /**
-    * @return CGXDLMSVariant value.
-    */
-    CGXDLMSVariant& GetValue();
+    ///**
+    //* @return CGXDLMSVariant value.
+    //*/
+    //CGXDLMSVariant& GetValue();
 
-    /**
-    * @param value
-    *            CGXDLMSVariant value.
-    */
-    void SetValue(CGXDLMSVariant value);
+    ///**
+    //* @param value
+    //*            CGXDLMSVariant value.
+    //*/
+    //void SetValue(CGXDLMSVariant value);
 
 	/**
 	* @param value

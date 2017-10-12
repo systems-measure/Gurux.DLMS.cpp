@@ -40,7 +40,7 @@ class CGXDLMSRegister : public CGXDLMSObject
 {
     void Init();
 protected:
-    CGXDLMSVariant m_Value;
+    CArtVariant m_Value;
     signed char m_Scaler;
     unsigned char m_Unit;
 
@@ -60,23 +60,23 @@ public:
     CGXDLMSRegister(unsigned short sn);
 
     //SN Constructor.
-    CGXDLMSRegister(unsigned short sn, double scaler, int unit, CGXDLMSVariant value);
+    CGXDLMSRegister(unsigned short sn, double scaler, unsigned char unit, CArtVariant value);
 
     //LN Constructor.
     CGXDLMSRegister(const char* ln);
 
     //LN Constructor.
-    CGXDLMSRegister(const char* ln, double scaler, int unit, CGXDLMSVariant value);
+    CGXDLMSRegister(const char* ln, double scaler, unsigned char unit, CArtVariant value);
 
     /// <summary>
     /// Get value of COSEM Data object.
     /// </summary>
-    CGXDLMSVariant GetValue();
+	CArtVariant GetValue();
 
     /// <summary>
     /// Set value of COSEM Data object.
     /// </summary>
-    void SetValue(CGXDLMSVariant& value);
+    void SetValue(CArtVariant& value);
 
     // Scaler of COSEM Register object.
     double GetScaler();
@@ -84,7 +84,7 @@ public:
     void SetScaler(double value);
 
     // Unit of COSEM Register object.
-    int GetUnit();
+	unsigned char GetUnit();
 
     void SetUnit(unsigned char value);
 
@@ -106,7 +106,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

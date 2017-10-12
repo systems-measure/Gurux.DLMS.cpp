@@ -85,7 +85,7 @@ int CGXDLMSSapAssignment::GetMethodCount()
 
 void CGXDLMSSapAssignment::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+   /* values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -105,7 +105,7 @@ void CGXDLMSSapAssignment::GetValues(std::vector<std::string>& values)
         sb.write(it->second.c_str(), it->second.size());
     }
     sb << ']';
-    values.push_back(sb.str());
+    values.push_back(sb.str());*/
 }
 
 void CGXDLMSSapAssignment::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -144,44 +144,44 @@ int CGXDLMSSapAssignment::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		CGXByteBuffer data;
+		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetByteArray(true);
-        unsigned long cnt = (unsigned long)m_SapAssignmentList.size();
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        //Add count
-        GXHelpers::SetObjectCount(cnt, data);
-        int ret;
-        if (cnt != 0)
-        {
-            CGXDLMSVariant f, s;
-            CGXByteBuffer bb;
-            for (std::map<int, std::string >::iterator it = m_SapAssignmentList.begin();
-                it != m_SapAssignmentList.end(); ++it)
-            {
-                data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-                data.SetUInt8(2); //Count
-                f = it->first;
-                bb.Clear();
-                bb.AddString(it->second);
-                s = bb;
-                if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, f)) != 0 ||
-                    (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, s)) != 0)
-                {
-                    return ret;
-                }
-            }
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //unsigned long cnt = (unsigned long)m_SapAssignmentList.size();
+        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        ////Add count
+        //GXHelpers::SetObjectCount(cnt, data);
+        //int ret;
+        //if (cnt != 0)
+        //{
+        //    CGXDLMSVariant f, s;
+        //    CGXByteBuffer bb;
+        //    for (std::map<int, std::string >::iterator it = m_SapAssignmentList.begin();
+        //        it != m_SapAssignmentList.end(); ++it)
+        //    {
+        //        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //        data.SetUInt8(2); //Count
+        //        f = it->first;
+        //        bb.Clear();
+        //        bb.AddString(it->second);
+        //        s = bb;
+        //        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, f)) != 0 ||
+        //            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, s)) != 0)
+        //        {
+        //            return ret;
+        //        }
+        //    }
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -198,7 +198,7 @@ int CGXDLMSSapAssignment::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
     }
     if (e.GetIndex() == 2)
     {
-        m_SapAssignmentList.clear();
+        /*m_SapAssignmentList.clear();
         for (std::vector<CGXDLMSVariant>::iterator item = e.GetValue().Arr.begin();
             item != e.GetValue().Arr.end(); ++item)
         {
@@ -214,7 +214,7 @@ int CGXDLMSSapAssignment::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
                 str = (*item).Arr[1].ToString();
             }
             m_SapAssignmentList[(*item).Arr[0].ToInteger()] = str;
-        }
+        }*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

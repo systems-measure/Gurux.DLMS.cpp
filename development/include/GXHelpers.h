@@ -71,6 +71,10 @@ public:
 
 	static int GetDataCA(CGXByteBuffer& data, CArtVariant& value);
 
+	static void SetDateTime(CGXByteBuffer& buff, CGXDateTime& value);
+
+	static unsigned char GetDateTime(CArtVariant& buff, CGXDateTime& value);
+
     static void GetLogicalName(unsigned char* buff, std::string& ln)
     {
         int dataSize;

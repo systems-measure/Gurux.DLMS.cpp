@@ -38,8 +38,8 @@
 class CGXDLMSCaptureObject
 {
 private:
-    int m_AttributeIndex;
-    int m_DataIndex;
+    unsigned char m_AttributeIndex;
+	unsigned char m_DataIndex;
 
 public:
     /*
@@ -49,18 +49,18 @@ public:
     /*
      * Constructor.
      */
-    CGXDLMSCaptureObject(int attributeIndex, int dataIndex);
+    CGXDLMSCaptureObject(unsigned char attributeIndex, unsigned char dataIndex);
 
     /**
      Index of DLMS object in the profile generic table
     */
-    int GetAttributeIndex();
-    void SetAttributeIndex(int value);
+	unsigned char GetAttributeIndex();
+    void SetAttributeIndex(unsigned char value);
 
     /**
      Data index of DLMS object in the profile generic table.
     */
-    int GetDataIndex();
-    void SetDataIndex(int value);
+	unsigned char GetDataIndex();
+    void SetDataIndex(unsigned char value);
 };
 #endif //GXDLMSCAPTUREOBJECT_H

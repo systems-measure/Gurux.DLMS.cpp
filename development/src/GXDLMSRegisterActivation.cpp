@@ -83,52 +83,52 @@ int CGXDLMSRegisterActivation::GetMethodCount()
 
 void CGXDLMSRegisterActivation::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
 
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<CGXDLMSObjectDefinition>::iterator it = m_RegisterAssignment.begin(); it != m_RegisterAssignment.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = it->ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
-    sb.str(std::string());
+    //std::stringstream sb;
+    //sb << '[';
+    //bool empty = true;
+    //for (std::vector<CGXDLMSObjectDefinition>::iterator it = m_RegisterAssignment.begin(); it != m_RegisterAssignment.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    std::string str = it->ToString();
+    //    sb.write(str.c_str(), str.size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
+    //sb.str(std::string());
 
-    values.push_back("");
-    /*TODO: Add MaskList.
-    sb << '[';
-    empty = true;
-    for(std::vector<std::pair<CGXByteBuffer, CGXByteBuffer > >::iterator it = m_MaskList.begin(); it != m_MaskList.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        sb << it->ToString();
-    }
-    sb << ']';
-    values.push_back(sb.str());
-    */
-    if (m_ActiveMask.GetSize() != 0)
-    {
-        values.push_back(m_ActiveMask.ToHexString());
-    }
-    else
-    {
-        values.push_back("");
-    }
+    //values.push_back("");
+    ///*TODO: Add MaskList.
+    //sb << '[';
+    //empty = true;
+    //for(std::vector<std::pair<CGXByteBuffer, CGXByteBuffer > >::iterator it = m_MaskList.begin(); it != m_MaskList.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    sb << it->ToString();
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
+    //*/
+    //if (m_ActiveMask.GetSize() != 0)
+    //{
+    //    values.push_back(m_ActiveMask.ToHexString());
+    //}
+    //else
+    //{
+    //    values.push_back("");
+    //}
 }
 
 void CGXDLMSRegisterActivation::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -185,17 +185,17 @@ int CGXDLMSRegisterActivation::GetValue(CGXDLMSSettings& settings, CGXDLMSValueE
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetByteArray(true);
+        /*e.SetByteArray(true);
         int ret;
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         GXHelpers::SetObjectCount((unsigned long)m_RegisterAssignment.size(), data);
@@ -212,12 +212,12 @@ int CGXDLMSRegisterActivation::GetValue(CGXDLMSSettings& settings, CGXDLMSValueE
                 return ret;
             }
         }
-        e.SetValue(data);
+        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        int ret;
+        /*int ret;
         e.SetByteArray(true);
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         CGXDLMSVariant tmp;
@@ -239,13 +239,13 @@ int CGXDLMSRegisterActivation::GetValue(CGXDLMSSettings& settings, CGXDLMSValueE
                 data.SetUInt8(it->second.GetData()[pos]);
             }
         }
-        e.SetValue(data);
+        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.GetValue().Add(m_ActiveMask.GetData(), m_ActiveMask.GetSize());
-        e.GetValue().vt = DLMS_DATA_TYPE_OCTET_STRING;
+       /* e.GetValue().Add(m_ActiveMask.GetData(), m_ActiveMask.GetSize());
+        e.GetValue().vt = DLMS_DATA_TYPE_OCTET_STRING;*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -260,7 +260,7 @@ int CGXDLMSRegisterActivation::SetValue(CGXDLMSSettings& settings, CGXDLMSValueE
     }
     else if (e.GetIndex() == 2)
     {
-        m_RegisterAssignment.clear();
+        /*m_RegisterAssignment.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
@@ -272,11 +272,11 @@ int CGXDLMSRegisterActivation::SetValue(CGXDLMSSettings& settings, CGXDLMSValueE
                 item.SetLogicalName(ln);
                 m_RegisterAssignment.push_back(item);
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 3)
     {
-        m_MaskList.clear();
+        /*m_MaskList.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
@@ -289,11 +289,11 @@ int CGXDLMSRegisterActivation::SetValue(CGXDLMSSettings& settings, CGXDLMSValueE
                 }
                 m_MaskList.push_back(std::pair<CGXByteBuffer, CGXByteBuffer>(key, arr));
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 4)
     {
-        m_ActiveMask.Set(e.GetValue().byteArr, e.GetValue().size);
+        //m_ActiveMask.Set(e.GetValue().byteArr, e.GetValue().size);
     }
     else
     {

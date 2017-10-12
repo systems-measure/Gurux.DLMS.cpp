@@ -108,43 +108,43 @@ int CGXDLMSRegisterMonitor::GetMethodCount()
 
 void CGXDLMSRegisterMonitor::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<CGXDLMSVariant>::iterator it = m_Thresholds.begin(); it != m_Thresholds.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = it->ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
-    values.push_back(m_MonitoredValue.ToString());
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    //std::stringstream sb;
+    //sb << '[';
+    //bool empty = true;
+    //for (std::vector<CGXDLMSVariant>::iterator it = m_Thresholds.begin(); it != m_Thresholds.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    std::string str = it->ToString();
+    //    sb.write(str.c_str(), str.size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
+    //values.push_back(m_MonitoredValue.ToString());
 
-    //Clear str.
-    sb.str(std::string());
-    sb << '[';
-    empty = true;
-    for (std::vector<CGXDLMSActionSet*>::iterator it = m_Actions.begin(); it != m_Actions.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = (*it)->ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
+    ////Clear str.
+    //sb.str(std::string());
+    //sb << '[';
+    //empty = true;
+    //for (std::vector<CGXDLMSActionSet*>::iterator it = m_Actions.begin(); it != m_Actions.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    std::string str = (*it)->ToString();
+    //    sb.write(str.c_str(), str.size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
 }
 
 void CGXDLMSRegisterMonitor::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -202,87 +202,87 @@ int CGXDLMSRegisterMonitor::GetDataType(int index, DLMS_DATA_TYPE& type)
 int CGXDLMSRegisterMonitor::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     CGXByteBuffer data;
-    CGXDLMSVariant ln;
+    //CGXDLMSVariant ln;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetByteArray(true);
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        //Add count
-        GXHelpers::SetObjectCount((unsigned long)m_Thresholds.size(), data);
-        int ret;
-        CGXDLMSVariant tmp;
-        for (std::vector<CGXDLMSVariant>::iterator it = m_Thresholds.begin(); it != m_Thresholds.end(); ++it)
-        {
-            tmp = *it;
-            if ((ret = GXHelpers::SetData(data, it->vt, tmp)) != 0)
-            {
-                return ret;
-            }
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        ////Add count
+        //GXHelpers::SetObjectCount((unsigned long)m_Thresholds.size(), data);
+        //int ret;
+        //CGXDLMSVariant tmp;
+        //for (std::vector<CGXDLMSVariant>::iterator it = m_Thresholds.begin(); it != m_Thresholds.end(); ++it)
+        //{
+        //    tmp = *it;
+        //    if ((ret = GXHelpers::SetData(data, it->vt, tmp)) != 0)
+        //    {
+        //        return ret;
+        //    }
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetByteArray(true);
-        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        data.SetUInt8(3);
-        int ret;
-        GXHelpers::SetLogicalName(m_MonitoredValue.GetLogicalName().c_str(), ln);
-        CGXDLMSVariant type = m_MonitoredValue.GetObjectType();
-        CGXDLMSVariant index = m_MonitoredValue.GetAttributeIndex();
-        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, type)) != DLMS_ERROR_CODE_OK ||  //ClassID
-            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != DLMS_ERROR_CODE_OK || //LN
-            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index)) != DLMS_ERROR_CODE_OK)
-        {
-            return ret;
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //data.SetUInt8(3);
+        //int ret;
+        //GXHelpers::SetLogicalName(m_MonitoredValue.GetLogicalName().c_str(), ln);
+        //CGXDLMSVariant type = m_MonitoredValue.GetObjectType();
+        //CGXDLMSVariant index = m_MonitoredValue.GetAttributeIndex();
+        //if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, type)) != DLMS_ERROR_CODE_OK ||  //ClassID
+        //    (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != DLMS_ERROR_CODE_OK || //LN
+        //    (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_INT8, index)) != DLMS_ERROR_CODE_OK)
+        //{
+        //    return ret;
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetByteArray(true);
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        int ret;
-        //Add count
-        GXHelpers::SetObjectCount((unsigned long)m_Actions.size(), data);
-        CGXDLMSVariant selector;
-        for (std::vector<CGXDLMSActionSet*>::iterator it = m_Actions.begin(); it != m_Actions.end(); ++it)
-        {
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            data.SetUInt8(2);
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            data.SetUInt8(2);
-            GXHelpers::SetLogicalName((*it)->GetActionUp().GetLogicalName().c_str(), ln);
-            selector = (*it)->GetActionUp().GetScriptSelector();
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != DLMS_ERROR_CODE_OK ||
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, selector)) != DLMS_ERROR_CODE_OK)
-            {
-                return ret;
-            }
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            data.SetUInt8(2);
-            GXHelpers::SetLogicalName((*it)->GetActionDown().GetLogicalName().c_str(), ln);
-            selector = (*it)->GetActionDown().GetScriptSelector();
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != DLMS_ERROR_CODE_OK ||
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, selector)) != DLMS_ERROR_CODE_OK)
-            {
-                return ret;
-            }
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        //int ret;
+        ////Add count
+        //GXHelpers::SetObjectCount((unsigned long)m_Actions.size(), data);
+        //CGXDLMSVariant selector;
+        //for (std::vector<CGXDLMSActionSet*>::iterator it = m_Actions.begin(); it != m_Actions.end(); ++it)
+        //{
+        //    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //    data.SetUInt8(2);
+        //    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //    data.SetUInt8(2);
+        //    GXHelpers::SetLogicalName((*it)->GetActionUp().GetLogicalName().c_str(), ln);
+        //    selector = (*it)->GetActionUp().GetScriptSelector();
+        //    if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != DLMS_ERROR_CODE_OK ||
+        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, selector)) != DLMS_ERROR_CODE_OK)
+        //    {
+        //        return ret;
+        //    }
+        //    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //    data.SetUInt8(2);
+        //    GXHelpers::SetLogicalName((*it)->GetActionDown().GetLogicalName().c_str(), ln);
+        //    selector = (*it)->GetActionDown().GetScriptSelector();
+        //    if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != DLMS_ERROR_CODE_OK ||
+        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, selector)) != DLMS_ERROR_CODE_OK)
+        //    {
+        //        return ret;
+        //    }
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -299,21 +299,21 @@ int CGXDLMSRegisterMonitor::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEven
     }
     if (e.GetIndex() == 2)
     {
-        SetThresholds(e.GetValue().Arr);
-        return DLMS_ERROR_CODE_OK;
+        /*SetThresholds(e.GetValue().Arr);
+        return DLMS_ERROR_CODE_OK;*/
     }
     if (e.GetIndex() == 3)
     {
-        GetMonitoredValue().SetObjectType((DLMS_OBJECT_TYPE)e.GetValue().Arr[0].ToInteger());
+       /* GetMonitoredValue().SetObjectType((DLMS_OBJECT_TYPE)e.GetValue().Arr[0].ToInteger());
         std::string ln;
         GXHelpers::GetLogicalName(e.GetValue().Arr[1].byteArr, ln);
         m_MonitoredValue.SetLogicalName(ln);
         m_MonitoredValue.SetAttributeIndex(e.GetValue().Arr[2].ToInteger());
-        return DLMS_ERROR_CODE_OK;
+        return DLMS_ERROR_CODE_OK;*/
     }
     if (e.GetIndex() == 4)
     {
-        for (std::vector<CGXDLMSActionSet*>::iterator it = m_Actions.begin(); it != m_Actions.end(); ++it)
+        /*for (std::vector<CGXDLMSActionSet*>::iterator it = m_Actions.begin(); it != m_Actions.end(); ++it)
         {
             delete *it;
         }
@@ -331,7 +331,7 @@ int CGXDLMSRegisterMonitor::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEven
             set->GetActionDown().SetLogicalName(ln);
             set->GetActionDown().SetScriptSelector(down.Arr[1].ToInteger());
             m_Actions.push_back(set);
-        }
+        }*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

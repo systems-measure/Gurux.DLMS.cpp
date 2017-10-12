@@ -78,11 +78,11 @@ CGXDLMSDemandRegister::CGXDLMSDemandRegister(int sn) : CGXDLMSObject(DLMS_OBJECT
 /**
  Current avarage value of COSEM Data object.
 */
-CGXDLMSVariant CGXDLMSDemandRegister::GetCurrentAvarageValue()
+CArtVariant CGXDLMSDemandRegister::GetCurrentAvarageValue()
 {
     return m_CurrentAvarageValue;
 }
-void CGXDLMSDemandRegister::SetCurrentAvarageValue(CGXDLMSVariant value)
+void CGXDLMSDemandRegister::SetCurrentAvarageValue(CArtVariant value)
 {
     m_CurrentAvarageValue = value;
 }
@@ -90,11 +90,11 @@ void CGXDLMSDemandRegister::SetCurrentAvarageValue(CGXDLMSVariant value)
 /**
  Last avarage value of COSEM Data object.
 */
-CGXDLMSVariant CGXDLMSDemandRegister::GetLastAvarageValue()
+CArtVariant CGXDLMSDemandRegister::GetLastAvarageValue()
 {
     return m_LastAvarageValue;
 }
-void CGXDLMSDemandRegister::SetLastAvarageValue(CGXDLMSVariant value)
+void CGXDLMSDemandRegister::SetLastAvarageValue(CArtVariant value)
 {
     m_LastAvarageValue = value;
 }
@@ -113,7 +113,7 @@ void CGXDLMSDemandRegister::SetScaler(double value)
 }
 
 // Unit of COSEM Register object.
-int CGXDLMSDemandRegister::GetUnit()
+unsigned char CGXDLMSDemandRegister::GetUnit()
 {
     return m_Unit;
 }
@@ -126,11 +126,11 @@ void CGXDLMSDemandRegister::SetUnit(unsigned char value)
 /**
  Scaler of COSEM Register object.
 */
-CGXDLMSVariant CGXDLMSDemandRegister::GetStatus()
+CArtVariant CGXDLMSDemandRegister::GetStatus()
 {
     return m_Status;
 }
-void CGXDLMSDemandRegister::SetStatus(CGXDLMSVariant value)
+void CGXDLMSDemandRegister::SetStatus(CArtVariant value)
 {
     m_Status = value;
 }
@@ -169,12 +169,12 @@ void CGXDLMSDemandRegister::SetPeriod(unsigned long value)
     m_Period = value;
 }
 
-int CGXDLMSDemandRegister::GetNumberOfPeriods()
+unsigned short CGXDLMSDemandRegister::GetNumberOfPeriods()
 {
     return m_NumberOfPeriods;
 }
 
-void CGXDLMSDemandRegister::SetNumberOfPeriods(int value)
+void CGXDLMSDemandRegister::SetNumberOfPeriods(unsigned short value)
 {
     m_NumberOfPeriods = value;
 }
@@ -197,31 +197,31 @@ void CGXDLMSDemandRegister::NextPeriod()
 
 void CGXDLMSDemandRegister::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(m_CurrentAvarageValue.ToString());
-    values.push_back(m_LastAvarageValue.ToString());
-    std::string str = "Scaler: ";
-    //if there is no fractal part.
-    double s = GetScaler();
-    if (s - (long)s == 0)
-    {
-        str += CGXDLMSVariant((long)s).ToString();
-    }
-    else
-    {
-        str += CGXDLMSVariant(s).ToString();
-    }
-    str += " Unit: ";
-    str += CGXDLMSConverter::GetUnitAsString(m_Unit);
-    values.push_back(str);
-    values.push_back(m_Status.ToString());
-    values.push_back(m_CaptureTime.ToString());
-    values.push_back(m_StartTimeCurrent.ToString());
-    values.push_back(CGXDLMSVariant(m_Period).ToString());
-    values.push_back(CGXDLMSVariant(m_NumberOfPeriods).ToString());
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    //values.push_back(m_CurrentAvarageValue.ToString());
+    //values.push_back(m_LastAvarageValue.ToString());
+    //std::string str = "Scaler: ";
+    ////if there is no fractal part.
+    //double s = GetScaler();
+    //if (s - (long)s == 0)
+    //{
+    //    str += CGXDLMSVariant((long)s).ToString();
+    //}
+    //else
+    //{
+    //    str += CGXDLMSVariant(s).ToString();
+    //}
+    //str += " Unit: ";
+    //str += CGXDLMSConverter::GetUnitAsString(m_Unit);
+    //values.push_back(str);
+    //values.push_back(m_Status.ToString());
+    //values.push_back(m_CaptureTime.ToString());
+    //values.push_back(m_StartTimeCurrent.ToString());
+    //values.push_back(CGXDLMSVariant(m_Period).ToString());
+    //values.push_back(CGXDLMSVariant(m_NumberOfPeriods).ToString());
 }
 
 void CGXDLMSDemandRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -296,7 +296,7 @@ int CGXDLMSDemandRegister::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventAr
     return DLMS_ERROR_CODE_OK;
 }
 
-int CGXDLMSDemandRegister::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSDemandRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -305,12 +305,18 @@ int CGXDLMSDemandRegister::GetDataType(int index, DLMS_DATA_TYPE& type)
     }
     if (index == 2)
     {
-        type = m_CurrentAvarageValue.vt;
+		VarInfo v_info;
+		m_CurrentAvarageValue.GetVar(v_info);
+		m_CurrentAvarageValue.SetPosition(0);
+        type = v_info.vt;
         return DLMS_ERROR_CODE_OK;
     }
     if (index == 3)
     {
-        type = m_LastAvarageValue.vt;
+		VarInfo v_info;
+		m_LastAvarageValue.GetVar(v_info);
+		m_LastAvarageValue.SetPosition(0);
+		type = v_info.vt;
         return DLMS_ERROR_CODE_OK;
     }
     if (index == 4)
@@ -320,7 +326,10 @@ int CGXDLMSDemandRegister::GetDataType(int index, DLMS_DATA_TYPE& type)
     }
     if (index == 5)
     {
-        type = m_Status.vt;
+		VarInfo v_info;
+		m_Status.GetVar(v_info);
+		m_Status.SetPosition(0);
+		type = v_info.vt;
         return DLMS_ERROR_CODE_OK;
     }
     if (index == 6)
@@ -348,58 +357,75 @@ int CGXDLMSDemandRegister::GetDataType(int index, DLMS_DATA_TYPE& type)
 
 int CGXDLMSDemandRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	e.SetByteArray(true);
+	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(m_CurrentAvarageValue);
+		CArtVariant tmp_val(m_CurrentAvarageValue);
+        e.SetValue(tmp_val);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetValue(m_LastAvarageValue);
+		CArtVariant tmp_val(m_LastAvarageValue);
+		e.SetValue(tmp_val);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.GetValue().Clear();
-        e.GetValue().vt = DLMS_DATA_TYPE_STRUCTURE;
-        e.GetValue().Arr.push_back(m_Scaler);
-        e.GetValue().Arr.push_back(m_Unit);
+		data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+		data.SetUInt8(2);
+		data.SetUInt8(DLMS_DATA_TYPE_INT8);
+		data.SetUInt8(m_Scaler);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(m_Unit);
+		e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        e.SetValue(m_Status);
+		CArtVariant tmp_val(m_Status);
+		e.SetValue(tmp_val);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        e.SetValue(m_CaptureTime);
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(12);
+		GXHelpers::SetDateTime(data, m_CaptureTime);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 7)
     {
-        e.SetValue(m_StartTimeCurrent);
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(12);
+		GXHelpers::SetDateTime(data, m_StartTimeCurrent);
+		e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 8)
     {
-        e.SetValue(m_Period);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT32);
+		data.SetUInt32(m_Period);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 9)
     {
-        e.SetValue(m_NumberOfPeriods);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_NumberOfPeriods);
+		e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -415,52 +441,124 @@ int CGXDLMSDemandRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     {
         if (m_Scaler != 0)
         {
-            SetCurrentAvarageValue(CGXDLMSVariant(e.GetValue().ToDouble() * m_Scaler));
+			VarInfo v_info;
+			e.GetCAValue().GetVar(v_info);
+			unsigned char ret;
+			unsigned long long val;
+			double res;
+			if (v_info.vt == DLMS_DATA_TYPE_UINT8 || v_info.vt == DLMS_DATA_TYPE_UINT16 || v_info.vt == DLMS_DATA_TYPE_UINT32 || v_info.vt == DLMS_DATA_TYPE_UINT64 ||
+				v_info.vt == DLMS_DATA_TYPE_INT8  || v_info.vt == DLMS_DATA_TYPE_INT16  || v_info.vt == DLMS_DATA_TYPE_INT32  || v_info.vt == DLMS_DATA_TYPE_INT64) {
+				if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+					return ret;
+				}
+				res = (double)val*GetScaler();
+			}
+			else {
+				if (v_info.vt == DLMS_DATA_TYPE_FLOAT32 || v_info.vt == DLMS_DATA_TYPE_FLOAT64) {
+					if ((ret = e.GetCAValue().GetReal(v_info.size, res)) != DLMS_ERROR_CODE_OK) {
+						return ret;
+					}
+					res *= GetScaler();
+				}
+			} 
+			CArtVariant tmp_val;
+			tmp_val.Reserve(9);
+			tmp_val.SetUInt8(DLMS_DATA_TYPE_FLOAT64);
+			tmp_val.SetDouble(res);
+            SetCurrentAvarageValue(tmp_val);
         }
         else
         {
-            SetCurrentAvarageValue(e.GetValue());
+            SetCurrentAvarageValue(e.GetCAValue());
         }
     }
     else if (e.GetIndex() == 3)
     {
         if (m_Scaler != 0)
         {
-            SetLastAvarageValue(CGXDLMSVariant(e.GetValue().ToDouble() * GetScaler()));
+			VarInfo v_info;
+			e.GetCAValue().GetVar(v_info);
+			unsigned char ret;
+			unsigned long long val;
+			double res;
+			if (v_info.vt == DLMS_DATA_TYPE_UINT8 || v_info.vt == DLMS_DATA_TYPE_UINT16 || v_info.vt == DLMS_DATA_TYPE_UINT32 || v_info.vt == DLMS_DATA_TYPE_UINT64 ||
+				v_info.vt == DLMS_DATA_TYPE_INT8 || v_info.vt == DLMS_DATA_TYPE_INT16 || v_info.vt == DLMS_DATA_TYPE_INT32 || v_info.vt == DLMS_DATA_TYPE_INT64) {
+				if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+					return ret;
+				}
+				res = (double)val*m_Scaler;
+			}
+			else {
+				if (v_info.vt == DLMS_DATA_TYPE_FLOAT32 || v_info.vt == DLMS_DATA_TYPE_FLOAT64) {
+					if ((ret = e.GetCAValue().GetReal(v_info.size, res)) != DLMS_ERROR_CODE_OK) {
+						return ret;
+					}
+					res *= m_Scaler;
+				}
+			}
+			CArtVariant tmp_val;
+			tmp_val.Reserve(9);
+			tmp_val.SetUInt8(DLMS_DATA_TYPE_FLOAT64);
+			tmp_val.SetDouble(res);
+			SetLastAvarageValue(tmp_val);
         }
         else
         {
-            SetLastAvarageValue(e.GetValue());
+            SetLastAvarageValue(e.GetCAValue());
         }
     }
-    else if (e.GetIndex() == 4 && e.GetValue().vt == DLMS_DATA_TYPE_STRUCTURE)
+    else if (e.GetIndex() == 4 )
     {
-        m_Scaler = e.GetValue().Arr[0].bVal;
-        m_Unit = e.GetValue().Arr[1].bVal;
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		if (v_info.vt != DLMS_DATA_TYPE_STRUCTURE || v_info.size != 2) {
+			return DLMS_ERROR_CODE_INVALID_PARAMETER;
+		}
+			e.GetCAValue().GetVar(v_info);
+			m_Scaler = *(e.GetCAValue().GetCurPtr());
+			e.GetCAValue().IncreasePosition(v_info.size);
+			e.GetCAValue().GetVar(v_info);
+			m_Unit = *(e.GetCAValue().GetCurPtr());
     }
     else if (e.GetIndex() == 5)
     {
-        SetStatus(e.GetValue().lVal);
+        SetStatus(e.GetCAValue());
     }
     else if (e.GetIndex() == 6)
     {
-        CGXDLMSVariant tmp;
-        CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_DATETIME, tmp);
-        SetCaptureTime(tmp.dateTime);
+		unsigned char ret;
+		if ((ret = GXHelpers::GetDateTime(e.GetCAValue(), m_CaptureTime)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
     }
     else if (e.GetIndex() == 7)
     {
-        CGXDLMSVariant tmp;
-        CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_DATETIME, tmp);
-        SetStartTimeCurrent(tmp.dateTime);
+		unsigned char ret;
+		if ((ret = GXHelpers::GetDateTime(e.GetCAValue(), m_StartTimeCurrent)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
     }
     else if (e.GetIndex() == 8)
     {
-        SetPeriod(e.GetValue().ulVal);
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+		SetPeriod((unsigned long)val);
     }
     else if (e.GetIndex() == 9)
     {
-        SetNumberOfPeriods(e.GetValue().ToInteger());
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        SetNumberOfPeriods((int)val);
     }
     else
     {

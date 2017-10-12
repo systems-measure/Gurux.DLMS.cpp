@@ -68,65 +68,65 @@ void CGXDLMSIecHdlcSetup::SetCommunicationSpeed(DLMS_BAUD_RATE value)
     m_CommunicationSpeed = value;
 }
 
-int CGXDLMSIecHdlcSetup::GetWindowSizeTransmit()
+unsigned char CGXDLMSIecHdlcSetup::GetWindowSizeTransmit()
 {
     return m_WindowSizeTransmit;
 }
-void CGXDLMSIecHdlcSetup::SetWindowSizeTransmit(int value)
+void CGXDLMSIecHdlcSetup::SetWindowSizeTransmit(unsigned char value)
 {
     m_WindowSizeTransmit = value;
 }
 
-int CGXDLMSIecHdlcSetup::GetWindowSizeReceive()
+unsigned char CGXDLMSIecHdlcSetup::GetWindowSizeReceive()
 {
     return m_WindowSizeReceive;
 }
-void CGXDLMSIecHdlcSetup::SetWindowSizeReceive(int value)
+void CGXDLMSIecHdlcSetup::SetWindowSizeReceive(unsigned char value)
 {
     m_WindowSizeReceive = value;
 }
 
-int CGXDLMSIecHdlcSetup::GetMaximumInfoLengthTransmit()
+unsigned short CGXDLMSIecHdlcSetup::GetMaximumInfoLengthTransmit()
 {
     return m_MaximumInfoLengthTransmit;
 }
-void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthTransmit(int value)
+void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthTransmit(unsigned short value)
 {
     m_MaximumInfoLengthTransmit = value;
 }
 
-int CGXDLMSIecHdlcSetup::GetMaximumInfoLengthReceive()
+unsigned short CGXDLMSIecHdlcSetup::GetMaximumInfoLengthReceive()
 {
     return m_MaximumInfoLengthReceive;
 }
-void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthReceive(int value)
+void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthReceive(unsigned short value)
 {
     m_MaximumInfoLengthReceive = value;
 }
 
-int CGXDLMSIecHdlcSetup::GetInterCharachterTimeout()
+unsigned short CGXDLMSIecHdlcSetup::GetInterCharachterTimeout()
 {
     return m_InterCharachterTimeout;
 }
-void CGXDLMSIecHdlcSetup::SetInterCharachterTimeout(int value)
+void CGXDLMSIecHdlcSetup::SetInterCharachterTimeout(unsigned short value)
 {
     m_InterCharachterTimeout = value;
 }
 
-int CGXDLMSIecHdlcSetup::GetInactivityTimeout()
+unsigned short CGXDLMSIecHdlcSetup::GetInactivityTimeout()
 {
     return m_InactivityTimeout;
 }
-void CGXDLMSIecHdlcSetup::SetInactivityTimeout(int value)
+void CGXDLMSIecHdlcSetup::SetInactivityTimeout(unsigned short value)
 {
     m_InactivityTimeout = value;
 }
 
-int CGXDLMSIecHdlcSetup::GetDeviceAddress()
+unsigned short CGXDLMSIecHdlcSetup::GetDeviceAddress()
 {
     return m_DeviceAddress;
 }
-void CGXDLMSIecHdlcSetup::SetDeviceAddress(int value)
+void CGXDLMSIecHdlcSetup::SetDeviceAddress(unsigned short value)
 {
     m_DeviceAddress = value;
 }
@@ -145,7 +145,7 @@ int CGXDLMSIecHdlcSetup::GetMethodCount()
 
 void CGXDLMSIecHdlcSetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -156,7 +156,7 @@ void CGXDLMSIecHdlcSetup::GetValues(std::vector<std::string>& values)
     values.push_back(CGXDLMSVariant(m_MaximumInfoLengthReceive).ToString());
     values.push_back(CGXDLMSVariant(m_InterCharachterTimeout).ToString());
     values.push_back(CGXDLMSVariant(m_InactivityTimeout).ToString());
-    values.push_back(CGXDLMSVariant(m_DeviceAddress).ToString());
+    values.push_back(CGXDLMSVariant(m_DeviceAddress).ToString());*/
 }
 
 void CGXDLMSIecHdlcSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -208,7 +208,7 @@ void CGXDLMSIecHdlcSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSIecHdlcSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSIecHdlcSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -256,48 +256,65 @@ int CGXDLMSIecHdlcSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSIecHdlcSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	e.SetByteArray(true);
+	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 2)
     {
-        e.SetValue(m_CommunicationSpeed);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(m_CommunicationSpeed);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 3)
     {
-        e.SetValue(m_WindowSizeTransmit);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_WindowSizeTransmit);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 4)
     {
-        e.SetValue(m_WindowSizeReceive);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_WindowSizeReceive);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 5)
     {
-        e.SetValue(m_MaximumInfoLengthTransmit);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_MaximumInfoLengthTransmit);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 6)
     {
-        e.SetValue(m_MaximumInfoLengthReceive);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_MaximumInfoLengthReceive);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 7)
     {
-        e.SetValue(m_InterCharachterTimeout);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_InterCharachterTimeout);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 8)
     {
-        e.SetValue(m_InactivityTimeout);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_InactivityTimeout);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 9)
     {
-        e.SetValue(m_DeviceAddress);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_DeviceAddress);
+        e.SetValue(data);
     }
     else
     {
@@ -315,35 +332,91 @@ int CGXDLMSIecHdlcSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventAr
     }
     else if (e.GetIndex() == 2)
     {
-        m_CommunicationSpeed = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_CommunicationSpeed = (DLMS_BAUD_RATE)val;
     }
     else if (e.GetIndex() == 3)
     {
-        m_WindowSizeTransmit = e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_WindowSizeTransmit = (unsigned char)val;
     }
     else if (e.GetIndex() == 4)
     {
-        m_WindowSizeReceive = e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_WindowSizeReceive = (unsigned char)val;
     }
     else if (e.GetIndex() == 5)
     {
-        m_MaximumInfoLengthTransmit = e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_MaximumInfoLengthTransmit = (unsigned short)val;
     }
     else if (e.GetIndex() == 6)
     {
-        m_MaximumInfoLengthReceive = e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_MaximumInfoLengthReceive = (unsigned short)val;
     }
     else if (e.GetIndex() == 7)
     {
-        m_InterCharachterTimeout = e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_InterCharachterTimeout = (unsigned short)val;
     }
     else if (e.GetIndex() == 8)
     {
-        m_InactivityTimeout = e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_InactivityTimeout = (unsigned short)val;
     }
     else if (e.GetIndex() == 9)
     {
-        m_DeviceAddress = e.GetValue().ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long val;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+        m_DeviceAddress = (unsigned short)val;
     }
     else
     {

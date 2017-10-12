@@ -125,7 +125,7 @@ int CGXDLMSNotify::AddData(
     unsigned char index,
     CGXByteBuffer& buff)
 {
-    int ret;
+    /*int ret;
     DLMS_DATA_TYPE dt;
     CGXDLMSValueEventArg e(NULL, obj, index);
     if ((ret = obj->GetValue(m_Settings, e)) != 0)
@@ -145,7 +145,8 @@ int CGXDLMSNotify::AddData(
     {
         dt = e.GetValue().vt;
     }
-    return GXHelpers::SetData(buff, e.GetValue().vt, e.GetValue());
+    return GXHelpers::SetData(buff, e.GetValue().vt, e.GetValue());*/
+	return 0;
 }
 
 int CGXDLMSNotify::GenerateDataNotificationMessages(
@@ -204,7 +205,7 @@ int CGXDLMSNotify::GeneratePushSetupMessages(
 
 int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std::pair<CGXDLMSObject*, unsigned char> >& items)
 {
-    CGXDLMSObject *obj;
+    /*CGXDLMSObject *obj;
     int index, pos, ret;
     DLMS_DATA_TYPE dt;
     CGXDLMSVariant tmp, value;
@@ -250,6 +251,6 @@ int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std:
         CGXDLMSValueEventArg e(NULL, obj, index);
         e.SetValue(value);
         obj->SetValue(m_Settings, e);
-    }
+    }*/
     return 0;
 }

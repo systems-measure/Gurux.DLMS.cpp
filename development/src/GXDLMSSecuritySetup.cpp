@@ -108,7 +108,7 @@ int CGXDLMSSecuritySetup::GetMethodCount()
 
 void CGXDLMSSecuritySetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -117,7 +117,7 @@ void CGXDLMSSecuritySetup::GetValues(std::vector<std::string>& values)
     std::string str = m_ClientSystemTitle.ToHexString();
     values.push_back(str);
     str = m_ServerSystemTitle.ToHexString();
-    values.push_back(str);
+    values.push_back(str);*/
 }
 
 void CGXDLMSSecuritySetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -189,34 +189,43 @@ int CGXDLMSSecuritySetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSSecuritySetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	CGXByteBuffer data;
+	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 2)
     {
-        CGXDLMSVariant tmp = m_SecurityPolicy;
-        e.SetValue(tmp);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+        data.SetUInt8(m_SecurityPolicy);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 3)
     {
-        CGXDLMSVariant tmp = m_SecuritySuite;
-        e.SetValue(tmp);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_SecuritySuite);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 4)
     {
-        e.GetValue().Add(m_ClientSystemTitle.GetData(), m_ClientSystemTitle.GetSize());
+		/*data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(m_ClientSystemTitle.GetSize());
+		data.Set(m_ClientSystemTitle.GetData(), m_ClientSystemTitle.GetSize());
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 5)
     {
-        e.GetValue().Add(m_ServerSystemTitle.GetData(), m_ServerSystemTitle.GetSize());
+		/*data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(m_ServerSystemTitle.GetSize());
+		data.Set(m_ServerSystemTitle.GetData(), m_ServerSystemTitle.GetSize());
+		e.SetValue(data);*/
     }
     else
     {
@@ -234,19 +243,19 @@ int CGXDLMSSecuritySetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
     }
     else if (e.GetIndex() == 2)
     {
-        m_SecurityPolicy = (DLMS_SECURITY_POLICY)e.GetValue().ToInteger();
+        //m_SecurityPolicy = (DLMS_SECURITY_POLICY)e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 3)
     {
-        m_SecuritySuite = (DLMS_SECURITY_SUITE)e.GetValue().ToInteger();
+       // m_SecuritySuite = (DLMS_SECURITY_SUITE)e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 4)
     {
-        m_ClientSystemTitle.Set(e.GetValue().byteArr, e.GetValue().size);
+        //m_ClientSystemTitle.Set(e.GetValue().byteArr, e.GetValue().size);
     }
     else if (e.GetIndex() == 5)
     {
-        m_ServerSystemTitle.Set(e.GetValue().byteArr, e.GetValue().size);
+        //m_ServerSystemTitle.Set(e.GetValue().byteArr, e.GetValue().size);
     }
     else
     {

@@ -111,9 +111,9 @@ int CGXDLMSExtendedRegister::GetMethodCount()
 
 void CGXDLMSExtendedRegister::GetValues(std::vector<std::string>& values)
 {
-    CGXDLMSRegister::GetValues(values);
+    /*CGXDLMSRegister::GetValues(values);
     values.push_back(m_Status.ToString());
-    values.push_back(m_CaptureTime.ToString());
+    values.push_back(m_CaptureTime.ToString());*/
 }
 
 void CGXDLMSExtendedRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -155,25 +155,26 @@ int CGXDLMSExtendedRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		e.SetByteArray(true);
+		CGXByteBuffer data;
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(m_Value);
+       /* e.SetValue(m_Value);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.GetValue().Clear();
+       /* e.GetValue().Clear();
         e.GetValue().vt = DLMS_DATA_TYPE_STRUCTURE;
         e.GetValue().Arr.push_back(m_Scaler);
-        e.GetValue().Arr.push_back(m_Unit);
+        e.GetValue().Arr.push_back(m_Unit);*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -187,11 +188,11 @@ int CGXDLMSExtendedRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     }
     else if (e.GetIndex() == 4)
     {
-        m_Status = e.GetValue();
+       /* m_Status = e.GetValue();*/
     }
     else if (e.GetIndex() == 5)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_OCTET_STRING)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_OCTET_STRING)
         {
             CGXDLMSVariant tmp;
             CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_DATETIME, tmp);
@@ -200,7 +201,7 @@ int CGXDLMSExtendedRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
         else
         {
             m_CaptureTime = e.GetValue().dateTime;
-        }
+        }*/
     }
     else
     {

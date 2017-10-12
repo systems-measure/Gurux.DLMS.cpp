@@ -61,16 +61,16 @@ CArtVariant& CGXDLMSValueEventArg::GetCAValue()
 	return c_Value;
 }
 
-CGXDLMSVariant& CGXDLMSValueEventArg::GetValue()
-{
-    return m_Value;
-}
-
-
-void CGXDLMSValueEventArg::SetValue(CGXDLMSVariant value)
-{
-    m_Value = value;
-}
+//CGXDLMSVariant& CGXDLMSValueEventArg::GetValue()
+//{
+//    return m_Value;
+//}
+//
+//
+//void CGXDLMSValueEventArg::SetValue(CGXDLMSVariant value)
+//{
+//    m_Value = value;
+//}
 
 void CGXDLMSValueEventArg::SetValue(CArtVariant& value) 
 {
