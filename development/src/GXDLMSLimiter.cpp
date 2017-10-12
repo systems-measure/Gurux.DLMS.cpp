@@ -469,21 +469,19 @@ int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(2);
         int ret;
-        CGXDLMSVariant ln;
+        CArtVariant ln;
         GXHelpers::SetLogicalName(m_ActionOverThreshold.GetLogicalName().c_str(), ln);
-        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != 0 )
-        {
-            return ret;
-        }
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(6);
+		data.Set(ln.byteArr, 6);
 		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
 		data.SetUInt16(m_ActionOverThreshold.GetScriptSelector());
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(2);
         GXHelpers::SetLogicalName(m_ActionUnderThreshold.GetLogicalName().c_str(), ln);
-        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, ln)) != 0 )
-        {
-            return ret;
-        }
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(6);
+		data.Set(ln.byteArr, 6);
 		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
 		data.SetUInt16(m_ActionUnderThreshold.GetScriptSelector());
         e.SetValue(data);
@@ -541,23 +539,23 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
+		unsigned long long* val;
 		unsigned char ret;
 		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MinOverThresholdDuration = (long)val;
+        m_MinOverThresholdDuration = (long)*val;
     }
     else if (e.GetIndex() == 7)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
+		unsigned long long* val;
 		unsigned char ret;
 		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MinUnderThresholdDuration = (long)val;
+        m_MinUnderThresholdDuration = (long)*val;
     }
     else if (e.GetIndex() == 8)
     {
@@ -567,12 +565,12 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 			return DLMS_ERROR_CODE_INVALID_PARAMETER;
 		}
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
+		unsigned long long* val;
 		unsigned char ret;
 		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_EmergencyProfile.SetID((unsigned short)val);
+        m_EmergencyProfile.SetID((unsigned short)*val);
 		e.GetCAValue().GetVar(v_info);
 		if ((ret = GXHelpers::GetDateTime(e.GetCAValue(), m_EmergencyProfile.GetActivationTime())) != DLMS_ERROR_CODE_OK) {
 			return ret;
@@ -581,7 +579,7 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_EmergencyProfile.SetDuration((unsigned long)val);
+        m_EmergencyProfile.SetDuration((unsigned long)*val);
     }
     else if (e.GetIndex() == 9)
     {

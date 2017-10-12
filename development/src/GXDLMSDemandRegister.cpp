@@ -444,14 +444,14 @@ int CGXDLMSDemandRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
 			VarInfo v_info;
 			e.GetCAValue().GetVar(v_info);
 			unsigned char ret;
-			unsigned long long val;
+			unsigned long long* val;
 			double res;
 			if (v_info.vt == DLMS_DATA_TYPE_UINT8 || v_info.vt == DLMS_DATA_TYPE_UINT16 || v_info.vt == DLMS_DATA_TYPE_UINT32 || v_info.vt == DLMS_DATA_TYPE_UINT64 ||
 				v_info.vt == DLMS_DATA_TYPE_INT8  || v_info.vt == DLMS_DATA_TYPE_INT16  || v_info.vt == DLMS_DATA_TYPE_INT32  || v_info.vt == DLMS_DATA_TYPE_INT64) {
 				if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 					return ret;
 				}
-				res = (double)val*GetScaler();
+				res = (double)(*val)*GetScaler();
 			}
 			else {
 				if (v_info.vt == DLMS_DATA_TYPE_FLOAT32 || v_info.vt == DLMS_DATA_TYPE_FLOAT64) {
@@ -479,14 +479,14 @@ int CGXDLMSDemandRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
 			VarInfo v_info;
 			e.GetCAValue().GetVar(v_info);
 			unsigned char ret;
-			unsigned long long val;
+			unsigned long long* val;
 			double res;
 			if (v_info.vt == DLMS_DATA_TYPE_UINT8 || v_info.vt == DLMS_DATA_TYPE_UINT16 || v_info.vt == DLMS_DATA_TYPE_UINT32 || v_info.vt == DLMS_DATA_TYPE_UINT64 ||
 				v_info.vt == DLMS_DATA_TYPE_INT8 || v_info.vt == DLMS_DATA_TYPE_INT16 || v_info.vt == DLMS_DATA_TYPE_INT32 || v_info.vt == DLMS_DATA_TYPE_INT64) {
 				if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 					return ret;
 				}
-				res = (double)val*m_Scaler;
+				res = (double)(*val)*m_Scaler;
 			}
 			else {
 				if (v_info.vt == DLMS_DATA_TYPE_FLOAT32 || v_info.vt == DLMS_DATA_TYPE_FLOAT64) {
@@ -542,23 +542,23 @@ int CGXDLMSDemandRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
+		unsigned long long* val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-		SetPeriod((unsigned long)val);
+		SetPeriod((unsigned long)*val);
     }
     else if (e.GetIndex() == 9)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
+		unsigned long long* val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        SetNumberOfPeriods((int)val);
+        SetNumberOfPeriods((unsigned short)*val);
     }
     else
     {

@@ -222,23 +222,23 @@ int CGXDLMSDisconnectControl::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEv
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
+		unsigned long long* val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_ControlState = (DLMS_CONTROL_STATE)val;
+        m_ControlState = (DLMS_CONTROL_STATE)*val;
     }
     else if (e.GetIndex() == 4)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
+		unsigned long long* val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-		m_ControlMode = (DLMS_CONTROL_MODE)val;
+		m_ControlMode = (DLMS_CONTROL_MODE)*val;
     }
     else
     {

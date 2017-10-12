@@ -195,29 +195,29 @@ unsigned char CArtVariant::ChangeType(unsigned long src_size, DLMS_DATA_TYPE typ
 	}
 }
 
-unsigned char CArtVariant::GetUInt(unsigned char size, unsigned long long& value) {
+unsigned char CArtVariant::GetUInt(unsigned char size, unsigned long long* value) {
 	unsigned char ret = DLMS_ERROR_CODE_INVALID_PARAMETER;
 	switch (size) {
 	case 1: {
 		unsigned char tmp;
 		ret = GetUInt8(&tmp);
-		value = tmp;
+		*value = tmp;
 		return ret;
 	}
 	case 2: {
 		unsigned short tmp;
 		ret = GetUInt16(&tmp);
-		value = tmp;
+		*value = tmp;
 		return ret;
 	}
 	case 4: {
 		unsigned long tmp;
 		ret = GetUInt32(&tmp);
-		value = tmp;
+		*value = tmp;
 		return ret;
 	}
 	case 8: {
-		ret = GetUInt64(&value);
+		ret = GetUInt64(value);
 		return ret;
 	}
 	}

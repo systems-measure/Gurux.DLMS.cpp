@@ -568,7 +568,6 @@ int CGXDLMSServer::HandleSetRequest(
     short type,
     CGXDLMSLNParameters& p)
 {
-    CGXDataInfo i;
     CArtVariant value;
     int ret;
     unsigned char index, ch;
@@ -725,7 +724,6 @@ int CGXDLMSServer::HandleSetRequest(
 
 int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNParameters& p)
 {
-    CGXDataInfo reply;
     int ret;
     unsigned long blockNumber, size;
     unsigned char ch;
@@ -827,11 +825,8 @@ void GenerateConfirmedServiceError(
 
 int CGXDLMSServer::HandleSetRequest(CGXByteBuffer& data)
 {
-	CGXDLMSVariant value;
 	unsigned char ch, type;
 	int ret;
-	CGXDataInfo i;
-	CGXByteBuffer bb;
 	// Return error if connection is not established.
 	if (!m_Settings.IsConnected())
 	{
@@ -1087,7 +1082,6 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
                 // This might happen when Max PDU size is very small.
                 if (bb.GetSize() < m_Settings.GetMaxPduSize())
                 {
-                    CGXDLMSVariant value;
 					CArtVariant value1;
                     for (std::vector<CGXDLMSValueEventArg*>::iterator arg = m_Transaction->GetTargets().begin();
                         arg != m_Transaction->GetTargets().end(); ++arg)

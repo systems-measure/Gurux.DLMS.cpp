@@ -534,14 +534,16 @@ int CGXDLMSProfileGeneric::Capture(CGXDLMSServer* server)
 
 int CGXDLMSProfileGeneric::Reset(CGXDLMSClient& client, std::vector<CGXByteBuffer>& reply)
 {
-    CGXDLMSVariant value = (unsigned char)0;
-    return client.Method(this, 1, value, reply);
+    /*CGXDLMSVariant value = (unsigned char)0;
+    return client.Method(this, 1, value, reply);*/
+	return 0;
 }
 
 int CGXDLMSProfileGeneric::Capture(CGXDLMSClient& client, std::vector<CGXByteBuffer>& reply)
 {
-    CGXDLMSVariant value = (unsigned char)0;
-    return client.Method(this, 2, value, reply);
+    /*CGXDLMSVariant value = (unsigned char)0;
+    return client.Method(this, 2, value, reply);*/
+	return 0;
 }
 
 void CGXDLMSProfileGeneric::GetValues(std::vector<std::string>& values)

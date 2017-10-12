@@ -80,7 +80,7 @@ public:
 	bool DecreasePosition(unsigned short diff);
 	bool SetPosition(unsigned long pos);
 
-	unsigned char GetUInt(unsigned char size, unsigned long long& value);
+	unsigned char GetUInt(unsigned char size, unsigned long long* value);
 	unsigned char GetUInt8(unsigned char* value);
 	unsigned char GetUInt16(unsigned short* value);
 	unsigned char GetUInt32(unsigned long* value);

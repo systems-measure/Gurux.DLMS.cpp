@@ -653,11 +653,10 @@ int CGXDLMS::GetLNPdu(
             {
                 // Data is send in octet string. Remove data type.
                 int pos = reply.GetSize();
-                CGXDLMSVariant tmp = *p.GetTime();
-                if ((ret = GXHelpers::SetData(reply, DLMS_DATA_TYPE_OCTET_STRING, tmp)) != 0)
-                {
-                    return ret;
-                }
+                CGXDateTime tmp(*p.GetTime());
+				reply.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+				reply.SetUInt8(12);
+				GXHelpers::SetDateTime(reply, tmp);
                 reply.Move(pos + 1, pos, reply.GetSize() - pos - 1);
             }
         }
@@ -1589,14 +1588,11 @@ int CGXDLMS::HandleDataNotification(
     }
     if (len != 0)
     {
-        CGXByteBuffer tmp;
-        CGXDLMSVariant t;
-        tmp.Set(&reply.GetData(), reply.GetData().GetPosition(), len);
-        if ((ret = CGXDLMSClient::ChangeType(tmp, DLMS_DATA_TYPE_DATETIME, t)) != 0)
-        {
-            return ret;
-        }
-        reply.SetTime(&t.dateTime.GetValue());
+        CArtVariant tmp;
+        CGXDateTime t;
+        tmp.Set(reply.GetData().GetData() + reply.GetData().GetPosition(), len);
+		GXHelpers::GetDateTime(tmp, t);
+        reply.SetTime(&t.GetValue());
     }
     if ((ret = GetDataFromBlock(reply.GetData(), start)) != 0)
     {

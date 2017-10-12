@@ -46,7 +46,7 @@ void CGXDLMSAssociationLogicalName::Init()
 
 void CGXDLMSAssociationLogicalName::UpdateAccessRights(CGXDLMSObject* pObj, CGXDLMSVariant data)
 {
-    for (std::vector<CGXDLMSVariant >::iterator it = data.Arr[0].Arr.begin(); it != data.Arr[0].Arr.end(); ++it)
+    /*for (std::vector<CGXDLMSVariant >::iterator it = data.Arr[0].Arr.begin(); it != data.Arr[0].Arr.end(); ++it)
     {
         int id = it->Arr[0].ToInteger();
         DLMS_ACCESS_MODE mode = (DLMS_ACCESS_MODE)it->Arr[1].ToInteger();
@@ -57,7 +57,7 @@ void CGXDLMSAssociationLogicalName::UpdateAccessRights(CGXDLMSObject* pObj, CGXD
         int id = it->Arr[0].ToInteger();
         DLMS_METHOD_ACCESS_MODE mode = (DLMS_METHOD_ACCESS_MODE)it->Arr[1].ToInteger();
         pObj->SetMethodAccess(id, mode);
-    }
+    }*/
 }
 
 int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMSServer* server, CGXByteBuffer& data)
@@ -320,25 +320,25 @@ int CGXDLMSAssociationLogicalName::GetMethodCount()
 
 void CGXDLMSAssociationLogicalName::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(m_ObjectList.ToString());
-    std::string str = CGXDLMSVariant(m_ClientSAP).ToString();
-    str += "/";
-    str += CGXDLMSVariant(m_ServerSAP).ToString();
-    values.push_back(str);
-    values.push_back(m_ApplicationContextName.ToString());
-    values.push_back(m_XDLMSContextInfo.ToString());
-    values.push_back(m_AuthenticationMechanismName.ToString());
-    values.push_back(m_LlsSecret.ToHexString());
-    values.push_back(CGXDLMSVariant(m_AssociationStatus).ToString());
-    //Security Setup Reference is from version 1.
-    if (GetVersion() > 0)
-    {
-        values.push_back(m_SecuritySetupReference);
-    }
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    //values.push_back(m_ObjectList.ToString());
+    //std::string str = CGXDLMSVariant(m_ClientSAP).ToString();
+    //str += "/";
+    //str += CGXDLMSVariant(m_ServerSAP).ToString();
+    //values.push_back(str);
+    //values.push_back(m_ApplicationContextName.ToString());
+    //values.push_back(m_XDLMSContextInfo.ToString());
+    //values.push_back(m_AuthenticationMechanismName.ToString());
+    //values.push_back(m_LlsSecret.ToHexString());
+    //values.push_back(CGXDLMSVariant(m_AssociationStatus).ToString());
+    ////Security Setup Reference is from version 1.
+    //if (GetVersion() > 0)
+    //{
+    //    values.push_back(m_SecuritySetupReference);
+    //}
 }
 
 void CGXDLMSAssociationLogicalName::GetAttributeIndexToRead(std::vector<int>& attributes)
