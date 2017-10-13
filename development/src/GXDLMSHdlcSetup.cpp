@@ -334,89 +334,89 @@ int CGXDLMSIecHdlcSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventAr
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_CommunicationSpeed = (DLMS_BAUD_RATE)*val;
+        m_CommunicationSpeed = (DLMS_BAUD_RATE)val;
     }
     else if (e.GetIndex() == 3)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_WindowSizeTransmit = (unsigned char)*val;
+        m_WindowSizeTransmit = (unsigned char)val;
     }
     else if (e.GetIndex() == 4)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_WindowSizeReceive = (unsigned char)*val;
+        m_WindowSizeReceive = (unsigned char)val;
     }
     else if (e.GetIndex() == 5)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MaximumInfoLengthTransmit = (unsigned short)*val;
+        m_MaximumInfoLengthTransmit = (unsigned short)val;
     }
     else if (e.GetIndex() == 6)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MaximumInfoLengthReceive = (unsigned short)*val;
+        m_MaximumInfoLengthReceive = (unsigned short)val;
     }
     else if (e.GetIndex() == 7)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_InterCharachterTimeout = (unsigned short)*val;
+        m_InterCharachterTimeout = (unsigned short)val;
     }
     else if (e.GetIndex() == 8)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_InactivityTimeout = (unsigned short)*val;
+        m_InactivityTimeout = (unsigned short)val;
     }
     else if (e.GetIndex() == 9)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_DeviceAddress = (unsigned short)*val;
+        m_DeviceAddress = (unsigned short)val;
     }
     else
     {

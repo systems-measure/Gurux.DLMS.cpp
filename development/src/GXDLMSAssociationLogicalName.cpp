@@ -445,6 +445,8 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
     // Check reply_to_HLS_authentication
     if (e.GetIndex() == 1)
     {
+		VarInfo v_info;
+		e.GetParameters().GetVar(v_info);
 		e.SetByteArray(true);
         int ret;
         unsigned long ic = 0;
@@ -454,7 +456,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
             unsigned char ch;
             readSecret = &settings.GetSourceSystemTitle();
             CGXByteBuffer bb;
-            bb.Set(e.GetParameters().byteArr, e.GetParameters().GetSize());
+            bb.Set(e.GetParameters().GetCurPtr(), v_info.size);
             if ((ret = bb.GetUInt8(&ch)) != 0)
             {
                 return ret;
@@ -474,7 +476,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
         {
             return ret;
         }
-        if (serverChallenge.Compare(e.GetParameters().byteArr, e.GetParameters().GetSize()))
+        if (serverChallenge.Compare(e.GetParameters().GetCurPtr(), v_info.size))
         {
             if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC)
             {

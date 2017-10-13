@@ -95,6 +95,11 @@ public:
 	void SetUInt32(unsigned long item);
 	void SetUInt64(unsigned long long item);
 
+	void SetUInt8(unsigned long index, unsigned char item);
+	void SetUInt16(unsigned long index,unsigned short item);
+	void SetUInt32(unsigned long index,unsigned long item);
+	void SetUInt64(unsigned long index,unsigned long long item);
+
 	void SetFloat(float item);
 	void SetDouble(double item);
 

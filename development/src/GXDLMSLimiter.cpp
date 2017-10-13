@@ -539,23 +539,23 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MinOverThresholdDuration = (long)*val;
+        m_MinOverThresholdDuration = (long)val;
     }
     else if (e.GetIndex() == 7)
     {
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MinUnderThresholdDuration = (long)*val;
+        m_MinUnderThresholdDuration = (long)val;
     }
     else if (e.GetIndex() == 8)
     {
@@ -565,21 +565,21 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 			return DLMS_ERROR_CODE_INVALID_PARAMETER;
 		}
 		e.GetCAValue().GetVar(v_info);
-		unsigned long long* val;
+		unsigned long long val;
 		unsigned char ret;
-		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_EmergencyProfile.SetID((unsigned short)*val);
+        m_EmergencyProfile.SetID((unsigned short)val);
 		e.GetCAValue().GetVar(v_info);
 		if ((ret = GXHelpers::GetDateTime(e.GetCAValue(), m_EmergencyProfile.GetActivationTime())) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
 		e.GetCAValue().GetVar(v_info);
-		if ((e.GetCAValue().GetUInt(v_info.size, val)) != DLMS_ERROR_CODE_OK) {
+		if ((e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_EmergencyProfile.SetDuration((unsigned long)*val);
+        m_EmergencyProfile.SetDuration((unsigned long)val);
     }
     else if (e.GetIndex() == 9)
     {

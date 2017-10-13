@@ -1547,6 +1547,124 @@ void  GXHelpers::SetDateTime(CGXByteBuffer& buff, CGXDateTime& value)
     }
 }
 
+void GXHelpers::SetDateTime(CArtVariant& buff, unsigned char index, CGXDateTime& value) {
+	//Add year.
+	unsigned short year = 0xFFFF;
+	struct tm dt = value.GetValue();
+	DATETIME_SKIPS skip = value.GetSkip();
+	if (dt.tm_year != -1 && (skip & DATETIME_SKIPS_YEAR) == 0)
+	{
+		year = 1900 + dt.tm_year;
+	}
+	buff.SetUInt16(index, year);
+	index += 2;
+	//Add month
+	if (value.GetDaylightSavingsBegin())
+	{
+		buff.SetUInt8(index, 0xFE);
+	}
+	else if (value.GetDaylightSavingsEnd())
+	{
+		buff.SetUInt8(index, 0xFD);
+	}
+	else if (dt.tm_mon != -1 && (skip & DATETIME_SKIPS_MONTH) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_mon + 1);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add day
+	if (dt.tm_mday != -1 && (skip & DATETIME_SKIPS_DAY) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_mday);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add week day
+	if ((skip & DATETIME_SKIPS_DAYOFWEEK) != 0)
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	else
+	{
+		int val = dt.tm_wday + 1;
+		//If Sunday.
+		if (val == 1)
+		{
+			val = 8;
+		}
+		buff.SetUInt8(index, val - 1);
+	}
+	index += 1;
+	//Add Hours
+	if (dt.tm_hour != -1 && (skip & DATETIME_SKIPS_HOUR) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_hour);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add Minutes
+	if (dt.tm_min != -1 && (skip & DATETIME_SKIPS_MINUTE) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_min);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add seconds.
+	if (dt.tm_sec != -1 && (skip & DATETIME_SKIPS_SECOND) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_sec);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add ms.
+	if ((skip & DATETIME_SKIPS_MS) != 0)
+	{
+		// Hundredths of second is not used.
+		buff.SetUInt8(index, 0xFF);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0);
+	}
+	index += 1;
+	// devitation not used.
+	if ((skip & DATETIME_SKIPS_DEVITATION) != 0)
+	{
+		buff.SetUInt16(index, 0x8000);
+	}
+	else
+	{
+		// Add devitation.
+		buff.SetUInt16(index, value.GetDeviation());
+	}
+	index += 2;
+	// Add clock_status
+	if (dt.tm_isdst)
+	{
+		buff.SetUInt8(index, value.GetStatus() | DLMS_CLOCK_STATUS_DAYLIGHT_SAVE_ACTIVE);
+	}
+	else
+	{
+		buff.SetUInt8(index, value.GetStatus());
+	}
+}
+
 static int SetDTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
 {
 	//Add year.

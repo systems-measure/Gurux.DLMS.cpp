@@ -101,12 +101,12 @@ void CGXDLMSValueEventArg::SetSelector(unsigned char& value)
     m_Selector = value;
 }
 
-CGXDLMSVariant& CGXDLMSValueEventArg::GetParameters()
+CArtVariant& CGXDLMSValueEventArg::GetParameters()
 {
     return m_Parameters;
 }
 
-void CGXDLMSValueEventArg::SetParameters(CGXDLMSVariant& value)
+void CGXDLMSValueEventArg::SetParameters(CArtVariant& value)
 {
     m_Parameters = value;
 }
@@ -144,7 +144,7 @@ CGXDLMSValueEventArg::CGXDLMSValueEventArg(
     CGXDLMSObject* target,
     int index,
     int selector,
-    CGXDLMSVariant& parameters)
+	CArtVariant& parameters)
 {
     Init(server, target, index, selector);
     m_Parameters = parameters;
@@ -161,7 +161,7 @@ CGXDLMSValueEventArg::CGXDLMSValueEventArg(
     CGXDLMSObject* target,
     int index,
     int selector,
-    CGXDLMSVariant& parameters)
+	CArtVariant& parameters)
 {
     Init(NULL, target, index, selector);
     m_Parameters = parameters;

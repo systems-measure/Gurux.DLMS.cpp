@@ -73,6 +73,8 @@ public:
 
 	static void SetDateTime(CGXByteBuffer& buff, CGXDateTime& value);
 
+	static void SetDateTime(CArtVariant& buff, unsigned char index, CGXDateTime& value);
+
 	static unsigned char GetDateTime(CArtVariant& buff, CGXDateTime& value);
 
     static void GetLogicalName(unsigned char* buff, std::string& ln)

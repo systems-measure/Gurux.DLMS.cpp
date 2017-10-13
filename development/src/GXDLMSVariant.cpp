@@ -385,6 +385,65 @@ void CArtVariant::SetUInt64(unsigned long long item)
 	size += 8;
 }
 
+void CArtVariant::SetUInt8(unsigned long index, unsigned char item) {
+	if (index + 1 > capacity) {
+		capacity = index + 1;
+		byteArr = (unsigned char*)realloc(byteArr, capacity);
+	}
+	byteArr[index] = item;
+	if (size < index + 1) {
+		Zero(size, index - size);
+		size = capacity;
+	}
+}
+
+void CArtVariant::SetUInt16(unsigned long index, unsigned short item) {
+	if (index + 2 > capacity) {
+		capacity = index + 2;
+		byteArr = (unsigned char*)realloc(byteArr, capacity);
+	}
+	byteArr[index] = (item >> 8) & 0xFF;
+	byteArr[index + 1] = item & 0xFF;
+	if (size < index + 2) {
+		Zero(size, index - size);
+		size = capacity;
+	}
+}
+
+void CArtVariant::SetUInt32(unsigned long index, unsigned long item) {
+	if (index + 4 > capacity) {
+		capacity = index + 4;
+		byteArr = (unsigned char*)realloc(byteArr, capacity);
+	}
+	byteArr[index] = (item >> 24) & 0xFF;
+	byteArr[index + 1] = (item >> 16) & 0xFF;
+	byteArr[index + 2] = (item >> 8) & 0xFF;
+	byteArr[index + 3] = item & 0xFF;
+	if (size < index + 4) {
+		Zero(size, index - size);
+		size = capacity;
+	}
+}
+
+void CArtVariant::SetUInt64(unsigned long index, unsigned long long item) {
+	if (index + 8 > capacity) {
+		capacity = index + 8;
+		byteArr = (unsigned char*)realloc(byteArr, capacity);
+	}
+	byteArr[index] = (item >> 56) & 0xFF;
+	byteArr[index + 1] = (item >> 48) & 0xFF;
+	byteArr[index + 2] = (item >> 40) & 0xFF;
+	byteArr[index + 3] = (item >> 32) & 0xFF;
+	byteArr[index + 4] = (item >> 24) & 0xFF;
+	byteArr[index + 5] = (item >> 16) & 0xFF;
+	byteArr[index + 6] = (item >> 8) & 0xFF;
+	byteArr[index + 7] = item & 0xFF;
+	if (size < index + 8) {
+		Zero(size, index - size);
+		size = capacity;
+	}
+}
+
 void CArtVariant::SetFloat(float item) {
 	typedef union
 	{

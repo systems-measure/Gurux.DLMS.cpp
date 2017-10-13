@@ -953,7 +953,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
 				return ret;
 			}
-			CGXDLMSVariant parameters;
+			CArtVariant parameters;
 			if (selection != 0)
 			{
 				if ((ret = data.GetUInt8(&selector)) != 0)
@@ -962,8 +962,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
 					return ret;
 				}
-				CGXDataInfo i;
-				if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
+				if ((ret = GXHelpers::GetDataCA(data, parameters)) != 0)
 				{
 					obj = nullptr;
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
@@ -1188,7 +1187,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
         {
             // AccessSelection
             unsigned char selection, selector = 0;
-            CGXDLMSVariant parameters;
+            CArtVariant parameters;
             if ((ret = data.GetUInt8(&selection)) != 0)
             {
 				obj = nullptr;
@@ -1203,8 +1202,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
                     return ret;
                 }
-                CGXDataInfo i;
-                if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
+                if ((ret = GXHelpers::GetDataCA(data, parameters)) != 0)
                 {
 					obj = nullptr;
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
@@ -1431,7 +1429,7 @@ int CGXDLMSServer::HandleMethodRequest(
 {
     CGXByteBuffer bb;
     DLMS_ERROR_CODE error = DLMS_ERROR_CODE_OK;
-    CGXDLMSVariant parameters;
+    CArtVariant parameters;
     int ret;
     unsigned char ch, id;
     unsigned short tmp;
@@ -1467,8 +1465,7 @@ int CGXDLMSServer::HandleMethodRequest(
 
     if (ch != 0)
     {
-        CGXDataInfo i;
-        if ((ret = GXHelpers::GetData(data, i, parameters)) != 0)
+        if ((ret = GXHelpers::GetDataCA(data, parameters)) != 0)
         {
             return ret;
         }
