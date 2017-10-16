@@ -989,8 +989,13 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				{
 					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());                                                           
 					if (obj->GetDataValidity() || e->GetIndex() == 1) {
-						if ((ret = obj->GetValue(m_Settings, *e)) != 0)
-						{
+						if (ci != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
+							ret = obj->GetValue(m_Settings, *e);
+						}
+						else {
+							ret = m_CurrentALN->GetValue(m_Settings, *e);
+						}
+						if (ret != 0) {
 							status = DLMS_ERROR_CODE_HARDWARE_FAULT;
 						}
 					}
@@ -1089,8 +1094,14 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
                         if (!(*arg)->GetHandled())
                         {
 							if ((*arg)->GetTarget()->GetDataValidity()) {
-								if ((ret = (*arg)->GetTarget()->GetValue(m_Settings, *(*arg))) != 0)
+								if ((*arg)->GetTarget()->GetObjectType() != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
+									ret = (*arg)->GetTarget()->GetValue(m_Settings, *(*arg));
+								}
+								else
 								{
+									ret = m_CurrentALN->GetValue(m_Settings, *(*arg));
+								}
+								if (ret != 0) {
 									return ret;
 								}
 							}

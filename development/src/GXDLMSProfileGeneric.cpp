@@ -732,6 +732,9 @@ int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     }
     else if (e.GetIndex() == 2)
     {
+		data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+		data.SetUInt8(0);
+		e.SetValue(data);
         /*int ret = GetProfileGenericData(settings, e, data);
         e.SetByteArray(true);
         e.SetValue(data);
@@ -739,6 +742,9 @@ int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     }
     else if (e.GetIndex() == 3)
     {
+		data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+		data.SetUInt8(0);
+		e.SetValue(data);
        /*int ret = GetColumns(data);
         e.SetByteArray(true);
         e.SetValue(data);
@@ -746,14 +752,32 @@ int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     }
     else if (e.GetIndex() == 4)
     {
+		data.SetUInt8(DLMS_DATA_TYPE_UINT32);
+		data.SetUInt32(0);
+		e.SetValue(data);
        // e.SetValue(GetCapturePeriod());
     }
     else if (e.GetIndex() == 5)
     {
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(DLMS_SORT_METHOD_FIFO);
+		e.SetValue(data);
         //e.SetValue(GetSortMethod());
     }
     else if (e.GetIndex() == 6)
     {
+		data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+		data.SetUInt8(4);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(0);
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(6);
+		data.Zero(data.GetSize(), 6);
+		data.SetUInt8(DLMS_DATA_TYPE_INT8);
+		data.SetUInt8(0);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(0);
+		e.SetValue(data);
         //e.SetByteArray(true);
         //const char empty[6] = { 0 };
         //data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
@@ -800,10 +824,16 @@ int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     }
     else if (e.GetIndex() == 7)
     {
+		data.SetUInt8(DLMS_DATA_TYPE_UINT32);
+		data.SetUInt32(0);
+		e.SetValue(data);
         //e.SetValue(GetEntriesInUse());
     }
     else if (e.GetIndex() == 8)
     {
+		data.SetUInt8(DLMS_DATA_TYPE_UINT32);
+		data.SetUInt32(1);
+		e.SetValue(data);
        // e.SetValue(GetProfileEntries());
     }
     else

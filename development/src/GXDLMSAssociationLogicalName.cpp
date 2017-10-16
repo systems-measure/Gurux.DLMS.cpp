@@ -123,15 +123,17 @@ int CGXDLMSAssociationLogicalName::GetObjects(
     CGXByteBuffer& data)
 {
     int ret;
-    /*static unsigned long pos = 0;*/
     //Add count only for first time.
     if (settings.GetIndex() == 0)
     {
 		m_pos = 0;
-        settings.SetCount((unsigned short)m_ObjectList.size() + m_ObjectList.sizeRequiredObj());
+		settings.SetCount((unsigned short)m_ObjectList.size() + m_ObjectList.sizeRequiredObj());
+		if(e.GetTarget()->GetName().compare("0.0.40.0.2.255") == 0){
+			settings.SetCount(settings.GetCount() - 1);
+		}
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         //Add count
-        GXHelpers::SetObjectCount((unsigned long)m_ObjectList.size() + m_ObjectList.sizeRequiredObj(), data);
+        GXHelpers::SetObjectCount((unsigned long)settings.GetCount(), data);
     }
 	CGXDLMSObject* tmp_obj = nullptr;
 	CGXByteBuffer ln;
@@ -185,6 +187,9 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 	{
 		std::vector<CGXDLMSObject*> tmp_dlms_obj = m_ObjectList.GetDlmsObj();
 		std::vector<CGXDLMSObject*>::iterator it = tmp_dlms_obj.begin();
+		if (settings.GetCount() == m_ObjectList.size() + m_ObjectList.sizeRequiredObj() - 1) {
+			++it;
+		}
 		it += m_pos - m_ObjectList.size();
 		for (; it != tmp_dlms_obj.end(); ++it) {
 			++m_pos;
