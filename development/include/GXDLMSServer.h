@@ -68,8 +68,6 @@ private:
      * Is server initialized.
      */
     bool m_Initialized;
-
-    bool m_LinkEstablished;
     
     /**
     * Parse SNRM Request. If server do not accept client empty byte array is
@@ -207,6 +205,8 @@ private:
     */
     int UpdateShortNames(bool force);
 protected:
+  
+   bool m_LinkEstablished;
 	/**
 	* Received data.
 	*/
