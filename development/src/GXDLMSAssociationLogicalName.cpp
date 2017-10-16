@@ -631,7 +631,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     }
     if (e.GetIndex() == 8)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
 		data.SetUInt8((unsigned char)m_AssociationStatus);
         e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
