@@ -39,14 +39,14 @@
 
 class CGXDLMSIecHdlcSetup : public CGXDLMSObject
 {
-	unsigned short m_InactivityTimeout;
+	/*unsigned short m_InactivityTimeout;
 	unsigned short m_DeviceAddress;
 	unsigned short m_MaximumInfoLengthTransmit;
 	unsigned short m_InterCharachterTimeout;
 	unsigned short m_MaximumInfoLengthReceive;
 	unsigned char m_WindowSizeTransmit;
 	unsigned char m_WindowSizeReceive;
-    DLMS_BAUD_RATE m_CommunicationSpeed;	
+    DLMS_BAUD_RATE m_CommunicationSpeed;	*/
 
 public:
     //Constructor.
@@ -58,7 +58,7 @@ public:
     //LN Constructor.
     CGXDLMSIecHdlcSetup(const char* ln);
 
-    DLMS_BAUD_RATE GetCommunicationSpeed();
+    /*DLMS_BAUD_RATE GetCommunicationSpeed();
 
     void SetCommunicationSpeed(DLMS_BAUD_RATE value);
 
@@ -80,7 +80,7 @@ public:
     void SetInactivityTimeout(unsigned short value);
 
 	unsigned short GetDeviceAddress();
-    void SetDeviceAddress(unsigned short value);
+    void SetDeviceAddress(unsigned short value);*/
 
     // Returns amount of attributes.
     int GetAttributeCount();

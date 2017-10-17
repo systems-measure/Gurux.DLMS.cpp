@@ -38,98 +38,98 @@
 //Constructor.
 CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP)
 {
-    m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
+   /* m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
     m_WindowSizeTransmit = m_WindowSizeReceive = 1;
-    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;
+    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;*/
 }
 
 //SN Constructor.
 CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP, sn)
 {
-    m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
+    /*m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
     m_WindowSizeTransmit = m_WindowSizeReceive = 1;
-    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;
+    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;*/
 }
 
 //LN Constructor.
 CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP, ln)
 {
-    m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
+    /*m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
     m_WindowSizeTransmit = m_WindowSizeReceive = 1;
-    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;
+    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;*/
 }
 
-DLMS_BAUD_RATE CGXDLMSIecHdlcSetup::GetCommunicationSpeed()
-{
-    return m_CommunicationSpeed;
-}
-void CGXDLMSIecHdlcSetup::SetCommunicationSpeed(DLMS_BAUD_RATE value)
-{
-    m_CommunicationSpeed = value;
-}
-
-unsigned char CGXDLMSIecHdlcSetup::GetWindowSizeTransmit()
-{
-    return m_WindowSizeTransmit;
-}
-void CGXDLMSIecHdlcSetup::SetWindowSizeTransmit(unsigned char value)
-{
-    m_WindowSizeTransmit = value;
-}
-
-unsigned char CGXDLMSIecHdlcSetup::GetWindowSizeReceive()
-{
-    return m_WindowSizeReceive;
-}
-void CGXDLMSIecHdlcSetup::SetWindowSizeReceive(unsigned char value)
-{
-    m_WindowSizeReceive = value;
-}
-
-unsigned short CGXDLMSIecHdlcSetup::GetMaximumInfoLengthTransmit()
-{
-    return m_MaximumInfoLengthTransmit;
-}
-void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthTransmit(unsigned short value)
-{
-    m_MaximumInfoLengthTransmit = value;
-}
-
-unsigned short CGXDLMSIecHdlcSetup::GetMaximumInfoLengthReceive()
-{
-    return m_MaximumInfoLengthReceive;
-}
-void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthReceive(unsigned short value)
-{
-    m_MaximumInfoLengthReceive = value;
-}
-
-unsigned short CGXDLMSIecHdlcSetup::GetInterCharachterTimeout()
-{
-    return m_InterCharachterTimeout;
-}
-void CGXDLMSIecHdlcSetup::SetInterCharachterTimeout(unsigned short value)
-{
-    m_InterCharachterTimeout = value;
-}
-
-unsigned short CGXDLMSIecHdlcSetup::GetInactivityTimeout()
-{
-    return m_InactivityTimeout;
-}
-void CGXDLMSIecHdlcSetup::SetInactivityTimeout(unsigned short value)
-{
-    m_InactivityTimeout = value;
-}
-
-unsigned short CGXDLMSIecHdlcSetup::GetDeviceAddress()
-{
-    return m_DeviceAddress;
-}
-void CGXDLMSIecHdlcSetup::SetDeviceAddress(unsigned short value)
-{
-    m_DeviceAddress = value;
-}
+//DLMS_BAUD_RATE CGXDLMSIecHdlcSetup::GetCommunicationSpeed()
+//{
+//    return m_CommunicationSpeed;
+//}
+//void CGXDLMSIecHdlcSetup::SetCommunicationSpeed(DLMS_BAUD_RATE value)
+//{
+//    m_CommunicationSpeed = value;
+//}
+//
+//unsigned char CGXDLMSIecHdlcSetup::GetWindowSizeTransmit()
+//{
+//    return m_WindowSizeTransmit;
+//}
+//void CGXDLMSIecHdlcSetup::SetWindowSizeTransmit(unsigned char value)
+//{
+//    m_WindowSizeTransmit = value;
+//}
+//
+//unsigned char CGXDLMSIecHdlcSetup::GetWindowSizeReceive()
+//{
+//    return m_WindowSizeReceive;
+//}
+//void CGXDLMSIecHdlcSetup::SetWindowSizeReceive(unsigned char value)
+//{
+//    m_WindowSizeReceive = value;
+//}
+//
+//unsigned short CGXDLMSIecHdlcSetup::GetMaximumInfoLengthTransmit()
+//{
+//    return m_MaximumInfoLengthTransmit;
+//}
+//void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthTransmit(unsigned short value)
+//{
+//    m_MaximumInfoLengthTransmit = value;
+//}
+//
+//unsigned short CGXDLMSIecHdlcSetup::GetMaximumInfoLengthReceive()
+//{
+//    return m_MaximumInfoLengthReceive;
+//}
+//void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthReceive(unsigned short value)
+//{
+//    m_MaximumInfoLengthReceive = value;
+//}
+//
+//unsigned short CGXDLMSIecHdlcSetup::GetInterCharachterTimeout()
+//{
+//    return m_InterCharachterTimeout;
+//}
+//void CGXDLMSIecHdlcSetup::SetInterCharachterTimeout(unsigned short value)
+//{
+//    m_InterCharachterTimeout = value;
+//}
+//
+//unsigned short CGXDLMSIecHdlcSetup::GetInactivityTimeout()
+//{
+//    return m_InactivityTimeout;
+//}
+//void CGXDLMSIecHdlcSetup::SetInactivityTimeout(unsigned short value)
+//{
+//    m_InactivityTimeout = value;
+//}
+//
+//unsigned short CGXDLMSIecHdlcSetup::GetDeviceAddress()
+//{
+//    return m_DeviceAddress;
+//}
+//void CGXDLMSIecHdlcSetup::SetDeviceAddress(unsigned short value)
+//{
+//    m_DeviceAddress = value;
+//}
 
 // Returns amount of attributes.
 int CGXDLMSIecHdlcSetup::GetAttributeCount()
@@ -270,51 +270,51 @@ int CGXDLMSIecHdlcSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventAr
     }
     else if (e.GetIndex() == 2)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		/*data.SetUInt8(DLMS_DATA_TYPE_ENUM);
 		data.SetUInt8(m_CommunicationSpeed);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 3)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT8);
 		data.SetUInt8(m_WindowSizeTransmit);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 4)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT8);
 		data.SetUInt8(m_WindowSizeReceive);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 5)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT16);
 		data.SetUInt16(m_MaximumInfoLengthTransmit);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 6)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT16);
 		data.SetUInt16(m_MaximumInfoLengthReceive);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 7)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT16);
 		data.SetUInt16(m_InterCharachterTimeout);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 8)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT16);
 		data.SetUInt16(m_InactivityTimeout);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 9)
     {
-		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		/*data.SetUInt8(DLMS_DATA_TYPE_UINT16);
 		data.SetUInt16(m_DeviceAddress);
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else
     {
@@ -332,91 +332,91 @@ int CGXDLMSIecHdlcSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventAr
     }
     else if (e.GetIndex() == 2)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_CommunicationSpeed = (DLMS_BAUD_RATE)val;
+        m_CommunicationSpeed = (DLMS_BAUD_RATE)val;*/
     }
     else if (e.GetIndex() == 3)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_WindowSizeTransmit = (unsigned char)val;
+        m_WindowSizeTransmit = (unsigned char)val;*/
     }
     else if (e.GetIndex() == 4)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_WindowSizeReceive = (unsigned char)val;
+        m_WindowSizeReceive = (unsigned char)val;*/
     }
     else if (e.GetIndex() == 5)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MaximumInfoLengthTransmit = (unsigned short)val;
+        m_MaximumInfoLengthTransmit = (unsigned short)val;*/
     }
     else if (e.GetIndex() == 6)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_MaximumInfoLengthReceive = (unsigned short)val;
+        m_MaximumInfoLengthReceive = (unsigned short)val;*/
     }
     else if (e.GetIndex() == 7)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_InterCharachterTimeout = (unsigned short)val;
+        m_InterCharachterTimeout = (unsigned short)val;*/
     }
     else if (e.GetIndex() == 8)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_InactivityTimeout = (unsigned short)val;
+        m_InactivityTimeout = (unsigned short)val;*/
     }
     else if (e.GetIndex() == 9)
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
 		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
-        m_DeviceAddress = (unsigned short)val;
+        m_DeviceAddress = (unsigned short)val;*/
     }
     else
     {
