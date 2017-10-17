@@ -100,7 +100,7 @@ int CGXDLMSPushSetup::GetMethodCount()
 
 void CGXDLMSPushSetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -151,7 +151,7 @@ void CGXDLMSPushSetup::GetValues(std::vector<std::string>& values)
 
     values.push_back(CGXDLMSVariant(m_RandomisationStartInterval).ToString());
     values.push_back(CGXDLMSVariant(m_NumberOfRetries).ToString());
-    values.push_back(CGXDLMSVariant(m_RepetitionDelay).ToString());
+    values.push_back(CGXDLMSVariant(m_RepetitionDelay).ToString());*/
 }
 
 void CGXDLMSPushSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -194,7 +194,7 @@ void CGXDLMSPushSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSPushSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSPushSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -235,120 +235,92 @@ int CGXDLMSPushSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSPushSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-    CGXDLMSVariant tmp;
-    CGXByteBuffer buff;
+    CGXByteBuffer data;
+	e.SetByteArray(true);
     int ret;
     if (e.GetIndex() == 1)
     {
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetByteArray(true);
-        buff.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount((unsigned long)m_PushObjectList.size(), buff);
+		data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        GXHelpers::SetObjectCount((unsigned long)m_PushObjectList.size(), data);
         for (std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject> >::iterator it = m_PushObjectList.begin(); it != m_PushObjectList.end(); ++it)
         {
-            buff.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            buff.SetUInt8(4);
-
-            tmp = it->first->GetObjectType();
-            if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_UINT16, tmp)) != 0)
+			data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+			data.SetUInt8(4);
+			data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+			data.SetUInt16(it->first->GetObjectType());
+            if ((ret = GetLogicalName(it->first, data)) != 0)
             {
                 return ret;
             }
-            tmp.Clear();
-            if ((ret = GetLogicalName(it->first, tmp)) != 0)
-            {
-                return ret;
-            }
-            if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_OCTET_STRING, tmp)) != 0)
-            {
-                return ret;
-            }
-            tmp = (it->second).GetAttributeIndex();
-            if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_INT8, tmp)) != 0)
-            {
-                return ret;
-            }
-            tmp = (it->second).GetDataIndex();
-            if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_UINT16, tmp)) != 0)
-            {
-                return ret;
-            }
+			data.SetUInt8(DLMS_DATA_TYPE_INT8);
+			data.SetUInt8((it->second).GetAttributeIndex());
+			data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+			data.SetUInt16((it->second).GetDataIndex());
         }
-        e.SetValue(buff);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetByteArray(true);
-        buff.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        buff.SetUInt8(3);
-        tmp = GetService();
-        if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_UINT8, tmp)) != 0)
-        {
-            return ret;
-        }
-
-        CGXByteBuffer bb;
-        bb.AddString(GetDestination().c_str());
-        tmp = bb;
-        if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_OCTET_STRING, tmp)) != 0)
-        {
-            return ret;
-        }
-
-        tmp = GetMessage();
-        if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_UINT8, tmp)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(buff);
+        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        data.SetUInt8(3);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(GetService());
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(GetDestination().length());
+		data.AddString(GetDestination().c_str());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(GetMessage());
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetByteArray(true);
-        buff.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount((unsigned long)m_CommunicationWindow.size(), buff);
+        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        GXHelpers::SetObjectCount((unsigned long)m_CommunicationWindow.size(), data);
         for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_CommunicationWindow.begin(); it != m_CommunicationWindow.end(); ++it)
         {
-            buff.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            buff.SetUInt8(2);
-            tmp = it->first;
-            if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_OCTET_STRING, tmp)) != 0)
-            {
-                return ret;
-            }
-
-            tmp = it->second;
-            if ((ret = GXHelpers::SetData(buff, DLMS_DATA_TYPE_OCTET_STRING, tmp)) != 0)
-            {
-                return ret;
-            }
+            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+            data.SetUInt8(2);
+			data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+			data.SetUInt8(12);
+			GXHelpers::SetDateTime(data, it->first);
+			data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+			data.SetUInt8(12);
+			GXHelpers::SetDateTime(data, it->second);
         }
-        e.SetValue(buff);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        e.SetValue(m_RandomisationStartInterval);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_RandomisationStartInterval);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        e.SetValue(m_NumberOfRetries);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_NumberOfRetries);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 7)
     {
-        e.SetValue(m_RepetitionDelay);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_RepetitionDelay);
+		e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -359,43 +331,50 @@ int CGXDLMSPushSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        std::string ln;
-        m_PushObjectList.clear();
-        if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-        {
-            for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
-            {
-                DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)it->Arr[0].ToInteger();
-                GXHelpers::GetLogicalName(it->Arr[1].byteArr, ln);
-                CGXDLMSObject* obj = settings.GetObjects()->FindByLN(type, ln);
-                if (obj == NULL)
-                {
-                    obj = CGXDLMSObjectFactory::CreateObject(type);
-                    CGXDLMSObject::SetLogicalName(obj, it->Arr[1]);
-                }
-                CGXDLMSCaptureObject co(it->Arr[2].ToInteger(), it->Arr[3].ToInteger());
-                m_PushObjectList.push_back(std::pair<CGXDLMSObject*, CGXDLMSCaptureObject>(obj, co));
-            }
-        }
+        //std::string ln;
+        //m_PushObjectList.clear();
+        //if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
+        //{
+        //    for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
+        //    {
+        //        //DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)it->Arr[0].ToInteger();
+        //        //GXHelpers::GetLogicalName(it->Arr[1].byteArr, ln);
+        //        //CGXDLMSObject* obj = settings.GetObjects()->FindByLN(type, ln);
+        //        ///*if (obj == NULL)
+        //        //{
+        //        //    obj = CGXDLMSObjectFactory::CreateObject(type);
+        //        //    CGXDLMSObject::SetLogicalName(obj, it->Arr[1]);
+        //        //}*/
+        //        //CGXDLMSCaptureObject co(it->Arr[2].ToInteger(), it->Arr[3].ToInteger());
+        //        //m_PushObjectList.push_back(std::pair<CGXDLMSObject*, CGXDLMSCaptureObject>(obj, co));
+        //    }
+        //}
     }
     else if (e.GetIndex() == 3)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_STRUCTURE)
-        {
-            SetService((DLMS_SERVICE_TYPE)e.GetValue().Arr[0].ToInteger());
-            std::string str;
-            str.append(reinterpret_cast<char const*>(e.GetValue().Arr[1].byteArr), e.GetValue().Arr[1].size);
-            SetDestination(str);
-            SetMessage((DLMS_MESSAGE_TYPE)e.GetValue().Arr[2].ToInteger());
-        }
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		if (v_info.vt != DLMS_DATA_TYPE_STRUCTURE || v_info.size != 3) {
+			return DLMS_ERROR_CODE_INVALID_PARAMETER;
+		}
+		e.GetCAValue().GetVar(v_info);
+		SetService((DLMS_SERVICE_TYPE)(*e.GetCAValue().GetCurPtr()));
+		e.GetCAValue().IncreasePosition(v_info.size);
+		e.GetCAValue().GetVar(v_info);
+		std::string str;
+		str.append(reinterpret_cast<char const*>(e.GetCAValue().GetCurPtr()), v_info.size);
+		SetDestination(str);
+		e.GetCAValue().IncreasePosition(v_info.size);
+		e.GetCAValue().GetVar(v_info);
+		SetMessage((DLMS_MESSAGE_TYPE)(*e.GetCAValue().GetCurPtr()));
     }
     else if (e.GetIndex() == 4)
     {
-        m_CommunicationWindow.clear();
+        /*m_CommunicationWindow.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             int ret;
@@ -414,19 +393,19 @@ int CGXDLMSPushSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
                 CGXDateTime end = tmp.dateTime;
                 m_CommunicationWindow.push_back(std::pair<CGXDateTime, CGXDateTime>(start, end));
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 5)
     {
-        m_RandomisationStartInterval = e.GetValue().ToInteger();
+        //m_RandomisationStartInterval = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 6)
     {
-        m_NumberOfRetries = e.GetValue().ToInteger();
+       // m_NumberOfRetries = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 7)
     {
-        m_RepetitionDelay = e.GetValue().ToInteger();
+       // m_RepetitionDelay = e.GetValue().ToInteger();
     }
     else
     {

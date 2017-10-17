@@ -61,19 +61,23 @@ CArtVariant& CGXDLMSValueEventArg::GetCAValue()
 	return c_Value;
 }
 
-CGXDLMSVariant& CGXDLMSValueEventArg::GetValue()
-{
-    return m_Value;
-}
-
-
-void CGXDLMSValueEventArg::SetValue(CGXDLMSVariant value)
-{
-    m_Value = value;
-}
+//CGXDLMSVariant& CGXDLMSValueEventArg::GetValue()
+//{
+//    return m_Value;
+//}
+//
+//
+//void CGXDLMSValueEventArg::SetValue(CGXDLMSVariant value)
+//{
+//    m_Value = value;
+//}
 
 void CGXDLMSValueEventArg::SetValue(CArtVariant& value) 
 {
+	c_Value = value;
+}
+
+void CGXDLMSValueEventArg::SetValue(CGXByteBuffer& value) {
 	c_Value = value;
 }
 
@@ -97,12 +101,12 @@ void CGXDLMSValueEventArg::SetSelector(unsigned char& value)
     m_Selector = value;
 }
 
-CGXDLMSVariant& CGXDLMSValueEventArg::GetParameters()
+CArtVariant& CGXDLMSValueEventArg::GetParameters()
 {
     return m_Parameters;
 }
 
-void CGXDLMSValueEventArg::SetParameters(CGXDLMSVariant& value)
+void CGXDLMSValueEventArg::SetParameters(CArtVariant& value)
 {
     m_Parameters = value;
 }
@@ -140,7 +144,7 @@ CGXDLMSValueEventArg::CGXDLMSValueEventArg(
     CGXDLMSObject* target,
     int index,
     int selector,
-    CGXDLMSVariant& parameters)
+	CArtVariant& parameters)
 {
     Init(server, target, index, selector);
     m_Parameters = parameters;
@@ -157,10 +161,15 @@ CGXDLMSValueEventArg::CGXDLMSValueEventArg(
     CGXDLMSObject* target,
     int index,
     int selector,
-    CGXDLMSVariant& parameters)
+	CArtVariant& parameters)
 {
     Init(NULL, target, index, selector);
     m_Parameters = parameters;
+}
+
+CGXDLMSValueEventArg::~CGXDLMSValueEventArg() {
+	c_Value.Clear();
+	m_Parameters.Clear();
 }
 
 DLMS_ERROR_CODE CGXDLMSValueEventArg::GetError()

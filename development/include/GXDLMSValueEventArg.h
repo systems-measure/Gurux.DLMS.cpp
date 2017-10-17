@@ -58,10 +58,10 @@ class CGXDLMSValueEventArg
 private:
 
 	CArtVariant c_Value;
-    /**
-    * CGXDLMSVariant value.
-    */
-    CGXDLMSVariant m_Value;
+    ///**
+    //* CGXDLMSVariant value.
+    //*/
+    //CGXDLMSVariant m_Value;
     /**
     * Is request handled.
     */
@@ -81,7 +81,7 @@ private:
     /**
     * Optional parameters.
     */
-    CGXDLMSVariant m_Parameters;
+    CArtVariant m_Parameters;
 
     /**
      * Occurred error.
@@ -162,7 +162,7 @@ private:
         CGXDLMSObject* target,
         int index,
         int selector,
-        CGXDLMSVariant& parameters);
+        CArtVariant& parameters);
 
     /**
     * DLMS server.
@@ -185,22 +185,24 @@ public:
 
     void SetIndex(unsigned char value);
 
-    /**
-    * @return CGXDLMSVariant value.
-    */
-    CGXDLMSVariant& GetValue();
+    ///**
+    //* @return CGXDLMSVariant value.
+    //*/
+    //CGXDLMSVariant& GetValue();
 
-    /**
-    * @param value
-    *            CGXDLMSVariant value.
-    */
-    void SetValue(CGXDLMSVariant value);
+    ///**
+    //* @param value
+    //*            CGXDLMSVariant value.
+    //*/
+    //void SetValue(CGXDLMSVariant value);
 
 	/**
 	* @param value
 	*            CArtVariant value.
 	*/
 	void SetValue(CArtVariant& value);
+
+	void SetValue(CGXByteBuffer& value);
 
     /**
     * @return Data type of the value.
@@ -238,13 +240,13 @@ public:
     /**
     * @return Optional parameters.
     */
-    CGXDLMSVariant& GetParameters();
+    CArtVariant& GetParameters();
 
     /**
     * @param value
     *           Parameters.
     */
-    void SetParameters(CGXDLMSVariant& value);
+    void SetParameters(CArtVariant& value);
 
 
     /**
@@ -275,8 +277,9 @@ public:
         CGXDLMSObject* target,
         int index,
         int selector,
-        CGXDLMSVariant& parameters);
+        CArtVariant& parameters);
 
+	~CGXDLMSValueEventArg();
     /**
     * @return Occurred error.
     */

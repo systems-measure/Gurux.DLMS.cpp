@@ -60,8 +60,8 @@ class CGXDLMSObject : public IGXDLMSBase
     unsigned short m_DataIndex;
     unsigned short m_Version;
 protected:
-    std::map<int, time_t> m_ReadTimes;
-    unsigned short m_SN;
+    //std::map<int, time_t> m_ReadTimes;
+   // unsigned short m_SN;
     unsigned char m_LN[6];
 	bool m_DataValidity;
     /*
@@ -70,8 +70,8 @@ protected:
      */
     bool IsRead(int index);
     bool CanRead(int index);
-    static int GetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value);
-    static int SetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value);
+    static int GetLogicalName(CGXDLMSObject * target, CGXByteBuffer& value);
+    static int SetLogicalName(CGXDLMSObject * target, CArtVariant& value);
 public:
 
     static bool IsLogicalNameEmpty(unsigned char* pLN)
@@ -106,10 +106,10 @@ public:
     DLMS_OBJECT_TYPE GetObjectType();
 
     //Get Object's Short Name.
-    unsigned short GetShortName();
+   // unsigned short GetShortName();
 
     //Set Object's Short Name.
-    void SetShortName(unsigned short value);
+    //void SetShortName(unsigned short value);
 
     //Get Object's Logical Name.
     void GetLogicalName(std::string& ln);
@@ -121,16 +121,16 @@ public:
 
     CGXAttributeCollection& GetAttributes();
     CGXAttributeCollection& GetMethodAttributes();
-    virtual int SetDataType(int index, DLMS_DATA_TYPE type);
-    virtual int GetDataType(int index, DLMS_DATA_TYPE& type);
+    virtual int SetDataType(unsigned char index, DLMS_DATA_TYPE type);
+    virtual int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
-    virtual int GetUIDataType(int index, DLMS_DATA_TYPE& type);
-    void SetUIDataType(int index, DLMS_DATA_TYPE type);
+    virtual int GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    void SetUIDataType(unsigned char index, DLMS_DATA_TYPE type);
 
-    DLMS_ACCESS_MODE GetAccess(int index);
-    void SetAccess(int index, DLMS_ACCESS_MODE access);
-    DLMS_METHOD_ACCESS_MODE GetMethodAccess(int index);
-    void SetMethodAccess(int index, DLMS_METHOD_ACCESS_MODE access);
+    DLMS_ACCESS_MODE GetAccess(unsigned char index);
+    void SetAccess(unsigned char index, DLMS_ACCESS_MODE access);
+    DLMS_METHOD_ACCESS_MODE GetMethodAccess(unsigned char index);
+    void SetMethodAccess(unsigned char index, DLMS_METHOD_ACCESS_MODE access);
 
 
     //Get description of the object.

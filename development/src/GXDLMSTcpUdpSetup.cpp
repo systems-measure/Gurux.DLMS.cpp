@@ -135,7 +135,7 @@ int CGXDLMSTcpUdpSetup::GetMethodCount()
 
 void CGXDLMSTcpUdpSetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -143,7 +143,7 @@ void CGXDLMSTcpUdpSetup::GetValues(std::vector<std::string>& values)
     values.push_back(m_IPReference);
     values.push_back(CGXDLMSVariant(m_MaximumSegmentSize).ToString());
     values.push_back(CGXDLMSVariant(m_MaximumSimultaneousConnections).ToString());
-    values.push_back(CGXDLMSVariant(m_InactivityTimeout).ToString());
+    values.push_back(CGXDLMSVariant(m_InactivityTimeout).ToString());*/
 }
 
 void CGXDLMSTcpUdpSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -216,46 +216,47 @@ int CGXDLMSTcpUdpSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSTcpUdpSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-    if (e.GetIndex() == 1)
+	if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		CGXByteBuffer data;
+		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        CGXDLMSVariant tmp = GetPort();
-        e.SetValue(tmp);
+        /*CGXDLMSVariant tmp = GetPort();
+        e.SetValue(tmp);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        CGXDLMSVariant tmp;
+       /* CGXDLMSVariant tmp;
         GXHelpers::SetLogicalName(m_IPReference.c_str(), tmp);
-        e.SetValue(tmp);
+        e.SetValue(tmp);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        CGXDLMSVariant tmp = GetMaximumSegmentSize();
-        e.SetValue(tmp);
+        /*CGXDLMSVariant tmp = GetMaximumSegmentSize();
+        e.SetValue(tmp);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        CGXDLMSVariant tmp = GetMaximumSimultaneousConnections();
-        e.SetValue(tmp);
+        /*CGXDLMSVariant tmp = GetMaximumSimultaneousConnections();
+        e.SetValue(tmp);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        CGXDLMSVariant tmp = GetInactivityTimeout();
-        e.SetValue(tmp);
+        /*CGXDLMSVariant tmp = GetInactivityTimeout();
+        e.SetValue(tmp);*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -266,16 +267,16 @@ int CGXDLMSTcpUdpSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        SetPort(e.GetValue().ToInteger());
+        //SetPort(e.GetValue().ToInteger());
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 3)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
         {
             SetIPReference("");
         }
@@ -289,40 +290,40 @@ int CGXDLMSTcpUdpSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
             {
                 SetIPReference(e.GetValue().ToString());
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 4)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
         {
             SetMaximumSegmentSize(576);
         }
         else
         {
             SetMaximumSegmentSize(e.GetValue().ToInteger());
-        }
+        }*/
     }
     else if (e.GetIndex() == 5)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
         {
             SetMaximumSimultaneousConnections(1);
         }
         else
         {
             SetMaximumSimultaneousConnections(e.GetValue().ToInteger());
-        }
+        }*/
     }
     else if (e.GetIndex() == 6)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_NONE)
         {
             SetInactivityTimeout(180);
         }
         else
         {
             SetInactivityTimeout(e.GetValue().ToInteger());
-        }
+        }*/
     }
     else
     {

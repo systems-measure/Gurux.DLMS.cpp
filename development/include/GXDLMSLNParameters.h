@@ -49,10 +49,6 @@ private:
      */
     CGXDLMSSettings *m_Settings;
     /**
-     * DLMS command.
-     */
-    DLMS_COMMAND m_Command;
-    /**
      * Request type.
      */
     int m_RequestType;
@@ -68,10 +64,14 @@ private:
      * Send date and time. This is used in Data notification messages.
      */
     struct tm* m_Time;
+	/**
+	* DLMS command.
+	*/
+	DLMS_COMMAND m_Command;
     /**
      * Reply status.
      */
-    int m_Status;
+    unsigned char m_Status;
     /**
      * Are there more data to send or more data to receive.
      */
@@ -152,13 +152,13 @@ public:
     /**
      * @return Status.
      */
-    int GetStatus();
+	unsigned char GetStatus();
 
     /**
      * @param value
      *            Status to set
      */
-    void SetStatus(int value);
+    void SetStatus(unsigned char value);
 
     /**
      * @return the multipleBlocks

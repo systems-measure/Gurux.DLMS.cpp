@@ -253,7 +253,7 @@ void CGXByteBuffer::SetDouble(double value)
         m_Capacity += VECTOR_CAPACITY;
         m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
-    m_Data[m_Size] = tmp.b[7];
+    m_Data[m_Size]	   = tmp.b[7];
     m_Data[m_Size + 1] = tmp.b[6];
     m_Data[m_Size + 2] = tmp.b[5];
     m_Data[m_Size + 3] = tmp.b[4];
@@ -580,7 +580,7 @@ int CGXByteBuffer::Get(unsigned char* value, unsigned long count)
     return 0;
 }
 
-unsigned char* CGXByteBuffer::GetData()
+unsigned char*& CGXByteBuffer::GetData()
 {
     return m_Data;
 }

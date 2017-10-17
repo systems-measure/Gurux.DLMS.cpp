@@ -71,6 +71,12 @@ public:
 
 	static int GetDataCA(CGXByteBuffer& data, CArtVariant& value);
 
+	static void SetDateTime(CGXByteBuffer& buff, CGXDateTime& value);
+
+	static void SetDateTime(CArtVariant& buff, unsigned char index, CGXDateTime& value);
+
+	static unsigned char GetDateTime(CArtVariant& buff, CGXDateTime& value);
+
     static void GetLogicalName(unsigned char* buff, std::string& ln)
     {
         int dataSize;
@@ -112,7 +118,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////
     //Set logical name from std::string.
     /////////////////////////////////////////////////////////////////////////////
-    static int SetLogicalName(const char* name, CGXDLMSVariant& value);
+    static int SetLogicalName(const char* name, CArtVariant& value);
 
     /////////////////////////////////////////////////////////////////////////////
     //Set logical name from std::string.

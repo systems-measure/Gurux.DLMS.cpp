@@ -130,7 +130,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

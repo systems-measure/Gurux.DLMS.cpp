@@ -43,12 +43,13 @@ class CGXDLMSPushSetup : public CGXDLMSObject
 {
 private:
     DLMS_SERVICE_TYPE m_Service;
+	DLMS_MESSAGE_TYPE m_Message;
+	unsigned short m_RandomisationStartInterval, m_RepetitionDelay;
+	unsigned char  m_NumberOfRetries;
     std::string m_Destination;
-    DLMS_MESSAGE_TYPE m_Message;
     std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject> > m_PushObjectList;
     std::vector<std::pair<CGXDateTime, CGXDateTime> > m_CommunicationWindow;
-    int m_RandomisationStartInterval, m_NumberOfRetries, m_RepetitionDelay;
-
+    
 public:
     //Constructor.
     CGXDLMSPushSetup();
@@ -94,11 +95,11 @@ public:
      This means that the push operation is not started imme-diately at the
      beginning of the first communication window but started randomly delayed.
     */
-    int GetRandomisationStartInterval()
+	unsigned short GetRandomisationStartInterval()
     {
         return m_RandomisationStartInterval;
     }
-    void SetRandomisationStartInterval(int value)
+    void SetRandomisationStartInterval(unsigned short value)
     {
         m_RandomisationStartInterval = value;
     }
@@ -107,21 +108,21 @@ public:
      A value of 0 means no repetitions, i.e. only the initial connection at-tempt is made.
     */
 
-    int GetNumberOfRetries()
+	unsigned char GetNumberOfRetries()
     {
         return m_NumberOfRetries;
     }
-    void SetNumberOfRetries(int value)
+    void SetNumberOfRetries(unsigned char value)
     {
         m_NumberOfRetries = value;
     }
 
-    int GetRepetitionDelay()
+	unsigned short GetRepetitionDelay()
     {
         return m_RepetitionDelay;
     }
 
-    void SetRepetitionDelay(int value)
+    void SetRepetitionDelay(unsigned short value)
     {
         m_RepetitionDelay = value;
     }
@@ -136,7 +137,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

@@ -43,28 +43,28 @@ CGXDLMSCaptureObject::CGXDLMSCaptureObject()
 }
 
 // Constructor.
-CGXDLMSCaptureObject::CGXDLMSCaptureObject(int attributeIndex, int dataIndex)
+CGXDLMSCaptureObject::CGXDLMSCaptureObject(unsigned char attributeIndex, unsigned char dataIndex)
 {
     m_AttributeIndex = attributeIndex;
     m_DataIndex = dataIndex;
 }
 
 // Index of DLMS object in the profile generic table
-int CGXDLMSCaptureObject::GetAttributeIndex()
+unsigned char CGXDLMSCaptureObject::GetAttributeIndex()
 {
     return m_AttributeIndex;
 }
-void CGXDLMSCaptureObject::SetAttributeIndex(int value)
+void CGXDLMSCaptureObject::SetAttributeIndex(unsigned char value)
 {
     m_AttributeIndex = value;
 }
 
 // Data index of DLMS object in the profile generic table.
-int CGXDLMSCaptureObject::GetDataIndex()
+unsigned char CGXDLMSCaptureObject::GetDataIndex()
 {
     return m_DataIndex;
 }
-void CGXDLMSCaptureObject::SetDataIndex(int value)
+void CGXDLMSCaptureObject::SetDataIndex(unsigned char value)
 {
     m_DataIndex = value;
 }

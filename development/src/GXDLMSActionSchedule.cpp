@@ -122,7 +122,7 @@ int CGXDLMSActionSchedule::GetMethodCount()
 
 void CGXDLMSActionSchedule::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -142,7 +142,7 @@ void CGXDLMSActionSchedule::GetValues(std::vector<std::string>& values)
         sb.write(str.c_str(), str.size());
     }
     sb << ']';
-    values.push_back(sb.str());
+    values.push_back(sb.str());*/
 }
 
 void CGXDLMSActionSchedule::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -199,20 +199,20 @@ int CGXDLMSActionSchedule::GetDataType(int index, DLMS_DATA_TYPE& type)
 int CGXDLMSActionSchedule::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     CGXByteBuffer data;
+	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetByteArray(true);
+        /*e.SetByteArray(true);
         int ret;
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(2);
@@ -224,37 +224,37 @@ int CGXDLMSActionSchedule::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
         {
             return ret;
         }
-        e.SetValue(data);
+        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetValue(GetType());
+        /*e.SetValue(GetType());*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetByteArray(true);
-        int ret;
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount((unsigned long)GetExecutionTime().size(), data);
-        CGXDLMSVariant val1, val2;
-        for (std::vector<CGXDateTime>::iterator it = m_ExecutionTime.begin(); it != m_ExecutionTime.end(); ++it)
-        {
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            //Count
-            data.SetUInt8(2);
-            CGXTime t(*it);
-            CGXDate d(*it);
-            val1 = t;
-            val2 = d;
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, val1)) != 0 ||
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, val2)) != 0)
-            {
-                return ret;
-            }
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //int ret;
+        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        //GXHelpers::SetObjectCount((unsigned long)GetExecutionTime().size(), data);
+        //CGXDLMSVariant val1, val2;
+        //for (std::vector<CGXDateTime>::iterator it = m_ExecutionTime.begin(); it != m_ExecutionTime.end(); ++it)
+        //{
+        //    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //    //Count
+        //    data.SetUInt8(2);
+        //    CGXTime t(*it);
+        //    CGXDate d(*it);
+        //    val1 = t;
+        //    val2 = d;
+        //    if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, val1)) != 0 ||
+        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, val2)) != 0)
+        //    {
+        //        return ret;
+        //    }
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -265,22 +265,33 @@ int CGXDLMSActionSchedule::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        GXHelpers::GetLogicalName(e.GetValue().Arr[0].byteArr, m_ExecutedScriptLogicalName);
-        SetExecutedScriptSelector(e.GetValue().Arr[1].ToInteger());
+		/*VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		if (v_info.vt != DLMS_DATA_TYPE_OCTET_STRING || v_info.size != 6) {
+			return DLMS_ERROR_CODE_INVALID_PARAMETER;
+		}
+        GXHelpers::GetLogicalName(e.GetCAValue().GetCurPtr(), m_ExecutedScriptLogicalName);
+		e.GetCAValue().GetVar(v_info);
+		unsigned long long value;
+		unsigned char ret;
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, value)) != DLMS_ERROR_CODE_OK) {
+			return ret;
+		}
+	    SetExecutedScriptSelector(value);*/
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 3)
     {
-        SetType((DLMS_SINGLE_ACTION_SCHEDULE_TYPE)e.GetValue().ToInteger());
+        //SetType((DLMS_SINGLE_ACTION_SCHEDULE_TYPE)e.GetValue().ToInteger());
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 4)
     {
-        int ret;
+        /*int ret;
         m_ExecutionTime.clear();
         CGXDLMSVariant time, date;
         for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin();
@@ -301,7 +312,7 @@ int CGXDLMSActionSchedule::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
             CGXDateTime tmp(val2);
             tmp.SetSkip((DATETIME_SKIPS)(time.dateTime.GetSkip() | date.dateTime.GetSkip()));
             m_ExecutionTime.push_back(tmp);
-        }
+        }*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

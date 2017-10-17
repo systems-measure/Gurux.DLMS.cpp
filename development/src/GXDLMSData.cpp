@@ -46,7 +46,7 @@ CGXDLMSData::CGXDLMSData(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_DAT
 }
 
 //SN Constructor.
-CGXDLMSData::CGXDLMSData(unsigned short sn, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, sn)
+CGXDLMSData::CGXDLMSData(unsigned short sn, CArtVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, sn)
 {
     m_Value = value;
 }
@@ -58,19 +58,19 @@ CGXDLMSData::CGXDLMSData(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, 
 }
 
 //LN Constructor.
-CGXDLMSData::CGXDLMSData(const char* ln, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
+CGXDLMSData::CGXDLMSData(const char* ln, CArtVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
 {
     m_Value = value;
 }
 
 // Get value of COSEM Data object.
-CGXDLMSVariant CGXDLMSData::GetValue()
+CArtVariant CGXDLMSData::GetValue()
 {
     return m_Value;
 }
 
 // Set value of COSEM Data object.
-void CGXDLMSData::SetValue(CGXDLMSVariant& value)
+void CGXDLMSData::SetValue(CArtVariant& value)
 {
     m_Value = value;
 }
@@ -89,11 +89,11 @@ int CGXDLMSData::GetMethodCount()
 
 void CGXDLMSData::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
-    values.push_back(m_Value.ToString());
+    values.push_back(m_Value.ToString());*/
 }
 
 void CGXDLMSData::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -110,7 +110,7 @@ void CGXDLMSData::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSData::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSData::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -127,20 +127,22 @@ int CGXDLMSData::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSData::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	e.SetByteArray(true);
+	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(m_Value);
+		CArtVariant tmp_value(m_Value);
+        e.SetValue(tmp_value);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -151,11 +153,11 @@ int CGXDLMSData::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        SetValue(e.GetValue());
+        SetValue(e.GetCAValue());
     }
     else
     {

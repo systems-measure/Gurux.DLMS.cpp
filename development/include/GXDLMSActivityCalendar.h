@@ -42,7 +42,7 @@
 
 class CGXDLMSActivityCalendar : public CGXDLMSObject
 {
-    std::string m_CalendarNameActive;
+    /*std::string m_CalendarNameActive;
     std::string m_CalendarNamePassive;
     std::vector<CGXDLMSSeasonProfile*> m_SeasonProfileActive;
     std::vector<CGXDLMSWeekProfile*> m_WeekProfileTableActive;
@@ -50,7 +50,7 @@ class CGXDLMSActivityCalendar : public CGXDLMSObject
     std::vector<CGXDLMSSeasonProfile*> m_SeasonProfilePassive;
     std::vector<CGXDLMSDayProfile*> m_DayProfileTablePassive;
     std::vector<CGXDLMSWeekProfile*> m_WeekProfileTablePassive;
-    CGXDateTime m_Time;
+    CGXDateTime m_Time;*/
 public:
     //Constructor.
     CGXDLMSActivityCalendar();
@@ -64,7 +64,7 @@ public:
     //Destructor.
     ~CGXDLMSActivityCalendar();
 
-    std::string GetCalendarNameActive();
+    /*std::string GetCalendarNameActive();
     void SetCalendarNameActive(std::string value);
 
     std::vector<CGXDLMSSeasonProfile*> GetSeasonProfileActive();
@@ -89,7 +89,7 @@ public:
     void SetDayProfileTablePassive(std::vector<CGXDLMSDayProfile*> value);
 
     CGXDateTime& GetTime();
-    void SetTime(CGXDateTime& value);
+    void SetTime(CGXDateTime& value);*/
 
     // Returns amount of attributes.
     int GetAttributeCount();

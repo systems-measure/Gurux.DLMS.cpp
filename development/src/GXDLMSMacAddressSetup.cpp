@@ -88,11 +88,11 @@ int CGXDLMSMacAddressSetup::GetMethodCount()
 
 void CGXDLMSMacAddressSetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
-    values.push_back(m_MacAddress);
+    values.push_back(m_MacAddress);*/
 }
 
 void CGXDLMSMacAddressSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -130,27 +130,27 @@ int CGXDLMSMacAddressSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSMacAddressSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	CGXByteBuffer data;
+	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetByteArray(true);
-        std::string add = GetMacAddress();
+        /*std::string add = GetMacAddress();
         GXHelpers::Replace(add, ":", ".");
-        CGXByteBuffer data;
-        CGXDLMSVariant tmp = add;
-        int ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, tmp);
-        e.SetValue(data);
-        return ret;
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(add.length());
+		data.AddString(add);
+        e.SetValue(data);*/
+        return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
@@ -160,11 +160,11 @@ int CGXDLMSMacAddressSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEven
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        CGXDLMSVariant newValue;
+       /* CGXDLMSVariant newValue;
         int ret = CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_OCTET_STRING, newValue);
         if (ret != DLMS_ERROR_CODE_OK)
         {
@@ -172,7 +172,7 @@ int CGXDLMSMacAddressSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEven
         }
         std::string add = e.GetValue().ToString();
         GXHelpers::Replace(add, ".", ":");
-        SetMacAddress(add);
+        SetMacAddress(add);*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

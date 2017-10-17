@@ -94,12 +94,12 @@ void CGXDLMSLNParameters::SetTime(struct tm* value)
     m_Time = value;
 }
 
-int CGXDLMSLNParameters::GetStatus()
+unsigned char CGXDLMSLNParameters::GetStatus()
 {
     return m_Status;
 }
 
-void CGXDLMSLNParameters::SetStatus(int value)
+void CGXDLMSLNParameters::SetStatus(unsigned char value)
 {
     m_Status = value;
 }
