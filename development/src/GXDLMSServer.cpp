@@ -44,6 +44,9 @@
 #include "../include/GXDLMSValueEventCollection.h"
 #include "profile_cap_objects.h"
 #include "Helper\Helper.h"
+#if defined(MEMLOG)
+#include "memlog.h"
+#endif
 
 
 CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
@@ -652,6 +655,7 @@ int CGXDLMSServer::HandleSetRequest(
         if (am != DLMS_ACCESS_MODE_WRITE && am != DLMS_ACCESS_MODE_READ_WRITE)
         {
             //Read Write denied.
+			delete e;
             p.SetStatus(DLMS_ERROR_CODE_READ_WRITE_DENIED);
         }
         else
@@ -674,6 +678,7 @@ int CGXDLMSServer::HandleSetRequest(
 							p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 							obj = nullptr;
 							m_CurrentALN->GetObjectList().FreeConstructedObj();
+							delete e;
 							return ret;
 						}
 						if (dt != DLMS_DATA_TYPE_NONE && dt != DLMS_DATA_TYPE_OCTET_STRING)
@@ -686,6 +691,7 @@ int CGXDLMSServer::HandleSetRequest(
 								p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
 								obj = nullptr;
 								m_CurrentALN->GetObjectList().FreeConstructedObj();
+								delete e;
 								return ret;
 							}
 							value = tmp;
@@ -710,6 +716,7 @@ int CGXDLMSServer::HandleSetRequest(
 					}
 				}
 				else {
+					delete e;
 					p.SetStatus(DLMS_ERROR_CODE_READ_WRITE_DENIED);
 				}
 			}
@@ -745,6 +752,9 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
         m_Settings.IncreaseBlockIndex();
         if ((ret = GXHelpers::GetObjectCount(data, size)) != 0)
         {
+			m_CurrentALN->GetObjectList().FreeConstructedObj();
+			delete m_Transaction;
+			m_Transaction = NULL;
             return ret;
         }
         unsigned long realSize = data.GetSize() - data.GetPosition();
@@ -759,6 +769,9 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             CArtVariant value;
             if ((ret != GXHelpers::GetDataCA(m_Transaction->GetData(), value)) != 0)
             {
+				m_CurrentALN->GetObjectList().FreeConstructedObj();
+				delete m_Transaction;
+				m_Transaction = NULL;
                 return ret;
             }
             CGXDLMSValueEventArg * target = *m_Transaction->GetTargets().begin();
@@ -773,6 +786,9 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
 					CArtVariant bb;
                     if ((ret = value.ChangeType(v_info.size, dt, bb)) != 0)
                     {
+						m_CurrentALN->GetObjectList().FreeConstructedObj();
+						delete m_Transaction;
+						m_Transaction = NULL;
                         return ret;
                     }
 					value = bb;
@@ -1336,6 +1352,9 @@ int CGXDLMSServer::HandleCommand(
     CGXByteBuffer& data,
     CGXByteBuffer& reply)
 {
+    #if defined(MEMLOG)
+    vMemLog_ReportHeap("--> GXDLMSServer::HandleCommand()\n" );    
+    #endif
     int ret = 0;
     unsigned char frame = 0;    
     switch (cmd)
@@ -1354,7 +1373,7 @@ int CGXDLMSServer::HandleCommand(
     case DLMS_COMMAND_GET_REQUEST:
         if (data.GetSize() != 0)
         {            
-            ret = HandleGetRequest(data);            
+            ret = HandleGetRequest(data);   
         }
         break;
     case DLMS_COMMAND_READ_REQUEST:
@@ -1376,7 +1395,7 @@ int CGXDLMSServer::HandleCommand(
             
         } else {
             frame = DLMS_COMMAND_DM;
-        }        
+        }     
         break;
     case DLMS_COMMAND_AARQ:
         if(m_LinkEstablished) {
@@ -1424,6 +1443,9 @@ int CGXDLMSServer::HandleCommand(
             ret = CGXDLMS::GetHdlcFrame(m_Settings, frame, &m_ReplyData, reply);
         }
     }
+    #if defined(MEMLOG)
+    vMemLog_ReportLeaks();    
+    #endif
     return ret;
 }
 

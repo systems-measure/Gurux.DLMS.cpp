@@ -279,6 +279,7 @@ public:
         int selector,
         CArtVariant& parameters);
 
+	~CGXDLMSValueEventArg();
     /**
     * @return Occurred error.
     */

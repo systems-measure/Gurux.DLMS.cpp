@@ -167,6 +167,11 @@ CGXDLMSValueEventArg::CGXDLMSValueEventArg(
     m_Parameters = parameters;
 }
 
+CGXDLMSValueEventArg::~CGXDLMSValueEventArg() {
+	c_Value.Clear();
+	m_Parameters.Clear();
+}
+
 DLMS_ERROR_CODE CGXDLMSValueEventArg::GetError()
 {
     return m_Error;
