@@ -1027,18 +1027,6 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 					bb.Set(value.byteArr, value.size);
 					value.Clear();
 				}
-				//else {
-				//	CGXDLMSVariant& value = e->GetValue();
-				//	if (e->IsByteArray() && value.vt == DLMS_DATA_TYPE_OCTET_STRING)
-				//	{
-				//		// If byte array is added do not add type.
-				//		bb.Set(value.byteArr, value.GetSize());
-				//	}
-				//	else if ((ret = CGXDLMS::AppendData(obj, attributeIndex, bb, value)) != 0)
-				//	{
-				//		status = DLMS_ERROR_CODE_HARDWARE_FAULT;
-				//	}
-				//}	
 			}
 		}
 	}       
@@ -1135,18 +1123,6 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 						else {
 
 						}
-						//else {
-						//	value = (*arg)->GetValue();
-						//	if ((*arg)->IsByteArray() && value.vt == DLMS_DATA_TYPE_OCTET_STRING)
-						//	{
-						//		// If byte array is added do not add type.
-						//		bb.Set(value.byteArr, value.GetSize());
-						//	}
-						//	else if ((ret = CGXDLMS::AppendData((*arg)->GetTarget(), (*arg)->GetIndex(), bb, value)) != 0)
-						//	{
-						//		return DLMS_ERROR_CODE_HARDWARE_FAULT;
-						//	}
-						//}
                     }
                 }
             }
@@ -1263,19 +1239,6 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
 			return DLMS_ERROR_CODE_HARDWARE_FAULT;
 		}
-
-		//CGXDLMSVariant& value = (*it)->GetValue();
-		//if ((*it)->IsByteArray() && value.vt == DLMS_DATA_TYPE_OCTET_STRING)
-		//{
-		//	// If byte array is added do not add type.
-		//	bb.Set(value.byteArr, value.GetSize());
-		//}
-		//else if ((ret = CGXDLMS::AppendData((*it)->GetTarget(), (*it)->GetIndex(), bb, value)) != 0)
-		//{
-		//	obj = nullptr;
-		//	m_CurrentALN->GetObjectList().FreeConstructedObj();
-		//	return DLMS_ERROR_CODE_HARDWARE_FAULT;
-		//}
 		if (m_Settings.GetIndex() != m_Settings.GetCount())
 		{
 			if (m_Transaction != NULL)
@@ -1556,28 +1519,6 @@ int CGXDLMSServer::HandleMethodRequest(
 				else {
 					error = e->GetError();
 					bb.SetUInt8(0);
-					//CGXDLMSVariant& actionReply = e->GetValue();
-					//// Set default action reply if not given.
-					//if (actionReply.vt != DLMS_DATA_TYPE_NONE)
-					//{
-					//	// Add return parameters
-					//	bb.SetUInt8(1);
-					//	//Add parameters error code.
-					//	bb.SetUInt8(0);
-					//	if (e->IsByteArray())
-					//	{
-					//		bb.Set(actionReply.byteArr, actionReply.size);
-					//	}
-					//	else
-					//	{
-					//		GXHelpers::SetData(bb, actionReply.vt, actionReply);
-					//	}
-					//}
-					//else {
-					//	// Add parameters error code.
-					//	error = e->GetError();
-					//	bb.SetUInt8(0);
-					//}
 				}
 			}
         }
