@@ -256,7 +256,7 @@ int CGXDLMSIecHdlcSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSIecHdlcSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
 	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {

@@ -139,7 +139,7 @@ int CGXDLMSSpecialDaysTable::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     if (e.GetIndex() == 1)
     {
 		CGXByteBuffer data;
-		e.SetByteArray(true);
+//		e.SetByteArray(true);
         int ret;
         if ((ret = GetLogicalName(this, data)) != 0)
         {
@@ -182,7 +182,7 @@ int CGXDLMSSpecialDaysTable::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     if (e.GetIndex() == 1)
     {
         int ret;
-		e.SetByteArray(true);
+//		e.SetByteArray(true);
 		CGXByteBuffer data;
         if ((ret = GetLogicalName(this, data)) != 0)
         {

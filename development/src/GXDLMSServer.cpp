@@ -50,13 +50,15 @@
 
 
 CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
-    DLMS_INTERFACE_TYPE type) : m_Transaction(NULL), m_Settings(true),    
+    DLMS_INTERFACE_TYPE type) : m_Transaction(nullptr), m_Settings(true),
     m_LinkEstablished(false)
 {
     m_Settings.SetUseLogicalNameReferencing(logicalNameReferencing);
     m_Settings.SetInterfaceType(type);
 	m_CurrentALN = new CGXDLMSAssociationLogicalName("0.0.40.0.0.255");
 	m_CurrentALN->SetDataValidity(true);
+	m_CurrentALN->SetMethodAccess(1, DLMS_METHOD_ACCESS_MODE_ACCESS);
+	m_CurrentALN->SetMethodAccess(2, DLMS_METHOD_ACCESS_MODE_ACCESS);
     if (GetUseLogicalNameReferencing())
     {
         SetConformance((DLMS_CONFORMANCE)(DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_ACTION |
@@ -150,7 +152,7 @@ void CGXDLMSServer::SetUseLogicalNameReferencing(bool value)
 }
 
 bool CGXDLMSServer::IsLongTransaction() {
-	if (m_Transaction == NULL) {
+	if (m_Transaction == nullptr) {
 		return false;
 	}
 	return true;
@@ -173,7 +175,7 @@ int CGXDLMSServer::Initialize()
 		c_ln.Clear();
 		c_ln.Set(*it, 6);
 		tmp_obj = GetItems()->FindByLN(DLMS_OBJECT_TYPE_ALL, c_ln);
-		if (tmp_obj != NULL) {
+		if (tmp_obj != nullptr) {
 			tmp_obj->GetLogicalName(ln);
 			if (ln.size() == 0)
 			{
@@ -198,23 +200,12 @@ int CGXDLMSServer::Initialize()
     return 0;
 }
 
-
-int CGXDLMSServer::UpdateShortNames()
-{
-    return UpdateShortNames(true);
-}
-
-int CGXDLMSServer::UpdateShortNames(bool force)
-{
-    return 0;
-}
-
 void CGXDLMSServer::Reset(bool connected)
 {
-    if (m_Transaction != NULL)
+    if (m_Transaction != nullptr)
     {
         delete m_Transaction;
-        m_Transaction = NULL;
+        m_Transaction = nullptr;
     }
     m_Settings.SetCount(0);
     m_Settings.SetIndex(0);
@@ -230,7 +221,7 @@ void CGXDLMSServer::Reset(bool connected)
     }
 
     m_Settings.SetAuthentication(DLMS_AUTHENTICATION_NONE);
-    if (m_Settings.GetCipher() != NULL)
+    if (m_Settings.GetCipher() != nullptr)
     {
         if (!connected)
         {
@@ -549,7 +540,7 @@ int ReportError(CGXDLMSSettings& settings, DLMS_COMMAND command, DLMS_ERROR_CODE
     if (settings.GetUseLogicalNameReferencing())
     {
         CGXDLMSLNParameters p(&settings, cmd, 1,
-            NULL, NULL, error);
+			nullptr, nullptr, error);
         ret = CGXDLMS::GetLNPdu(p, data);
     }
     if (ret == 0)
@@ -634,14 +625,8 @@ int CGXDLMSServer::HandleSetRequest(
         }
     }
 	CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
-    if (obj == NULL)
-    {
-        std::string name;
-        GXHelpers::GetLogicalName(ln, name);
-        obj = FindObject(ci, 0, name);
-    }
     // If target is unknown.
-    if (obj == NULL)
+    if (obj == nullptr)
     {
         // Device reports a undefined object.
         p.SetStatus(DLMS_ERROR_CODE_UNAVAILABLE_OBJECT);
@@ -649,7 +634,6 @@ int CGXDLMSServer::HandleSetRequest(
     else
     {
         CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, index);
-        CGXDLMSValueEventCollection list;
         DLMS_ACCESS_MODE am = GetAttributeAccess(e);
         // If write is denied.
         if (am != DLMS_ACCESS_MODE_WRITE && am != DLMS_ACCESS_MODE_READ_WRITE)
@@ -662,6 +646,7 @@ int CGXDLMSServer::HandleSetRequest(
         {
 			if (p.IsMultipleBlocks()) {
 				e->SetValue(value);
+				CGXDLMSValueEventCollection list;
 				list.push_back(e);
 				m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
 			}
@@ -699,20 +684,22 @@ int CGXDLMSServer::HandleSetRequest(
 					}
 					value.position = 0;
 					e->SetValue(value);
-					list.push_back(e);
+					//list.push_back(e);
 					if (p.IsMultipleBlocks())
 					{
+						CGXDLMSValueEventCollection list;
+						list.push_back(e);
 						m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
 					}
-					PreWrite(list);
+					PreWrite(e);
 					if (e->GetError() != 0)
 					{
 						p.SetStatus(e->GetError());
 					}
-					else if (!e->GetHandled() && !p.IsMultipleBlocks() && e->GetTarget()->GetDataValidity())
+					else if (!p.IsMultipleBlocks() && e->GetTarget()->GetDataValidity())
 					{
 						obj->SetValue(m_Settings, *e);
-						PostWrite(list);
+						//PostWrite(list);
 					}
 				}
 				else {
@@ -754,7 +741,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
         {
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
 			delete m_Transaction;
-			m_Transaction = NULL;
+			m_Transaction = nullptr;
             return ret;
         }
         unsigned long realSize = data.GetSize() - data.GetPosition();
@@ -771,7 +758,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             {
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
 				delete m_Transaction;
-				m_Transaction = NULL;
+				m_Transaction = nullptr;
                 return ret;
             }
             CGXDLMSValueEventArg * target = *m_Transaction->GetTargets().begin();
@@ -788,7 +775,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
                     {
 						m_CurrentALN->GetObjectList().FreeConstructedObj();
 						delete m_Transaction;
-						m_Transaction = NULL;
+						m_Transaction = nullptr;
                         return ret;
                     }
 					value = bb;
@@ -796,18 +783,18 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             }
 			value.position = 0;
             target->SetValue(value);
-            PreWrite(m_Transaction->GetTargets());
+            PreWrite(target);
 			p.SetStatus(target->GetError());
-            if (!target->GetHandled() && !p.IsMultipleBlocks() && target->GetTarget()->GetDataValidity())
+            if (!p.IsMultipleBlocks() && target->GetTarget()->GetDataValidity())
             {
                 target->GetTarget()->SetValue(m_Settings, *target);
-                PostWrite(m_Transaction->GetTargets());
+               // PostWrite(m_Transaction->GetTargets());
             }
-            if (m_Transaction != NULL)
+            if (m_Transaction != nullptr)
             {
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
                 delete m_Transaction;
-                m_Transaction = NULL;
+                m_Transaction = nullptr;
             }
             m_Settings.ResetBlockIndex();
         }
@@ -861,7 +848,7 @@ int CGXDLMSServer::HandleSetRequest(CGXByteBuffer& data)
 	{
 		return ret;
 	}
-	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_SET_RESPONSE, type, NULL, NULL, 0);
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_SET_RESPONSE, type, nullptr, nullptr, 0);
 	if (type > 5) {
 		type = DLMS_SET_COMMAND_TYPE_NORMAL;
 		p.SetRequestType(type);
@@ -928,10 +915,9 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     m_Settings.SetCount(0);
     m_Settings.SetIndex(0);
     m_Settings.ResetBlockIndex();
-    CGXDLMSValueEventCollection arr;
     unsigned char attributeIndex;
     int ret;
-    CGXByteBuffer ln; 
+    //CGXByteBuffer ln; 
 	m_CurrentALN->GetObjectList().FreeConstructedObj();
     // CI
     unsigned short tmp;
@@ -940,21 +926,18 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
         return ret;
     }
     DLMS_OBJECT_TYPE ci = (DLMS_OBJECT_TYPE)tmp;    
-    ln.Set(&data, data.GetPosition(), 6);    
+	bb.Set(&data, data.GetPosition(), 6);
+	CGXDLMSValueEventArg* e;
     // Attribute Id
     if ((ret = data.GetUInt8(&attributeIndex)) != 0)
     {
+		bb.Clear();
         status = (DLMS_ERROR_CODE)ret;
     }
 	else {
-		CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
-		if (obj == NULL)
-		{
-			std::string name;
-			GXHelpers::GetLogicalName(ln, name);
-			obj = FindObject(ci, 0, name);
-		}
-		if (obj == NULL)
+		CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, bb);
+		bb.Clear();
+		if (obj == nullptr)
 		{
 			// "Access Error : Device reports a undefined object."
 			status = DLMS_ERROR_CODE_UNDEFINED_OBJECT;
@@ -985,8 +968,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 					return ret;
 				}
 			}
-			CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
-			arr.push_back(e);
+			e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
 			if (GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ_WRITE)
 			{
 				// Read Write denied.
@@ -998,56 +980,53 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				{
 					e->SetRowToPdu(GetRowsToPdu((CGXDLMSProfileGeneric*)obj));
 				}
-				if (e->GetIndex() != 1) {
-					PreRead(arr);
-				}
-				if (!e->GetHandled())
-				{
-					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());                                                           
-					if (obj->GetDataValidity() || e->GetIndex() == 1) {
-						if (ci != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
-							ret = obj->GetValue(m_Settings, *e);
-						}
-						else {
-							ret = m_CurrentALN->GetValue(m_Settings, *e);
-						}
-						if (ret != 0) {
-							status = DLMS_ERROR_CODE_HARDWARE_FAULT;
-						}
+				if (obj->GetDataValidity() || e->GetIndex() == 1) {
+					if (ci != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
+						ret = obj->GetValue(m_Settings, *e);
 					}
-					PostRead(arr);
+					else {
+						ret = m_CurrentALN->GetValue(m_Settings, *e);
+					}
+					if (ret != 0) {
+						status = DLMS_ERROR_CODE_HARDWARE_FAULT;
+					}
 				}
+				else {
+					PreRead(e);
+					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
+				}
+				//m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
 				if (status == 0)
 				{
 					status = e->GetError();
 				}
 				if (e->GetCAValue().byteArr != nullptr && e->GetCAValue().size != 0) {
-					CArtVariant& value = e->GetCAValue();
 					// If byte array is added do not add type.
-					bb.Set(value.byteArr, value.size);
-					value.Clear();
+					bb.Set(e->GetCAValue().byteArr, e->GetCAValue().size);
+					e->GetCAValue().Clear();
 				}
 			}
 		}
 	}       
     
-    CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 1, NULL, &bb, status);
-
+    CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 1, nullptr, &bb, status);
     ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
     if (m_Settings.GetCount() != m_Settings.GetIndex()
         || bb.GetSize() != bb.GetPosition())
     {
-        if (m_Transaction != NULL)
+        if (m_Transaction != nullptr)
         {
             delete m_Transaction;
-            m_Transaction = NULL;
+            m_Transaction = nullptr;
         }
+		CGXDLMSValueEventCollection arr;
+		arr.push_back(e);
         m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, bb);
     }
 	else {
-		if (m_Transaction != NULL) {
+		if (m_Transaction != nullptr) {
 			delete m_Transaction;
-			m_Transaction = NULL;
+			m_Transaction = nullptr;
 		}
 		m_CurrentALN->GetObjectList().FreeConstructedObj();
 	}
@@ -1067,36 +1046,39 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
     if (index != m_Settings.GetBlockIndex())
     {
         CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 2,
-            NULL, &bb,
+            nullptr, &bb,
             DLMS_ERROR_CODE_DATA_BLOCK_NUMBER_INVALID);
         return CGXDLMS::GetLNPdu(p, m_ReplyData);
     }
     else
     {
         m_Settings.IncreaseBlockIndex();
-        CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 2, NULL, &bb, DLMS_ERROR_CODE_OK);
+        CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 2, nullptr, &bb, DLMS_ERROR_CODE_OK);
         // If m_Transaction is not in progress.
-        if (m_Transaction == NULL)
+        if (m_Transaction == nullptr)
         {
             p.SetStatus(DLMS_ERROR_CODE_NO_LONG_GET_OR_READ_IN_PROGRESS);
         }
         else
         {
             bb.Set(&m_Transaction->GetData());
-            unsigned char moreData = m_Settings.GetIndex() != m_Settings.GetCount();
+            bool moreData = m_Settings.GetIndex() != m_Settings.GetCount();
             if (moreData)
             {
                 // If there is multiple blocks on the buffer.
                 // This might happen when Max PDU size is very small.
                 if (bb.GetSize() < m_Settings.GetMaxPduSize())
                 {
-					CArtVariant value1;
-                    for (std::vector<CGXDLMSValueEventArg*>::iterator arg = m_Transaction->GetTargets().begin();
-                        arg != m_Transaction->GetTargets().end(); ++arg)
-                    {
-                        PreRead(m_Transaction->GetTargets());
-                        if (!(*arg)->GetHandled())
-                        {
+					for (std::vector<CGXDLMSValueEventArg*>::iterator arg = m_Transaction->GetTargets().begin();
+						arg != m_Transaction->GetTargets().end(); ++arg)
+					{
+						if ((*arg)->GetError() == DLMS_ERROR_CODE_OK) {
+							if ((*arg)->GetTarget() == nullptr) {
+								CGXByteBuffer ln;
+								ln.Set((*arg)->GetTargetName(), 6);
+								CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
+								(*arg)->SetTarget(obj);
+							}
 							if ((*arg)->GetTarget()->GetDataValidity()) {
 								if ((*arg)->GetTarget()->GetObjectType() != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
 									ret = (*arg)->GetTarget()->GetValue(m_Settings, *(*arg));
@@ -1106,26 +1088,27 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 									ret = m_CurrentALN->GetValue(m_Settings, *(*arg));
 								}
 								if (ret != 0) {
+									m_CurrentALN->GetObjectList().FreeConstructedObj();
 									return ret;
 								}
 							}
-                            std::vector<CGXDLMSValueEventArg*> arr;
-                            arr.push_back(*arg);
-                            PostRead(arr);
-                        }
-
-						if ((*arg)->GetCAValue().byteArr != nullptr && (*arg)->GetCAValue().size != 0) {
-							value1 = (*arg)->GetCAValue();
-							// If byte array is added do not add type.
-							bb.Set(value1.byteArr, value1.size);
-							value1.Clear();
+							else {
+								PreRead(*arg);
+							}
+							(*arg)->SetTargetName();
+							m_CurrentALN->GetObjectList().FreeConstructedObj();
+							if ((*arg)->GetCAValue().byteArr != nullptr && (*arg)->GetCAValue().size != 0) {
+								// If byte array is added do not add type.
+								bb.Set((*arg)->GetCAValue().byteArr, (*arg)->GetCAValue().size);
+								(*arg)->GetCAValue().Clear();
+							}
+							else {
+								return DLMS_ERROR_CODE_HARDWARE_FAULT;
+							}
 						}
-						else {
-
-						}
-                    }
-                }
-            }
+					}
+				}
+			}
             p.SetMultipleBlocks(true);
             ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
             moreData = m_Settings.GetIndex() != m_Settings.GetCount();
@@ -1137,7 +1120,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
             {
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
                 delete m_Transaction;
-                m_Transaction = NULL;
+                m_Transaction = nullptr;
                 m_Settings.ResetBlockIndex();
             }
         }
@@ -1147,114 +1130,120 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 
 int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 {
-    CGXDLMSValueEventCollection list;
-    CGXByteBuffer bb;
-    int ret;
-    unsigned char attributeIndex;
-    unsigned short id;
-    unsigned long pos, cnt;
-    if ((ret = GXHelpers::GetObjectCount(data, cnt)) != 0)
-    {
-        return ret;
-    }
-    GXHelpers::SetObjectCount(cnt, bb);
+	CGXDLMSValueEventCollection list;
+	CGXByteBuffer bb;
+	int ret;
+	unsigned char attributeIndex;
+	unsigned short id;
+	unsigned long pos, cnt;
+	if ((ret = GXHelpers::GetObjectCount(data, cnt)) != 0)
+	{
+		return ret;
+	}
+	GXHelpers::SetObjectCount(cnt, bb);
 	m_CurrentALN->GetObjectList().FreeConstructedObj();
-    for (pos = 0; pos != cnt; ++pos)
-    {
-        if ((ret = data.GetUInt16(&id)) != 0)
-        {
-            return ret;
-        }
-        DLMS_OBJECT_TYPE ci = (DLMS_OBJECT_TYPE)id;
-        CGXByteBuffer ln;
-        ln.Set(&data, data.GetPosition(), 6);
-        if ((ret = data.GetUInt8(&attributeIndex)) != 0)
-        {
-            return ret;
-        }
+	for (pos = 0; pos != cnt; ++pos)
+	{
+		if ((ret = data.GetUInt16(&id)) != 0)
+		{
+			return ret;
+		}
+		DLMS_OBJECT_TYPE ci = (DLMS_OBJECT_TYPE)id;
+		CGXByteBuffer ln;
+		ln.Set(&data, data.GetPosition(), 6);
+		if ((ret = data.GetUInt8(&attributeIndex)) != 0)
+		{
+			return ret;
+		}
 		CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
-        if (obj == NULL)
-        {
-            std::string name;
-            GXHelpers::GetLogicalName(ln, name);
-            obj = FindObject(ci, 0, name);
-        }
-        if (obj == NULL)
-        {
-            // Access Error : Device reports a undefined object.
-            CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex);
-            e->SetError(DLMS_ERROR_CODE_UNDEFINED_OBJECT);
-            list.push_back(e);
-        }
-        else
-        {
-            // AccessSelection
-            unsigned char selection, selector = 0;
-            CArtVariant parameters;
-            if ((ret = data.GetUInt8(&selection)) != 0)
-            {
+		if (obj == nullptr)
+		{
+			// Access Error : Device reports a undefined object.
+			CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex);
+			e->SetError(DLMS_ERROR_CODE_UNDEFINED_OBJECT);
+			list.push_back(e);
+		}
+		else
+		{
+			// AccessSelection
+			unsigned char selection, selector = 0;
+			CArtVariant parameters;
+			if ((ret = data.GetUInt8(&selection)) != 0)
+			{
 				obj = nullptr;
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
-                return ret;
-            }
-            if (selection != 0)
-            {
-                if ((ret = data.GetUInt8(&selector)) != 0)
-                {
+				return ret;
+			}
+			if (selection != 0)
+			{
+				if ((ret = data.GetUInt8(&selector)) != 0)
+				{
 					obj = nullptr;
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
-                    return ret;
-                }
-                if ((ret = GXHelpers::GetDataCA(data, parameters)) != 0)
-                {
+					return ret;
+				}
+				if ((ret = GXHelpers::GetDataCA(data, parameters)) != 0)
+				{
 					obj = nullptr;
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
-                    return ret;
-                }
-            }
-            CGXDLMSValueEventArg *arg = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
-            list.push_back(arg);
-            if (GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ_WRITE)
-            {
-                // Read Write denied.
-                arg->SetError(DLMS_ERROR_CODE_READ_WRITE_DENIED);
-            }
-        }
-		PreRead(list);
-		std::vector<CGXDLMSValueEventArg*>::iterator it = list.begin();
-		if (!(*it)->GetHandled())
-		{
-			ret = (*it)->GetTarget()->GetValue(m_Settings, *(*it));
+					return ret;
+				}
+			}
+			CGXDLMSValueEventArg *arg = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
+			obj = nullptr;
+			list.push_back(arg);
+			if (GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ_WRITE)
+			{
+				// Read Write denied.
+				arg->SetError(DLMS_ERROR_CODE_READ_WRITE_DENIED);
+			}
+			arg->SetTargetName();
+			m_CurrentALN->GetObjectList().FreeConstructedObj();
 		}
-		bb.SetUInt8((*it)->GetError());
+	}
+	std::vector<CGXDLMSValueEventArg*>::iterator arg = list.begin();
+	CGXByteBuffer ln;
+	ln.Set((*arg)->GetTargetName(), 6);
+	CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
+	if (obj != nullptr) {
+		(*arg)->SetTarget(obj);
+		PreRead(*arg);
+		if ((*arg)->GetTarget()->GetDataValidity())
+		{
+			ret = (*arg)->GetTarget()->GetValue(m_Settings, *(*arg));
+		}
+		bb.SetUInt8((*arg)->GetError());
 
-		if ((*it)->GetCAValue().byteArr != nullptr && (*it)->GetCAValue().size != 0) {
-			CArtVariant value = (*it)->GetCAValue();
+		if ((*arg)->GetCAValue().byteArr != nullptr && (*arg)->GetCAValue().size != 0) {
 			// If byte array is added do not add type.
-			bb.Set(value.byteArr, value.size);
-			value.Clear();
+			bb.Set((*arg)->GetCAValue().byteArr, (*arg)->GetCAValue().size);
+			(*arg)->GetCAValue().Clear();
 		}
 		else {
 			obj = nullptr;
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
 			return DLMS_ERROR_CODE_HARDWARE_FAULT;
 		}
-		if (m_Settings.GetIndex() != m_Settings.GetCount())
+	}
+	else {
+		(*arg)->SetError(DLMS_ERROR_CODE_UNDEFINED_OBJECT);
+	}
+	list.erase(list.begin(), list.begin() + 1);
+	if (m_Settings.GetIndex() != m_Settings.GetCount())
+	{
+		if (m_Transaction != nullptr)
 		{
-			if (m_Transaction != NULL)
-			{
-				delete m_Transaction;
-				m_Transaction = NULL;
-			}
-			CGXByteBuffer empty;
-			m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, empty);
+			delete m_Transaction;
+			m_Transaction = nullptr;
 		}
-		list.clear();
-		obj = NULL;
-		m_CurrentALN->GetObjectList().FreeConstructedObj();
-    }
-    CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 3, NULL, &bb, 0xFF);
-    return CGXDLMS::GetLNPdu(p, m_ReplyData);
+		CGXByteBuffer empty;
+		m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, empty);
+	}
+	list.clear();
+	obj = nullptr;
+	m_CurrentALN->GetObjectList().FreeConstructedObj();
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 3, nullptr, &bb, 0xFF);
+	return CGXDLMS::GetLNPdu(p, m_ReplyData);
 }
 
 int CGXDLMSServer::HandleGetRequest(
@@ -1303,7 +1292,7 @@ int CGXDLMSServer::HandleGetRequest(
         // Access Error : Device reports a hardware fault.
         bb.SetUInt8(DLMS_ERROR_CODE_HARDWARE_FAULT);
         CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE,
-			DLMS_GET_COMMAND_TYPE_NORMAL, NULL, &bb, DLMS_ERROR_CODE_INVALID_RESPONSE);
+			DLMS_GET_COMMAND_TYPE_NORMAL, nullptr, &bb, DLMS_ERROR_CODE_INVALID_RESPONSE);
         ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
     }
     return ret;
@@ -1467,40 +1456,36 @@ int CGXDLMSServer::HandleMethodRequest(
         }
     }
     CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(ci, ln);
-    if (obj == NULL)
-    {
-        std::string name;
-        GXHelpers::GetLogicalName(ln, name);
-        obj = FindObject(ci, 0, name);
-    }
-    if (obj == NULL)
+    if (obj == nullptr)
     {
         error = DLMS_ERROR_CODE_UNDEFINED_OBJECT;
     }
     else
     {
         CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, id, 0, parameters);
-        CGXDLMSValueEventCollection arr;
-        arr.push_back(e);
+        //CGXDLMSValueEventCollection arr;
+       // arr.push_back(e);
         if (GetMethodAccess(e) == DLMS_METHOD_ACCESS_MODE_NONE)
         {
             error = DLMS_ERROR_CODE_READ_WRITE_DENIED;
-        }
-        else
-        {
-            PreAction(arr);
-            if (!e->GetHandled())
-            {
-				if (obj->GetDataValidity()) {
-					if ((ret = obj->Invoke(m_Settings, *e)) != 0)
-					{
-						obj = nullptr;
-						m_CurrentALN->GetObjectList().FreeConstructedObj();
-						return ret;
-					}
+		}
+		else
+		{
+			PreAction(e);
+			if (obj->GetDataValidity()) {
+				if (ci != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
+					ret = obj->Invoke(m_Settings, *e);
 				}
-                PostAction(arr);
-            }
+				else {
+					ret = m_CurrentALN->Invoke(m_Settings, *e);
+				}
+				if (ret != 0) {
+					obj = nullptr;
+					m_CurrentALN->GetObjectList().FreeConstructedObj();
+					return ret;
+				}
+			}
+			//PostAction(arr);
 			if (e->GetError() != DLMS_ERROR_CODE_OK) {
 				// Add parameters error code.
 				error = e->GetError();
@@ -1523,7 +1508,7 @@ int CGXDLMSServer::HandleMethodRequest(
 			}
         }
     }
-    CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_METHOD_RESPONSE, 1, NULL, &bb, error);
+    CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_METHOD_RESPONSE, 1, nullptr, &bb, error);
     ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
     // If High level authentication fails.
     if (!m_Settings.IsConnected() && obj->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME && id == 1)
@@ -1576,7 +1561,7 @@ bool CGXDLMSServer::CheckCtlField(unsigned char ctl,
         if(clientNS != srvNR) {
             unsigned char frame = DLMS_COMMAND_RR;
             frame |= ((srvNR << 5) & 0xE0);
-            CGXDLMS::GetHdlcFrame(m_Settings, frame, NULL, reply);
+            CGXDLMS::GetHdlcFrame(m_Settings, frame, nullptr, reply);
             return false;
         }
 
@@ -1589,7 +1574,7 @@ bool CGXDLMSServer::CheckCtlField(unsigned char ctl,
         unsigned char srvNS = (m_Settings.GetSenderFrame() & 0x0E) >> 1;
         srvNS = (srvNS >= 7)?0:(srvNS + 1);
         if(clientNR != srvNS) {
-            CGXDLMS::GetHdlcFrame(m_Settings, DLMS_COMMAND_REJECTED, NULL, reply);
+            CGXDLMS::GetHdlcFrame(m_Settings, DLMS_COMMAND_REJECTED, nullptr, reply);
             return false;
         }
     }
@@ -1603,7 +1588,7 @@ int CGXDLMSServer::HandleRequest(
 	CGXDLMSConnectionEventArgs connectionInfo;
     int ret;        
     reply.Clear();
-    if (m_ReceivedData.GetData() == NULL || m_ReceivedData.GetSize() == 0)
+    if (m_ReceivedData.GetData() == nullptr || m_ReceivedData.GetSize() == 0)
     {
         return 0;
     }
@@ -1652,7 +1637,7 @@ int CGXDLMSServer::HandleRequest(
     // Update command if m_Transaction and next frame is asked.
     if (m_Info.GetCommand() == DLMS_COMMAND_NONE)
     {
-        if (m_Transaction != NULL)
+        if (m_Transaction != nullptr)
         {
             m_Info.SetCommand(m_Transaction->GetCommand());
         }

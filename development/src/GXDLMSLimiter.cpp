@@ -375,7 +375,7 @@ int CGXDLMSLimiter::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
@@ -468,7 +468,6 @@ int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
         data.SetUInt8(2);
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(2);
-        int ret;
         CArtVariant ln;
         GXHelpers::SetLogicalName(m_ActionOverThreshold.GetLogicalName().c_str(), ln);
 		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
@@ -541,7 +540,7 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
-		if ((e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
         m_MinOverThresholdDuration = (long)val;
@@ -552,7 +551,7 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
-		if ((e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
         m_MinUnderThresholdDuration = (long)val;
@@ -567,7 +566,7 @@ int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 		e.GetCAValue().GetVar(v_info);
 		unsigned long long val;
 		unsigned char ret;
-		if ((e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
+		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
 			return ret;
 		}
         m_EmergencyProfile.SetID((unsigned short)val);

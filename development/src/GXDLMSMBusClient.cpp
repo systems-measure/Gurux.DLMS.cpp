@@ -332,7 +332,7 @@ int CGXDLMSMBusClient::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSMBusClient::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;

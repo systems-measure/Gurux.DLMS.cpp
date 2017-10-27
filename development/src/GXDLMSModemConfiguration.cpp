@@ -219,7 +219,7 @@ int CGXDLMSModemConfiguration::GetDataType(int index, DLMS_DATA_TYPE& type)
 int CGXDLMSModemConfiguration::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;

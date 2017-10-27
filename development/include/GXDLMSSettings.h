@@ -67,14 +67,8 @@ class CGXDLMSSettings
     // not generated if it is Set. This is for debugging purposes.
     bool m_CustomChallenges;
 
-    // Client to server challenge.
-    CGXByteBuffer m_CtoSChallenge;
-
-    // Server to Client challenge.
-    CGXByteBuffer m_StoCChallenge;
-
-    CGXByteBuffer m_SourceSystemTitle;
-
+	// Is Logical Name referencing used.
+	bool m_UseLogicalNameReferencing;
     // Invoke ID.
     unsigned char m_InvokeID;
     //Long Invoke ID.
@@ -92,22 +86,11 @@ class CGXDLMSSettings
     // Server address.
     unsigned long m_ServerAddress;
 
-    // Is Logical Name referencing used.
-    bool m_UseLogicalNameReferencing;
-
     // Interface type.
     DLMS_INTERFACE_TYPE m_InterfaceType;
 
     // User authentication.
     DLMS_AUTHENTICATION m_Authentication;
-
-    // User password.
-    CGXByteBuffer m_Password;
-
-    /**
-     * Key Encrypting Key, also known as Master key.
-     */
-    CGXByteBuffer m_Kek;
 
     /**
      * Long data count.
@@ -118,6 +101,9 @@ class CGXDLMSSettings
      * Long data index.
      */
     unsigned short m_Index;
+
+	// Is this server or client.
+	bool m_Server;
 
     // DLMS version number.
     unsigned char m_DlmsVersionNumber;
@@ -134,22 +120,8 @@ class CGXDLMSSettings
     // HDLC receiver block sequence number.
     unsigned char m_ReceiverFrame;
 
-    // Is this server or client.
-    bool m_Server;
-
-    // Information from the connection size that server can handle.
-    CGXDLMSLimits m_Limits;
-
     // Block packet index.
     unsigned long m_BlockIndex;
-
-    // List of server or client objects.
-    CGXDLMSObjectCollection* m_Objects;
-
-    /**
-     * Cipher interface that is used to cipher PDU.
-     */
-    CGXCipher* m_Cipher;
 
     /**
     * Proposed conformance block. Client asks this funtionality.
@@ -160,6 +132,34 @@ class CGXDLMSSettings
     * Server tells what functionality is available and client will know it.
     */
     DLMS_CONFORMANCE m_NegotiatedConformance;
+
+	// Information from the connection size that server can handle.
+	CGXDLMSLimits m_Limits;
+
+	// User password.
+	CGXByteBuffer m_Password;
+
+	/**
+	* Key Encrypting Key, also known as Master key.
+	*/
+	CGXByteBuffer m_Kek;
+
+	// Client to server challenge.
+	CGXByteBuffer m_CtoSChallenge;
+
+	// Server to Client challenge.
+	CGXByteBuffer m_StoCChallenge;
+
+	CGXByteBuffer m_SourceSystemTitle;
+
+	// List of server or client objects.
+	CGXDLMSObjectCollection* m_Objects;
+
+	/**
+	* Cipher interface that is used to cipher PDU.
+	*/
+	CGXCipher* m_Cipher;
+
 
 public:
     // Constructor.

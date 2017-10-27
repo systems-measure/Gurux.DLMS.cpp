@@ -720,7 +720,7 @@ int CGXDLMSProfileGeneric::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventAr
 int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
@@ -848,7 +848,6 @@ int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
  */
 int CGXDLMSProfileGeneric::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-    int ret;
     if (e.GetIndex() == 1)
     {
         return SetLogicalName(this, e.GetCAValue());

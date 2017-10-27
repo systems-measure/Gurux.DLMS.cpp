@@ -165,7 +165,7 @@ int CGXDLMSDisconnectControl::GetDataType(unsigned char index, DLMS_DATA_TYPE& t
 // Returns value of given attribute.
 int CGXDLMSDisconnectControl::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
 	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {

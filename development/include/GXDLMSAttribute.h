@@ -42,29 +42,29 @@ class CGXDLMSAttribute
     unsigned char			m_Index;
     DLMS_DATA_TYPE			m_Type;
     DLMS_DATA_TYPE			m_UIType;
-	unsigned char			m_MinimumVersion;
+	//unsigned char			m_MinimumVersion;
     DLMS_METHOD_ACCESS_MODE	m_MethodAccess;
-    bool					m_Static;
-	unsigned char			m_Order;
+   // bool					m_Static;
+	//unsigned char			m_Order;
 
-    void Initialize(unsigned char index, DLMS_DATA_TYPE Type, DLMS_DATA_TYPE UiType, DLMS_ACCESS_MODE Access, unsigned char MinimumVersion)
+    void Initialize(unsigned char index, DLMS_DATA_TYPE Type, DLMS_DATA_TYPE UiType, DLMS_ACCESS_MODE Access/*, unsigned char MinimumVersion*/)
     {
         m_Access = Access;
-        m_Static = false;
-        m_Order = 0;
+        //m_Static = false;
+        //m_Order = 0;
         m_Index = index;
         m_Type = Type;
         m_UIType = UiType;
         m_MethodAccess = DLMS_METHOD_ACCESS_MODE_NONE;
-        m_MinimumVersion = MinimumVersion;
+        //m_MinimumVersion = MinimumVersion;
     }
 
 public:
     //Constructor.
     CGXDLMSAttribute(unsigned char index, DLMS_DATA_TYPE Type = DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE UiType = DLMS_DATA_TYPE_NONE, DLMS_ACCESS_MODE Access = DLMS_ACCESS_MODE_READ, unsigned char MinimumVersion = 1) :
-        m_Access(Access), m_Index(index), m_Type(Type), m_UIType(UiType), m_MinimumVersion(MinimumVersion)
+        m_Access(Access), m_Index(index), m_Type(Type), m_UIType(UiType)/*, m_MinimumVersion(MinimumVersion)*/
     {
-        Initialize(index, Type, UiType, Access, MinimumVersion);
+        Initialize(index, Type, UiType, Access/*, MinimumVersion*/);
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ public:
         m_MethodAccess = value;
     }
 
-    bool GetStatic()
+    /*bool GetStatic()
     {
         return m_Static;
     }
@@ -128,7 +128,7 @@ public:
     void SetStatic(bool value)
     {
         m_Static = value;
-    }
+    }*/
 
     /*
     /// <summary>
@@ -146,18 +146,18 @@ public:
     /// <summary>
     /// Read order.
     /// </summary>
-	unsigned char GetOrder()
+	/*unsigned char GetOrder()
     {
         return m_Order;
-    }
+    }*/
 
     /// <summary>
     /// Minimum version vhere this attribute is implemented.
     /// </summary>
-	unsigned char GetMinimumVersion()
+	/*unsigned char GetMinimumVersion()
     {
         return m_MinimumVersion;
-    }
+    }*/
 };
 
 #endif //CGXDLMSATTRIBUTE_H

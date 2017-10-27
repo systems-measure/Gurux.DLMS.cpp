@@ -54,16 +54,17 @@ class CGXDLMSObject : public IGXDLMSBase
     CGXAttributeCollection m_Attributes;
     CGXAttributeCollection m_MethodAttributes;
     void Initialize(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer* pLogicalName);
-    std::string m_Description;
+    //std::string m_Description;
     DLMS_OBJECT_TYPE m_ObjectType;
     char m_AttributeIndex;
-    unsigned short m_DataIndex;
-    unsigned short m_Version;
+    //unsigned short m_DataIndex;
+    unsigned char m_Version;
 protected:
     //std::map<int, time_t> m_ReadTimes;
    // unsigned short m_SN;
-    unsigned char m_LN[6];
 	bool m_DataValidity;
+    unsigned char m_LN[6];
+	
     /*
      * Is attribute read. This can be used with static attributes to make
      * meter reading faster.
@@ -116,8 +117,8 @@ public:
 
 	void GetLogicalName(unsigned char* c_ln);
 
-    void SetVersion(unsigned short value);
-    unsigned short GetVersion();
+    void SetVersion(unsigned char value);
+    unsigned char GetVersion();
 
     CGXAttributeCollection& GetAttributes();
     CGXAttributeCollection& GetMethodAttributes();
@@ -133,11 +134,11 @@ public:
     void SetMethodAccess(unsigned char index, DLMS_METHOD_ACCESS_MODE access);
 
 
-    //Get description of the object.
-    std::string GetDescription();
+    ////Get description of the object.
+    //std::string GetDescription();
 
-    //Set description of the object.
-    void SetDescription(std::string value);
+    ////Set description of the object.
+    //void SetDescription(std::string value);
 
     //Get values as std::string.
     virtual void GetValues(std::vector<std::string>& values)

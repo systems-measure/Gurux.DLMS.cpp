@@ -253,7 +253,7 @@ int CGXDLMSAutoAnswer::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg&
     if (e.GetIndex() == 1)
     {
 		CGXByteBuffer data;
-		e.SetByteArray(true);
+//		e.SetByteArray(true);
         int ret;
         if ((ret = GetLogicalName(this, data)) != 0)
         {

@@ -37,6 +37,7 @@
 #include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXBytebuffer.h"
+#include "Helper\Helper.h"
 
 
 #define MAX_SERVER_ADDR_SIZE    4
@@ -2513,27 +2514,23 @@ int CGXDLMS::GetAddressBytes(unsigned long value, CGXByteBuffer& bytes)
 
 int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
 {
-    int ret;
-    CGXDataInfo info;
-    if (reply.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-    {
-        info.SetType(DLMS_DATA_TYPE_ARRAY);
-        info.SetCount(reply.GetTotalCount());
-        info.SetIndex(reply.GetCount());
-    }
-    CGXDLMSVariant value;
+    int ret; 
+    CArtVariant value;
     int index = reply.GetData().GetPosition();
     reply.GetData().SetPosition(reply.GetReadPosition());
-    if ((ret = GXHelpers::GetData(reply.GetData(), info, value)) != 0)
+    if ((ret = GXHelpers::GetDataCA(reply.GetData(), value)) != 0)
     {
         return ret;
     }
     // If new data.
-    if (value.vt != DLMS_DATA_TYPE_NONE)
+	VarInfo v_info;
+	value.GetVar(v_info);
+	value.SetPosition(0);
+    if (v_info.vt != DLMS_DATA_TYPE_NONE)
     {
-        if (value.vt != DLMS_DATA_TYPE_ARRAY)
+        if (v_info.vt != DLMS_DATA_TYPE_ARRAY)
         {
-            reply.SetValueType(info.GetType());
+            reply.SetValueType(v_info.vt);
             reply.SetValue(value);
             reply.SetTotalCount(0);
             if (reply.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
@@ -2543,26 +2540,37 @@ int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
         }
         else
         {
-            if (value.Arr.size() != 0)
+            if (v_info.size != 0)
             {
-                if (reply.GetValue().vt == DLMS_DATA_TYPE_NONE)
+				VarInfo r_info;
+				reply.GetValue().GetVar(r_info);
+                if (r_info.vt == DLMS_DATA_TYPE_NONE)
                 {
                     reply.SetValue(value);
                 }
                 else
                 {
-                    CGXDLMSVariant tmp = reply.GetValue();
-                    tmp.Arr.insert(tmp.Arr.end(), value.Arr.begin(), value.Arr.end());
-                    reply.SetValue(tmp);
+					if (r_info.vt != DLMS_DATA_TYPE_ARRAY) {
+						CArtVariant new_value;
+						new_value.Reserve(value.size + reply.GetValue().size);
+						new_value.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+						new_value.SetUInt8(v_info.size + 1);
+						new_value.Set(reply.GetValue().byteArr, reply.GetValue().size);
+						new_value.Set(value.GetCurPtr(), value.size - value.position);
+						reply.SetValue(new_value);
+					}
+					else {
+						*(reply.GetValue().GetCurPtr() - 1) += v_info.size;
+						reply.GetValue().Set(value.GetCurPtr(), value.size - value.position);
+					}
                 }
             }
             reply.SetReadPosition(reply.GetData().GetPosition());
             // Element count.
-            reply.SetTotalCount(info.GetCount());
+            reply.SetTotalCount(v_info.size);
         }
     }
-    else if (info.IsCompleate()
-        && reply.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
+    else if (reply.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
     {
         // If last item is null. This is a special case.
         reply.SetReadPosition(reply.GetData().GetPosition());
@@ -2571,7 +2579,6 @@ int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
 
     // If last data frame of the data block is read.
     if (reply.GetCommand() != DLMS_COMMAND_DATA_NOTIFICATION
-        && info.IsCompleate()
         && reply.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE)
     {
         // If all blocks are read.

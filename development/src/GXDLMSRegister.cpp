@@ -227,7 +227,7 @@ int CGXDLMSRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 
 int CGXDLMSRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
 	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {

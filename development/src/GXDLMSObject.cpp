@@ -86,9 +86,7 @@ int CGXDLMSObject::SetLogicalName(CGXDLMSObject * target, CArtVariant& value)
 void CGXDLMSObject::Initialize(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer* ln)
 {
     m_AttributeIndex = 0;
-    m_DataIndex = 0;
-	m_DataValidity = false;
-   // m_SN = sn;
+    m_DataValidity = false;
     m_ObjectType = (DLMS_OBJECT_TYPE)class_id;
     m_Version = version;
     if (ln == NULL)
@@ -115,7 +113,6 @@ CGXDLMSObject::~CGXDLMSObject(void)
 {
     m_Attributes.clear();
     m_MethodAttributes.clear();
-	//m_ReadTimes.clear();
 }
 
 bool CGXDLMSObject::GetDataValidity() {
@@ -129,10 +126,6 @@ void CGXDLMSObject::SetDataValidity(bool validity) {
 std::string CGXDLMSObject::GetName()
 {
 	std::string ln;
-    /*if (m_SN != 0)
-    {
-		return std::string{ (m_SN >> 8) && 0xFF, (m_SN) && 0xFF };
-    }*/
     GXHelpers::GetLogicalName(m_LN, ln);
     return ln;
 }
@@ -233,7 +226,7 @@ DLMS_METHOD_ACCESS_MODE CGXDLMSObject::GetMethodAccess(unsigned char index)
             return (*it).GetMethodAccess();
         }
     }
-    return DLMS_METHOD_ACCESS_MODE_ACCESS;
+    return DLMS_METHOD_ACCESS_MODE_NONE;
 }
 
 void CGXDLMSObject::SetMethodAccess(unsigned char index, DLMS_METHOD_ACCESS_MODE access)
@@ -298,12 +291,12 @@ void CGXDLMSObject::GetLogicalName(unsigned char* c_ln) {
 	memcpy(c_ln, m_LN, 6);
 }
 
-void CGXDLMSObject::SetVersion(unsigned short value)
+void CGXDLMSObject::SetVersion(unsigned char value)
 {
     m_Version = value;
 }
 
-unsigned short CGXDLMSObject::GetVersion()
+unsigned char CGXDLMSObject::GetVersion()
 {
     return m_Version;
 }
@@ -344,16 +337,16 @@ void CGXDLMSObject::SetDataIndex(unsigned short value)
 */
 
 //Get Object's Logical Name.
-std::string CGXDLMSObject::GetDescription()
-{
-    return m_Description;
-}
-
-//Set Object's Logical Name.
-void CGXDLMSObject::SetDescription(std::string value)
-{
-    m_Description = value;
-}
+//std::string CGXDLMSObject::GetDescription()
+//{
+//    return m_Description;
+//}
+//
+////Set Object's Logical Name.
+//void CGXDLMSObject::SetDescription(std::string value)
+//{
+//    m_Description = value;
+//}
 
 bool CGXDLMSObject::IsRead(int index)
 {

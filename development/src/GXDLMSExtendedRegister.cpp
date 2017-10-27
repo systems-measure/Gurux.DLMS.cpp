@@ -155,7 +155,7 @@ int CGXDLMSExtendedRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     if (e.GetIndex() == 1)
     {
         int ret;
-		e.SetByteArray(true);
+//		e.SetByteArray(true);
 		CGXByteBuffer data;
         if ((ret = GetLogicalName(this, data)) != 0)
         {

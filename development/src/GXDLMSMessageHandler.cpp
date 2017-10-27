@@ -196,7 +196,7 @@ int CGXDLMSMessageHandler::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
     {
         int ret;
 		CGXByteBuffer data;
-		e.SetByteArray(true);
+//		e.SetByteArray(true);
         if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;

@@ -236,11 +236,11 @@ int CGXDLMSPushSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 int CGXDLMSPushSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     CGXByteBuffer data;
-	e.SetByteArray(true);
+//	e.SetByteArray(true);
     int ret;
     if (e.GetIndex() == 1)
     {
-		e.SetByteArray(true);
+//		e.SetByteArray(true);
         if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;

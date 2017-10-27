@@ -240,7 +240,7 @@ int CGXDLMSAutoConnect::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
     if (e.GetIndex() == 1)
     {
         int ret;
-		e.SetByteArray(true);
+//		e.SetByteArray(true);
         if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;

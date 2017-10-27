@@ -1881,7 +1881,24 @@ int GXHelpers::SetLogicalName(const char* name, CArtVariant& value)
 
 int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
 {
-    int ret;
+	uint8_t i = 0;
+	uint8_t pos = 0;
+	uint8_t char_pos = 0;
+	memset(ln, 0, 6);
+	while (i < 6) {
+		while (name[pos] != '.' && name[pos] != '\0') {
+			while (name[pos] != num_codes[char_pos]) {
+				++char_pos;
+			}
+			ln[i] *= 10;
+			ln[i] += char_pos;
+			++pos;
+			char_pos = 0;
+		}
+		++pos;
+		++i;
+	}
+   /* int ret;
     int v1, v2, v3, v4, v5, v6;
 #if _MSC_VER > 1000
     ret = sscanf_s(name, "%u.%u.%u.%u.%u.%u", &v1, &v2, &v3, &v4, &v5, &v6);
@@ -1897,7 +1914,7 @@ int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
     ln[2] = (unsigned char)v3;
     ln[3] = (unsigned char)v4;
     ln[4] = (unsigned char)v5;
-    ln[5] = (unsigned char)v6;
+    ln[5] = (unsigned char)v6;*/
     return DLMS_ERROR_CODE_OK;
 }
 

@@ -63,13 +63,7 @@ private:
      * Long get or read transaction information.
      */
     CGXDLMSLongTransaction* m_Transaction;
-
-    /**
-     * Is server initialized.
-     */
-    bool m_Initialized;
-    
-    /**
+	/**
     * Parse SNRM Request. If server do not accept client empty byte array is
     * returned.
     *
@@ -196,14 +190,11 @@ private:
     * @return Rows to fit one PDU.
     */
     unsigned short GetRowsToPdu(CGXDLMSProfileGeneric* pg);
-
-    /**
-    * Update short names.
-    *
-    * @param force
-    *            Force update.
-    */
-    int UpdateShortNames(bool force);
+	/**
+	* Is server initialized.
+	*/
+	bool m_Initialized;
+   
 protected:
   
    bool m_LinkEstablished;
@@ -279,7 +270,7 @@ protected:
      *            Handled read requests.
      */
     virtual void PreRead(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
      * Write selected item(s).
@@ -288,7 +279,7 @@ protected:
      *            Handled write requests.
      */
     virtual void PreWrite(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
      * Accepted connection is made for the server. All initialization is done
@@ -338,7 +329,7 @@ protected:
      *            Handled action requests.
      */
     virtual void PreAction(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Read selected item(s).
@@ -347,7 +338,7 @@ protected:
     *            Handled read requests.
     */
     virtual void PostRead(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Write selected item(s).
@@ -356,7 +347,7 @@ protected:
     *            Handled write requests.
     */
     virtual void PostWrite(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Action is occurred.
@@ -365,7 +356,7 @@ protected:
     *            Handled action requests.
     */
     virtual void PostAction(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Get selected value(s). This is called when example profile generic
@@ -375,7 +366,7 @@ protected:
     *            Value event arguments.
     */
     virtual void PreGet(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Get selected value(s). This is called when example profile generic
@@ -385,12 +376,9 @@ protected:
     *            Value event arguments.
     */
     virtual void PostGet(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Update short names.
-    */
-    int UpdateShortNames();
+  
 	
 	bool IsLongTransaction();
 

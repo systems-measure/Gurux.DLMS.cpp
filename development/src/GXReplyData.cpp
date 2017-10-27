@@ -66,12 +66,12 @@ void CGXReplyData::SetValueType(DLMS_DATA_TYPE value)
     m_DataType = value;
 }
 
-CGXDLMSVariant& CGXReplyData::GetValue()
+CArtVariant& CGXReplyData::GetValue()
 {
     return m_DataValue;
 }
 
-void CGXReplyData::SetValue(CGXDLMSVariant& value)
+void CGXReplyData::SetValue(CArtVariant& value)
 {
     m_DataValue = value;
 }
@@ -181,9 +181,12 @@ int CGXReplyData::GetTotalCount()
 
 int CGXReplyData::GetCount()
 {
-    if (m_DataValue.vt == DLMS_DATA_TYPE_ARRAY)
+	VarInfo v_info;
+	m_DataValue.GetVar(v_info);
+	m_DataValue.SetPosition(0);
+    if (v_info.vt == DLMS_DATA_TYPE_ARRAY)
     {
-        return (int)m_DataValue.Arr.size();
+        return (int)v_info.size;
     }
     return 0;
 }
