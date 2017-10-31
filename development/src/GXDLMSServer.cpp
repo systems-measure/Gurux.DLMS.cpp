@@ -640,7 +640,10 @@ int CGXDLMSServer::HandleSetRequest(
         {
             //Read Write denied.
 			delete e;
+			obj = nullptr;
+			m_CurrentALN->GetObjectList().FreeConstructedObj();
             p.SetStatus(DLMS_ERROR_CODE_READ_WRITE_DENIED);
+			return 0;
         }
         else
         {
@@ -684,7 +687,6 @@ int CGXDLMSServer::HandleSetRequest(
 					}
 					value.position = 0;
 					e->SetValue(value);
-					//list.push_back(e);
 					if (p.IsMultipleBlocks())
 					{
 						CGXDLMSValueEventCollection list;
@@ -707,6 +709,9 @@ int CGXDLMSServer::HandleSetRequest(
 					p.SetStatus(DLMS_ERROR_CODE_READ_WRITE_DENIED);
 				}
 			}
+		}
+		if (m_Transaction == nullptr) {
+			delete e;
 		}
     }
 	if(m_Transaction == nullptr){
@@ -917,8 +922,8 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     m_Settings.ResetBlockIndex();
     unsigned char attributeIndex;
     int ret;
-    //CGXByteBuffer ln; 
-	m_CurrentALN->GetObjectList().FreeConstructedObj();
+	CGXDLMSValueEventCollection arr;
+    m_CurrentALN->GetObjectList().FreeConstructedObj();
     // CI
     unsigned short tmp;
     if ((ret = data.GetUInt16(&tmp)) != 0)
@@ -927,7 +932,6 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     }
     DLMS_OBJECT_TYPE ci = (DLMS_OBJECT_TYPE)tmp;    
 	bb.Set(&data, data.GetPosition(), 6);
-	CGXDLMSValueEventArg* e;
     // Attribute Id
     if ((ret = data.GetUInt8(&attributeIndex)) != 0)
     {
@@ -968,7 +972,8 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 					return ret;
 				}
 			}
-			e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
+			CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
+			arr.push_back(e);
 			if (GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ_WRITE)
 			{
 				// Read Write denied.
@@ -1000,7 +1005,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				{
 					status = e->GetError();
 				}
-				if (e->GetCAValue().byteArr != nullptr && e->GetCAValue().size != 0) {
+				if (e->GetCAValue().byteArr != NULL && e->GetCAValue().size != 0) {
 					// If byte array is added do not add type.
 					bb.Set(e->GetCAValue().byteArr, e->GetCAValue().size);
 					e->GetCAValue().Clear();
@@ -1019,9 +1024,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
             delete m_Transaction;
             m_Transaction = nullptr;
         }
-		CGXDLMSValueEventCollection arr;
-		arr.push_back(e);
-        m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, bb);
+		    m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, bb);
     }
 	else {
 		if (m_Transaction != nullptr) {
@@ -1078,6 +1081,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 								ln.Set((*arg)->GetTargetName(), 6);
 								CGXDLMSObject* obj = m_CurrentALN->GetObjectList().FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
 								(*arg)->SetTarget(obj);
+								obj = nullptr;
 							}
 							if ((*arg)->GetTarget()->GetDataValidity()) {
 								if ((*arg)->GetTarget()->GetObjectType() != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
@@ -1097,7 +1101,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 							}
 							(*arg)->SetTargetName();
 							m_CurrentALN->GetObjectList().FreeConstructedObj();
-							if ((*arg)->GetCAValue().byteArr != nullptr && (*arg)->GetCAValue().size != 0) {
+							if ((*arg)->GetCAValue().byteArr != NULL && (*arg)->GetCAValue().size != 0) {
 								// If byte array is added do not add type.
 								bb.Set((*arg)->GetCAValue().byteArr, (*arg)->GetCAValue().size);
 								(*arg)->GetCAValue().Clear();
@@ -1105,6 +1109,9 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 							else {
 								return DLMS_ERROR_CODE_HARDWARE_FAULT;
 							}
+						}
+						else {
+							m_CurrentALN->GetObjectList().FreeConstructedObj();
 						}
 					}
 				}
@@ -1190,7 +1197,6 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 				}
 			}
 			CGXDLMSValueEventArg *arg = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
-			obj = nullptr;
 			list.push_back(arg);
 			if (GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ_WRITE)
 			{
@@ -1198,6 +1204,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 				arg->SetError(DLMS_ERROR_CODE_READ_WRITE_DENIED);
 			}
 			arg->SetTargetName();
+			obj = nullptr;
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
 		}
 	}
@@ -1463,8 +1470,6 @@ int CGXDLMSServer::HandleMethodRequest(
     else
     {
         CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, id, 0, parameters);
-        //CGXDLMSValueEventCollection arr;
-       // arr.push_back(e);
         if (GetMethodAccess(e) == DLMS_METHOD_ACCESS_MODE_NONE)
         {
             error = DLMS_ERROR_CODE_READ_WRITE_DENIED;
@@ -1492,14 +1497,13 @@ int CGXDLMSServer::HandleMethodRequest(
 				bb.SetUInt8(0);
 			}
 			else {
-				if (e->GetCAValue().byteArr != nullptr && e->GetCAValue().size != 0) {
-					CArtVariant& value = e->GetCAValue();
+				if (e->GetCAValue().byteArr != NULL && e->GetCAValue().size != 0) {
 					// Add return parameters
 					bb.SetUInt8(1);
 					//Add parameters error code.
 					bb.SetUInt8(0);
-					bb.Set(value.byteArr, value.size);
-					value.Clear();
+					bb.Set(e->GetCAValue().byteArr, e->GetCAValue().size);
+					e->GetCAValue().Clear();
 				}
 				else {
 					error = e->GetError();
@@ -1507,6 +1511,7 @@ int CGXDLMSServer::HandleMethodRequest(
 				}
 			}
         }
+		delete e;
     }
     CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_METHOD_RESPONSE, 1, nullptr, &bb, error);
     ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
@@ -1517,6 +1522,7 @@ int CGXDLMSServer::HandleMethodRequest(
     } else if(m_Settings.IsConnected() && obj->GetObjectType() == DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME && id == 1) {
         Connected(connectionInfo);
     }
+	obj = nullptr;
 	m_CurrentALN->GetObjectList().FreeConstructedObj();
     return ret;
 }

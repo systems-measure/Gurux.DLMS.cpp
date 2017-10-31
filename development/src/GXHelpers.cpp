@@ -1885,7 +1885,7 @@ int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
 	uint8_t pos = 0;
 	uint8_t char_pos = 0;
 	memset(ln, 0, 6);
-	while (i < 6) {
+	while (i < 6 && name[pos] != '\0') {
 		while (name[pos] != '.' && name[pos] != '\0') {
 			while (name[pos] != num_codes[char_pos]) {
 				++char_pos;

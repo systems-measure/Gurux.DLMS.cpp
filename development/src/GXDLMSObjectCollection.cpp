@@ -99,7 +99,8 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 
 CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	constructed_obj = nullptr;
-	idx_constructed_obj = new uint8_t(0);
+	idx_constructed_obj = new uint8_t;
+    *idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
 }
