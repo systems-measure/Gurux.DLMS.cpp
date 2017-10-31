@@ -701,7 +701,6 @@ int CGXDLMSServer::HandleSetRequest(
 					else if (!p.IsMultipleBlocks() && e->GetTarget()->GetDataValidity())
 					{
 						obj->SetValue(m_Settings, *e);
-						//PostWrite(list);
 					}
 				}
 				else {
@@ -793,7 +792,6 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             if (!p.IsMultipleBlocks() && target->GetTarget()->GetDataValidity())
             {
                 target->GetTarget()->SetValue(m_Settings, *target);
-               // PostWrite(m_Transaction->GetTargets());
             }
             if (m_Transaction != nullptr)
             {
@@ -1000,7 +998,6 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 					PreRead(e);
 					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
 				}
-				//m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
 				if (status == 0)
 				{
 					status = e->GetError();
@@ -1490,7 +1487,6 @@ int CGXDLMSServer::HandleMethodRequest(
 					return ret;
 				}
 			}
-			//PostAction(arr);
 			if (e->GetError() != DLMS_ERROR_CODE_OK) {
 				// Add parameters error code.
 				error = e->GetError();
