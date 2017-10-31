@@ -1473,7 +1473,6 @@ int CGXDLMSServer::HandleMethodRequest(
 		}
 		else
 		{
-			PreAction(e);
 			if (obj->GetDataValidity()) {
 				if (ci != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
 					ret = obj->Invoke(m_Settings, *e);
@@ -1486,6 +1485,9 @@ int CGXDLMSServer::HandleMethodRequest(
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
 					return ret;
 				}
+			}
+			else {
+				PreAction(e);
 			}
 			if (e->GetError() != DLMS_ERROR_CODE_OK) {
 				// Add parameters error code.
