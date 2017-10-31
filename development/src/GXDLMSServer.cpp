@@ -705,13 +705,13 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
 void GenerateConfirmedServiceError(
     DLMS_CONFIRMED_SERVICE_ERROR service,
     DLMS_SERVICE_ERROR type,
-    unsigned char code, CGXByteBuffer& data)
+    unsigned char Code, CGXByteBuffer& data)
 {    
     data.Set(LLC_REPLY_BYTES, 3);         
     data.SetUInt8(DLMS_COMMAND_CONFIRMED_SERVICE_ERROR);
     data.SetUInt8(service);
     data.SetUInt8(type);
-    data.SetUInt8(code);
+    data.SetUInt8(Code);
 }
 
 int CGXDLMSServer::HandleSetRequest(CGXByteBuffer& data)
