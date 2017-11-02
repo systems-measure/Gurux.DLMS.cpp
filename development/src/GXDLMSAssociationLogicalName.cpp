@@ -487,6 +487,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		e.GetParameters().GetVar(v_info);
 		e.GetParameters().SetUInt8('\0');
 		mpro::wr_flash_inf(&mpro::UserMem.ExtMem.HLSSecret, e.GetParameters().GetCurPtr(), v_info.size + 1);
+		e.GetServer()->Configurated();
 		return 0;
 	}
     else
@@ -677,6 +678,7 @@ int CGXDLMSAssociationLogicalName::SetValue(CGXDLMSSettings& settings, CGXDLMSVa
 #ifdef __ICCARM__
 		mpro::wr_flash_inf(&mpro::UserMem.ExtMem.LLSSecret, e.GetCAValue().GetCurPtr(), v_info.size + 1);
 #endif
+		e.GetServer()->Configurated();
     }
     else if (e.GetIndex() == 8)
     {

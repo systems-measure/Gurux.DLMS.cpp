@@ -1581,7 +1581,7 @@ int CGXDLMS::HandleDataNotification(
     }
     // Get date time.
     CGXDataInfo info;
-    reply.SetTime(NULL);
+    //reply.SetTime(NULL);
     unsigned char len;
     if ((ret = reply.GetData().GetUInt8(&len)) != 0)
     {
@@ -1593,7 +1593,7 @@ int CGXDLMS::HandleDataNotification(
         CGXDateTime t;
         tmp.Set(reply.GetData().GetData() + reply.GetData().GetPosition(), len);
 		GXHelpers::GetDateTime(tmp, t);
-        reply.SetTime(&t.GetValue());
+        //reply.SetTime(&t.GetValue());
     }
     if ((ret = GetDataFromBlock(reply.GetData(), start)) != 0)
     {
@@ -2530,7 +2530,7 @@ int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
     {
         if (v_info.vt != DLMS_DATA_TYPE_ARRAY)
         {
-            reply.SetValueType(v_info.vt);
+            //reply.SetValueType(v_info.vt);
             reply.SetValue(value);
             reply.SetTotalCount(0);
             if (reply.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)

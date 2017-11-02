@@ -438,7 +438,7 @@ unsigned char ParseSNRM(CGXByteBuffer& data, CGXDLMSLimits& lms) {
 	}
 }
 
-int CGXDLMSServer::HandleSnrmRequest(CGXByteBuffer& data, CGXDLMSSettings& settings, CGXByteBuffer& reply)
+int CGXDLMSServer::HandleSnrmRequest(CGXByteBuffer& data/*, CGXDLMSSettings& settings, CGXByteBuffer& reply*/)
 {
 	m_Settings.GetLimits().SetWindowSizeRX(1);
 	m_Settings.GetLimits().SetWindowSizeTX(1);
@@ -450,24 +450,24 @@ int CGXDLMSServer::HandleSnrmRequest(CGXByteBuffer& data, CGXDLMSSettings& setti
 	if (ret != 0) {
 		return ret;
 	}
-    reply.SetUInt8(0x81); // FromatID
-    reply.SetUInt8(0x80); // GroupID
-    reply.SetUInt8(0x14); // Length
-    reply.SetUInt8(HDLC_INFO_MAX_INFO_TX);
-    reply.SetUInt8(2);
-	reply.SetUInt16(GetLimits().GetMaxInfoTX());
+    m_ReplyData.SetUInt8(0x81); // FromatID
+    m_ReplyData.SetUInt8(0x80); // GroupID
+    m_ReplyData.SetUInt8(0x14); // Length
+    m_ReplyData.SetUInt8(HDLC_INFO_MAX_INFO_TX);
+    m_ReplyData.SetUInt8(2);
+	m_ReplyData.SetUInt16(GetLimits().GetMaxInfoTX());
 
-    reply.SetUInt8(HDLC_INFO_MAX_INFO_RX);
-    reply.SetUInt8(2);
-	reply.SetUInt16(GetLimits().GetMaxInfoRX());
+    m_ReplyData.SetUInt8(HDLC_INFO_MAX_INFO_RX);
+    m_ReplyData.SetUInt8(2);
+	m_ReplyData.SetUInt16(GetLimits().GetMaxInfoRX());
 
-    reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_TX);
-    reply.SetUInt8(4);
-	reply.SetUInt32(GetLimits().GetWindowSizeTX());
+    m_ReplyData.SetUInt8(HDLC_INFO_WINDOW_SIZE_TX);
+    m_ReplyData.SetUInt8(4);
+	m_ReplyData.SetUInt32(GetLimits().GetWindowSizeTX());
 
-    reply.SetUInt8(HDLC_INFO_WINDOW_SIZE_RX);
-	reply.SetUInt8(4);
-	reply.SetUInt32(GetLimits().GetWindowSizeRX());
+    m_ReplyData.SetUInt8(HDLC_INFO_WINDOW_SIZE_RX);
+	m_ReplyData.SetUInt8(4);
+	m_ReplyData.SetUInt32(GetLimits().GetWindowSizeRX());
 
     return 0;
 }
@@ -948,28 +948,33 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 		{
 			// Access selection
 			unsigned char selection, selector = 0;
+			CArtVariant parameters;
 			if ((ret = data.GetUInt8(&selection)) != 0)
 			{
+				status = (DLMS_ERROR_CODE)ret;
+			}
+			else {
+				if (selection != 0)
+				{
+					if ((ret = data.GetUInt8(&selector)) != 0)
+					{
+						status = (DLMS_ERROR_CODE)ret;
+					}
+					else {
+						if ((ret = GXHelpers::GetDataCA(data, parameters)) != 0)
+						{
+							status = (DLMS_ERROR_CODE)ret;
+						}
+					}	
+				}
+			}
+			if (status != DLMS_ERROR_CODE_OK) {
 				obj = nullptr;
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
-				return ret;
+				CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 1, nullptr, &bb, status);
+				return CGXDLMS::GetLNPdu(p, m_ReplyData);
 			}
-			CArtVariant parameters;
-			if (selection != 0)
-			{
-				if ((ret = data.GetUInt8(&selector)) != 0)
-				{
-					obj = nullptr;
-					m_CurrentALN->GetObjectList().FreeConstructedObj();
-					return ret;
-				}
-				if ((ret = GXHelpers::GetDataCA(data, parameters)) != 0)
-				{
-					obj = nullptr;
-					m_CurrentALN->GetObjectList().FreeConstructedObj();
-					return ret;
-				}
-			}
+			
 			CGXDLMSValueEventArg* e = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
 			arr.push_back(e);
 			if (GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(e) != DLMS_ACCESS_MODE_READ_WRITE)
@@ -991,7 +996,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 						ret = m_CurrentALN->GetValue(m_Settings, *e);
 					}
 					if (ret != 0) {
-						status = DLMS_ERROR_CODE_HARDWARE_FAULT;
+						status = (DLMS_ERROR_CODE)ret;
 					}
 				}
 				else {
@@ -1038,26 +1043,27 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
     CGXByteBuffer bb;
     int ret;
     unsigned long index;
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 2, nullptr, &bb, DLMS_ERROR_CODE_OK);
     // Get block index.
     if ((ret = data.GetUInt32(&index)) != 0)
     {
-        return ret;
+		p.SetStatus(ret);
+		return CGXDLMS::GetLNPdu(p, m_ReplyData);
     }
     if (index != m_Settings.GetBlockIndex())
     {
-        CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 2,
-            nullptr, &bb,
-            DLMS_ERROR_CODE_DATA_BLOCK_NUMBER_INVALID);
+		p.SetStatus(DLMS_ERROR_CODE_DATA_BLOCK_NUMBER_INVALID);
         return CGXDLMS::GetLNPdu(p, m_ReplyData);
     }
     else
     {
         m_Settings.IncreaseBlockIndex();
-        CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 2, nullptr, &bb, DLMS_ERROR_CODE_OK);
+		p.SetBlockIndex(m_Settings.GetBlockIndex());
         // If m_Transaction is not in progress.
         if (m_Transaction == nullptr)
         {
             p.SetStatus(DLMS_ERROR_CODE_NO_LONG_GET_OR_READ_IN_PROGRESS);
+			return CGXDLMS::GetLNPdu(p, m_ReplyData);
         }
         else
         {
@@ -1090,7 +1096,8 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 								}
 								if (ret != 0) {
 									m_CurrentALN->GetObjectList().FreeConstructedObj();
-									return ret;
+									p.SetStatus(ret);
+									return CGXDLMS::GetLNPdu(p, m_ReplyData);
 								}
 							}
 							else {
@@ -1104,11 +1111,14 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 								(*arg)->GetCAValue().Clear();
 							}
 							else {
-								return DLMS_ERROR_CODE_HARDWARE_FAULT;
+								p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
+								return CGXDLMS::GetLNPdu(p, m_ReplyData);
 							}
 						}
 						else {
+							p.SetStatus((*arg)->GetError());
 							m_CurrentALN->GetObjectList().FreeConstructedObj();
+							return CGXDLMS::GetLNPdu(p, m_ReplyData);
 						}
 					}
 				}
@@ -1344,7 +1354,7 @@ int CGXDLMSServer::HandleCommand(
         ret = HandleMethodRequest(data, connectionInfo);
         break;
     case DLMS_COMMAND_SNRM:        
-        ret = HandleSnrmRequest(data, m_Settings, m_ReplyData);
+        ret = HandleSnrmRequest(data/*, m_Settings, m_ReplyData*/);
         if(ret == 0) {
             frame = DLMS_COMMAND_UA;
             m_LinkEstablished = true;

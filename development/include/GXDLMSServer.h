@@ -69,7 +69,7 @@ private:
     *
     * @return Returns returned UA packet.
     */
-    int HandleSnrmRequest(CGXByteBuffer& data, CGXDLMSSettings& settings, CGXByteBuffer& reply);
+    int HandleSnrmRequest(CGXByteBuffer& data/*, CGXDLMSSettings& settings, CGXByteBuffer& reply*/);
 
     /**
     * Handle get request normal command.
@@ -280,6 +280,12 @@ protected:
      */
     virtual void PreWrite(
         CGXDLMSValueEventArg* arg) = 0;
+
+	/*
+	If write data or actions with data were successful, then counter of configuarations 
+	and date of last configurations should update by this 
+	*/
+	virtual void Configurated() = 0;
 
     /**
      * Accepted connection is made for the server. All initialization is done
