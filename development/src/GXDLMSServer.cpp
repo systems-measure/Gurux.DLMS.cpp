@@ -883,7 +883,7 @@ unsigned short CGXDLMSServer::GetRowsToPdu(CGXDLMSProfileGeneric* pg)
 	std::vector<DLMS_DATA_TYPE> dt;
 	std::string ln = pg->GetName();
 	pType type = (pType)GetTypeProfile(ln);
-	if (type != PROFILE_TYPE_UNKOWN) {
+	if (type != PROFILE_TYPE_UNKNOWN) {
 		GetProfileCaptureObjectsTypes(dt, type);
 	}
 	int rowsize = 0;
@@ -1430,7 +1430,8 @@ int CGXDLMSServer::HandleMethodRequest(
     DLMS_ERROR_CODE error = DLMS_ERROR_CODE_OK;
     CArtVariant parameters;
     int ret;
-    unsigned char ch, id;
+	signed char id;
+    unsigned char ch;
     unsigned short tmp;
 	m_CurrentALN->GetObjectList().FreeConstructedObj();
     // Get type.
@@ -1452,7 +1453,7 @@ int CGXDLMSServer::HandleMethodRequest(
     CGXByteBuffer ln;
     ln.Set(&data, data.GetPosition(), 6);
     // Attribute
-    if ((ret = data.GetUInt8(&id)) != 0)
+    if ((ret = data.GetUInt8((unsigned char*)&id)) != 0)
     {
         return ret;
     }

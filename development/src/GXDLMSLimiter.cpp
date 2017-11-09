@@ -205,7 +205,7 @@ int CGXDLMSLimiter::GetAttributeCount()
 // Returns amount of methods.
 int CGXDLMSLimiter::GetMethodCount()
 {
-    return 0;
+    return 2;
 }
 
 void CGXDLMSLimiter::GetValues(std::vector<std::string>& values)
