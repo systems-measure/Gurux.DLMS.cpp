@@ -2678,7 +2678,10 @@ int CGXDLMS::CheckWrapperAddress(
     }
     return DLMS_ERROR_CODE_OK;
 }
-
+/*
+* CRC-16/X-25	16	0x1021	0xFFFF	true	true	0xFFFF	0x906E
+* https://ru.wikipedia.org/wiki/%D0%A6%D0%B8%D0%BA%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B8%D0%B7%D0%B1%D1%8B%D1%82%D0%BE%D1%87%D0%BD%D1%8B%D0%B9_%D0%BA%D0%BE%D0%B4
+*/
 unsigned short CGXDLMS::CountFCS16(CGXByteBuffer& buff, int index, int count)
 {
     int ret;
