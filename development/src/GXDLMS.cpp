@@ -1066,39 +1066,14 @@ int CGXDLMS::GetHdlcData(
     CGXReplyData& data,
     unsigned char& frame)
 {
-    unsigned long packetStartID = reply.GetPosition(), frameLen = 0;
-    unsigned long pos;
+    int32_t frameLen = 0;
+    //unsigned long pos;
     unsigned char ch;
     int ret;
     unsigned short crc, crcRead;
-    // If whole frame is not received yet.
-    if (reply.GetSize() - reply.GetPosition() < 9)
-    {
-        data.SetComplete(false);
-        return 0;
-    }
+
     data.SetComplete(true);
-    // Find start of HDLC frame.
-    for (pos = reply.GetPosition(); pos < reply.GetSize(); ++pos)
-    {
-        if ((ret = reply.GetUInt8(&ch)) != 0)
-        {
-            return ret;
-        }
-        if (ch == HDLC_FRAME_START_END)
-        {
-            packetStartID = pos;
-            break;
-        }
-    }
-    // Not a HDLC frame.
-    // Sometimes meters can send some strange data between DLMS frames.
-    if (reply.GetPosition() == reply.GetSize())
-    {
-        data.SetComplete(false);
-        // Not enough data to parse;
-        return 0;
-    }
+
     if ((ret = reply.GetUInt8(&frame)) != 0)
     {
         return ret;
@@ -1124,28 +1099,14 @@ int CGXDLMS::GetHdlcData(
     }
     // If not enough data.
     frameLen += ch;
-    if (reply.GetSize() - reply.GetPosition() + 1 < frameLen)
+    if (reply.GetSize() < frameLen)
     {
         return DLMS_ERROR_CODE_UNACCEPTABLE_FRAME;
-        /*        
-        data.SetComplete(false);
-        reply.SetPosition(packetStartID);
-        // Not enough data to parse;
-        return 0;
-        */
     }
-    int eopPos = frameLen + packetStartID + 1;
-    if ((ret = reply.GetUInt8(eopPos, &ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != HDLC_FRAME_START_END)
-    {
-        return DLMS_ERROR_CODE_NOT_REPLY;
-    }
+    //int eopPos = frameLen;
 
     // Check addresses.
-    ret = CheckHdlcAddress(server, settings, reply, eopPos);
+    ret = CheckHdlcAddress(server, settings, reply, frameLen);
     if (ret != 0)
     {
         if (ret == DLMS_ERROR_CODE_FALSE)
@@ -1172,12 +1133,11 @@ int CGXDLMS::GetHdlcData(
     }
     if (!settings.CheckFrame(frame))
     {
-        reply.SetPosition(eopPos + 1);
+        reply.SetPosition(frameLen);
         return GetHdlcData(server, settings, reply, data, frame);
     }
     // Check that header CRC is correct.
-    crc = CountFCS16(reply, packetStartID + 1,
-        reply.GetPosition() - packetStartID - 1);
+    crc = CountFCS16(reply, 0, reply.GetPosition());
 
     if ((ret = reply.GetUInt16(&crcRead)) != 0)
     {
@@ -1188,11 +1148,10 @@ int CGXDLMS::GetHdlcData(
         return DLMS_ERROR_CODE_WRONG_CRC;
     }
     // Check that packet CRC match only if there is a data part.
-    if (reply.GetPosition() != packetStartID + frameLen + 1)
+    if (reply.GetPosition() != frameLen)
     {
-        crc = CountFCS16(reply, packetStartID + 1,
-            frameLen - 2);
-        if ((ret = reply.GetUInt16(packetStartID + frameLen - 1, &crcRead)) != 0)
+        crc = CountFCS16(reply, 0, frameLen - 2);
+        if ((ret = reply.GetUInt16(frameLen - 1, &crcRead)) != 0)
         {
             return ret;
         }
@@ -1201,24 +1160,15 @@ int CGXDLMS::GetHdlcData(
             return DLMS_ERROR_CODE_WRONG_CRC;
         }
         // Remove CRC and EOP from packet length.
-        data.SetPacketLength(eopPos - 2);
+        data.SetPacketLength(frameLen - 2);
     }
     else
     {
-        data.SetPacketLength(reply.GetPosition() + 1);
+        data.SetPacketLength(reply.GetPosition());
     }
 
     if (frame != 0x13 && (frame & HDLC_FRAME_TYPE_U_FRAME) == HDLC_FRAME_TYPE_U_FRAME)
     {
-        // Get Eop if there is no data.
-        if (reply.GetPosition() == packetStartID + frameLen + 1)
-        {
-            // Get EOP.
-            if ((ret = reply.GetUInt8(&ch)) != 0)
-            {
-                return ret;
-            }
-        }
         if (frame == 0x97)
         {
             return DLMS_ERROR_CODE_UNACCEPTABLE_FRAME;
@@ -1243,27 +1193,13 @@ int CGXDLMS::GetHdlcData(
             // Get next frame.                        
             data.SetCommand((DLMS_COMMAND)frame);            
         }
-        // Get Eop if there is no data.
-        if (reply.GetPosition() == packetStartID + frameLen + 1)
-        {
-            // Get EOP.
-            if ((ret = reply.GetUInt8(&ch)) != 0)
-            {
-                return ret;
-            }
-        }
     }
     else
     {
         // I-frame
         // Get Eop if there is no data.
-        if (reply.GetPosition() == packetStartID + frameLen + 1)
+        if (reply.GetPosition() == frameLen)
         {
-            // Get EOP.
-            if ((ret = reply.GetUInt8(&ch)) != 0)
-            {
-                return ret;
-            }
             if ((frame & 0x1) == 0x1)
             {
                 data.SetMoreData(DLMS_DATA_REQUEST_TYPES_FRAME);
