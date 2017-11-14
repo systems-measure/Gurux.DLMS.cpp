@@ -1314,7 +1314,7 @@ int CGXDLMSServer::HandleGetRequest(
 
 int CGXDLMSServer::HandleCommand(
     CGXDLMSConnectionEventArgs& connectionInfo,
-    DLMS_COMMAND cmd,
+    DLMS_COMMAND& cmd,
     CGXByteBuffer& data,
     CGXByteBuffer& reply)
 {
@@ -1329,12 +1329,9 @@ int CGXDLMSServer::HandleCommand(
         ret = HandleSetRequest(data);
         break;
     case DLMS_COMMAND_WRITE_REQUEST:
-		if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
-		{
 			GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_WRITE,
 				DLMS_SERVICE_ERROR_SERVICE,
 				DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
-		}
         break;
     case DLMS_COMMAND_GET_REQUEST:
         if (data.GetSize() != 0)
@@ -1343,18 +1340,15 @@ int CGXDLMSServer::HandleCommand(
         }
         break;
     case DLMS_COMMAND_READ_REQUEST:
-		if (!m_Settings.IsConnected() || m_Settings.GetUseLogicalNameReferencing())
-		{
-			GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_READ,
+		GenerateConfirmedServiceError(DLMS_CONFIRMED_SERVICE_ERROR_READ,
 				DLMS_SERVICE_ERROR_SERVICE,
 				DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
-		}
         break;
     case DLMS_COMMAND_METHOD_REQUEST:
         ret = HandleMethodRequest(data, connectionInfo);
         break;
     case DLMS_COMMAND_SNRM:        
-        ret = HandleSnrmRequest(data/*, m_Settings, m_ReplyData*/);
+        ret = HandleSnrmRequest(data);
         if(ret == 0) {
             frame = DLMS_COMMAND_UA;
             m_LinkEstablished = true;
@@ -1536,8 +1530,8 @@ int CGXDLMSServer::HandleMethodRequest(
     return ret;
 }
 
-int CGXDLMSServer::HandleReadyRead(unsigned char cmd,                                   
-                                   unsigned char &frame)
+int CGXDLMSServer::HandleReadyRead(DLMS_COMMAND& cmd,                                   
+                                   unsigned char& frame)
 {       
     if((cmd == DLMS_COMMAND_RR) && !m_Settings.IsConnected()) {
         frame = DLMS_COMMAND_RR;

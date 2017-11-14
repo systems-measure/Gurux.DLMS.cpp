@@ -69,7 +69,7 @@ private:
     *
     * @return Returns returned UA packet.
     */
-    int HandleSnrmRequest(CGXByteBuffer& data/*, CGXDLMSSettings& settings, CGXByteBuffer& reply*/);
+    int HandleSnrmRequest(CGXByteBuffer& data);
 
     /**
     * Handle get request normal command.
@@ -118,7 +118,7 @@ private:
     */
     int HandleCommand(
         CGXDLMSConnectionEventArgs& connectionInfo,
-        DLMS_COMMAND cmd,
+        DLMS_COMMAND& cmd,
         CGXByteBuffer& data,
         CGXByteBuffer& reply);
 
@@ -165,7 +165,7 @@ private:
     *            
     * @return 
     */
-    int HandleReadyRead(unsigned char cmd,
+    int HandleReadyRead(DLMS_COMMAND& cmd,
                         unsigned char &frame);           
     
     /**
@@ -512,8 +512,7 @@ public:
     // * @return Response to the request. Response is NULL if request packet is
     // *         not complete.
     // */
-    int HandleRequest(
-        CGXByteBuffer& reply);
+    int HandleRequest(CGXByteBuffer& reply);
 
 
     /**
