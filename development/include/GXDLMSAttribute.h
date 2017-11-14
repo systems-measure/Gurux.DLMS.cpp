@@ -39,46 +39,31 @@
 class CGXDLMSAttribute
 {
     DLMS_ACCESS_MODE		m_Access;
-    unsigned char			m_Index;
     DLMS_DATA_TYPE			m_Type;
     DLMS_DATA_TYPE			m_UIType;
-	//unsigned char			m_MinimumVersion;
     DLMS_METHOD_ACCESS_MODE	m_MethodAccess;
-   // bool					m_Static;
-	//unsigned char			m_Order;
 
-    void Initialize(unsigned char index, DLMS_DATA_TYPE Type, DLMS_DATA_TYPE UiType, DLMS_ACCESS_MODE Access/*, unsigned char MinimumVersion*/)
+    void Initialize(DLMS_DATA_TYPE Type, DLMS_DATA_TYPE UiType, DLMS_ACCESS_MODE Access)
     {
         m_Access = Access;
-        //m_Static = false;
-        //m_Order = 0;
-        m_Index = index;
         m_Type = Type;
         m_UIType = UiType;
         m_MethodAccess = DLMS_METHOD_ACCESS_MODE_NONE;
-        //m_MinimumVersion = MinimumVersion;
     }
 
 public:
     //Constructor.
-    CGXDLMSAttribute(unsigned char index, DLMS_DATA_TYPE Type = DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE UiType = DLMS_DATA_TYPE_NONE, DLMS_ACCESS_MODE Access = DLMS_ACCESS_MODE_READ, unsigned char MinimumVersion = 1) :
-        m_Access(Access), m_Index(index), m_Type(Type), m_UIType(UiType)/*, m_MinimumVersion(MinimumVersion)*/
+    CGXDLMSAttribute(DLMS_DATA_TYPE Type = DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE UiType = DLMS_DATA_TYPE_NONE, DLMS_ACCESS_MODE Access = DLMS_ACCESS_MODE_READ) :
+        m_Access(Access), m_Type(Type), m_UIType(UiType)
     {
-        Initialize(index, Type, UiType, Access/*, MinimumVersion*/);
+        Initialize(Type, UiType, Access);
     }
 
-    /// <summary>
-    /// Attribute Index.
-    /// </summary>
-	unsigned char GetIndex()
-    {
-        return m_Index;
-    }
 
     /// <summary>
     /// Attribute data type.
     /// </summary>
-    DLMS_DATA_TYPE GetDataType()
+    DLMS_DATA_TYPE& GetDataType()
     {
         return m_Type;
     }
@@ -91,7 +76,7 @@ public:
     /// <summary>
     /// Data type that user want's to see.
     /// </summary>
-    DLMS_DATA_TYPE GetUIDataType()
+    DLMS_DATA_TYPE& GetUIDataType()
     {
         return m_UIType;
     }
@@ -101,7 +86,7 @@ public:
         m_UIType = type;
     }
 
-    DLMS_ACCESS_MODE GetAccess()
+    DLMS_ACCESS_MODE& GetAccess()
     {
         return m_Access;
     }
@@ -110,7 +95,7 @@ public:
         m_Access = value;
     }
 
-    DLMS_METHOD_ACCESS_MODE GetMethodAccess()
+    DLMS_METHOD_ACCESS_MODE& GetMethodAccess()
     {
         return m_MethodAccess;
     }
@@ -120,44 +105,6 @@ public:
         m_MethodAccess = value;
     }
 
-    /*bool GetStatic()
-    {
-        return m_Static;
-    }
-
-    void SetStatic(bool value)
-    {
-        m_Static = value;
-    }*/
-
-    /*
-    /// <summary>
-    /// Attribute values.
-    /// </summary>
-    [Browsable(false)]
-    [XmlIgnore]
-    public GXObisValueItemCollection Values
-    {
-        get;
-        set;
-    }
-    */
-
-    /// <summary>
-    /// Read order.
-    /// </summary>
-	/*unsigned char GetOrder()
-    {
-        return m_Order;
-    }*/
-
-    /// <summary>
-    /// Minimum version vhere this attribute is implemented.
-    /// </summary>
-	/*unsigned char GetMinimumVersion()
-    {
-        return m_MinimumVersion;
-    }*/
 };
 
 #endif //CGXDLMSATTRIBUTE_H

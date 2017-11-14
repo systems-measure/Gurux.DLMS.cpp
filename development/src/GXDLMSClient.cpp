@@ -716,17 +716,10 @@ int CGXDLMSClient::GetApplicationAssociationRequest(
     bb.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
     GXHelpers::SetObjectCount(challenge.GetSize(), bb);
     bb.Set(&challenge);
-	std::string name;
+    std::string name;
     CGXDLMSVariant data = bb;
-    if (GetUseLogicalNameReferencing())
-    {
-        name = "0.0.40.0.0.255";
-        return Method(name, DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME,
-            1, data, packets);
-    }
-    /*name = 0xFA00;
-    return Method(name, DLMS_OBJECT_TYPE_ASSOCIATION_SHORT_NAME, 8, data,
-        packets);*/
+    name = "0.0.40.0.0.255";
+    return Method(name, DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME, 1, data, packets);
 }
 
 int CGXDLMSClient::ParseApplicationAssociationResponse(

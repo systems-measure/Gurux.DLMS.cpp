@@ -52,17 +52,6 @@ CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(const char* ln) : CGXDLMSObject(D
 }
 
 /**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, sn)
-{
-
-}
-
-/**
  Value of COSEM Data object.
 */
 std::string CGXDLMSMacAddressSetup::GetMacAddress()
@@ -109,7 +98,7 @@ void CGXDLMSMacAddressSetup::GetAttributeIndexToRead(std::vector<int>& attribute
     }
 }
 
-int CGXDLMSMacAddressSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMacAddressSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

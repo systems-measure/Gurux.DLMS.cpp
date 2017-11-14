@@ -66,14 +66,6 @@ public:
     CGXDLMSDemandRegister(const char* ln);
 
     /**
-     Constructor.
-
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSDemandRegister(int sn);
-
-    /**
      Current avarage value of COSEM Data object.
     */
 	CArtVariant GetCurrentAvarageValue();

@@ -97,14 +97,6 @@ public:
     */
     CGXDLMSAutoAnswer(const char* ln);
 
-    /**
-     Constructor.
-
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSAutoAnswer(int sn);
-
     AUTO_CONNECT_MODE GetMode();
     void SetMode(AUTO_CONNECT_MODE value);
 
@@ -136,7 +128,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

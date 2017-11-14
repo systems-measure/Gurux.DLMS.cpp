@@ -46,13 +46,6 @@ CGXDLMSPushSetup::CGXDLMSPushSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP
     m_Message = DLMS_MESSAGE_TYPE_COSEM_APDU;
 }
 
-//SN Constructor.
-CGXDLMSPushSetup::CGXDLMSPushSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP, sn)
-{
-    m_RandomisationStartInterval = m_NumberOfRetries = m_RepetitionDelay = 0;
-    GXHelpers::SetLogicalName("0.7.25.9.0.255", m_LN);
-}
-
 //LN Constructor.
 CGXDLMSPushSetup::CGXDLMSPushSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP, ln)
 {
@@ -100,58 +93,7 @@ int CGXDLMSPushSetup::GetMethodCount()
 
 void CGXDLMSPushSetup::GetValues(std::vector<std::string>& values)
 {
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject> >::iterator it = m_PushObjectList.begin(); it != m_PushObjectList.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str;
-        it->first->GetLogicalName(str);
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
-
-    sb.str(std::string());
-    sb << GetService();
-    sb << " ";
-    sb << GetDestination().c_str();
-    sb << " ";
-    sb << GetMessage();
-    values.push_back(sb.str());
-
-    sb.str(std::string());
-    sb << '[';
-    empty = true;
-    for (std::vector<std::pair<CGXDateTime, CGXDateTime> >::iterator it = m_CommunicationWindow.begin(); it != m_CommunicationWindow.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = it->first.ToString();
-        sb.write(str.c_str(), str.size());
-        sb << " ";
-        str = it->second.ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
-
-    values.push_back(CGXDLMSVariant(m_RandomisationStartInterval).ToString());
-    values.push_back(CGXDLMSVariant(m_NumberOfRetries).ToString());
-    values.push_back(CGXDLMSVariant(m_RepetitionDelay).ToString());*/
+   
 }
 
 void CGXDLMSPushSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -236,11 +178,9 @@ int CGXDLMSPushSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 int CGXDLMSPushSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     CGXByteBuffer data;
-//	e.SetByteArray(true);
     int ret;
     if (e.GetIndex() == 1)
     {
-//		e.SetByteArray(true);
         if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
@@ -335,24 +275,7 @@ int CGXDLMSPushSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
     }
     else if (e.GetIndex() == 2)
     {
-        //std::string ln;
-        //m_PushObjectList.clear();
-        //if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-        //{
-        //    for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
-        //    {
-        //        //DLMS_OBJECT_TYPE type = (DLMS_OBJECT_TYPE)it->Arr[0].ToInteger();
-        //        //GXHelpers::GetLogicalName(it->Arr[1].byteArr, ln);
-        //        //CGXDLMSObject* obj = settings.GetObjects()->FindByLN(type, ln);
-        //        ///*if (obj == NULL)
-        //        //{
-        //        //    obj = CGXDLMSObjectFactory::CreateObject(type);
-        //        //    CGXDLMSObject::SetLogicalName(obj, it->Arr[1]);
-        //        //}*/
-        //        //CGXDLMSCaptureObject co(it->Arr[2].ToInteger(), it->Arr[3].ToInteger());
-        //        //m_PushObjectList.push_back(std::pair<CGXDLMSObject*, CGXDLMSCaptureObject>(obj, co));
-        //    }
-        //}
+        
     }
     else if (e.GetIndex() == 3)
     {
@@ -374,38 +297,19 @@ int CGXDLMSPushSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
     }
     else if (e.GetIndex() == 4)
     {
-        /*m_CommunicationWindow.clear();
-        if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-        {
-            int ret;
-            for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
-            {
-                CGXDLMSVariant tmp;
-                if ((ret = CGXDLMSClient::ChangeType(it->Arr[0], DLMS_DATA_TYPE_DATETIME, tmp)) != 0)
-                {
-                    return ret;
-                }
-                CGXDateTime start = tmp.dateTime;
-                if ((ret = CGXDLMSClient::ChangeType(it->Arr[1], DLMS_DATA_TYPE_DATETIME, tmp)) != 0)
-                {
-                    return ret;
-                }
-                CGXDateTime end = tmp.dateTime;
-                m_CommunicationWindow.push_back(std::pair<CGXDateTime, CGXDateTime>(start, end));
-            }
-        }*/
+        
     }
     else if (e.GetIndex() == 5)
     {
-        //m_RandomisationStartInterval = e.GetValue().ToInteger();
+       
     }
     else if (e.GetIndex() == 6)
     {
-       // m_NumberOfRetries = e.GetValue().ToInteger();
+      
     }
     else if (e.GetIndex() == 7)
     {
-       // m_RepetitionDelay = e.GetValue().ToInteger();
+       
     }
     else
     {

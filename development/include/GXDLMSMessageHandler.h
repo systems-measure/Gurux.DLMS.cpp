@@ -48,9 +48,6 @@ public:
     //Constructor.
     CGXDLMSMessageHandler();
 
-    //SN Constructor.
-    CGXDLMSMessageHandler(unsigned short sn);
-
     //LN Constructor.
     CGXDLMSMessageHandler(const char* ln);
 
@@ -81,7 +78,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

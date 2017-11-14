@@ -55,10 +55,7 @@ public:
     //Constructor.
     CGXDLMSMBusClient();
 
-    //SN Constructor.
-    CGXDLMSMBusClient(unsigned short sn);
-
-    //LN Constructor.
+	//LN Constructor.
     CGXDLMSMBusClient(const char* ln);
 
     /**
@@ -113,7 +110,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

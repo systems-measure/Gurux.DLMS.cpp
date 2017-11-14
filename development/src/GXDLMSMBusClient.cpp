@@ -41,12 +41,6 @@ CGXDLMSMBusClient::CGXDLMSMBusClient() : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLI
 {
 }
 
-//SN Constructor.
-CGXDLMSMBusClient::CGXDLMSMBusClient(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSMBusClient::CGXDLMSMBusClient(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, ln)
 {
@@ -272,7 +266,7 @@ void CGXDLMSMBusClient::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSMBusClient::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusClient::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

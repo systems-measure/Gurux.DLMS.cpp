@@ -65,17 +65,6 @@ CGXDLMSDemandRegister::CGXDLMSDemandRegister(const char* ln) : CGXDLMSObject(DLM
 }
 
 /**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSDemandRegister::CGXDLMSDemandRegister(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_DEMAND_REGISTER, sn)
-{
-    m_Period = m_NumberOfPeriods = m_Unit = m_Scaler = 0;
-}
-
-/**
  Current avarage value of COSEM Data object.
 */
 CArtVariant CGXDLMSDemandRegister::GetCurrentAvarageValue()
@@ -197,31 +186,7 @@ void CGXDLMSDemandRegister::NextPeriod()
 
 void CGXDLMSDemandRegister::GetValues(std::vector<std::string>& values)
 {
-    //values.clear();
-    //std::string ln;
-    //GetLogicalName(ln);
-    //values.push_back(ln);
-    //values.push_back(m_CurrentAvarageValue.ToString());
-    //values.push_back(m_LastAvarageValue.ToString());
-    //std::string str = "Scaler: ";
-    ////if there is no fractal part.
-    //double s = GetScaler();
-    //if (s - (long)s == 0)
-    //{
-    //    str += CGXDLMSVariant((long)s).ToString();
-    //}
-    //else
-    //{
-    //    str += CGXDLMSVariant(s).ToString();
-    //}
-    //str += " Unit: ";
-    //str += CGXDLMSConverter::GetUnitAsString(m_Unit);
-    //values.push_back(str);
-    //values.push_back(m_Status.ToString());
-    //values.push_back(m_CaptureTime.ToString());
-    //values.push_back(m_StartTimeCurrent.ToString());
-    //values.push_back(CGXDLMSVariant(m_Period).ToString());
-    //values.push_back(CGXDLMSVariant(m_NumberOfPeriods).ToString());
+    
 }
 
 void CGXDLMSDemandRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -357,7 +322,6 @@ int CGXDLMSDemandRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type
 
 int CGXDLMSDemandRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-//	e.SetByteArray(true);
 	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {

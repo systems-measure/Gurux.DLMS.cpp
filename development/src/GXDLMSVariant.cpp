@@ -168,7 +168,7 @@ bool  CArtVariant::IncreasePosition(unsigned short diff) {
 }
 
 bool CArtVariant::DecreasePosition(unsigned short diff) {
-	if (position - diff < 0) {
+	if ((long long)position - diff < 0) {
 		return false;
 	}
 	position -= diff;

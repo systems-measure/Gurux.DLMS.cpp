@@ -61,17 +61,6 @@ CGXDLMSActionSchedule::CGXDLMSActionSchedule(const char* ln) : CGXDLMSObject(DLM
     Init();
 }
 
-/**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSActionSchedule::CGXDLMSActionSchedule(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTION_SCHEDULE, sn)
-{
-    Init();
-}
-
 std::string CGXDLMSActionSchedule::GetExecutedScriptLogicalName()
 {
     return m_ExecutedScriptLogicalName;
@@ -169,7 +158,7 @@ void CGXDLMSActionSchedule::GetAttributeIndexToRead(std::vector<int>& attributes
     }
 }
 
-int CGXDLMSActionSchedule::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSActionSchedule::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

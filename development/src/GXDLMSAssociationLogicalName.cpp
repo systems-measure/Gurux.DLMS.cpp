@@ -124,9 +124,7 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 	CGXDLMSObject* tmp_obj = nullptr;
 	CGXByteBuffer ln;
 	if (m_pos < m_ObjectList.size()) {
-		CGXDLMSObjectCollection::iterator it = m_ObjectList.begin();
-		it += m_pos;
-		for (it; it != m_ObjectList.end(); ++it)
+		for (CGXDLMSObjectCollection::iterator it = m_ObjectList.begin() + m_pos; it != m_ObjectList.end(); ++it)
 		{
 			ln.Clear();
 			ln.Set(*it, 6);

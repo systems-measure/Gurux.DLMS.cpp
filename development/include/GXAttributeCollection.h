@@ -37,8 +37,30 @@
 
 #include "GXDLMSAttribute.h"
 
-class CGXAttributeCollection : public std::vector<CGXDLMSAttribute>
+class CGXAttributeCollection 
 {
+private:
+	CGXDLMSAttribute* collection;
+	uint8_t size_collection;
 public:
+	CGXAttributeCollection(uint8_t size) {
+		size_collection = size;
+		collection = new CGXDLMSAttribute[size_collection];
+	}
+
+	CGXDLMSAttribute* GetCollection() {
+		return collection;
+	}
+
+	uint8_t GetSize() {
+		return size_collection;
+	}
+
+	~CGXAttributeCollection() {
+		if (collection != nullptr) {
+			delete[] collection;
+			collection = nullptr;
+		}
+	}
 };
 #endif //GXATTRIBUTECOLLECTION_H

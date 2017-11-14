@@ -47,15 +47,6 @@ CGXDLMSLimiter::CGXDLMSLimiter() : CGXDLMSObject(DLMS_OBJECT_TYPE_LIMITER)
     m_MonitoredAttributeIndex = 0;
 }
 
-//SN Constructor.
-CGXDLMSLimiter::CGXDLMSLimiter(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_LIMITER, sn)
-{
-    m_MinOverThresholdDuration = 0;
-    m_MinUnderThresholdDuration = 0;
-    m_EmergencyProfileActive = false;
-    m_MonitoredAttributeIndex = 0;
-}
-
 //LN Constructor.
 CGXDLMSLimiter::CGXDLMSLimiter(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_LIMITER, ln)
 {
@@ -210,46 +201,7 @@ int CGXDLMSLimiter::GetMethodCount()
 
 void CGXDLMSLimiter::GetValues(std::vector<std::string>& values)
 {
-   /* values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    if (m_MonitoredValue != NULL)
-    {
-        values.push_back(m_MonitoredValue->GetName());
-    }
-    else
-    {
-        values.push_back("");
-    }
-    values.push_back(m_ThresholdActive.ToString());
-    values.push_back(m_ThresholdNormal.ToString());
-    values.push_back(m_ThresholdEmergency.ToString());
-    values.push_back(CGXDLMSVariant(m_MinOverThresholdDuration).ToString());
-    values.push_back(CGXDLMSVariant(m_MinUnderThresholdDuration).ToString());
-    values.push_back(m_EmergencyProfile.ToString());
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<int>::iterator it = m_EmergencyProfileGroupIDs.begin(); it != m_EmergencyProfileGroupIDs.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = CGXDLMSVariant(*it).ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
-    values.push_back(CGXDLMSVariant(m_EmergencyProfileActive).ToString());
-
-    sb.str(std::string());
-    sb << m_ActionOverThreshold.ToString().c_str();
-    sb << ", ";
-    sb << m_ActionUnderThreshold.ToString().c_str();
-    values.push_back(sb.str());*/
+   
 }
 
 void CGXDLMSLimiter::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -375,7 +327,6 @@ int CGXDLMSLimiter::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;

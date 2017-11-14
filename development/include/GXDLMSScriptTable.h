@@ -40,22 +40,16 @@
 
 class CGXDLMSScriptTable : public CGXDLMSObject
 {
-    //std::vector<CGXDLMSScript*> m_Scripts;
 
 public:
     //Constructor.
     CGXDLMSScriptTable();
-
-    //SN Constructor.
-    CGXDLMSScriptTable(unsigned short sn);
 
     //LN Constructor.
     CGXDLMSScriptTable(const char* ln);
 
     //Destructor.
     ~CGXDLMSScriptTable();
-
-   // std::vector<CGXDLMSScript*>& GetScripts();
 
     // Returns amount of attributes.
     int GetAttributeCount();

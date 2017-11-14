@@ -42,12 +42,6 @@ CGXDLMSPppSetup::CGXDLMSPppSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_PPP_SETUP)
     m_Authentication = PPP_AUTHENTICATION_TYPE_NONE;
 }
 
-//SN Constructor.
-CGXDLMSPppSetup::CGXDLMSPppSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_PPP_SETUP, sn)
-{
-    m_Authentication = PPP_AUTHENTICATION_TYPE_NONE;
-}
-
 //LN Constructor.
 CGXDLMSPppSetup::CGXDLMSPppSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PPP_SETUP, ln)
 {
@@ -196,7 +190,7 @@ void CGXDLMSPppSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSPppSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSPppSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

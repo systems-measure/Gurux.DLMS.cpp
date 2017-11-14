@@ -40,12 +40,6 @@ CGXDLMSMBusSlavePortSetup::CGXDLMSMBusSlavePortSetup() : CGXDLMSObject(DLMS_OBJE
 {
 }
 
-//SN Constructor.
-CGXDLMSMBusSlavePortSetup::CGXDLMSMBusSlavePortSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSMBusSlavePortSetup::CGXDLMSMBusSlavePortSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP, ln)
 {
@@ -154,7 +148,7 @@ void CGXDLMSMBusSlavePortSetup::GetAttributeIndexToRead(std::vector<int>& attrib
     }
 }
 
-int CGXDLMSMBusSlavePortSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusSlavePortSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

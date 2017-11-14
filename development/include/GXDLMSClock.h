@@ -62,13 +62,6 @@ public:
     CGXDLMSClock(const char* ln);
 
     /**
-     Constructor.
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSClock(const char* ln, int sn);
-
-    /**
      Time of COSEM Clock object.
     */
     CGXDateTime& GetTime();

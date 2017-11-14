@@ -58,9 +58,6 @@ public:
     //Constructor.
     CGXDLMSLimiter();
 
-    //SN Constructor.
-    CGXDLMSLimiter(unsigned short sn);
-
     //LN Constructor.
     CGXDLMSLimiter(const char* ln);
 

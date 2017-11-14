@@ -51,15 +51,6 @@ CGXDLMSRegisterMonitor::CGXDLMSRegisterMonitor(const char* ln) : CGXDLMSObject(D
 {
 }
 
-/**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSRegisterMonitor::CGXDLMSRegisterMonitor(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER_MONITOR, sn)
-{
-}
 
 CGXDLMSRegisterMonitor::~CGXDLMSRegisterMonitor()
 {
@@ -171,7 +162,7 @@ void CGXDLMSRegisterMonitor::GetAttributeIndexToRead(std::vector<int>& attribute
     }
 }
 
-int CGXDLMSRegisterMonitor::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSRegisterMonitor::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

@@ -42,12 +42,6 @@ CGXDLMSGPRSSetup::CGXDLMSGPRSSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP
     m_PINCode = 0;
 }
 
-//SN Constructor.
-CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, sn)
-{
-    m_PINCode = 0;
-}
-
 //LN Constructor.
 CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
 {
@@ -129,7 +123,7 @@ void CGXDLMSGPRSSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSGPRSSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSGPRSSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
