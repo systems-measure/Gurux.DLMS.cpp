@@ -727,7 +727,7 @@ int UpdateAuthentication(
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     settings.SetAuthentication((DLMS_AUTHENTICATION)ch);
-	CGXByteBuffer null_psw;
+	/*CGXByteBuffer null_psw;
 	null_psw.SetUInt8('\0');
 	if (settings.GetAuthentication() == DLMS_AUTHENTICATION_LOW) {
 		settings.SetPassword(null_psw);
@@ -736,7 +736,7 @@ int UpdateAuthentication(
 		if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH) {
 			settings.SetCtoSChallenge(null_psw);
 		}
-	}
+	}*/
     return 0;
 }
 

@@ -41,7 +41,7 @@ class CGXDLMSLimits
 {
     CGXDLMSVariant m_MaxInfoTX, m_MaxInfoRX, m_WindowSizeRX, m_WindowSizeTX;
 public:
-    static const unsigned char DEFAULT_MAX_INFO_RX = 62;
+    static const unsigned char DEFAULT_MAX_INFO_RX = 128;
     static const unsigned char DEFAULT_MAX_INFO_TX = 128;
     static const int  DEFAULT_WINDOWS_SIZE_RX = 1;
     static const int DEFAULT_WINDOWS_SIZE_TX = 1;
