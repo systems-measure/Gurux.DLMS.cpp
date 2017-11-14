@@ -266,7 +266,7 @@ void CGXDLMSMBusClient::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSMBusClient::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusClient::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

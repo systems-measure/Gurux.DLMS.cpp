@@ -98,7 +98,7 @@ void CGXDLMSMacAddressSetup::GetAttributeIndexToRead(std::vector<int>& attribute
     }
 }
 
-int CGXDLMSMacAddressSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSMacAddressSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

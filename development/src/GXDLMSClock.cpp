@@ -213,7 +213,7 @@ void CGXDLMSClock::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSClock::GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSClock::GetUIDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 2 || index == 5 || index == 6)
     {
@@ -226,7 +226,7 @@ int CGXDLMSClock::GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type)
     return DLMS_ERROR_CODE_OK;
 }
 
-int CGXDLMSClock::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSClock::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

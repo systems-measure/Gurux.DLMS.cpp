@@ -83,7 +83,7 @@ void CGXDLMSScriptTable::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSScriptTable::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSScriptTable::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

@@ -136,7 +136,7 @@ void CGXDLMSPushSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSPushSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSPushSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

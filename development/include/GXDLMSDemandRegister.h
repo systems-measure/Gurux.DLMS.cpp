@@ -134,7 +134,7 @@ public:
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

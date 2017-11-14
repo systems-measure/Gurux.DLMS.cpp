@@ -270,7 +270,7 @@ void CGXDLMSIp4Setup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSIp4Setup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSIp4Setup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

@@ -113,7 +113,7 @@ void CGXDLMSIecHdlcSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSIecHdlcSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSIecHdlcSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

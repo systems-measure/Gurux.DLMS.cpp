@@ -95,7 +95,7 @@ void CGXDLMSSchedule::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSSchedule::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSSchedule::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

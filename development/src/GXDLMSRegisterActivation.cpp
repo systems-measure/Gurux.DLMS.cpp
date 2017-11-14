@@ -104,7 +104,7 @@ void CGXDLMSRegisterActivation::GetAttributeIndexToRead(std::vector<int>& attrib
     }
 }
 
-int CGXDLMSRegisterActivation::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSRegisterActivation::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

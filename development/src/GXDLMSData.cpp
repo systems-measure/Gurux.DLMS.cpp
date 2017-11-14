@@ -94,7 +94,7 @@ void CGXDLMSData::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSData::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSData::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

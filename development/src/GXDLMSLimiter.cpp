@@ -270,7 +270,7 @@ void CGXDLMSLimiter::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSLimiter::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSLimiter::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

@@ -261,7 +261,7 @@ int CGXDLMSDemandRegister::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventAr
     return DLMS_ERROR_CODE_OK;
 }
 
-int CGXDLMSDemandRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSDemandRegister::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

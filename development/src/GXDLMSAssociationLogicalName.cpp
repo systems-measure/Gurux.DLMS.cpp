@@ -359,7 +359,7 @@ void CGXDLMSAssociationLogicalName::GetAttributeIndexToRead(std::vector<int>& at
     }
 }
 
-int CGXDLMSAssociationLogicalName::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSAssociationLogicalName::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

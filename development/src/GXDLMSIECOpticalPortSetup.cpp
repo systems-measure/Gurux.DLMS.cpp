@@ -204,7 +204,7 @@ void CGXDLMSIECOpticalPortSetup::GetAttributeIndexToRead(std::vector<int>& attri
     }
 }
 
-int CGXDLMSIECOpticalPortSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSIECOpticalPortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

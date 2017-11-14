@@ -38,27 +38,33 @@
 
 class CGXDLMSAttribute
 {
+	signed char				m_index;
     DLMS_ACCESS_MODE		m_Access;
     DLMS_DATA_TYPE			m_Type;
-    DLMS_DATA_TYPE			m_UIType;
     DLMS_METHOD_ACCESS_MODE	m_MethodAccess;
 
-    void Initialize(DLMS_DATA_TYPE Type, DLMS_DATA_TYPE UiType, DLMS_ACCESS_MODE Access)
+    void Initialize(signed char index, DLMS_DATA_TYPE Type, DLMS_ACCESS_MODE Access)
     {
+		m_index = index;
         m_Access = Access;
         m_Type = Type;
-        m_UIType = UiType;
         m_MethodAccess = DLMS_METHOD_ACCESS_MODE_NONE;
     }
 
 public:
     //Constructor.
-    CGXDLMSAttribute(DLMS_DATA_TYPE Type = DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE UiType = DLMS_DATA_TYPE_NONE, DLMS_ACCESS_MODE Access = DLMS_ACCESS_MODE_READ) :
-        m_Access(Access), m_Type(Type), m_UIType(UiType)
+    CGXDLMSAttribute(signed char index = 0, DLMS_DATA_TYPE Type = DLMS_DATA_TYPE_NONE, DLMS_ACCESS_MODE Access = DLMS_ACCESS_MODE_READ)
     {
-        Initialize(Type, UiType, Access);
+        Initialize(index, Type, Access);
     }
 
+	signed char& GetIndex() {
+		return m_index;
+	}
+
+	void SetIndex(signed char index) {
+		m_index = index;
+	}
 
     /// <summary>
     /// Attribute data type.
@@ -78,12 +84,12 @@ public:
     /// </summary>
     DLMS_DATA_TYPE& GetUIDataType()
     {
-        return m_UIType;
+        return m_Type;
     }
 
     void SetUIDataType(DLMS_DATA_TYPE type)
     {
-        m_UIType = type;
+  
     }
 
     DLMS_ACCESS_MODE& GetAccess()

@@ -192,7 +192,7 @@ void CGXDLMSAutoConnect::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSAutoConnect::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSAutoConnect::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

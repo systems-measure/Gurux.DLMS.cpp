@@ -112,16 +112,16 @@ public:
 
     CGXAttributeCollection* GetAttributes();
     CGXAttributeCollection* GetMethodAttributes();
-    virtual int SetDataType(unsigned char index, DLMS_DATA_TYPE type);
-    virtual int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    virtual int SetDataType(signed char index, DLMS_DATA_TYPE type);
+    virtual int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
-    virtual int GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type);
-    void SetUIDataType(unsigned char index, DLMS_DATA_TYPE type);
+    virtual int GetUIDataType(signed char index, DLMS_DATA_TYPE& type);
+	int SetUIDataType(signed char index, DLMS_DATA_TYPE type);
 
-    DLMS_ACCESS_MODE GetAccess(unsigned char index);
-    void SetAccess(unsigned char index, DLMS_ACCESS_MODE access);
-    DLMS_METHOD_ACCESS_MODE GetMethodAccess(unsigned char index);
-    void SetMethodAccess(unsigned char index, DLMS_METHOD_ACCESS_MODE access);
+    DLMS_ACCESS_MODE GetAccess(signed char index);
+	int SetAccess(signed char index, DLMS_ACCESS_MODE access);
+    DLMS_METHOD_ACCESS_MODE GetMethodAccess(signed char index);
+	int SetMethodAccess(signed char index, DLMS_METHOD_ACCESS_MODE access);
 
     //Get values as std::string.
     virtual void GetValues(std::vector<std::string>& values)

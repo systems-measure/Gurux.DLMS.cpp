@@ -84,7 +84,7 @@ void CGXDLMSSpecialDaysTable::GetAttributeIndexToRead(std::vector<int>& attribut
     }
 }
 
-int CGXDLMSSpecialDaysTable::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSSpecialDaysTable::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

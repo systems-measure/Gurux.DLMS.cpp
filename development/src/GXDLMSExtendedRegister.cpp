@@ -79,7 +79,7 @@ void CGXDLMSExtendedRegister::SetCaptureTime(CGXDateTime value)
     m_CaptureTime = value;
 }
 
-int CGXDLMSExtendedRegister::GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSExtendedRegister::GetUIDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 5)
     {
@@ -124,7 +124,7 @@ void CGXDLMSExtendedRegister::GetAttributeIndexToRead(std::vector<int>& attribut
     }
 }
 
-int CGXDLMSExtendedRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSExtendedRegister::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index < 4)
     {

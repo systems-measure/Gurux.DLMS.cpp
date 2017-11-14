@@ -190,7 +190,7 @@ void CGXDLMSPppSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSPppSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSPppSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

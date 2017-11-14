@@ -180,7 +180,7 @@ void CGXDLMSModemConfiguration::GetAttributeIndexToRead(std::vector<int>& attrib
     }
 }
 
-int CGXDLMSModemConfiguration::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSModemConfiguration::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

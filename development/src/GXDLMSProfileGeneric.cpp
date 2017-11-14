@@ -205,7 +205,7 @@ int CGXDLMSProfileGeneric::GetMethodCount()
     return 2;
 }
 
-int CGXDLMSProfileGeneric::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSProfileGeneric::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

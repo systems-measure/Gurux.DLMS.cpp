@@ -162,7 +162,7 @@ void CGXDLMSRegisterMonitor::GetAttributeIndexToRead(std::vector<int>& attribute
     }
 }
 
-int CGXDLMSRegisterMonitor::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSRegisterMonitor::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

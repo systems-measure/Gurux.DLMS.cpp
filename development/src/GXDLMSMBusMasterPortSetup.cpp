@@ -95,7 +95,7 @@ void CGXDLMSMBusMasterPortSetup::GetAttributeIndexToRead(std::vector<int>& attri
     }
 }
 
-int CGXDLMSMBusMasterPortSetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusMasterPortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

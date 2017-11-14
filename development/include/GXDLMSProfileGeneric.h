@@ -160,7 +160,7 @@ public:
     //Returns amount of methods.
     int GetMethodCount();
 
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

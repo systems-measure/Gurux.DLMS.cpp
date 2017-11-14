@@ -123,7 +123,7 @@ void CGXDLMSActivityCalendar::GetAttributeIndexToRead(std::vector<int>& attribut
     }
 }
 
-int CGXDLMSActivityCalendar::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSActivityCalendar::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

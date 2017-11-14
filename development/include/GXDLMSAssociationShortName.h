@@ -90,7 +90,7 @@ public:
     int GetMethodCount();
 
     int GetDataType(
-        unsigned char index,
+        signed char index,
         DLMS_DATA_TYPE& type);
 
     // Returns SN Association View.

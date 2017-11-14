@@ -155,7 +155,7 @@ void CGXDLMSMessageHandler::GetAttributeIndexToRead(std::vector<int>& attributes
     }
 }
 
-int CGXDLMSMessageHandler::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSMessageHandler::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

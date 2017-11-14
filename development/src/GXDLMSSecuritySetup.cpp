@@ -151,7 +151,7 @@ void CGXDLMSSecuritySetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSSecuritySetup::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSSecuritySetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

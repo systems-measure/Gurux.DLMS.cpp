@@ -42,10 +42,12 @@ class CGXAttributeCollection
 private:
 	CGXDLMSAttribute* collection;
 	uint8_t size_collection;
+	uint8_t count_collection;
 public:
 	CGXAttributeCollection(uint8_t size) {
 		size_collection = size;
 		collection = new CGXDLMSAttribute[size_collection];
+		count_collection = 0;
 	}
 
 	CGXDLMSAttribute* GetCollection() {
@@ -54,6 +56,14 @@ public:
 
 	uint8_t GetSize() {
 		return size_collection;
+	}
+
+	uint8_t GetCountCollection() {
+		return count_collection;
+	}
+
+	void IncreaseCountCollection() {
+		++count_collection;
 	}
 
 	~CGXAttributeCollection() {

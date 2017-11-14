@@ -89,7 +89,7 @@ void CGXDLMSDisconnectControl::GetAttributeIndexToRead(std::vector<int>& attribu
     }
 }
 
-int CGXDLMSDisconnectControl::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSDisconnectControl::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

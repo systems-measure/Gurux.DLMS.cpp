@@ -113,7 +113,7 @@ void CGXDLMSSapAssignment::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSSapAssignment::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSSapAssignment::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
