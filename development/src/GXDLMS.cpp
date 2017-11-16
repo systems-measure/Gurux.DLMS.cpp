@@ -1151,7 +1151,7 @@ int CGXDLMS::GetHdlcData(
     if (reply.GetPosition() != frameLen)
     {
         crc = CountFCS16(reply, 0, frameLen - 2);
-        if ((ret = reply.GetUInt16(frameLen - 1, &crcRead)) != 0)
+        if ((ret = reply.GetUInt16(frameLen - 2, &crcRead)) != 0)
         {
             return ret;
         }
