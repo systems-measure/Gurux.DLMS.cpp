@@ -274,7 +274,7 @@ unsigned char CArtVariant::GetUInt8(unsigned char* value) {
 }
 
 unsigned char CArtVariant::GetUInt16(unsigned short* value) {
-	if (position + 2 >= size)
+	if (position + 2 > size)
 	{
 		return DLMS_ERROR_CODE_OUTOFMEMORY;
 	}
