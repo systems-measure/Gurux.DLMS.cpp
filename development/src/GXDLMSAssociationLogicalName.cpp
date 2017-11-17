@@ -115,6 +115,7 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 			settings.SetCount(settings.GetCount() - 1);
 			m_pos = 1;
 		}
+		data.Reserve(settings.GetMaxPduSize() + 10);
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         //Add count
         GXHelpers::SetObjectCount((unsigned long)settings.GetCount(), data);
@@ -122,8 +123,9 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 	e.SetTargetName();
 	m_ObjectList.FreeConstructedObj();
 	CGXDLMSObject* tmp_obj = nullptr;
-	CGXByteBuffer ln;
+	CGXByteBuffer ln(6);
 	if (m_pos < m_ObjectList.size()) {
+		data.Reserve(settings.GetMaxPduSize() + 10);
 		for (CGXDLMSObjectCollection::iterator it = m_ObjectList.begin() + m_pos; it != m_ObjectList.end(); ++it)
 		{
 			ln.Clear();
@@ -171,6 +173,7 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 	{
 		std::vector<CGXDLMSObject*> tmp_dlms_obj = m_ObjectList.GetDlmsObj();
 		std::vector<CGXDLMSObject*>::iterator it = tmp_dlms_obj.begin();
+		data.Reserve(settings.GetMaxPduSize() + 10);
 		it += m_pos - m_ObjectList.size();
 		for (; it != tmp_dlms_obj.end(); ++it) {
 			++m_pos;
@@ -501,6 +504,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
 	CGXByteBuffer data;
 	if (e.GetIndex() == 1)
     {
+		data.Reserve(6);
 		if ((ret = GetLogicalName(e.GetTarget(), data)) != 0)
         {
             return ret;
@@ -516,6 +520,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     }
     if (e.GetIndex() == 3)
     {
+		data.Reserve(7);
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         //Add count
         data.SetUInt8(2);
@@ -528,6 +533,8 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     }
     if (e.GetIndex() == 4)
     {
+
+		data.Reserve(17);
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         //Add count
         data.SetUInt8(0x7);
@@ -551,6 +558,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     if (e.GetIndex() == 5)
     {
         CGXByteBuffer info = m_XDLMSContextInfo.GetCypheringInfo();
+		data.Reserve(16 + info.GetSize());
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(6);
 		data.SetUInt8(DLMS_DATA_TYPE_BIT_STRING);
@@ -575,6 +583,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     }
     if (e.GetIndex() == 6)
     {
+		data.Reserve(17);
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         //Add count
         data.SetUInt8(0x7);
@@ -597,6 +606,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     }
     if (e.GetIndex() == 7)
 	{
+		data.Reserve(66);
 		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
 		if (e.GetTarget()->GetName().compare("0.0.40.0.0.255") == 0) {
 			if (settings.GetAuthentication() == DLMS_AUTHENTICATION_LOW) {
@@ -629,6 +639,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     }
     if (e.GetIndex() == 8)
     {
+		data.Reserve(2);
 		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
 		data.SetUInt8((unsigned char)m_AssociationStatus);
         e.SetValue(data);
@@ -636,6 +647,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
     }
     if (e.GetIndex() == 9)
     {
+		data.Reserve(8);
         unsigned char tmp[6];
 		GXHelpers::SetLogicalName(m_SecuritySetupReference.c_str(), tmp);
 		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
