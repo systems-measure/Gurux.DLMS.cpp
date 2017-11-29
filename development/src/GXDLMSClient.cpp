@@ -187,7 +187,7 @@ int CGXDLMSClient::SNRMRequest(std::vector<CGXByteBuffer>& packets)
     if (CGXDLMSLimits::DEFAULT_WINDOWS_SIZE_RX != GetLimits().GetWindowSizeRX().ToInteger())
     {
         data.SetUInt8(HDLC_INFO_WINDOW_SIZE_RX);
-        data.SetUInt8(GetLimits().GetWindowSizeRX().ToInteger());
+        data.SetUInt8(GetLimits().GetWindowSizeRX().GetSize());
         if ((ret = GetLimits().GetWindowSizeRX().GetBytes(data)) != 0)
         {
             return ret;
@@ -1427,12 +1427,6 @@ int CGXDLMSClient::Method(CGXDLMSVariant name, DLMS_OBJECT_TYPE objectType,
     int index, CGXDLMSVariant& value, std::vector<CGXByteBuffer>& reply)
 {
     int ret;
-    if (index < 1)
-    {
-        //Invalid parameter
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-
     CGXByteBuffer bb, data;
     m_Settings.ResetBlockIndex();
     if (value.vt != DLMS_DATA_TYPE_NONE)
