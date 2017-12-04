@@ -38,97 +38,13 @@
 //Constructor.
 CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP)
 {
-    m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
-    m_WindowSizeTransmit = m_WindowSizeReceive = 1;
-    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;
-}
-
-//SN Constructor.
-CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP, sn)
-{
-    m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
-    m_WindowSizeTransmit = m_WindowSizeReceive = 1;
-    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;
+   
 }
 
 //LN Constructor.
 CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP, ln)
 {
-    m_CommunicationSpeed = DLMS_BAUD_RATE_9600;
-    m_WindowSizeTransmit = m_WindowSizeReceive = 1;
-    m_MaximumInfoLengthTransmit = m_MaximumInfoLengthReceive = 128;
-}
-
-DLMS_BAUD_RATE CGXDLMSIecHdlcSetup::GetCommunicationSpeed()
-{
-    return m_CommunicationSpeed;
-}
-void CGXDLMSIecHdlcSetup::SetCommunicationSpeed(DLMS_BAUD_RATE value)
-{
-    m_CommunicationSpeed = value;
-}
-
-int CGXDLMSIecHdlcSetup::GetWindowSizeTransmit()
-{
-    return m_WindowSizeTransmit;
-}
-void CGXDLMSIecHdlcSetup::SetWindowSizeTransmit(int value)
-{
-    m_WindowSizeTransmit = value;
-}
-
-int CGXDLMSIecHdlcSetup::GetWindowSizeReceive()
-{
-    return m_WindowSizeReceive;
-}
-void CGXDLMSIecHdlcSetup::SetWindowSizeReceive(int value)
-{
-    m_WindowSizeReceive = value;
-}
-
-int CGXDLMSIecHdlcSetup::GetMaximumInfoLengthTransmit()
-{
-    return m_MaximumInfoLengthTransmit;
-}
-void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthTransmit(int value)
-{
-    m_MaximumInfoLengthTransmit = value;
-}
-
-int CGXDLMSIecHdlcSetup::GetMaximumInfoLengthReceive()
-{
-    return m_MaximumInfoLengthReceive;
-}
-void CGXDLMSIecHdlcSetup::SetMaximumInfoLengthReceive(int value)
-{
-    m_MaximumInfoLengthReceive = value;
-}
-
-int CGXDLMSIecHdlcSetup::GetInterCharachterTimeout()
-{
-    return m_InterCharachterTimeout;
-}
-void CGXDLMSIecHdlcSetup::SetInterCharachterTimeout(int value)
-{
-    m_InterCharachterTimeout = value;
-}
-
-int CGXDLMSIecHdlcSetup::GetInactivityTimeout()
-{
-    return m_InactivityTimeout;
-}
-void CGXDLMSIecHdlcSetup::SetInactivityTimeout(int value)
-{
-    m_InactivityTimeout = value;
-}
-
-int CGXDLMSIecHdlcSetup::GetDeviceAddress()
-{
-    return m_DeviceAddress;
-}
-void CGXDLMSIecHdlcSetup::SetDeviceAddress(int value)
-{
-    m_DeviceAddress = value;
+   
 }
 
 // Returns amount of attributes.
@@ -145,18 +61,7 @@ int CGXDLMSIecHdlcSetup::GetMethodCount()
 
 void CGXDLMSIecHdlcSetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSConverter::ToString(m_CommunicationSpeed));
-    values.push_back(CGXDLMSVariant(m_WindowSizeTransmit).ToString());
-    values.push_back(CGXDLMSVariant(m_WindowSizeReceive).ToString());
-    values.push_back(CGXDLMSVariant(m_MaximumInfoLengthTransmit).ToString());
-    values.push_back(CGXDLMSVariant(m_MaximumInfoLengthReceive).ToString());
-    values.push_back(CGXDLMSVariant(m_InterCharachterTimeout).ToString());
-    values.push_back(CGXDLMSVariant(m_InactivityTimeout).ToString());
-    values.push_back(CGXDLMSVariant(m_DeviceAddress).ToString());
+    
 }
 
 void CGXDLMSIecHdlcSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -208,7 +113,7 @@ void CGXDLMSIecHdlcSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSIecHdlcSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSIecHdlcSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -256,48 +161,48 @@ int CGXDLMSIecHdlcSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSIecHdlcSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 2)
     {
-        e.SetValue(m_CommunicationSpeed);
+		
     }
     else if (e.GetIndex() == 3)
     {
-        e.SetValue(m_WindowSizeTransmit);
+		
     }
     else if (e.GetIndex() == 4)
     {
-        e.SetValue(m_WindowSizeReceive);
+		
     }
     else if (e.GetIndex() == 5)
     {
-        e.SetValue(m_MaximumInfoLengthTransmit);
+		
     }
     else if (e.GetIndex() == 6)
     {
-        e.SetValue(m_MaximumInfoLengthReceive);
+		
     }
     else if (e.GetIndex() == 7)
     {
-        e.SetValue(m_InterCharachterTimeout);
+		
     }
     else if (e.GetIndex() == 8)
     {
-        e.SetValue(m_InactivityTimeout);
+		
     }
     else if (e.GetIndex() == 9)
     {
-        e.SetValue(m_DeviceAddress);
+		
     }
     else
     {
@@ -311,39 +216,39 @@ int CGXDLMSIecHdlcSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventAr
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        m_CommunicationSpeed = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 3)
     {
-        m_WindowSizeTransmit = e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 4)
     {
-        m_WindowSizeReceive = e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 5)
     {
-        m_MaximumInfoLengthTransmit = e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 6)
     {
-        m_MaximumInfoLengthReceive = e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 7)
     {
-        m_InterCharachterTimeout = e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 8)
     {
-        m_InactivityTimeout = e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 9)
     {
-        m_DeviceAddress = e.GetValue().ToInteger();
+		
     }
     else
     {

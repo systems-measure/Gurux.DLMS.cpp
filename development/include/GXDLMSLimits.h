@@ -39,9 +39,10 @@
 
 class CGXDLMSLimits
 {
-    CGXDLMSVariant m_MaxInfoTX, m_MaxInfoRX, m_WindowSizeRX, m_WindowSizeTX;
+    unsigned short m_MaxInfoTX, m_MaxInfoRX;
+	unsigned char m_WindowSizeRX, m_WindowSizeTX;
 public:
-    static const unsigned char DEFAULT_MAX_INFO_RX = 62;
+    static const unsigned char DEFAULT_MAX_INFO_RX = 128;
     static const unsigned char DEFAULT_MAX_INFO_TX = 128;
     static const int  DEFAULT_WINDOWS_SIZE_RX = 1;
     static const int DEFAULT_WINDOWS_SIZE_TX = 1;
@@ -50,26 +51,35 @@ public:
 
     // The maximum information field length in transmit.
     // DefaultValue is 128.
-    CGXDLMSVariant GetMaxInfoTX();
+	unsigned short GetMaxInfoTX();
 
-    void SetMaxInfoTX(CGXDLMSVariant value);
+    void SetMaxInfoTX(unsigned int value);
+
+	void DefaultInfoTX();
 
     /// The maximum information field length in receive.
-    /// DefaultValue is 62.
-    CGXDLMSVariant GetMaxInfoRX();
+    /// DefaultValue is 128.
+	unsigned short GetMaxInfoRX();
 
-    void SetMaxInfoRX(CGXDLMSVariant value);
+    void SetMaxInfoRX(unsigned int value);
+
+	void DefaultInfoRX();
+
 
     /// The window size in transmit.
     /// DefaultValue is 1.
-    CGXDLMSVariant GetWindowSizeTX();
+	unsigned char GetWindowSizeTX();
 
-    void SetWindowSizeTX(CGXDLMSVariant value);
+    void SetWindowSizeTX(unsigned int value);
+
+	void DefaultWindowSizeTX();
 
     /// The window size in receive.
     /// DefaultValue is 1.
-    CGXDLMSVariant GetWindowSizeRX();
+	unsigned char GetWindowSizeRX();
 
-    void SetWindowSizeRX(CGXDLMSVariant value);
+    void SetWindowSizeRX(unsigned int value);
+
+	void DefaultWindowSizeRX();
 };
 #endif //GXDLMSLIMITS_H

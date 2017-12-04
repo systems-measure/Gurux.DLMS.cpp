@@ -45,15 +45,6 @@ CGXDLMSImageTransfer::CGXDLMSImageTransfer() : CGXDLMSObject(DLMS_OBJECT_TYPE_IM
     m_ImageTransferStatus = DLMS_IMAGE_TRANSFER_STATUS_NOT_INITIATED;
 }
 
-//SN Constructor.
-CGXDLMSImageTransfer::CGXDLMSImageTransfer(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_IMAGE_TRANSFER, sn)
-{
-    m_ImageBlockSize = 0;
-    m_ImageFirstNotTransferredBlockNumber = 0;
-    m_ImageTransferEnabled = false;
-    m_ImageTransferStatus = DLMS_IMAGE_TRANSFER_STATUS_NOT_INITIATED;
-}
-
 //LN Constructor.
 CGXDLMSImageTransfer::CGXDLMSImageTransfer(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IMAGE_TRANSFER, ln)
 {
@@ -147,7 +138,7 @@ int CGXDLMSImageTransfer::GetMethodCount()
 
 void CGXDLMSImageTransfer::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -170,7 +161,7 @@ void CGXDLMSImageTransfer::GetValues(std::vector<std::string>& values)
         sb.write(str.c_str(), str.size());
     }
     sb << ']';
-    values.push_back(sb.str());
+    values.push_back(sb.str());*/
 }
 
 void CGXDLMSImageTransfer::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -212,7 +203,7 @@ void CGXDLMSImageTransfer::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSImageTransfer::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSImageTransfer::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -258,63 +249,64 @@ int CGXDLMSImageTransfer::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		CGXByteBuffer data;
+//		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(GetImageBlockSize());
+        //e.SetValue(GetImageBlockSize());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetValue(m_ImageTransferredBlocksStatus);
+        //e.SetValue(m_ImageTransferredBlocksStatus);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetValue(m_ImageFirstNotTransferredBlockNumber);
+       // e.SetValue(m_ImageFirstNotTransferredBlockNumber);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        e.SetValue(m_ImageTransferEnabled);
+       // e.SetValue(m_ImageTransferEnabled);
         return DLMS_ERROR_CODE_OK;
 
     }
     if (e.GetIndex() == 6)
     {
-        e.SetValue(m_ImageTransferStatus);
+       // e.SetValue(m_ImageTransferStatus);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 7)
     {
-        e.SetByteArray(true);
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount((unsigned long)m_ImageActivateInfo.size(), data); //Count
-        int ret;
-        CGXDLMSVariant size, id, signature;
-        for (std::vector<CGXDLMSImageActivateInfo>::iterator it = m_ImageActivateInfo.begin(); it != m_ImageActivateInfo.end(); ++it)
-        {
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            data.SetUInt8(3);//Item count.
-            size = it->GetSize();
-            id = it->GetIdentification();
-            signature = (*it).GetSignature();
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT32, size)) != 0 ||
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, id)) != 0 ||
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, signature)) != 0)
-            {
-                return ret;
-            }
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //CGXByteBuffer data;
+        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        //GXHelpers::SetObjectCount((unsigned long)m_ImageActivateInfo.size(), data); //Count
+        //int ret;
+        //CGXDLMSVariant size, id, signature;
+        //for (std::vector<CGXDLMSImageActivateInfo>::iterator it = m_ImageActivateInfo.begin(); it != m_ImageActivateInfo.end(); ++it)
+        //{
+        //    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //    data.SetUInt8(3);//Item count.
+        //    size = it->GetSize();
+        //    id = it->GetIdentification();
+        //    signature = (*it).GetSignature();
+        //    if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT32, size)) != 0 ||
+        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, id)) != 0 ||
+        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, signature)) != 0)
+        //    {
+        //        return ret;
+        //    }
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -325,31 +317,31 @@ int CGXDLMSImageTransfer::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        m_ImageBlockSize = e.GetValue().ToInteger();
+        //m_ImageBlockSize = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 3)
     {
-        m_ImageTransferredBlocksStatus = e.GetValue().ToString();
+        //m_ImageTransferredBlocksStatus = e.GetValue().ToString();
     }
     else if (e.GetIndex() == 4)
     {
-        m_ImageFirstNotTransferredBlockNumber = e.GetValue().ToInteger();
+        //m_ImageFirstNotTransferredBlockNumber = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 5)
     {
-        m_ImageTransferEnabled = e.GetValue().boolVal;
+       // m_ImageTransferEnabled = e.GetValue().boolVal;
     }
     else if (e.GetIndex() == 6)
     {
-        m_ImageTransferStatus = (DLMS_IMAGE_TRANSFER_STATUS)e.GetValue().ToInteger();
+       // m_ImageTransferStatus = (DLMS_IMAGE_TRANSFER_STATUS)e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 7)
     {
-        m_ImageActivateInfo.clear();
+       /* m_ImageActivateInfo.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             CGXDLMSVariant tmp;
@@ -363,7 +355,7 @@ int CGXDLMSImageTransfer::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
                 item.SetSignature(tmp.ToString());
                 m_ImageActivateInfo.push_back(item);
             }
-        }
+        }*/
     }
     else
     {

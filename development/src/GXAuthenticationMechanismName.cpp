@@ -43,54 +43,54 @@ CGXAuthenticationMechanismName::CGXAuthenticationMechanismName()
     m_IdentifiedOrganization = m_DlmsUA = m_AuthenticationMechanismName = 0;
 }
 
-int CGXAuthenticationMechanismName::GetJointIsoCtt()
+unsigned char CGXAuthenticationMechanismName::GetJointIsoCtt()
 {
     return m_JointIsoCtt;
 }
-void CGXAuthenticationMechanismName::SetJointIsoCtt(int value)
+void CGXAuthenticationMechanismName::SetJointIsoCtt(unsigned char value)
 {
     m_JointIsoCtt = value;
 }
 
-int CGXAuthenticationMechanismName::GetCountry()
+unsigned char CGXAuthenticationMechanismName::GetCountry()
 {
     return m_Country;
 }
-void CGXAuthenticationMechanismName::SetCountry(int value)
+void CGXAuthenticationMechanismName::SetCountry(unsigned char value)
 {
     m_Country = value;
 }
 
-int CGXAuthenticationMechanismName::GetCountryName()
+unsigned short CGXAuthenticationMechanismName::GetCountryName()
 {
     return m_CountryName;
 }
-void CGXAuthenticationMechanismName::SetCountryName(int value)
+void CGXAuthenticationMechanismName::SetCountryName(unsigned short value)
 {
     m_CountryName = value;
 }
-int CGXAuthenticationMechanismName::GetIdentifiedOrganization()
+unsigned char CGXAuthenticationMechanismName::GetIdentifiedOrganization()
 {
     return m_IdentifiedOrganization;
 }
-void CGXAuthenticationMechanismName::SetIdentifiedOrganization(int value)
+void CGXAuthenticationMechanismName::SetIdentifiedOrganization(unsigned char value)
 {
     m_IdentifiedOrganization = value;
 }
 
-int CGXAuthenticationMechanismName::GetDlmsUA()
+unsigned char CGXAuthenticationMechanismName::GetDlmsUA()
 {
     return m_DlmsUA;
 }
-void CGXAuthenticationMechanismName::SetDlmsUA(int value)
+void CGXAuthenticationMechanismName::SetDlmsUA(unsigned char value)
 {
     m_DlmsUA = value;
 }
-int CGXAuthenticationMechanismName::GetAuthenticationMechanismName()
+unsigned char CGXAuthenticationMechanismName::GetAuthenticationMechanismName()
 {
     return m_AuthenticationMechanismName;
 }
-void CGXAuthenticationMechanismName::SetAuthenticationMechanismName(int value)
+void CGXAuthenticationMechanismName::SetAuthenticationMechanismName(unsigned char value)
 {
     m_AuthenticationMechanismName = value;
 }

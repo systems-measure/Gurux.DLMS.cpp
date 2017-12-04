@@ -51,67 +51,68 @@ private:
      */
     DLMS_COMMAND m_Command;
 
+	/**
+	* Control filed value
+	*/
+	unsigned char m_ControlField;
+
+	//DLMS_DATA_TYPE m_DataType;
+
+	/**
+	* Is received message General Block Transfer message.
+	*/
+	bool m_Gbt;
+
+	/**
+	* Is frame complete.
+	*/
+	bool m_Complete;
+
+	/**
+	* Try Get value.
+	*/
+	bool m_Peek;
+
     /**
     * Received command type.
     */
-    unsigned char m_CommandType;
+   // unsigned char m_CommandType;
+
+	/**
+	* Cipher index is position where data is decrypted.
+	*/
+	unsigned short m_CipherIndex;
+
+	/**
+	* Expected count of element in the array.
+	*/
+	int m_TotalCount;
+	
+	/**
+	* Packet Length.
+	*/
+	int m_PacketLength;
+
+	/**
+	* Last read position. This is used in peek to solve how far data is read.
+	*/
+	unsigned long m_ReadPosition;
 
     /**
      * Received data.
      */
     CGXByteBuffer m_Data;
     /**
-     * Is frame complete.
-     */
-    bool m_Complete;
-
-    /**
      * Read value.
      */
-    CGXDLMSVariant m_DataValue;
+    CArtVariant m_DataValue;
 
-    /**
-     * Expected count of element in the array.
-     */
-    int m_TotalCount;
-
-    /**
-     * Last read position. This is used in peek to solve how far data is read.
-     */
-    unsigned long m_ReadPosition;
-
-    /**
-     * Packet Length.
-     */
-    int m_PacketLength;
-
-    /**
-     * Try Get value.
-     */
-    bool m_Peek;
-
-    DLMS_DATA_TYPE m_DataType;
-
-    /**
-     * Cipher index is position where data is decrypted.
-     */
-    unsigned short m_CipherIndex;
-
-    /**
-    * Is received message General Block Transfer message.
-    */
-    bool m_Gbt;
-
-    /**
+	 /**
      * Data notification date time.
      */
-    struct tm* m_Time;
+   // struct tm* m_Time;
     
-    /**
-    * Control filed value
-    */
-    unsigned char m_ControlField;
-
+   
 public:
     /**
      * Constructor.
@@ -136,15 +137,15 @@ public:
      */
     CGXReplyData();
 
-    DLMS_DATA_TYPE GetValueType();
+    //DLMS_DATA_TYPE GetValueType();
 
-    void SetValueType(DLMS_DATA_TYPE value);
-
-
-    CGXDLMSVariant& GetValue();
+    //void SetValueType(DLMS_DATA_TYPE value);
 
 
-    void SetValue(CGXDLMSVariant& value);
+    CArtVariant& GetValue();
+
+
+    void SetValue(CArtVariant& value);
 
     unsigned long GetReadPosition();
 
@@ -156,9 +157,9 @@ public:
 
     void SetCommand(DLMS_COMMAND value);
 
-    void SetCommandType(unsigned char value);
+   /* void SetCommandType(unsigned char value);
 
-    unsigned char GetCommandType();
+    unsigned char GetCommandType();*/
 
 
     void SetData(CGXByteBuffer& value);
@@ -192,7 +193,7 @@ public:
      *
      * @return Received command.
      */
-    DLMS_COMMAND GetCommand();
+    DLMS_COMMAND& GetCommand();
 
     /**
      * Get received data.
@@ -266,17 +267,17 @@ public:
      */
     void SetGbt(bool value);
 
-    /**
-     * @return Data notification date time.
-     */
-    struct tm* GetTime();
+    ///**
+    // * @return Data notification date time.
+    // */
+    //struct tm* GetTime();
 
 
-    /**
-     * @param time
-     *            Data notification date time.
-     */
-    void SetTime(struct tm* value);
+    ///**
+    // * @param time
+    // *            Data notification date time.
+    // */
+    //void SetTime(struct tm* value);
     
     /**
      * @return Control field value.

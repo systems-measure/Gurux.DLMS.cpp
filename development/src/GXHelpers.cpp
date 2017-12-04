@@ -197,7 +197,7 @@ int GetDate(CGXByteBuffer& buff, CGXDataInfo& info, CGXDLMSVariant& value)
 *            Data info.
 * Returns  Parsed date and time.
 */
-int GetDateTime(CGXByteBuffer& buff, CGXDataInfo& info, CGXDLMSVariant& value)
+int GetDTime(CGXByteBuffer& buff, CGXDataInfo& info, CGXDLMSVariant& value)
 {
     struct tm tm = { 0 };
     unsigned short year;
@@ -336,6 +336,146 @@ int GetDateTime(CGXByteBuffer& buff, CGXDataInfo& info, CGXDLMSVariant& value)
     dt.SetSkip(skip);
     value = dt;
     return 0;
+}
+
+unsigned char GXHelpers::GetDateTime(CArtVariant& buff, CGXDateTime& value)
+{
+	struct tm tm = { 0 };
+	unsigned short year;
+	unsigned short deviation;
+	int ret, ms, status;
+	unsigned char ch;
+	VarInfo v_info;
+	buff.GetVar(v_info);
+	// If there is not enough data available.
+	if ((v_info.vt != DLMS_DATA_TYPE_OCTET_STRING && v_info.vt != DLMS_DATA_TYPE_DATETIME) || v_info.size != 12)
+	{
+		return DLMS_ERROR_CODE_INVALID_PARAMETER;
+	}
+	// Get year.
+	if ((ret = buff.GetUInt16(&year)) != 0)
+	{
+		return ret;
+	}
+	tm.tm_year = year;
+	// Get month
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	tm.tm_mon = ch;
+	// Get day
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	tm.tm_mday = ch;
+	// Skip week day
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	tm.tm_wday = ch;
+	// Get time.
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	tm.tm_hour = ch;
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	tm.tm_min = ch;
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	tm.tm_sec = ch;
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	ms = ch;
+	if (ms != 0xFF)
+	{
+		ms *= 10;
+	}
+	else
+	{
+		ms = 0;
+	}
+	if ((ret = buff.GetUInt16(&deviation)) != 0)
+	{
+		return ret;
+	}
+	if ((ret = buff.GetUInt8(&ch)) != 0)
+	{
+		return ret;
+	}
+	status = ch;
+	value.SetStatus((DLMS_CLOCK_STATUS)status);
+	DATETIME_SKIPS skip = DATETIME_SKIPS_NONE;
+	if (year < 1 || year == 0xFFFF)
+	{
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_YEAR);
+		tm.tm_year = 0;
+	}
+	else
+	{
+		tm.tm_year -= 1900;
+	}
+	if (tm.tm_wday < 0 || tm.tm_wday > 7)
+	{
+		tm.tm_wday = 0;
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_DAYOFWEEK);
+	}
+	value.SetDaylightSavingsBegin(tm.tm_mon == 0xFE);
+	value.SetDaylightSavingsEnd(tm.tm_mon == 0xFD);
+	if (tm.tm_mon < 1 || tm.tm_mon > 12)
+	{
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_MONTH);
+		tm.tm_mon = 0;
+	}
+	else
+	{
+		tm.tm_mon -= 1;
+	}
+	if (tm.tm_mday == -1 || tm.tm_mday == 0 || tm.tm_mday > 31)
+	{
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_DAY);
+		tm.tm_mday = 1;
+	}
+	else if (tm.tm_mday < 0)
+	{
+		tm.tm_mday = CGXDateTime::DaysInMonth(year, tm.tm_mon + 1) + tm.tm_mday + 3;
+	}
+	if (tm.tm_hour < 0 || tm.tm_hour > 24)
+	{
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_HOUR);
+		tm.tm_hour = 0;
+	}
+	if (tm.tm_min < 0 || tm.tm_min > 60)
+	{
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_MINUTE);
+		tm.tm_min = 0;
+	}
+	if (tm.tm_sec < 0 || tm.tm_sec > 60)
+	{
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_SECOND);
+		tm.tm_sec = 0;
+	}
+	// If ms is Zero it's skipped.
+	if (ms < 1 || ms > 1000)
+	{
+		skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_MS);
+		ms = 0;
+	}
+	tm.tm_isdst = (status & DLMS_CLOCK_STATUS_DAYLIGHT_SAVE_ACTIVE) != 0;
+	value.SetValue(tm);
+	value.SetDeviation(deviation);
+	value.SetSkip(skip);
+	return 0;
 }
 
 /**
@@ -1151,7 +1291,7 @@ int GXHelpers::GetData(
         ret = GetDouble(data, info, value);
         break;
     case DLMS_DATA_TYPE_DATETIME:
-        ret = GetDateTime(data, info, value);
+        ret = GetDTime(data, info, value);
         break;
     case DLMS_DATA_TYPE_DATE:
         ret = GetDate(data, info, value);
@@ -1297,23 +1437,23 @@ static int SetDate(CGXByteBuffer& buff, CGXDLMSVariant& value)
 * value
 *            Added value.
 */
-static int SetDateTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
+void  GXHelpers::SetDateTime(CGXByteBuffer& buff, CGXDateTime& value)
 {
     //Add year.
     unsigned short year = 0xFFFF;
-    struct tm dt = value.dateTime.GetValue();
-    DATETIME_SKIPS skip = value.dateTime.GetSkip();
+    struct tm dt = value.GetValue();
+    DATETIME_SKIPS skip = value.GetSkip();
     if (dt.tm_year != -1 && (skip & DATETIME_SKIPS_YEAR) == 0)
     {
         year = 1900 + dt.tm_year;
     }
     buff.SetUInt16(year);
     //Add month
-    if (value.dateTime.GetDaylightSavingsBegin())
+    if (value.GetDaylightSavingsBegin())
     {
         buff.SetUInt8(0xFE);
     }
-    else if (value.dateTime.GetDaylightSavingsEnd())
+    else if (value.GetDaylightSavingsEnd())
     {
         buff.SetUInt8(0xFD);
     }
@@ -1394,18 +1534,246 @@ static int SetDateTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
     else
     {
         // Add devitation.
-        buff.SetUInt16(value.dateTime.GetDeviation());
+        buff.SetUInt16(value.GetDeviation());
     }
     // Add clock_status
     if (dt.tm_isdst)
     {
-        buff.SetUInt8(value.dateTime.GetStatus() | DLMS_CLOCK_STATUS_DAYLIGHT_SAVE_ACTIVE);
+        buff.SetUInt8(value.GetStatus() | DLMS_CLOCK_STATUS_DAYLIGHT_SAVE_ACTIVE);
     }
     else
     {
-        buff.SetUInt8(value.dateTime.GetStatus());
+        buff.SetUInt8(value.GetStatus());
     }
-    return 0;
+}
+
+void GXHelpers::SetDateTime(CArtVariant& buff, unsigned char index, CGXDateTime& value) {
+	//Add year.
+	unsigned short year = 0xFFFF;
+	struct tm dt = value.GetValue();
+	DATETIME_SKIPS skip = value.GetSkip();
+	if (dt.tm_year != -1 && (skip & DATETIME_SKIPS_YEAR) == 0)
+	{
+		year = 1900 + dt.tm_year;
+	}
+	buff.SetUInt16(index, year);
+	index += 2;
+	//Add month
+	if (value.GetDaylightSavingsBegin())
+	{
+		buff.SetUInt8(index, 0xFE);
+	}
+	else if (value.GetDaylightSavingsEnd())
+	{
+		buff.SetUInt8(index, 0xFD);
+	}
+	else if (dt.tm_mon != -1 && (skip & DATETIME_SKIPS_MONTH) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_mon + 1);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add day
+	if (dt.tm_mday != -1 && (skip & DATETIME_SKIPS_DAY) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_mday);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add week day
+	if ((skip & DATETIME_SKIPS_DAYOFWEEK) != 0)
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	else
+	{
+		int val = dt.tm_wday + 1;
+		//If Sunday.
+		if (val == 1)
+		{
+			val = 8;
+		}
+		buff.SetUInt8(index, val - 1);
+	}
+	index += 1;
+	//Add Hours
+	if (dt.tm_hour != -1 && (skip & DATETIME_SKIPS_HOUR) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_hour);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add Minutes
+	if (dt.tm_min != -1 && (skip & DATETIME_SKIPS_MINUTE) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_min);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add seconds.
+	if (dt.tm_sec != -1 && (skip & DATETIME_SKIPS_SECOND) == 0)
+	{
+		buff.SetUInt8(index, dt.tm_sec);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0xFF);
+	}
+	index += 1;
+	//Add ms.
+	if ((skip & DATETIME_SKIPS_MS) != 0)
+	{
+		// Hundredths of second is not used.
+		buff.SetUInt8(index, 0xFF);
+	}
+	else
+	{
+		buff.SetUInt8(index, 0);
+	}
+	index += 1;
+	// devitation not used.
+	if ((skip & DATETIME_SKIPS_DEVITATION) != 0)
+	{
+		buff.SetUInt16(index, 0x8000);
+	}
+	else
+	{
+		// Add devitation.
+		buff.SetUInt16(index, value.GetDeviation());
+	}
+	index += 2;
+	// Add clock_status
+	if (dt.tm_isdst)
+	{
+		buff.SetUInt8(index, value.GetStatus() | DLMS_CLOCK_STATUS_DAYLIGHT_SAVE_ACTIVE);
+	}
+	else
+	{
+		buff.SetUInt8(index, value.GetStatus());
+	}
+}
+
+static int SetDTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
+{
+	//Add year.
+	unsigned short year = 0xFFFF;
+	struct tm dt = value.dateTime.GetValue();
+	DATETIME_SKIPS skip = value.dateTime.GetSkip();
+	if (dt.tm_year != -1 && (skip & DATETIME_SKIPS_YEAR) == 0)
+	{
+		year = 1900 + dt.tm_year;
+	}
+	buff.SetUInt16(year);
+	//Add month
+	if (value.dateTime.GetDaylightSavingsBegin())
+	{
+		buff.SetUInt8(0xFE);
+	}
+	else if (value.dateTime.GetDaylightSavingsEnd())
+	{
+		buff.SetUInt8(0xFD);
+	}
+	else if (dt.tm_mon != -1 && (skip & DATETIME_SKIPS_MONTH) == 0)
+	{
+		buff.SetUInt8(dt.tm_mon + 1);
+	}
+	else
+	{
+		buff.SetUInt8(0xFF);
+	}
+	//Add day
+	if (dt.tm_mday != -1 && (skip & DATETIME_SKIPS_DAY) == 0)
+	{
+		buff.SetUInt8(dt.tm_mday);
+	}
+	else
+	{
+		buff.SetUInt8(0xFF);
+	}
+	//Add week day
+	if ((skip & DATETIME_SKIPS_DAYOFWEEK) != 0)
+	{
+		buff.SetUInt8(0xFF);
+	}
+	else
+	{
+		int val = dt.tm_wday + 1;
+		//If Sunday.
+		if (val == 1)
+		{
+			val = 8;
+		}
+		buff.SetUInt8(val - 1);
+	}
+	//Add Hours
+	if (dt.tm_hour != -1 && (skip & DATETIME_SKIPS_HOUR) == 0)
+	{
+		buff.SetUInt8(dt.tm_hour);
+	}
+	else
+	{
+		buff.SetUInt8(0xFF);
+	}
+	//Add Minutes
+	if (dt.tm_min != -1 && (skip & DATETIME_SKIPS_MINUTE) == 0)
+	{
+		buff.SetUInt8(dt.tm_min);
+	}
+	else
+	{
+		buff.SetUInt8(0xFF);
+	}
+	//Add seconds.
+	if (dt.tm_sec != -1 && (skip & DATETIME_SKIPS_SECOND) == 0)
+	{
+		buff.SetUInt8(dt.tm_sec);
+	}
+	else
+	{
+		buff.SetUInt8(0xFF);
+	}
+	//Add ms.
+	if ((skip & DATETIME_SKIPS_MS) != 0)
+	{
+		// Hundredths of second is not used.
+		buff.SetUInt8(0xFF);
+	}
+	else
+	{
+		buff.SetUInt8(0);
+	}
+	// devitation not used.
+	if ((skip & DATETIME_SKIPS_DEVITATION) != 0)
+	{
+		buff.SetUInt16(0x8000);
+	}
+	else
+	{
+		// Add devitation.
+		buff.SetUInt16(value.dateTime.GetDeviation());
+	}
+	// Add clock_status
+	if (dt.tm_isdst)
+	{
+		buff.SetUInt8(value.dateTime.GetStatus() | DLMS_CLOCK_STATUS_DAYLIGHT_SAVE_ACTIVE);
+	}
+	else
+	{
+		buff.SetUInt8(value.dateTime.GetStatus());
+	}
+	return 0;
 }
 
 /**
@@ -1504,21 +1872,33 @@ static int SetUtfString(CGXByteBuffer& buff, CGXDLMSVariant& value)
     return 0;
 }
 
-int GXHelpers::SetLogicalName(const char* name, CGXDLMSVariant& value)
+int GXHelpers::SetLogicalName(const char* name, CArtVariant& value)
 {
-    unsigned char ln[6];
-    int ret = SetLogicalName(name, ln);
-    if (ret == 0)
-    {
-        value.Clear();
-        value.Add(ln, 6);
-    }
-    return ret;
+	value.Clear();
+	value.Reserve(6);
+    return SetLogicalName(name, value.byteArr);
 }
 
 int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
 {
-    int ret;
+	uint8_t i = 0;
+	uint8_t pos = 0;
+	uint8_t char_pos = 0;
+	memset(ln, 0, 6);
+	while (i < 6 && name[pos] != '\0') {
+		while (name[pos] != '.' && name[pos] != '\0') {
+			while (name[pos] != num_codes[char_pos]) {
+				++char_pos;
+			}
+			ln[i] *= 10;
+			ln[i] += char_pos;
+			++pos;
+			char_pos = 0;
+		}
+		++pos;
+		++i;
+	}
+   /* int ret;
     int v1, v2, v3, v4, v5, v6;
 #if _MSC_VER > 1000
     ret = sscanf_s(name, "%u.%u.%u.%u.%u.%u", &v1, &v2, &v3, &v4, &v5, &v6);
@@ -1534,7 +1914,7 @@ int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
     ln[2] = (unsigned char)v3;
     ln[3] = (unsigned char)v4;
     ln[4] = (unsigned char)v5;
-    ln[5] = (unsigned char)v6;
+    ln[5] = (unsigned char)v6;*/
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -1695,7 +2075,7 @@ int GXHelpers::SetData(CGXByteBuffer& buff, DLMS_DATA_TYPE type, CGXDLMSVariant&
         {
             // Date an calendar are always written as date time.
             buff.SetUInt8(12);
-            SetDateTime(buff, value);
+            SetDTime(buff, value);
         }
         else
         {
@@ -1714,7 +2094,7 @@ int GXHelpers::SetData(CGXByteBuffer& buff, DLMS_DATA_TYPE type, CGXDLMSVariant&
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
         break;
     case DLMS_DATA_TYPE_DATETIME:
-        return SetDateTime(buff, value);
+        return SetDTime(buff, value);
         break;
     case DLMS_DATA_TYPE_DATE:
         return SetDate(buff, value);

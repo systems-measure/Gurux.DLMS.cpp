@@ -41,12 +41,6 @@ CGXDLMSMBusMasterPortSetup::CGXDLMSMBusMasterPortSetup() : CGXDLMSObject(DLMS_OB
     m_CommSpeed = DLMS_BAUD_RATE_2400;
 }
 
-//SN Constructor.
-CGXDLMSMBusMasterPortSetup::CGXDLMSMBusMasterPortSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_MASTER_PORT_SETUP, sn)
-{
-    m_CommSpeed = DLMS_BAUD_RATE_2400;
-}
-
 //LN Constructor.
 CGXDLMSMBusMasterPortSetup::CGXDLMSMBusMasterPortSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_MASTER_PORT_SETUP, ln)
 {
@@ -80,11 +74,11 @@ int CGXDLMSMBusMasterPortSetup::GetMethodCount()
 
 void CGXDLMSMBusMasterPortSetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
-    values.push_back(CGXDLMSConverter::ToString(m_CommSpeed));
+    values.push_back(CGXDLMSConverter::ToString(m_CommSpeed));*/
 }
 
 void CGXDLMSMBusMasterPortSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -101,7 +95,7 @@ void CGXDLMSMBusMasterPortSetup::GetAttributeIndexToRead(std::vector<int>& attri
     }
 }
 
-int CGXDLMSMBusMasterPortSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusMasterPortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -122,17 +116,18 @@ int CGXDLMSMBusMasterPortSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValue
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+//		e.SetByteArray(true);
+		CGXByteBuffer data;
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(m_CommSpeed);
+        //e.SetValue(m_CommSpeed);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -143,11 +138,11 @@ int CGXDLMSMBusMasterPortSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValue
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        m_CommSpeed = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
+        //m_CommSpeed = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
     }
     else
     {

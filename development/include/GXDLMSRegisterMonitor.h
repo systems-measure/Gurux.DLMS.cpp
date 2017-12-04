@@ -62,14 +62,6 @@ public:
     */
     CGXDLMSRegisterMonitor(const char* ln);
 
-    /**
-     Constructor.
-
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSRegisterMonitor(int sn);
-
     std::vector<CGXDLMSVariant> GetThresholds();
 
     void SetThresholds(std::vector<CGXDLMSVariant> value);
@@ -92,7 +84,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     /*
      * Returns value of given attribute.

@@ -37,6 +37,7 @@
 #include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXBytebuffer.h"
+#include "Helper\Helper.h"
 
 
 #define MAX_SERVER_ADDR_SIZE    4
@@ -325,13 +326,13 @@ int CGXDLMS::GetHdlcFrame(
 
     // Add BOP
     reply.SetUInt8(HDLC_FRAME_START_END);
-    frameSize = settings.GetLimits().GetMaxInfoTX().ToInteger();
+    frameSize = settings.GetLimits().GetMaxInfoTX();
     // If no data
     if (data == NULL || data->GetSize() == 0)
     {
         reply.SetUInt8(0xA0);
     }
-    else if (data->GetSize() - data->GetPosition() <= frameSize)
+    else if (data->GetSize() - data->GetPosition() <= frameSize - (9 + primaryAddress.GetSize() + secondaryAddress.GetSize()))
     {
         len = data->GetSize() - data->GetPosition();
         // Is last packet.
@@ -339,7 +340,7 @@ int CGXDLMS::GetHdlcFrame(
     }
     else
     {
-        len = frameSize;
+        len = frameSize - 2;
         // More data to left.
         reply.SetUInt8(0xA8 | ((len >> 8) & 0x7));
     }
@@ -350,9 +351,14 @@ int CGXDLMS::GetHdlcFrame(
             secondaryAddress.GetSize() + len));
     }
     else
-    {
-        reply.SetUInt8((unsigned char)(7 + primaryAddress.GetSize() +
-            secondaryAddress.GetSize() + len));
+    { 
+		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
+			reply.SetUInt8((unsigned char)((frameSize - 2) & 0xFF));
+			len = (frameSize ) - ( 9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
+		}
+		else {
+			reply.SetUInt8((unsigned char)(len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize()));
+		}
     }
     // Add primary address.
     reply.Set(&primaryAddress);
@@ -648,11 +654,10 @@ int CGXDLMS::GetLNPdu(
             {
                 // Data is send in octet string. Remove data type.
                 int pos = reply.GetSize();
-                CGXDLMSVariant tmp = *p.GetTime();
-                if ((ret = GXHelpers::SetData(reply, DLMS_DATA_TYPE_OCTET_STRING, tmp)) != 0)
-                {
-                    return ret;
-                }
+                CGXDateTime tmp(*p.GetTime());
+				reply.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+				reply.SetUInt8(12);
+				GXHelpers::SetDateTime(reply, tmp);
                 reply.Move(pos + 1, pos, reply.GetSize() - pos - 1);
             }
         }
@@ -712,7 +717,7 @@ int CGXDLMS::GetLNPdu(
                     len -= GXHelpers::GetObjectCountSizeInBytes(len);
                 }
                 GXHelpers::SetObjectCount(len, reply);
-                reply.Set(p.GetData(), 0, len);
+                reply.Set(p.GetData(), p.GetData()->GetPosition(), len);
             }
         }
         // Add data that fits to one block.
@@ -1512,7 +1517,7 @@ int CGXDLMS::HandleDataNotification(
     }
     // Get date time.
     CGXDataInfo info;
-    reply.SetTime(NULL);
+    //reply.SetTime(NULL);
     unsigned char len;
     if ((ret = reply.GetData().GetUInt8(&len)) != 0)
     {
@@ -1520,14 +1525,11 @@ int CGXDLMS::HandleDataNotification(
     }
     if (len != 0)
     {
-        CGXByteBuffer tmp;
-        CGXDLMSVariant t;
-        tmp.Set(&reply.GetData(), reply.GetData().GetPosition(), len);
-        if ((ret = CGXDLMSClient::ChangeType(tmp, DLMS_DATA_TYPE_DATETIME, t)) != 0)
-        {
-            return ret;
-        }
-        reply.SetTime(&t.dateTime.GetValue());
+        CArtVariant tmp;
+        CGXDateTime t;
+        tmp.Set(reply.GetData().GetData() + reply.GetData().GetPosition(), len);
+		GXHelpers::GetDateTime(tmp, t);
+        //reply.SetTime(&t.GetValue());
     }
     if ((ret = GetDataFromBlock(reply.GetData(), start)) != 0)
     {
@@ -2448,27 +2450,23 @@ int CGXDLMS::GetAddressBytes(unsigned long value, CGXByteBuffer& bytes)
 
 int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
 {
-    int ret;
-    CGXDataInfo info;
-    if (reply.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-    {
-        info.SetType(DLMS_DATA_TYPE_ARRAY);
-        info.SetCount(reply.GetTotalCount());
-        info.SetIndex(reply.GetCount());
-    }
-    CGXDLMSVariant value;
+    int ret; 
+    CArtVariant value;
     int index = reply.GetData().GetPosition();
     reply.GetData().SetPosition(reply.GetReadPosition());
-    if ((ret = GXHelpers::GetData(reply.GetData(), info, value)) != 0)
+    if ((ret = GXHelpers::GetDataCA(reply.GetData(), value)) != 0)
     {
         return ret;
     }
     // If new data.
-    if (value.vt != DLMS_DATA_TYPE_NONE)
+	VarInfo v_info;
+	value.GetVar(v_info);
+	value.SetPosition(0);
+    if (v_info.vt != DLMS_DATA_TYPE_NONE)
     {
-        if (value.vt != DLMS_DATA_TYPE_ARRAY)
+        if (v_info.vt != DLMS_DATA_TYPE_ARRAY)
         {
-            reply.SetValueType(info.GetType());
+            //reply.SetValueType(v_info.vt);
             reply.SetValue(value);
             reply.SetTotalCount(0);
             if (reply.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
@@ -2478,26 +2476,37 @@ int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
         }
         else
         {
-            if (value.Arr.size() != 0)
+            if (v_info.size != 0)
             {
-                if (reply.GetValue().vt == DLMS_DATA_TYPE_NONE)
+				VarInfo r_info;
+				reply.GetValue().GetVar(r_info);
+                if (r_info.vt == DLMS_DATA_TYPE_NONE)
                 {
                     reply.SetValue(value);
                 }
                 else
                 {
-                    CGXDLMSVariant tmp = reply.GetValue();
-                    tmp.Arr.insert(tmp.Arr.end(), value.Arr.begin(), value.Arr.end());
-                    reply.SetValue(tmp);
+					if (r_info.vt != DLMS_DATA_TYPE_ARRAY) {
+						CArtVariant new_value;
+						new_value.Reserve(value.size + reply.GetValue().size);
+						new_value.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+						new_value.SetUInt8(v_info.size + 1);
+						new_value.Set(reply.GetValue().byteArr, reply.GetValue().size);
+						new_value.Set(value.GetCurPtr(), value.size - value.position);
+						reply.SetValue(new_value);
+					}
+					else {
+						*(reply.GetValue().GetCurPtr() - 1) += v_info.size;
+						reply.GetValue().Set(value.GetCurPtr(), value.size - value.position);
+					}
                 }
             }
             reply.SetReadPosition(reply.GetData().GetPosition());
             // Element count.
-            reply.SetTotalCount(info.GetCount());
+            reply.SetTotalCount(v_info.size);
         }
     }
-    else if (info.IsCompleate()
-        && reply.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
+    else if (reply.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
     {
         // If last item is null. This is a special case.
         reply.SetReadPosition(reply.GetData().GetPosition());
@@ -2506,7 +2515,6 @@ int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
 
     // If last data frame of the data block is read.
     if (reply.GetCommand() != DLMS_COMMAND_DATA_NOTIFICATION
-        && info.IsCompleate()
         && reply.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE)
     {
         // If all blocks are read.

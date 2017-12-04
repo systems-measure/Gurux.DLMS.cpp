@@ -40,11 +40,10 @@ CGXByteBuffer::CGXByteBuffer()
 //Constructor.
 CGXByteBuffer::CGXByteBuffer(int capacity)
 {
-    m_Capacity = 0;
-    m_Data = NULL;
+    m_Capacity = capacity;
+    m_Data = (unsigned char*)malloc(m_Capacity);
     m_Position = 0;
     m_Size = 0;
-    Capacity(capacity);
 }
 
 //Copy constructor.
@@ -132,6 +131,15 @@ void CGXByteBuffer::Capacity(unsigned long capacity)
 unsigned long CGXByteBuffer::Capacity()
 {
     return m_Capacity;
+}
+
+void CGXByteBuffer::Reserve(unsigned long capacity) {
+	if (m_Data == NULL) {
+		m_Capacity = capacity;
+		m_Data = (unsigned char*)malloc(m_Capacity);
+		m_Position = 0;
+		m_Size = 0;
+	}
 }
 
 // Fill buffer it with zeros.
@@ -253,7 +261,7 @@ void CGXByteBuffer::SetDouble(double value)
         m_Capacity += VECTOR_CAPACITY;
         m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
-    m_Data[m_Size] = tmp.b[7];
+    m_Data[m_Size]	   = tmp.b[7];
     m_Data[m_Size + 1] = tmp.b[6];
     m_Data[m_Size + 2] = tmp.b[5];
     m_Data[m_Size + 3] = tmp.b[4];
@@ -580,7 +588,7 @@ int CGXByteBuffer::Get(unsigned char* value, unsigned long count)
     return 0;
 }
 
-unsigned char* CGXByteBuffer::GetData()
+unsigned char*& CGXByteBuffer::GetData()
 {
     return m_Data;
 }

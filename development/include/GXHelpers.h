@@ -39,6 +39,8 @@
 #include "GXDLMSVariant.h"
 #include "GXDataInfo.h"
 
+const char num_codes[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', };
+
 class GXHelpers
 {
     /*
@@ -71,30 +73,69 @@ public:
 
 	static int GetDataCA(CGXByteBuffer& data, CArtVariant& value);
 
+	static void SetDateTime(CGXByteBuffer& buff, CGXDateTime& value);
+
+	static void SetDateTime(CArtVariant& buff, unsigned char index, CGXDateTime& value);
+
+	static unsigned char GetDateTime(CArtVariant& buff, CGXDateTime& value);
+
+	static void GetNum(unsigned char& num, char* ln, unsigned char& size) {
+		if (num >= 100) {
+			*(ln + size) = (num_codes[num / 100]);
+			++size;
+		}
+		if (num >= 10) {
+			*(ln + size) = (num_codes[(num / 10) % 10]);
+			++size;
+		}
+		*(ln + size) = (num_codes[num % 10]);
+		++size;
+	}
+
     static void GetLogicalName(unsigned char* buff, std::string& ln)
     {
-        int dataSize;
-        char tmp[25];
+        
+		ln.clear();
         //If Script Action target is not set it is null
         if (buff == NULL)
         {
-            ln.clear();
             ln.append("0.0.0.0.0.0");
         }
-        else
-        {
-#if _MSC_VER > 1000
-            dataSize = sprintf_s(tmp, 25, "%d.%d.%d.%d.%d.%d", buff[0], buff[1], buff[2], buff[3], buff[4], buff[5]) + 1;
-#else
-            dataSize = sprintf(tmp, "%d.%d.%d.%d.%d.%d", buff[0], buff[1], buff[2], buff[3], buff[4], buff[5]) + 1;
-#endif
-            if (dataSize > 25)
-            {
-                assert(0);
-            }
-            ln.clear();
-            ln.append(tmp, dataSize - 1);
-        }
+		else
+		{
+			unsigned char dataSize = 0;
+			char tmp[23];
+			GetNum(buff[0], tmp, dataSize);
+			tmp[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[1], tmp, dataSize);
+			tmp[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[2], tmp, dataSize);
+			tmp[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[3], tmp, dataSize);
+			tmp[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[4], tmp, dataSize);
+			tmp[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[5], tmp, dataSize);
+			ln.append(tmp, dataSize);
+		}
+
+//#if _MSC_VER > 1000
+//            dataSize = sprintf_s(tmp, 25, "%d.%d.%d.%d.%d.%d", buff[0], buff[1], buff[2], buff[3], buff[4], buff[5]) + 1;
+//#else
+//           dataSize = sprintf(tmp, "%d.%d.%d.%d.%d.%d", buff[0], buff[1], buff[2], buff[3], buff[4], buff[5]) + 1;
+//#endif
+//            if (dataSize > 25)
+//            {
+//                assert(0);
+//            }
+//            ln.clear();
+//            ln.append(tmp, dataSize - 1);
+//        }
     }
 
     static void GetLogicalName(CGXByteBuffer& buff, std::string& ln)
@@ -112,7 +153,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////
     //Set logical name from std::string.
     /////////////////////////////////////////////////////////////////////////////
-    static int SetLogicalName(const char* name, CGXDLMSVariant& value);
+    static int SetLogicalName(const char* name, CArtVariant& value);
 
     /////////////////////////////////////////////////////////////////////////////
     //Set logical name from std::string.

@@ -67,9 +67,9 @@ public:
 
 	unsigned char* FindByLN(const char* ln);
 
-    CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, CGXByteBuffer& ln);
+	unsigned char* FindByLN(CGXByteBuffer& ln);
 
-    CGXDLMSObject* FindBySN(unsigned short sn);
+    CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, CGXByteBuffer& ln);
 
 	std::vector<CGXDLMSObject*>& GetDlmsObj();
 
@@ -99,7 +99,6 @@ public:
 
 	void FreeConstructedObj();
 
-    std::string ToString();
 };
 
 #endif //GXDLMSOBJECTCOLLECTION_H

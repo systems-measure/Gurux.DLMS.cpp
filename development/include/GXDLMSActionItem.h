@@ -40,7 +40,7 @@ class CGXDLMSActionItem
 {
     friend class CGXDLMSActionSet;
     std::string m_LogicalName;
-    int m_ScriptSelector;
+    unsigned short m_ScriptSelector;
 public:
     //Constructor.
     CGXDLMSActionItem();
@@ -54,9 +54,9 @@ public:
 
     void SetLogicalName(std::string value);
 
-    int GetScriptSelector();
+	unsigned short GetScriptSelector();
 
-    void SetScriptSelector(int value);
+    void SetScriptSelector(unsigned short value);
 
     std::string ToString();
 };

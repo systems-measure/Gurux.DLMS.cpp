@@ -40,12 +40,6 @@ CGXDLMSMBusSlavePortSetup::CGXDLMSMBusSlavePortSetup() : CGXDLMSObject(DLMS_OBJE
 {
 }
 
-//SN Constructor.
-CGXDLMSMBusSlavePortSetup::CGXDLMSMBusSlavePortSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSMBusSlavePortSetup::CGXDLMSMBusSlavePortSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP, ln)
 {
@@ -115,14 +109,14 @@ int CGXDLMSMBusSlavePortSetup::GetMethodCount()
 
 void CGXDLMSMBusSlavePortSetup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+   /* values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
     values.push_back(CGXDLMSConverter::ToString(m_DefaultBaud));
     values.push_back(CGXDLMSConverter::ToString(m_AvailableBaud));
     values.push_back(CGXDLMSConverter::ToString(m_AddressState));
-    values.push_back(CGXDLMSVariant(m_BusAddress).ToString());
+    values.push_back(CGXDLMSVariant(m_BusAddress).ToString());*/
 }
 
 void CGXDLMSMBusSlavePortSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -154,7 +148,7 @@ void CGXDLMSMBusSlavePortSetup::GetAttributeIndexToRead(std::vector<int>& attrib
     }
 }
 
-int CGXDLMSMBusSlavePortSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusSlavePortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -190,28 +184,29 @@ int CGXDLMSMBusSlavePortSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueE
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+//		e.SetByteArray(true);
+		CGXByteBuffer data;
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 2)
     {
-        e.SetValue(m_DefaultBaud);
+        //e.SetValue(m_DefaultBaud);
     }
     else if (e.GetIndex() == 3)
     {
-        e.SetValue(m_AvailableBaud);
+        //e.SetValue(m_AvailableBaud);
     }
     else if (e.GetIndex() == 4)
     {
-        e.SetValue(m_AddressState);
+        //e.SetValue(m_AddressState);
     }
     else if (e.GetIndex() == 5)
     {
-        e.SetValue(m_BusAddress);
+       // e.SetValue(m_BusAddress);
     }
     else
     {
@@ -225,23 +220,23 @@ int CGXDLMSMBusSlavePortSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueE
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        m_DefaultBaud = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
+       // m_DefaultBaud = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 3)
     {
-        m_AvailableBaud = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
+       // m_AvailableBaud = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 4)
     {
-        m_AddressState = (DLMS_ADDRESS_STATE)e.GetValue().ToInteger();
+       // m_AddressState = (DLMS_ADDRESS_STATE)e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 5)
     {
-        m_BusAddress = e.GetValue().ToInteger();
+       // m_BusAddress = e.GetValue().ToInteger();
     }
     else
     {
