@@ -36,7 +36,8 @@
 #include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXDLMSAssociationLogicalName.h"
 #include "../include/GXDLMSServer.h"
-#include "memory\memory_srv.h"
+
+#include "converter_mpro\converter_mpro.h"
 
 void CGXDLMSAssociationLogicalName::Init()
 {
