@@ -716,8 +716,10 @@ int CGXDLMS::GetLNPdu(
                     }
                     len -= GXHelpers::GetObjectCountSizeInBytes(len);
                 }
-                GXHelpers::SetObjectCount(len, reply);
-                reply.Set(p.GetData(), p.GetData()->GetPosition(), len);
+                if (p.GetData()) {
+                    GXHelpers::SetObjectCount(len, reply);
+                    reply.Set(p.GetData(), p.GetData()->GetPosition(), len);
+                }
             }
         }
         // Add data that fits to one block.
