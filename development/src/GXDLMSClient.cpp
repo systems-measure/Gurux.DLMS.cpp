@@ -1664,7 +1664,11 @@ int CGXDLMSClient::GetServerAddress(unsigned long serialNumber,
 
 int  CGXDLMSClient::GetServerAddress(unsigned long logicalAddress,
     unsigned long physicalAddress, unsigned char addressSize)
-{
+{	
+	if(addressSize == 1)
+	{		
+		return logicalAddress & 0x7F;
+	}
     if (addressSize < 4 && physicalAddress < 0x80
         && logicalAddress < 0x80)
     {
