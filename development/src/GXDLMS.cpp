@@ -43,7 +43,6 @@
 #define MAX_SERVER_ADDR_SIZE    4
 #define MAX_CLIENT_ADDR_SIZE    1
 
-#define DEFAULT_PHY_ADDRESS     16
 
 
 const unsigned char CIPHERING_HEADER_SIZE = 7 + 12 + 3;
@@ -210,16 +209,16 @@ int CGXDLMS::ReceiverReady(
    // }*/
    // if (settings.GetUseLogicalNameReferencing())
    // {
-   //    
+   //
    // }
    // /*else
    // {
    //     bb.SetUInt16((unsigned short)settings.GetBlockIndex());
    // }*/
-   // 
+   //
    // if (settings.GetUseLogicalNameReferencing())
    // {
-   //     
+   //
    // }
    // /*else
    // {
@@ -351,7 +350,7 @@ int CGXDLMS::GetHdlcFrame(
             secondaryAddress.GetSize() + len));
     }
     else
-    { 
+    {
 		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
 			reply.SetUInt8((unsigned char)((frameSize - 2) & 0xFF));
 			len = (frameSize ) - ( 9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
@@ -1108,11 +1107,11 @@ int CGXDLMS::GetHdlcData(
     {
         return ret;
     }
-    
+
     if((frame & 0xA0) != 0xA0) {
         return DLMS_ERROR_CODE_UNACCEPTABLE_FRAME;
     }
-    
+
     if ((frame & 0xF0) != 0xA0)
     {
         // If same data.
@@ -1132,7 +1131,7 @@ int CGXDLMS::GetHdlcData(
     if (reply.GetSize() - reply.GetPosition() + 1 < frameLen)
     {
         return DLMS_ERROR_CODE_UNACCEPTABLE_FRAME;
-        /*        
+        /*
         data.SetComplete(false);
         reply.SetPosition(packetStartID);
         // Not enough data to parse;
@@ -1245,8 +1244,8 @@ int CGXDLMS::GetHdlcData(
         }
         else if (tmp == HDLC_CONTROL_FRAME_RECEIVE_READY)
         {
-            // Get next frame.                        
-            data.SetCommand((DLMS_COMMAND)frame);            
+            // Get next frame.
+            data.SetCommand((DLMS_COMMAND)frame);
         }
         // Get Eop if there is no data.
         if (reply.GetPosition() == packetStartID + frameLen + 1)
@@ -1305,7 +1304,7 @@ int CGXDLMS::GetHDLCAddress(
         }
     }
     addrSize = size;
-    
+
     if (size == 1)
     {
         if ((ret = buff.GetUInt8(&ch)) != 0)
@@ -1319,7 +1318,7 @@ int CGXDLMS::GetHDLCAddress(
         if ((ret = buff.GetUInt16(&s)) != 0)
         {
             return ret;
-        }        
+        }
         address = ((s & 0xFE) >> 1) | ((s & 0xFE00) >> 2);
     }
     else if (size == 4)
@@ -1327,7 +1326,7 @@ int CGXDLMS::GetHDLCAddress(
         if ((ret = buff.GetUInt32(&l)) != 0)
         {
             return ret;
-        }        
+        }
         address = ((l & 0xFE) >> 1) | ((l & 0xFE00) >> 2)
             | ((l & 0xFE0000) >> 3) | ((l & 0xFE000000) >> 4);
     }
@@ -1379,16 +1378,7 @@ int CGXDLMS::CheckHdlcAddress(
         if(srcAddrSize > MAX_CLIENT_ADDR_SIZE) {
             return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
         }
-        
-        uint16_t srvPhysicalAddr = (target & 0x7F);    
-        uint16_t srvLogicalAddr = (target & 0x3F80) >> 7;    
-        if(srvPhysicalAddr != DEFAULT_PHY_ADDRESS) {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        if(srvLogicalAddr != 1) {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        
+
         // Check that server addresses match.
         if (settings.GetServerAddress() != 0 && settings.GetServerAddress() != target)
         {
@@ -2061,7 +2051,7 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
         return DLMS_ERROR_CODE_FALSE;
     }
     data.SetControlField(frame);
-        
+
     GetDataFromFrame(reply, data);
     // If keepalive or get next frame request.
     if (frame != 0x13 && (frame & 0x1) != 0)
@@ -2069,7 +2059,7 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
         if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC && data.GetData().GetSize() != 0)
         {
             if (reply.GetPosition() != reply.GetSize()) {
-                unsigned long newPos = ((reply.GetPosition() + 3) > reply.GetSize())?reply.GetSize():(reply.GetPosition() + 3);                                
+                unsigned long newPos = ((reply.GetPosition() + 3) > reply.GetSize())?reply.GetSize():(reply.GetPosition() + 3);
                 reply.SetPosition(newPos);
             }
         }
@@ -2514,7 +2504,7 @@ int CGXDLMS::GetAddressBytes(unsigned long value, CGXByteBuffer& bytes)
 
 int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
 {
-    int ret; 
+    int ret;
     CArtVariant value;
     int index = reply.GetData().GetPosition();
     reply.GetData().SetPosition(reply.GetReadPosition());
