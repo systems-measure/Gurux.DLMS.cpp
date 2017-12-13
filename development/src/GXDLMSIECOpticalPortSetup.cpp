@@ -49,12 +49,6 @@ CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup() : CGXDLMSObject(DLMS_OB
     Init();
 }
 
-//SN Constructor.
-CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP, sn)
-{
-    Init();
-}
-
 //LN Constructor.
 CGXDLMSIECOpticalPortSetup::CGXDLMSIECOpticalPortSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP, ln)
 {
@@ -210,7 +204,7 @@ void CGXDLMSIECOpticalPortSetup::GetAttributeIndexToRead(std::vector<int>& attri
     }
 }
 
-int CGXDLMSIECOpticalPortSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSIECOpticalPortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

@@ -63,16 +63,6 @@ CGXDLMSAutoAnswer::CGXDLMSAutoAnswer(const char* ln) : CGXDLMSObject(DLMS_OBJECT
     Init();
 }
 
-/**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSAutoAnswer::CGXDLMSAutoAnswer(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_ANSWER, sn)
-{
-    Init();
-}
 
 AUTO_CONNECT_MODE CGXDLMSAutoAnswer::GetMode()
 {
@@ -212,7 +202,7 @@ void CGXDLMSAutoAnswer::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSAutoAnswer::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSAutoAnswer::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

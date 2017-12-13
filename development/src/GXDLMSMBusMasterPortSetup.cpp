@@ -41,12 +41,6 @@ CGXDLMSMBusMasterPortSetup::CGXDLMSMBusMasterPortSetup() : CGXDLMSObject(DLMS_OB
     m_CommSpeed = DLMS_BAUD_RATE_2400;
 }
 
-//SN Constructor.
-CGXDLMSMBusMasterPortSetup::CGXDLMSMBusMasterPortSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_MASTER_PORT_SETUP, sn)
-{
-    m_CommSpeed = DLMS_BAUD_RATE_2400;
-}
-
 //LN Constructor.
 CGXDLMSMBusMasterPortSetup::CGXDLMSMBusMasterPortSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_MASTER_PORT_SETUP, ln)
 {
@@ -101,7 +95,7 @@ void CGXDLMSMBusMasterPortSetup::GetAttributeIndexToRead(std::vector<int>& attri
     }
 }
 
-int CGXDLMSMBusMasterPortSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusMasterPortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

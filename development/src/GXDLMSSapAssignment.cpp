@@ -53,15 +53,6 @@ CGXDLMSSapAssignment::CGXDLMSSapAssignment(const char* ln) : CGXDLMSObject(DLMS_
 {
 }
 
-/**
- Constructor.
- @param sn Short Name of the object.
-*/
-CGXDLMSSapAssignment::CGXDLMSSapAssignment(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT, sn)
-{
-
-}
-
 std::map<int, std::string >& CGXDLMSSapAssignment::GetSapAssignmentList()
 {
     return m_SapAssignmentList;
@@ -122,7 +113,7 @@ void CGXDLMSSapAssignment::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSSapAssignment::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSSapAssignment::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

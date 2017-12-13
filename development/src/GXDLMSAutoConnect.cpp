@@ -49,12 +49,6 @@ CGXDLMSAutoConnect::CGXDLMSAutoConnect() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_C
     Init();
 }
 
-//SN Constructor.
-CGXDLMSAutoConnect::CGXDLMSAutoConnect(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, sn)
-{
-    Init();
-}
-
 //LN Constructor.
 CGXDLMSAutoConnect::CGXDLMSAutoConnect(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, ln)
 {
@@ -198,7 +192,7 @@ void CGXDLMSAutoConnect::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSAutoConnect::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSAutoConnect::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

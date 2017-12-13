@@ -75,16 +75,6 @@ CGXDLMSModemConfiguration::CGXDLMSModemConfiguration(const char* ln) : CGXDLMSOb
     Init();
 }
 
-/**
- Constructor.
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSModemConfiguration::CGXDLMSModemConfiguration(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MODEM_CONFIGURATION, sn)
-{
-    Init();
-}
-
 DLMS_BAUD_RATE CGXDLMSModemConfiguration::GetCommunicationSpeed()
 {
     return m_CommunicationSpeed;
@@ -190,7 +180,7 @@ void CGXDLMSModemConfiguration::GetAttributeIndexToRead(std::vector<int>& attrib
     }
 }
 
-int CGXDLMSModemConfiguration::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSModemConfiguration::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

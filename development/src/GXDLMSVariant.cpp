@@ -168,7 +168,7 @@ bool  CArtVariant::IncreasePosition(unsigned short diff) {
 }
 
 bool CArtVariant::DecreasePosition(unsigned short diff) {
-	if (position - diff < 0) {
+	if ((long long)position - diff < 0) {
 		return false;
 	}
 	position -= diff;
@@ -274,7 +274,7 @@ unsigned char CArtVariant::GetUInt8(unsigned char* value) {
 }
 
 unsigned char CArtVariant::GetUInt16(unsigned short* value) {
-	if (position + 2 >= size)
+	if (position + 2 > size)
 	{
 		return DLMS_ERROR_CODE_OUTOFMEMORY;
 	}

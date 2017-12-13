@@ -193,7 +193,7 @@ public:
      *
      * @return Received command.
      */
-    DLMS_COMMAND GetCommand();
+    DLMS_COMMAND& GetCommand();
 
     /**
      * Get received data.

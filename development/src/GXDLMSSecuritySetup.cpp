@@ -42,12 +42,6 @@ CGXDLMSSecuritySetup::CGXDLMSSecuritySetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_DL
 {
 }
 
-//SN Constructor.
-CGXDLMSSecuritySetup::CGXDLMSSecuritySetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSSecuritySetup::CGXDLMSSecuritySetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP, ln)
 {
@@ -157,7 +151,7 @@ void CGXDLMSSecuritySetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSSecuritySetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSSecuritySetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

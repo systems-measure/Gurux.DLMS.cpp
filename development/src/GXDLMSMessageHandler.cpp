@@ -41,12 +41,6 @@ CGXDLMSMessageHandler::CGXDLMSMessageHandler() : CGXDLMSObject(DLMS_OBJECT_TYPE_
 {
 }
 
-//SN Constructor.
-CGXDLMSMessageHandler::CGXDLMSMessageHandler(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MESSAGE_HANDLER, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSMessageHandler::CGXDLMSMessageHandler(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MESSAGE_HANDLER, ln)
 {
@@ -161,7 +155,7 @@ void CGXDLMSMessageHandler::GetAttributeIndexToRead(std::vector<int>& attributes
     }
 }
 
-int CGXDLMSMessageHandler::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMessageHandler::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

@@ -45,15 +45,6 @@ CGXDLMSImageTransfer::CGXDLMSImageTransfer() : CGXDLMSObject(DLMS_OBJECT_TYPE_IM
     m_ImageTransferStatus = DLMS_IMAGE_TRANSFER_STATUS_NOT_INITIATED;
 }
 
-//SN Constructor.
-CGXDLMSImageTransfer::CGXDLMSImageTransfer(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_IMAGE_TRANSFER, sn)
-{
-    m_ImageBlockSize = 0;
-    m_ImageFirstNotTransferredBlockNumber = 0;
-    m_ImageTransferEnabled = false;
-    m_ImageTransferStatus = DLMS_IMAGE_TRANSFER_STATUS_NOT_INITIATED;
-}
-
 //LN Constructor.
 CGXDLMSImageTransfer::CGXDLMSImageTransfer(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IMAGE_TRANSFER, ln)
 {
@@ -212,7 +203,7 @@ void CGXDLMSImageTransfer::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSImageTransfer::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSImageTransfer::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

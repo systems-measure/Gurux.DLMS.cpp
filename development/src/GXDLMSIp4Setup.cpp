@@ -60,17 +60,6 @@ CGXDLMSIp4Setup::CGXDLMSIp4Setup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP)
     m_SecondaryDNSAddress = 0;
 }
 
-//SN Constructor.
-CGXDLMSIp4Setup::CGXDLMSIp4Setup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP, sn)
-{
-    m_IPAddress.empty();
-    m_SubnetMask = 0;
-    m_GatewayIPAddress = 0;
-    m_UseDHCP = false;
-    m_PrimaryDNSAddress = 0;
-    m_SecondaryDNSAddress = 0;
-}
-
 //LN Constructor.
 CGXDLMSIp4Setup::CGXDLMSIp4Setup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP, ln)
 {
@@ -281,7 +270,7 @@ void CGXDLMSIp4Setup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSIp4Setup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSIp4Setup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

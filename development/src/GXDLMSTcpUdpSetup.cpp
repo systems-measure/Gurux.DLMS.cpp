@@ -64,17 +64,6 @@ CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup(const char* ln) : CGXDLMSObject(DLMS_OBJE
     Init();
 }
 
-/**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup(std::string ln, short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_TCP_UDP_SETUP, sn)
-{
-    Init();
-}
-
 int CGXDLMSTcpUdpSetup::GetPort()
 {
     return m_Port;
@@ -180,7 +169,7 @@ void CGXDLMSTcpUdpSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSTcpUdpSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSTcpUdpSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

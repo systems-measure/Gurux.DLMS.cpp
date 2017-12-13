@@ -42,12 +42,6 @@ void CGXDLMSRegister::Init()
     m_Scaler = 0;
 }
 
-//SN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, unsigned short sn) : CGXDLMSObject(type, sn)
-{
-    Init();
-}
-
 //LN Constructor.
 CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, const char* ln) : CGXDLMSObject(type, ln)
 {
@@ -66,19 +60,6 @@ bool CGXDLMSRegister::IsRead(int index)
 //Constructor.
 CGXDLMSRegister::CGXDLMSRegister(void) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER)
 {
-    Init();
-}
-
-//SN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, sn)
-{
-    Init();
-}
-
-//SN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(unsigned short sn, double scaler, unsigned char unit, CArtVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, sn)
-{
-    m_Value = value;
     Init();
 }
 
@@ -166,25 +147,7 @@ int CGXDLMSRegister::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 
 void CGXDLMSRegister::GetValues(std::vector<std::string>& values)
 {
-    //values.clear();
-    //std::string ln;
-    //GetLogicalName(ln);
-    //values.push_back(ln);
-    //values.push_back(m_Value.ToString());
-    //std::string str = "Scaler: ";
-    //double s = GetScaler();
-    ////if there is no fractal part.
-    //if (s - (long)s == 0)
-    //{
-    //    str += CGXDLMSVariant((long)s).ToString();
-    //}
-    //else
-    //{
-    //    str += CGXDLMSVariant(s).ToString();
-    //}
-    //str += " Unit: ";
-    //str += CGXDLMSConverter::GetUnitAsString(m_Unit);
-    //values.push_back(str);
+    
 }
 
 void CGXDLMSRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -206,7 +169,7 @@ void CGXDLMSRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSRegister::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -227,7 +190,6 @@ int CGXDLMSRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 
 int CGXDLMSRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-//	e.SetByteArray(true);
 	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {

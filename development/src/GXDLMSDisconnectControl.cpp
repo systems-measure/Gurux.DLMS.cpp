@@ -42,53 +42,11 @@ CGXDLMSDisconnectControl::CGXDLMSDisconnectControl() : CGXDLMSObject(DLMS_OBJECT
 {
 }
 
-//SN Constructor.
-CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL, ln)
 {
 
 }
-
-/**
- Output state of COSEM Disconnect Control object.
-*/
-//bool CGXDLMSDisconnectControl::GetOutputState()
-//{
-//    return m_OutputState;
-//}
-//void CGXDLMSDisconnectControl::SetOutputState(bool value)
-//{
-//    m_OutputState = value;
-//}
-//
-///**
-// Control state of COSEM Disconnect Control object.
-//*/
-//DLMS_CONTROL_STATE CGXDLMSDisconnectControl::GetControlState()
-//{
-//    return m_ControlState;
-//}
-//void CGXDLMSDisconnectControl::SetControlState(DLMS_CONTROL_STATE value)
-//{
-//    m_ControlState = value;
-//}
-//
-///**
-//Control mode of COSEM Disconnect Control object.
-//*/
-//DLMS_CONTROL_MODE CGXDLMSDisconnectControl::GetControlMode()
-//{
-//    return m_ControlMode;
-//}
-//void CGXDLMSDisconnectControl::SetControlMode(DLMS_CONTROL_MODE value)
-//{
-//    m_ControlMode = value;
-//}
 
 // Returns amount of attributes.
 int CGXDLMSDisconnectControl::GetAttributeCount()
@@ -104,13 +62,7 @@ int CGXDLMSDisconnectControl::GetMethodCount()
 
 void CGXDLMSDisconnectControl::GetValues(std::vector<std::string>& values)
 {
-   /* values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSVariant(m_OutputState).ToString());
-    values.push_back(CGXDLMSConverter::ToString(m_ControlState));
-    values.push_back(CGXDLMSConverter::ToString(m_ControlMode));*/
+  
 }
 
 void CGXDLMSDisconnectControl::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -137,7 +89,7 @@ void CGXDLMSDisconnectControl::GetAttributeIndexToRead(std::vector<int>& attribu
     }
 }
 
-int CGXDLMSDisconnectControl::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSDisconnectControl::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -165,7 +117,6 @@ int CGXDLMSDisconnectControl::GetDataType(unsigned char index, DLMS_DATA_TYPE& t
 // Returns value of given attribute.
 int CGXDLMSDisconnectControl::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-//	e.SetByteArray(true);
 	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
@@ -179,24 +130,15 @@ int CGXDLMSDisconnectControl::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEv
     }
     if (e.GetIndex() == 2)
     {
-		/*data.SetUInt8(DLMS_DATA_TYPE_BOOLEAN);
-		data.SetUInt8(m_OutputState);
-        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-		/*data.SetUInt8(DLMS_DATA_TYPE_ENUM);
-		data.SetUInt8(m_ControlState);
-        e.SetValue(data);*/
-        return DLMS_ERROR_CODE_OK;
+	    return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-		/*data.SetUInt8(DLMS_DATA_TYPE_ENUM);
-		data.SetUInt8(m_ControlMode);
-        e.SetValue(data);*/
-        return DLMS_ERROR_CODE_OK;
+		return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
@@ -210,35 +152,15 @@ int CGXDLMSDisconnectControl::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEv
     }
     else if (e.GetIndex() == 2)
     {
-		/*VarInfo v_info;
-		e.GetCAValue().GetVar(v_info);
-		if (v_info.size == 1) {
-			m_OutputState = *(e.GetCAValue().GetCurPtr());
-			return DLMS_ERROR_CODE_OK;
-		}
-		return DLMS_ERROR_CODE_INVALID_PARAMETER;*/
+		
     }
     else if (e.GetIndex() == 3)
     {
-		/*VarInfo v_info;
-		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
-		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
-			return ret;
-		}
-        m_ControlState = (DLMS_CONTROL_STATE)val;*/
+		
     }
     else if (e.GetIndex() == 4)
     {
-		/*VarInfo v_info;
-		e.GetCAValue().GetVar(v_info);
-		unsigned long long val;
-		unsigned char ret;
-		if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
-			return ret;
-		}
-		m_ControlMode = (DLMS_CONTROL_MODE)val;*/
+		
     }
     else
     {

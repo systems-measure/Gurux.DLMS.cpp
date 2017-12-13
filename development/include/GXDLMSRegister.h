@@ -44,10 +44,7 @@ protected:
     signed char m_Scaler;
     unsigned char m_Unit;
 
-    //SN Constructor.
-    CGXDLMSRegister(DLMS_OBJECT_TYPE type, unsigned short sn);
-
-    //LN Constructor.
+	//LN Constructor.
     CGXDLMSRegister(DLMS_OBJECT_TYPE type, const char* ln);
 
     bool IsRead(int index);
@@ -56,13 +53,7 @@ public:
     //Constructor.
     CGXDLMSRegister(void);
 
-    //SN Constructor.
-    CGXDLMSRegister(unsigned short sn);
-
-    //SN Constructor.
-    CGXDLMSRegister(unsigned short sn, double scaler, unsigned char unit, CArtVariant value);
-
-    //LN Constructor.
+	//LN Constructor.
     CGXDLMSRegister(const char* ln);
 
     //LN Constructor.
@@ -106,7 +97,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

@@ -148,7 +148,7 @@ void CGXReplyData::SetMoreData(DLMS_DATA_REQUEST_TYPES value)
     m_MoreData = value;
 }
 
-DLMS_COMMAND CGXReplyData::GetCommand()
+DLMS_COMMAND& CGXReplyData::GetCommand()
 {
     return m_Command;
 }

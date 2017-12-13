@@ -210,7 +210,7 @@ int CGXDLMSAssociationShortName::GetMethodCount()
     return 8;
 }
 
-int CGXDLMSAssociationShortName::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSAssociationShortName::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

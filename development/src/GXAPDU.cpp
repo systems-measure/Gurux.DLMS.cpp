@@ -905,7 +905,7 @@ int CGXAPDU::ParsePDU(
             {
                 return ret;
             }
-			if (tag >= 0 && tag <= 2) {
+			if (tag <= 2) {
 				resultComponent = (DLMS_ASSOCIATION_RESULT)tag;
 			}
             break;
@@ -946,7 +946,7 @@ int CGXAPDU::ParsePDU(
 				{
 					return ret;
 				}
-				if ((tag >= 0 && tag <= 2) || (tag >= 11 && tag <= 14)) {
+				if ((tag <= 2) || (tag >= 11 && tag <= 14)) {
 					diagnostic = (DLMS_SOURCE_DIAGNOSTIC)tag;
 				}
 			}
@@ -977,7 +977,7 @@ int CGXAPDU::ParsePDU(
 					{
 						return ret;
 					}
-					if (tag >= 0 && tag <= 2)  {
+					if (tag <= 2)  {
 						diagnostic = (DLMS_SOURCE_DIAGNOSTIC)(tag + 20);
 					}
 				}

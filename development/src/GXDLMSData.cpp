@@ -39,18 +39,6 @@ CGXDLMSData::CGXDLMSData() : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA)
 {
 }
 
-//SN Constructor.
-CGXDLMSData::CGXDLMSData(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, sn)
-{
-
-}
-
-//SN Constructor.
-CGXDLMSData::CGXDLMSData(unsigned short sn, CArtVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, sn)
-{
-    m_Value = value;
-}
-
 //LN Constructor.
 CGXDLMSData::CGXDLMSData(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
 {
@@ -89,11 +77,7 @@ int CGXDLMSData::GetMethodCount()
 
 void CGXDLMSData::GetValues(std::vector<std::string>& values)
 {
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(m_Value.ToString());*/
+    
 }
 
 void CGXDLMSData::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -110,7 +94,7 @@ void CGXDLMSData::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSData::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSData::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -127,7 +111,6 @@ int CGXDLMSData::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSData::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-//	e.SetByteArray(true);
 	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {

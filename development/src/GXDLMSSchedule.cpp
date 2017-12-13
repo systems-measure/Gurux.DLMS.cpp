@@ -41,12 +41,6 @@ CGXDLMSSchedule::CGXDLMSSchedule() : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE)
 {
 }
 
-//SN Constructor.
-CGXDLMSSchedule::CGXDLMSSchedule(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSSchedule::CGXDLMSSchedule(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, ln)
 {
@@ -101,7 +95,7 @@ void CGXDLMSSchedule::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSSchedule::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSSchedule::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

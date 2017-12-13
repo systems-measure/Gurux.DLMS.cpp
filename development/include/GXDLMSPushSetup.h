@@ -54,9 +54,6 @@ public:
     //Constructor.
     CGXDLMSPushSetup();
 
-    //SN Constructor.
-    CGXDLMSPushSetup(unsigned short sn);
-
     //LN Constructor.
     CGXDLMSPushSetup(const char* ln);
 
@@ -137,7 +134,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

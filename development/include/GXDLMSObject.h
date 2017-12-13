@@ -51,18 +51,13 @@ class CGXDLMSObject : public IGXDLMSBase
     friend class CGXDLMSAssociationLogicalName;
     friend class CGXDLMSAssociationShortName;
 
-    CGXAttributeCollection m_Attributes;
-    CGXAttributeCollection m_MethodAttributes;
-    void Initialize(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer* pLogicalName);
-    //std::string m_Description;
+    CGXAttributeCollection* m_Attributes;
+    CGXAttributeCollection* m_MethodAttributes;
+    void Initialize(unsigned short class_id, unsigned char version, CGXByteBuffer* pLogicalName);
     DLMS_OBJECT_TYPE m_ObjectType;
-    char m_AttributeIndex;
-    //unsigned short m_DataIndex;
     unsigned char m_Version;
 protected:
-    //std::map<int, time_t> m_ReadTimes;
-   // unsigned short m_SN;
-	bool m_DataValidity;
+   	bool m_DataValidity;
     unsigned char m_LN[6];
 	
     /*
@@ -71,8 +66,12 @@ protected:
      */
     bool IsRead(int index);
     bool CanRead(int index);
+
     static int GetLogicalName(CGXDLMSObject * target, CGXByteBuffer& value);
     static int SetLogicalName(CGXDLMSObject * target, CArtVariant& value);
+	
+	void SetAttributeCount(unsigned char count);
+	void SetMethodCount(unsigned char count);
 public:
 
     static bool IsLogicalNameEmpty(unsigned char* pLN)
@@ -84,12 +83,9 @@ public:
     CGXDLMSObject(void);
     CGXDLMSObject(DLMS_OBJECT_TYPE type);
 
-    //SN Constructor.
-    CGXDLMSObject(DLMS_OBJECT_TYPE type, unsigned short sn);
-
     //LN Constructor.
     CGXDLMSObject(DLMS_OBJECT_TYPE type, const char* ln);
-    CGXDLMSObject(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer& ln);
+    CGXDLMSObject(unsigned short class_id, unsigned char version, CGXByteBuffer& ln);
 
     virtual ~CGXDLMSObject(void);
 
@@ -106,12 +102,6 @@ public:
     //Get Object's Interface class type.
     DLMS_OBJECT_TYPE GetObjectType();
 
-    //Get Object's Short Name.
-   // unsigned short GetShortName();
-
-    //Set Object's Short Name.
-    //void SetShortName(unsigned short value);
-
     //Get Object's Logical Name.
     void GetLogicalName(std::string& ln);
 
@@ -120,25 +110,18 @@ public:
     void SetVersion(unsigned char value);
     unsigned char GetVersion();
 
-    CGXAttributeCollection& GetAttributes();
-    CGXAttributeCollection& GetMethodAttributes();
-    virtual int SetDataType(unsigned char index, DLMS_DATA_TYPE type);
-    virtual int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    CGXAttributeCollection* GetAttributes();
+    CGXAttributeCollection* GetMethodAttributes();
+    virtual int SetDataType(signed char index, DLMS_DATA_TYPE type);
+    virtual int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
-    virtual int GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type);
-    void SetUIDataType(unsigned char index, DLMS_DATA_TYPE type);
+    virtual int GetUIDataType(signed char index, DLMS_DATA_TYPE& type);
+	int SetUIDataType(signed char index, DLMS_DATA_TYPE type);
 
-    DLMS_ACCESS_MODE GetAccess(unsigned char index);
-    void SetAccess(unsigned char index, DLMS_ACCESS_MODE access);
-    DLMS_METHOD_ACCESS_MODE GetMethodAccess(unsigned char index);
-    void SetMethodAccess(unsigned char index, DLMS_METHOD_ACCESS_MODE access);
-
-
-    ////Get description of the object.
-    //std::string GetDescription();
-
-    ////Set description of the object.
-    //void SetDescription(std::string value);
+    DLMS_ACCESS_MODE GetAccess(signed char index);
+	int SetAccess(signed char index, DLMS_ACCESS_MODE access);
+    DLMS_METHOD_ACCESS_MODE GetMethodAccess(signed char index);
+	int SetMethodAccess(signed char index, DLMS_METHOD_ACCESS_MODE access);
 
     //Get values as std::string.
     virtual void GetValues(std::vector<std::string>& values)
@@ -158,13 +141,13 @@ public:
         return 1;
     }
 
-    // Returns amount of methods.
+	// Returns amount of methods.
     virtual int GetMethodCount()
     {
         assert(0);
         return 0;
     }
-
+	
     // Returns value of given attribute.
     virtual int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
     {
