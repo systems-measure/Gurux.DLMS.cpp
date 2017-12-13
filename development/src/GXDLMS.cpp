@@ -1388,7 +1388,7 @@ int CGXDLMS::CheckHdlcAddress(
                 return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
             }
             //If SNRM and client has not call disconnect and changes client ID.
-            if (ch == DLMS_COMMAND_SNRM)
+            if ((ch == DLMS_COMMAND_SNRM) || (ch == DLMS_COMMAND_DISC && !settings.IsConnected()))
             {
                 settings.SetServerAddress(target);
             }
