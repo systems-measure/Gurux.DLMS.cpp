@@ -143,7 +143,8 @@ public:
 
     int Get(unsigned char* value, unsigned long count);
 
-    unsigned char* GetData();
+    unsigned char* GetData() const;
+    unsigned long GetSize() const  { return m_Size; }
 
     void ToArray(unsigned char*& value, unsigned long& count);
 
