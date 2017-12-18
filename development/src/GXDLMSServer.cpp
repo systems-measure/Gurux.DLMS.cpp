@@ -45,12 +45,12 @@
 #include "profile_cap_objects.h"
 #include "Helper\Helper.h"
 #if defined(MEMLOG)
-#include "memlog.h"
+#   include "Debugger/memlog.h"
 #endif
 
 
 CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
-    DLMS_INTERFACE_TYPE type) : m_Transaction(nullptr), m_Settings(true),
+    DLMS_INTERFACE_TYPE type) : m_Transaction(nullptr), cnt_m_Transaction(0), m_Settings(true),
     m_LinkEstablished(false)
 {
     m_Settings.SetUseLogicalNameReferencing(logicalNameReferencing);
@@ -204,7 +204,7 @@ void CGXDLMSServer::Reset(bool connected)
 {
     if (m_Transaction != nullptr)
     {
-        delete m_Transaction;
+        delete m_Transaction; cnt_m_Transaction--;
         m_Transaction = nullptr;
     }
     m_Settings.SetCount(0);
@@ -651,7 +651,7 @@ int CGXDLMSServer::HandleSetRequest(
 				e->SetValue(value);
 				CGXDLMSValueEventCollection list;
 				list.push_back(e);
-				m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
+                m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data); cnt_m_Transaction++;
 			}
 			else {
 				VarInfo v_info;
@@ -691,7 +691,7 @@ int CGXDLMSServer::HandleSetRequest(
 					{
 						CGXDLMSValueEventCollection list;
 						list.push_back(e);
-						m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
+                        m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data); cnt_m_Transaction++;
 					}
 					PreWrite(e);
 					if (e->GetError() != 0)
@@ -744,7 +744,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
         if ((ret = GXHelpers::GetObjectCount(data, size)) != 0)
         {
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
-			delete m_Transaction;
+            delete m_Transaction; cnt_m_Transaction--;
 			m_Transaction = nullptr;
             return ret;
         }
@@ -761,7 +761,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             if ((ret != GXHelpers::GetDataCA(m_Transaction->GetData(), value)) != 0)
             {
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
-				delete m_Transaction;
+                delete m_Transaction; cnt_m_Transaction--;
 				m_Transaction = nullptr;
                 return ret;
             }
@@ -778,7 +778,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
                     if ((ret = value.ChangeType(v_info.size, dt, bb)) != 0)
                     {
 						m_CurrentALN->GetObjectList().FreeConstructedObj();
-						delete m_Transaction;
+                        delete m_Transaction; cnt_m_Transaction--;
 						m_Transaction = nullptr;
                         return ret;
                     }
@@ -796,7 +796,7 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
             if (m_Transaction != nullptr)
             {
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
-                delete m_Transaction;
+                delete m_Transaction; cnt_m_Transaction--;
                 m_Transaction = nullptr;
             }
             m_Settings.ResetBlockIndex();
@@ -1023,14 +1023,14 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
     {
         if (m_Transaction != nullptr)
         {
-            delete m_Transaction;
+            delete m_Transaction; cnt_m_Transaction--;
             m_Transaction = nullptr;
         }
-		    m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, bb);
+        m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, bb); cnt_m_Transaction++;
     }
 	else {
 		if (m_Transaction != nullptr) {
-			delete m_Transaction;
+            delete m_Transaction; cnt_m_Transaction--;
 			m_Transaction = nullptr;
 		}
 		m_CurrentALN->GetObjectList().FreeConstructedObj();
@@ -1133,7 +1133,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
             else
             {
 				m_CurrentALN->GetObjectList().FreeConstructedObj();
-                delete m_Transaction;
+                delete m_Transaction; cnt_m_Transaction--;
                 m_Transaction = nullptr;
                 m_Settings.ResetBlockIndex();
             }
@@ -1247,11 +1247,11 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 	{
 		if (m_Transaction != nullptr)
 		{
-			delete m_Transaction;
+            delete m_Transaction; cnt_m_Transaction--;
 			m_Transaction = nullptr;
 		}
 		CGXByteBuffer empty;
-		m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, empty);
+        m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, empty); cnt_m_Transaction++;
 	}
 	list.clear();
 	obj = nullptr;

@@ -63,6 +63,7 @@ private:
      * Long get or read transaction information.
      */
     CGXDLMSLongTransaction* m_Transaction;
+    int16_t cnt_m_Transaction;
 	/**
     * Parse SNRM Request. If server do not accept client empty byte array is
     * returned.

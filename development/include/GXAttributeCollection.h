@@ -36,6 +36,7 @@
 #define GXATTRIBUTECOLLECTION_H
 
 #include "GXDLMSAttribute.h"
+#include "Debugger\Debugger.h"
 
 class CGXAttributeCollection 
 {
@@ -46,7 +47,7 @@ private:
 public:
 	CGXAttributeCollection(uint8_t size) {
 		size_collection = size;
-		collection = new CGXDLMSAttribute[size_collection];
+		collection = new CGXDLMSAttribute[size_collection];  TrapLimitMemResurce(collection);
 		count_collection = 0;
 	}
 

@@ -53,43 +53,43 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 	switch (type)
 	{
 	case DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR:
-		constructed_obj =  new CGXDLMSActivityCalendar();
+        constructed_obj = new CGXDLMSActivityCalendar(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME:
-		constructed_obj = new CGXDLMSAssociationLogicalName();
+		constructed_obj = new CGXDLMSAssociationLogicalName(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_CLOCK:
-		constructed_obj = new CGXDLMSClock();
+		constructed_obj = new CGXDLMSClock(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_DATA:
-		constructed_obj = new CGXDLMSData();
+		constructed_obj = new CGXDLMSData(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_DEMAND_REGISTER:
-		constructed_obj = new CGXDLMSDemandRegister();
+		constructed_obj = new CGXDLMSDemandRegister(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:
-		constructed_obj = new CGXDLMSIecHdlcSetup();
+		constructed_obj = new CGXDLMSIecHdlcSetup(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
-		constructed_obj = new CGXDLMSDisconnectControl();
+		constructed_obj = new CGXDLMSDisconnectControl(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_LIMITER:
-		constructed_obj = new CGXDLMSLimiter();
+		constructed_obj = new CGXDLMSLimiter(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_PROFILE_GENERIC:
-		constructed_obj = new CGXDLMSProfileGeneric();
+		constructed_obj = new CGXDLMSProfileGeneric(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_REGISTER:
-		constructed_obj = new CGXDLMSRegister();
+		constructed_obj = new CGXDLMSRegister(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
-		constructed_obj = new CGXDLMSScriptTable();
+		constructed_obj = new CGXDLMSScriptTable(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
-		constructed_obj = new CGXDLMSSpecialDaysTable();
+		constructed_obj = new CGXDLMSSpecialDaysTable(); TrapLimitMemResurce(constructed_obj);
 		break;
 	case DLMS_OBJECT_TYPE_PUSH_SETUP:
-		constructed_obj = new CGXDLMSPushSetup();
+		constructed_obj = new CGXDLMSPushSetup(); TrapLimitMemResurce(constructed_obj);
 		break;
 	default:
 		constructed_obj = nullptr;
