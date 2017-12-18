@@ -36,7 +36,6 @@
 #include "../include/GXHelpers.h"
 
 #include "Helper\Helper.h"
-#include "Debugger\Debugger.h"
 
 
 CArtVariant::CArtVariant() {
@@ -1456,7 +1455,7 @@ void CGXDLMSVariant::Add(const unsigned char* pValue, int count)
     vt = DLMS_DATA_TYPE_OCTET_STRING;
     if (count != 0)
     {
-        byteArr = (unsigned char*)realloc(byteArr, size + count); TrapLimitMemResurce(byteArr);
+        byteArr = (unsigned char*)realloc(byteArr, size + count);
         memcpy(byteArr + size, pValue, count);
         size += count;
     }
@@ -1467,7 +1466,7 @@ void CGXDLMSVariant::Add(const char* pValue, int count)
     vt = DLMS_DATA_TYPE_OCTET_STRING;
     if (count != 0)
     {
-        byteArr = (unsigned char*)realloc(byteArr, size + count); TrapLimitMemResurce(byteArr);
+        byteArr = (unsigned char*)realloc(byteArr, size + count);
         memcpy(byteArr + size, pValue, count);
         size += count;
     }
@@ -1478,7 +1477,7 @@ void CGXDLMSVariant::Add(std::string value)
     vt = DLMS_DATA_TYPE_OCTET_STRING;
     if (value.size() != 0)
     {
-        byteArr = (unsigned char*)realloc(byteArr, size + value.size()); TrapLimitMemResurce(byteArr);
+        byteArr = (unsigned char*)realloc(byteArr, size + value.size());
         memcpy(byteArr + size, value.c_str(), value.size());
         size += (unsigned short)value.size();
     }

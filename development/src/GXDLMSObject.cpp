@@ -177,7 +177,7 @@ int CGXDLMSObject::SetDataType(signed char index, DLMS_DATA_TYPE type)
 	}
 	else {
 		if (m_Attributes == nullptr) {
-			m_Attributes = new CGXAttributeCollection(this->GetAttributeCount()); TrapLimitMemResurce(m_Attributes);
+			m_Attributes = new CGXAttributeCollection(this->GetAttributeCount());
 		}
 		for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
 			if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
@@ -219,7 +219,7 @@ int CGXDLMSObject::SetAccess(signed char index, DLMS_ACCESS_MODE access)
 	}
 	else {
 		if (m_Attributes == nullptr) {
-            m_Attributes = new CGXAttributeCollection(this->GetAttributeCount()); TrapLimitMemResurce(m_Attributes);
+			m_Attributes = new CGXAttributeCollection(this->GetAttributeCount());
 		}
 		for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
 			if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
@@ -249,7 +249,7 @@ DLMS_METHOD_ACCESS_MODE CGXDLMSObject::GetMethodAccess(signed char index)
 int CGXDLMSObject::SetMethodAccess(signed char index, DLMS_METHOD_ACCESS_MODE access)
 {
 	if (m_MethodAttributes == nullptr) {
-		m_MethodAttributes = new CGXAttributeCollection(this->GetMethodCount()); TrapLimitMemResurce(m_MethodAttributes);
+		m_MethodAttributes = new CGXAttributeCollection(this->GetMethodCount());
 	}
 	for (unsigned char i = 0; i < m_MethodAttributes->GetCountCollection(); ++i) {
 		if (index == (m_MethodAttributes->GetCollection())[i].GetIndex()) {
@@ -295,7 +295,7 @@ int CGXDLMSObject::SetUIDataType(signed char index, DLMS_DATA_TYPE type)
 	}
 	else {
 		if (m_Attributes == nullptr) {
-            m_Attributes = new CGXAttributeCollection(this->GetAttributeCount()); TrapLimitMemResurce(m_Attributes);
+			m_Attributes = new CGXAttributeCollection(this->GetAttributeCount());
 		}
 		for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
 			if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
@@ -343,14 +343,14 @@ void CGXDLMSObject::SetAttributeCount(unsigned char count) {
 	if (m_Attributes != nullptr) {
 		delete[] m_Attributes;
 	}
-    m_Attributes = new CGXAttributeCollection(count); TrapLimitMemResurce(m_Attributes);
+	m_Attributes = new CGXAttributeCollection(count);
 }
 
 void CGXDLMSObject::SetMethodCount(unsigned char count) {
 	if (m_MethodAttributes != nullptr) {
 		delete[] m_MethodAttributes;
 	}
-    m_MethodAttributes = new CGXAttributeCollection(count); TrapLimitMemResurce(m_MethodAttributes);
+	m_MethodAttributes = new CGXAttributeCollection(count);
 }
 
 bool CGXDLMSObject::IsRead(int index)

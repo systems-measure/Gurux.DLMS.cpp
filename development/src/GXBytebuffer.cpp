@@ -27,7 +27,6 @@
 #include "../include/errorcodes.h"
 #include "../include/GXBytebuffer.h"
 #include "../include/GXHelpers.h"
-#include "Debugger\Debugger.h"
 
 //Constructor.
 CGXByteBuffer::CGXByteBuffer()
@@ -121,7 +120,7 @@ void CGXByteBuffer::Capacity(unsigned long capacity)
     }
     else
     {
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
         if (m_Size > capacity)
         {
             m_Size = capacity;
@@ -169,7 +168,7 @@ void CGXByteBuffer::SetUInt8(unsigned long index, unsigned char item)
     if (m_Capacity == 0 || index + 1 > m_Capacity)
     {
         m_Capacity += VECTOR_CAPACITY;
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
     m_Data[index] = item;
 }
@@ -180,7 +179,7 @@ void CGXByteBuffer::SetUInt16(unsigned short item)
     if (m_Capacity == 0 || m_Size + 2 > m_Capacity)
     {
         m_Capacity += VECTOR_CAPACITY;
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
     m_Data[m_Size] = (item >> 8) & 0xFF;
     m_Data[m_Size + 1] = item & 0xFF;
@@ -199,7 +198,7 @@ void CGXByteBuffer::SetUInt32ByIndex(unsigned long index, unsigned long item)
     if (m_Capacity == 0 || index + 4 > m_Capacity)
     {
         m_Capacity += VECTOR_CAPACITY;
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
     m_Data[index] = (item >> 24) & 0xFF;
     m_Data[index + 1] = (item >> 16) & 0xFF;
@@ -212,7 +211,7 @@ void CGXByteBuffer::SetUInt64(unsigned long long item)
     if (m_Capacity == 0 || m_Size + 8 > m_Capacity)
     {
         m_Capacity += VECTOR_CAPACITY;
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
     m_Data[m_Size] = (unsigned char)((item >> 56) & 0xFF);
     m_Data[m_Size + 1] = (item >> 48) & 0xFF;
@@ -238,7 +237,7 @@ void CGXByteBuffer::SetFloat(float value)
     if (m_Capacity == 0 || m_Size + 4 > m_Capacity)
     {
         m_Capacity += VECTOR_CAPACITY;
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
     m_Data[m_Size] = tmp.b[3];
     m_Data[m_Size + 1] = tmp.b[2];
@@ -260,7 +259,7 @@ void CGXByteBuffer::SetDouble(double value)
     if (m_Capacity == 0 || m_Size + 8 > m_Capacity)
     {
         m_Capacity += VECTOR_CAPACITY;
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
     m_Data[m_Size]	   = tmp.b[7];
     m_Data[m_Size + 1] = tmp.b[6];
@@ -310,7 +309,7 @@ void CGXByteBuffer::Set(const void* pSource, unsigned long count)
             {
                 m_Capacity += count + VECTOR_CAPACITY;
             }
-            m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+            m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
         }
         memcpy(m_Data + m_Size, pSource, count);
         m_Size += count;
@@ -436,7 +435,7 @@ void CGXByteBuffer::SetUInt32ByIndexLE(unsigned long index, unsigned long item)
     if (m_Capacity == 0 || index + 4 > m_Capacity)
     {
         m_Capacity += VECTOR_CAPACITY;
-        m_Data = (unsigned char*)realloc(m_Data, m_Capacity); TrapLimitMemResurce(m_Data);
+        m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
     }
     m_Data[index + 3] = (item >> 24) & 0xFF;
     m_Data[index + 2] = (item >> 16) & 0xFF;
