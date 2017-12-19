@@ -208,6 +208,8 @@ std::string CGXDLMSObjectFactory::ObjectTypeToString(DLMS_OBJECT_TYPE type)
         return "GXDLMSExtendedRegister";
     case DLMS_OBJECT_TYPE_GPRS_SETUP:
         return "GXDLMSGprsSetup";
+    case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+        return "GXDLMSGsmDiagnostic";
     case DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP:
         return "GXDLMSSecuritySetup";
     case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:
