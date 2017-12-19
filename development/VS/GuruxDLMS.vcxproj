@@ -155,6 +155,7 @@
     <ClCompile Include="..\src\GXDLMSEmergencyProfile.cpp" />
     <ClCompile Include="..\src\GXDLMSExtendedRegister.cpp" />
     <ClCompile Include="..\src\GXDLMSGPRSSetup.cpp" />
+    <ClCompile Include="..\src\GXDLMSGsmDiagnostic.cpp" />
     <ClCompile Include="..\src\GXDLMSHdlcSetup.cpp" />
     <ClCompile Include="..\src\GXDLMSIECOpticalPortSetup.cpp" />
     <ClCompile Include="..\src\GXDLMSImageActivateInfo.cpp" />
@@ -250,6 +251,7 @@
     <ClInclude Include="..\include\GXDLMSEmergencyProfile.h" />
     <ClInclude Include="..\include\GXDLMSExtendedRegister.h" />
     <ClInclude Include="..\include\GXDLMSGPRSSetup.h" />
+    <ClInclude Include="..\include\GXDLMSGsmDiagnostic.h" />
     <ClInclude Include="..\include\GXDLMSHdlcSetup.h" />
     <ClInclude Include="..\include\GXDLMSIECOpticalPortSetup.h" />
     <ClInclude Include="..\include\GXDLMSImageActivateInfo.h" />
