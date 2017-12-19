@@ -1052,7 +1052,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
     }
     if (index != m_Settings.GetBlockIndex())
     {
-		p.SetStatus(DLMS_ERROR_CODE_DATA_BLOCK_NUMBER_INVALID);
+		p.SetStatus(DLMS_ERROR_CODE_READ_ABORTED);
         return CGXDLMS::GetLNPdu(p, m_ReplyData);
     }
     else
@@ -1657,7 +1657,7 @@ int CGXDLMSServer::HandleRequest(
         m_Info.Clear();
         return 0;
     }
-        
+    CheckPushNeeded(m_Info.GetControlField());
     ret = HandleCommand(connectionInfo, m_Info.GetCommand(), m_Info.GetData(), reply);
     m_Info.Clear();
     return ret;

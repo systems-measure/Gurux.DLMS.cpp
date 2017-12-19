@@ -183,6 +183,8 @@ public:
         CGXByteBuffer& data,
         CGXByteBuffer& reply);
 
+	static long GetLongInvokeIDPriority(CGXDLMSSettings& settings);
+
     /**
     * Get next logical name PDU.
     *

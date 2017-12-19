@@ -46,11 +46,145 @@
 #include "../include/GXDLMSScriptTable.h"
 #include "../include/GXDLMSPushSetup.h"
 #include "../include/GXDLMSDisconnectControl.h"
-#include <sstream>
+#include "../include/GXDLMSGPRSSetup.h"
+#include "Helper\Helper.h"
+
+typedef void(*newObj)(CGXDLMSObject*& constracted);
+
+void CreateData(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSData();
+}
+
+void CreateRegister(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSRegister();
+}
+
+void CreateDemandRegister(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSDemandRegister();
+}
+
+void CreateProfile(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSProfileGeneric();
+}
+
+void CreateClock(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSClock();
+}
+
+void CreateScriptTable(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSScriptTable();
+}
+
+void CreateSpecDayTable(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSSpecialDaysTable();
+}
+
+void CreateALN(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSAssociationLogicalName();
+}
+
+void CreateActivityCalendar(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSActivityCalendar();
+}
+
+void CreateHdlcSetup(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSIecHdlcSetup();
+}
+
+void CreatePushSetup(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSPushSetup();
+}
+
+void CreateGPRSSetup(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSGPRSSetup();
+}
+
+void CreateDisconectControl(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSDisconnectControl();
+}
+
+void CreateLimiter(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSLimiter();
+}
+
+const tabFunc<newObj> create_func[] = {
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_DATA,								  CreateData },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_REGISTER,						  CreateRegister },
+	{ DLMS_OBJECT_TYPE_EXTENDED_REGISTER,							NULL },
+	{ DLMS_OBJECT_TYPE_DEMAND_REGISTER,				CreateDemandRegister },
+	{ DLMS_OBJECT_TYPE_REGISTER_ACTIVATION,							NULL },
+	{ DLMS_OBJECT_TYPE_PROFILE_GENERIC,					   CreateProfile },
+	{ DLMS_OBJECT_TYPE_CLOCK,								 CreateClock },
+	{ DLMS_OBJECT_TYPE_SCRIPT_TABLE,				   CreateScriptTable },
+	{ DLMS_OBJECT_TYPE_SCHEDULE,									NULL },
+	{ DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE,			  CreateSpecDayTable },
+	{ DLMS_OBJECT_TYPE_ASSOCIATION_SHORT_NAME,						NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME,			   CreateALN },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_SAP_ASSIGNMENT,								NULL },
+	{ DLMS_OBJECT_TYPE_IMAGE_TRANSFER,								NULL },
+	{ DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP,						NULL },
+	{ DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR,		  CreateActivityCalendar },
+	{ DLMS_OBJECT_TYPE_REGISTER_MONITOR,							NULL },
+	{ DLMS_OBJECT_TYPE_ACTION_SCHEDULE,								NULL },
+	{ DLMS_OBJECT_TYPE_IEC_HDLC_SETUP,					 CreateHdlcSetup },
+	{ DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP,						NULL },
+	{ DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP,						NULL },
+	{ DLMS_OBJECT_TYPE_UTILITY_TABLES,								NULL },
+	{ DLMS_OBJECT_TYPE_MODEM_CONFIGURATION,							NULL },
+	{ DLMS_OBJECT_TYPE_AUTO_ANSWER,									NULL },
+	{ DLMS_OBJECT_TYPE_AUTO_CONNECT,								NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_PUSH_SETUP,						 CreatePushSetup },
+	{ DLMS_OBJECT_TYPE_TCP_UDP_SETUP,								NULL },
+	{ DLMS_OBJECT_TYPE_IP4_SETUP,									NULL },
+	{ DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP,							NULL },
+	{ DLMS_OBJECT_TYPE_PPP_SETUP,									NULL },
+	{ DLMS_OBJECT_TYPE_GPRS_SETUP,						 CreateGPRSSetup },
+	{ DLMS_OBJECT_TYPE_SMTP_SETUP,									NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_MESSAGE_HANDLER,								NULL },
+	{ DLMS_OBJECT_TYPE_REGISTER_TABLE,								NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_STATUS_MAPPING,								NULL },
+	{ DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP,							NULL },
+	{ DLMS_OBJECT_TYPE_PARAMETER_MONITOR,							NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_DISCONNECT_CONTROL,		  CreateDisconectControl },
+	{ DLMS_OBJECT_TYPE_LIMITER,							   CreateLimiter }
+};
 
 void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 {
-	switch (type)
+	/*switch (type)
 	{
 	case DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR:
 		constructed_obj =  new CGXDLMSActivityCalendar();
@@ -94,6 +228,12 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 	default:
 		constructed_obj = nullptr;
 		break;
+	}*/
+	if (create_func[type].execute_func != NULL) {
+		create_func[type].execute_func(constructed_obj);
+	}
+	else {
+		constructed_obj = nullptr;
 	}
 }
 

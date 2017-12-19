@@ -189,7 +189,7 @@ int CGXDLMSNotify::GeneratePushSetupMessages(
     CGXDLMSPushSetup* push,
     std::vector<CGXByteBuffer>& reply)
 {
-    if (push == NULL)
+    /*if (push == NULL)
     {
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
@@ -199,8 +199,8 @@ int CGXDLMSNotify::GeneratePushSetupMessages(
     for (std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject> >::iterator it = push->GetPushObjectList().begin(); it != push->GetPushObjectList().end(); ++it)
     {
         AddData(it->first, it->second.GetAttributeIndex(), buff);
-    }
-    return GenerateDataNotificationMessages(date, buff, reply);
+    }*/
+    return 0;
 }
 
 int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std::pair<CGXDLMSObject*, unsigned char> >& items)

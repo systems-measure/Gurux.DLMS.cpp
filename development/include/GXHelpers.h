@@ -92,6 +92,27 @@ public:
 		++size;
 	}
 
+	static void GetNum16(unsigned short& num, char* ln, unsigned char& size) {
+		if (num >= 10000) {
+			*(ln + size) = (num_codes[num / 10000]);
+			++size;
+		}
+		if (num >= 1000) {
+			*(ln + size) = (num_codes[(num / 1000) % 10]);
+			++size;
+		}
+		if (num >= 100) {
+			*(ln + size) = (num_codes[(num / 100) % 10]);
+			++size;
+		}
+		if (num >= 10) {
+			*(ln + size) = (num_codes[(num / 10) % 10]);
+			++size;
+		}
+		*(ln + size) = (num_codes[num % 10]);
+		++size;
+	}
+
     static void GetLogicalName(unsigned char* buff, std::string& ln)
     {
         

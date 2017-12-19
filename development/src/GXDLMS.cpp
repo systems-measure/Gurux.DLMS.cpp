@@ -481,7 +481,7 @@ unsigned char GetInvokeIDPriority(CGXDLMSSettings& settings)
      *            DLMS settings.
      * @return Invoke ID and priority.
      */
-long GetLongInvokeIDPriority(CGXDLMSSettings& settings)
+long CGXDLMS::GetLongInvokeIDPriority(CGXDLMSSettings& settings)
 {
     long value = 0;
     if (settings.GetPriority() == DLMS_PRIORITY_HIGH)
@@ -555,6 +555,27 @@ void MultipleBlocks(
         // Add command type and invoke and priority.
         p.SetLastBlock(!(8 + reply.GetSize() + len > p.GetSettings()->GetMaxPduSize()));
     }
+}
+
+int IfChiphering(CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
+	CGXByteBuffer tmp;
+	int ret = p.GetSettings()->GetCipher()->Encrypt(
+		p.GetSettings()->GetCipher()->GetSecurity(),
+		DLMS_COUNT_TYPE_PACKET,
+		p.GetSettings()->GetCipher()->GetFrameCounter(),
+		GetGloMessage(p.GetCommand()),
+		p.GetSettings()->GetCipher()->GetSystemTitle(),
+		reply, tmp);
+	if (ret != 0)
+	{
+		return ret;
+	}
+	reply.SetSize(0);
+	if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
+	{
+		AddLLCBytes(p.GetSettings(), reply);
+	}
+	reply.Set(&tmp, 0, tmp.GetSize());
 }
 
 int CGXDLMS::GetLNPdu(
@@ -653,12 +674,13 @@ int CGXDLMS::GetLNPdu(
             else
             {
                 // Data is send in octet string. Remove data type.
-                int pos = reply.GetSize();
-                CGXDateTime tmp(*p.GetTime());
-				reply.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
 				reply.SetUInt8(12);
-				GXHelpers::SetDateTime(reply, tmp);
-                reply.Move(pos + 1, pos, reply.GetSize() - pos - 1);
+				uint8_t tmp_dt[9];
+				TimeToStr(tmp_dt, *p.GetTime());
+				reply.Set(tmp_dt, 9);
+				reply.SetUInt16(0x8000);
+				reply.SetUInt8(0x00);
+				//GXHelpers::SetDateTime(reply, tmp);
             }
         }
         // Add attribute descriptor.
@@ -748,24 +770,7 @@ int CGXDLMS::GetLNPdu(
         }
         if (ciphering)
         {
-            CGXByteBuffer tmp;
-            ret = p.GetSettings()->GetCipher()->Encrypt(
-                p.GetSettings()->GetCipher()->GetSecurity(),
-                DLMS_COUNT_TYPE_PACKET,
-                p.GetSettings()->GetCipher()->GetFrameCounter(),
-                GetGloMessage(p.GetCommand()),
-                p.GetSettings()->GetCipher()->GetSystemTitle(),
-                reply, tmp);
-            if (ret != 0)
-            {
-                return ret;
-            }
-            reply.SetSize(0);
-            if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-            {
-                AddLLCBytes(p.GetSettings(), reply);
-            }
-            reply.Set(&tmp, 0, tmp.GetSize());
+			IfChiphering(p, reply);
         }
     }
     return 0;
@@ -782,6 +787,9 @@ int CGXDLMS::GetLnMessages(
     {
         frame = 0x10;
     }
+	else if (p.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION) {
+		frame = 0x13;
+	}
     do
     {
         if ((ret = GetLNPdu(p, reply)) != 0)
@@ -1649,7 +1657,7 @@ int CGXDLMS::HandleSetResponse(
 int CGXDLMS::HandleGbt(CGXDLMSSettings& settings, CGXReplyData& data)
 {
     int ret;
-    unsigned char ch, bn, bna;
+    unsigned char ch, tmp, bn, bna;
     data.SetGbt(true);
     int index = data.GetData().GetPosition() - 1;
     if ((ret = data.GetData().GetUInt8(&ch)) != 0)
@@ -1670,31 +1678,23 @@ int CGXDLMS::HandleGbt(CGXDLMSSettings& settings, CGXReplyData& data)
         return ret;
     }
     // Get APU tag.
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+    if ((ret = data.GetData().GetUInt8(&tmp)) != 0)
     {
         return ret;
     }
-    if (ch != 0)
+    if (tmp != 0)
     {
         //Invalid APU.
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     // Get Addl tag.
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+    if ((ret = data.GetData().GetUInt8(&tmp)) != 0)
     {
         return ret;
     }
-    if (ch != 0)
+    if (tmp != 0)
     {
         //Invalid APU.
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0)
-    {
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     data.SetCommand(DLMS_COMMAND_NONE);
