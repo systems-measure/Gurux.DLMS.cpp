@@ -37,19 +37,19 @@
 #include "../include/GXDLMSGsmDiagnostic.h"
 
 //Constructor.
-CGXDLMSGsmDiagnostic::CGXDLMSGsmDiagnostic() : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP)
+CGXDLMSGsmDiagnostic::CGXDLMSGsmDiagnostic() : CGXDLMSObject(DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC)
 {
 	Init();
 }
 
 //SN Constructor.
-CGXDLMSGsmDiagnostic::CGXDLMSGsmDiagnostic(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, sn)
+CGXDLMSGsmDiagnostic::CGXDLMSGsmDiagnostic(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC, sn)
 {
 	Init();
 }
 
 //LN Constructor.
-CGXDLMSGsmDiagnostic::CGXDLMSGsmDiagnostic(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
+CGXDLMSGsmDiagnostic::CGXDLMSGsmDiagnostic(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC, ln)
 {
 	Init();
 }
