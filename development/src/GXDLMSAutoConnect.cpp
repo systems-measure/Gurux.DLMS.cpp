@@ -49,12 +49,6 @@ CGXDLMSAutoConnect::CGXDLMSAutoConnect() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_C
     Init();
 }
 
-//SN Constructor.
-CGXDLMSAutoConnect::CGXDLMSAutoConnect(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, sn)
-{
-    Init();
-}
-
 //LN Constructor.
 CGXDLMSAutoConnect::CGXDLMSAutoConnect(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, ln)
 {
@@ -121,47 +115,47 @@ int CGXDLMSAutoConnect::GetMethodCount()
 
 void CGXDLMSAutoConnect::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSVariant(m_Mode).ToString());
-    values.push_back(CGXDLMSVariant(m_Repetitions).ToString());
-    values.push_back(CGXDLMSVariant(m_RepetitionDelay).ToString());
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_CallingWindow.begin(); it != m_CallingWindow.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = it->first.ToString();
-        sb.write(str.c_str(), str.size());
-        sb << " ";
-        str = it->second.ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    //values.push_back(CGXDLMSVariant(m_Mode).ToString());
+    //values.push_back(CGXDLMSVariant(m_Repetitions).ToString());
+    //values.push_back(CGXDLMSVariant(m_RepetitionDelay).ToString());
+    //std::stringstream sb;
+    //sb << '[';
+    //bool empty = true;
+    //for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_CallingWindow.begin(); it != m_CallingWindow.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    std::string str = it->first.ToString();
+    //    sb.write(str.c_str(), str.size());
+    //    sb << " ";
+    //    str = it->second.ToString();
+    //    sb.write(str.c_str(), str.size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
 
-    //Clear str.
-    sb.str(std::string());
-    sb << '[';
-    empty = true;
-    for (std::vector< std::string >::iterator it = m_Destinations.begin(); it != m_Destinations.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        sb.write(it->c_str(), it->size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
+    ////Clear str.
+    //sb.str(std::string());
+    //sb << '[';
+    //empty = true;
+    //for (std::vector< std::string >::iterator it = m_Destinations.begin(); it != m_Destinations.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    sb.write(it->c_str(), it->size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
 }
 
 void CGXDLMSAutoConnect::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -198,7 +192,7 @@ void CGXDLMSAutoConnect::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSAutoConnect::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSAutoConnect::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -236,81 +230,81 @@ int CGXDLMSAutoConnect::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSAutoConnect::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+//		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue((unsigned char)GetMode());
+       /* e.SetValue((unsigned char)GetMode());*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetValue(GetRepetitions());
+        /*e.SetValue(GetRepetitions());*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetValue(GetRepetitionDelay());
+       /* e.SetValue(GetRepetitionDelay());*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        e.SetByteArray(true);
-        unsigned long cnt = (unsigned long)m_CallingWindow.size();
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        int ret;
-        //Add count
-        GXHelpers::SetObjectCount(cnt, data);
-        if (cnt != 0)
-        {
-            CGXDLMSVariant s, e;
-            for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_CallingWindow.begin(); it != m_CallingWindow.end(); ++it)
-            {
-                data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-                data.SetUInt8(2); //Count
-                s = it->first;
-                e = it->second;
-                if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, s)) != 0 || //start_time
-                    (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, e)) != 0) //end_time
-                {
-                    return ret;
-                }
-            }
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //unsigned long cnt = (unsigned long)m_CallingWindow.size();
+        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        //int ret;
+        ////Add count
+        //GXHelpers::SetObjectCount(cnt, data);
+        //if (cnt != 0)
+        //{
+        //    CGXDLMSVariant s, e;
+        //    for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_CallingWindow.begin(); it != m_CallingWindow.end(); ++it)
+        //    {
+        //        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //        data.SetUInt8(2); //Count
+        //        s = it->first;
+        //        e = it->second;
+        //        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, s)) != 0 || //start_time
+        //            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, e)) != 0) //end_time
+        //        {
+        //            return ret;
+        //        }
+        //    }
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        e.SetByteArray(true);
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        unsigned long cnt = (unsigned long)m_Destinations.size();
-        //Add count
-        GXHelpers::SetObjectCount(cnt, data);
-        for (std::vector< std::string >::iterator it = m_Destinations.begin(); it != m_Destinations.end(); ++it)
-        {
-			data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-			GXHelpers::SetObjectCount(it->size(), data);
-			data.Set(it->c_str(), it->size());
-            //CGXDLMSVariant value;
-            //e.GetValue().Add(&(*it)[0], (int)it->size());
-            //if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, value)) != 0) //destination
-            //{
-            //    return ret;
-            //}
-        }
-        e.SetValue(data);
+   //     e.SetByteArray(true);
+   //     CGXByteBuffer data;
+   //     data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+   //     unsigned long cnt = (unsigned long)m_Destinations.size();
+   //     //Add count
+   //     GXHelpers::SetObjectCount(cnt, data);
+   //     for (std::vector< std::string >::iterator it = m_Destinations.begin(); it != m_Destinations.end(); ++it)
+   //     {
+			//data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+			//GXHelpers::SetObjectCount(it->size(), data);
+			//data.Set(it->c_str(), it->size());
+   //         //CGXDLMSVariant value;
+   //         //e.GetValue().Add(&(*it)[0], (int)it->size());
+   //         //if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, value)) != 0) //destination
+   //         //{
+   //         //    return ret;
+   //         //}
+   //     }
+   //     e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -321,26 +315,26 @@ int CGXDLMSAutoConnect::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        SetMode((AUTO_CONNECT_MODE)e.GetValue().ToInteger());
+        //SetMode((AUTO_CONNECT_MODE)e.GetValue().ToInteger());
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 3)
     {
-        SetRepetitions(e.GetValue().lVal);
+       // SetRepetitions(e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 4)
     {
-        SetRepetitionDelay(e.GetValue().lVal);
+        //SetRepetitionDelay(e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 5)
     {
-        m_CallingWindow.clear();
+        /*m_CallingWindow.clear();
         for (std::vector<CGXDLMSVariant>::iterator item = e.GetValue().Arr.begin(); item != e.GetValue().Arr.end(); ++item)
         {
             CGXDLMSVariant tmp;
@@ -349,12 +343,12 @@ int CGXDLMSAutoConnect::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
             CGXDLMSClient::ChangeType(item->Arr[1], DLMS_DATA_TYPE_DATETIME, tmp);
             CGXDateTime end = tmp.dateTime;
             m_CallingWindow.push_back(std::make_pair(start, end));
-        }
+        }*/
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 6)
     {
-        m_Destinations.clear();
+        /*m_Destinations.clear();
         std::vector< std::string > items;
         for (std::vector<CGXDLMSVariant>::iterator item = e.GetValue().Arr.begin(); item != e.GetValue().Arr.end(); ++item)
         {
@@ -362,7 +356,7 @@ int CGXDLMSAutoConnect::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
             CGXDLMSClient::ChangeType(*item, DLMS_DATA_TYPE_STRING, value);
             items.push_back(value.ToString());
         }
-        SetDestinations(items);
+        SetDestinations(items);*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

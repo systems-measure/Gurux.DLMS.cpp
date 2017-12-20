@@ -41,12 +41,6 @@ CGXDLMSMBusClient::CGXDLMSMBusClient() : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLI
 {
 }
 
-//SN Constructor.
-CGXDLMSMBusClient::CGXDLMSMBusClient(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSMBusClient::CGXDLMSMBusClient(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, ln)
 {
@@ -175,7 +169,7 @@ int CGXDLMSMBusClient::GetMethodCount()
 
 void CGXDLMSMBusClient::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
+    /*values.clear();
     std::string ln;
     GetLogicalName(ln);
     values.push_back(ln);
@@ -205,7 +199,7 @@ void CGXDLMSMBusClient::GetValues(std::vector<std::string>& values)
     values.push_back(CGXDLMSVariant(m_DeviceType).ToString());
     values.push_back(CGXDLMSVariant(m_AccessNumber).ToString());
     values.push_back(CGXDLMSVariant(m_Status).ToString());
-    values.push_back(CGXDLMSVariant(m_Alarm).ToString());
+    values.push_back(CGXDLMSVariant(m_Alarm).ToString());*/
 }
 
 void CGXDLMSMBusClient::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -272,7 +266,7 @@ void CGXDLMSMBusClient::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSMBusClient::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusClient::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -332,21 +326,22 @@ int CGXDLMSMBusClient::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSMBusClient::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		CGXByteBuffer data;
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 2)
     {
-        CGXDLMSVariant tmp;
+        /*CGXDLMSVariant tmp;
         GXHelpers::SetLogicalName(m_MBusPortReference.c_str(), tmp);
-        e.SetValue(tmp);
+        e.SetValue(tmp);*/
     }
     else if (e.GetIndex() == 3)
     {
@@ -354,39 +349,39 @@ int CGXDLMSMBusClient::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg&
     }
     else if (e.GetIndex() == 4)
     {
-        e.SetValue(m_CapturePeriod);
+        //e.SetValue(m_CapturePeriod);
     }
     else if (e.GetIndex() == 5)
     {
-        e.SetValue(m_PrimaryAddress);
+        //e.SetValue(m_PrimaryAddress);
     }
     else if (e.GetIndex() == 6)
     {
-        e.SetValue(m_IdentificationNumber);
+        //e.SetValue(m_IdentificationNumber);
     }
     else if (e.GetIndex() == 7)
     {
-        e.SetValue(m_ManufacturerID);
+        //e.SetValue(m_ManufacturerID);
     }
     else if (e.GetIndex() == 8)
     {
-        e.SetValue(m_DataHeaderVersion);
+       // e.SetValue(m_DataHeaderVersion);
     }
     else if (e.GetIndex() == 9)
     {
-        e.SetValue(m_DeviceType);
+        //e.SetValue(m_DeviceType);
     }
     else if (e.GetIndex() == 10)
     {
-        e.SetValue(m_AccessNumber);
+        //e.SetValue(m_AccessNumber);
     }
     else if (e.GetIndex() == 11)
     {
-        e.SetValue(m_Status);
+        //e.SetValue(m_Status);
     }
     else if (e.GetIndex() == 12)
     {
-        e.SetValue(m_Alarm);
+       // e.SetValue(m_Alarm);
     }
     else
     {
@@ -400,59 +395,59 @@ int CGXDLMSMBusClient::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg&
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        m_MBusPortReference.clear();
-        GXHelpers::GetLogicalName(e.GetValue().byteArr, m_MBusPortReference);
+       /* m_MBusPortReference.clear();
+        GXHelpers::GetLogicalName(e.GetValue().byteArr, m_MBusPortReference);*/
     }
     else if (e.GetIndex() == 3)
     {
-        m_CaptureDefinition.clear();
+        /*m_CaptureDefinition.clear();
         CGXDLMSVariant tmp1, tmp2;
         for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
         {
             CGXDLMSClient::ChangeType((*it).Arr[0], DLMS_DATA_TYPE_OCTET_STRING, tmp1);
             CGXDLMSClient::ChangeType((*it).Arr[1], DLMS_DATA_TYPE_OCTET_STRING, tmp2);
             m_CaptureDefinition.push_back(std::pair<std::string, std::string>(tmp1.ToString(), tmp2.ToString()));
-        }
+        }*/
     }
     else if (e.GetIndex() == 4)
     {
-        m_CapturePeriod = e.GetValue().ToInteger();
+       // m_CapturePeriod = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 5)
     {
-        m_PrimaryAddress = e.GetValue().ToInteger();
+       // m_PrimaryAddress = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 6)
     {
-        m_IdentificationNumber = e.GetValue().ToInteger();
+       // m_IdentificationNumber = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 7)
     {
-        m_ManufacturerID = e.GetValue().ToInteger();
+       // m_ManufacturerID = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 8)
     {
-        m_DataHeaderVersion = e.GetValue().ToInteger();
+       // m_DataHeaderVersion = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 9)
     {
-        m_DeviceType = e.GetValue().ToInteger();
+       // m_DeviceType = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 10)
     {
-        m_AccessNumber = e.GetValue().ToInteger();
+       // m_AccessNumber = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 11)
     {
-        m_Status = e.GetValue().ToInteger();
+       // m_Status = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 12)
     {
-        m_Alarm = e.GetValue().ToInteger();
+       // m_Alarm = e.GetValue().ToInteger();
     }
     else
     {

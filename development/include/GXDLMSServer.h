@@ -63,21 +63,13 @@ private:
      * Long get or read transaction information.
      */
     CGXDLMSLongTransaction* m_Transaction;
-
-    /**
-     * Is server initialized.
-     */
-    bool m_Initialized;
-
-    
-    
-    /**
+	/**
     * Parse SNRM Request. If server do not accept client empty byte array is
     * returned.
     *
     * @return Returns returned UA packet.
     */
-    int HandleSnrmRequest(CGXDLMSSettings& settings, CGXByteBuffer& reply);
+    int HandleSnrmRequest(CGXByteBuffer& data);
 
     /**
     * Handle get request normal command.
@@ -126,7 +118,7 @@ private:
     */
     int HandleCommand(
         CGXDLMSConnectionEventArgs& connectionInfo,
-        DLMS_COMMAND cmd,
+        DLMS_COMMAND& cmd,
         CGXByteBuffer& data,
         CGXByteBuffer& reply);
 
@@ -173,7 +165,7 @@ private:
     *            
     * @return 
     */
-    int HandleReadyRead(unsigned char cmd,
+    int HandleReadyRead(DLMS_COMMAND& cmd,
                         unsigned char &frame);           
     
     /**
@@ -198,17 +190,14 @@ private:
     * @return Rows to fit one PDU.
     */
     unsigned short GetRowsToPdu(CGXDLMSProfileGeneric* pg);
-
-    /**
-    * Update short names.
-    *
-    * @param force
-    *            Force update.
-    */
-    int UpdateShortNames(bool force);
+	/**
+	* Is server initialized.
+	*/
+	bool m_Initialized;
+   
 protected:
   
-  bool m_LinkEstablished;
+   bool m_LinkEstablished;
 	/**
 	* Received data.
 	*/
@@ -281,7 +270,7 @@ protected:
      *            Handled read requests.
      */
     virtual void PreRead(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
      * Write selected item(s).
@@ -290,7 +279,13 @@ protected:
      *            Handled write requests.
      */
     virtual void PreWrite(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
+
+	/*
+	If write data or actions with data were successful, then counter of configuarations 
+	and date of last configurations should update by this 
+	*/
+	virtual void Configurated() = 0;
 
     /**
      * Accepted connection is made for the server. All initialization is done
@@ -340,7 +335,7 @@ protected:
      *            Handled action requests.
      */
     virtual void PreAction(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Read selected item(s).
@@ -349,7 +344,7 @@ protected:
     *            Handled read requests.
     */
     virtual void PostRead(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Write selected item(s).
@@ -358,7 +353,7 @@ protected:
     *            Handled write requests.
     */
     virtual void PostWrite(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Action is occurred.
@@ -367,7 +362,7 @@ protected:
     *            Handled action requests.
     */
     virtual void PostAction(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Get selected value(s). This is called when example profile generic
@@ -377,7 +372,7 @@ protected:
     *            Value event arguments.
     */
     virtual void PreGet(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Get selected value(s). This is called when example profile generic
@@ -387,12 +382,9 @@ protected:
     *            Value event arguments.
     */
     virtual void PostGet(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Update short names.
-    */
-    int UpdateShortNames();
+  
 	
 	bool IsLongTransaction();
 
@@ -465,7 +457,7 @@ public:
     /**
      * @return Information from the connection size that server can handle.
      */
-    CGXDLMSLimits GetLimits();
+    CGXDLMSLimits& GetLimits();
 
     /**
      * Retrieves the maximum size of received PDU. PDU size tells maximum size
@@ -520,8 +512,7 @@ public:
     // * @return Response to the request. Response is NULL if request packet is
     // *         not complete.
     // */
-    int HandleRequest(
-        CGXByteBuffer& reply);
+    int HandleRequest(CGXByteBuffer& reply);
 
 
     /**

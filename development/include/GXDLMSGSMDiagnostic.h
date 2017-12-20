@@ -32,45 +32,30 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 
-#ifndef GXDLMSAUTOCONNECT_H
-#define GXDLMSAUTOCONNECT_H
+#ifndef GXDLMSGSMDIAGNOSTIC_H
+#define GXDLMSGSMDIAGNOSTIC_H
 
 #include "GXDLMSObject.h"
-#include "GXDLMSAutoAnswer.h"
+#include "GXDLMSQualityOfService.h"
 
-class CGXDLMSAutoConnect : public CGXDLMSObject
+class CGXDLMSGSMDiagnostic : public CGXDLMSObject
 {
-    AUTO_CONNECT_MODE m_Mode;
-    std::vector<std::pair< CGXDateTime, CGXDateTime> > m_CallingWindow;
-    std::vector< std::string > m_Destinations;
-    int m_RepetitionDelay;
-    int m_Repetitions;
-
-    void Init();
-
 public:
     //Constructor.
-    CGXDLMSAutoConnect();
-
+    CGXDLMSGSMDiagnostic();
+	
 	//LN Constructor.
-    CGXDLMSAutoConnect(const char* ln);
+    CGXDLMSGSMDiagnostic(const char* ln);
 
-    AUTO_CONNECT_MODE GetMode();
-    void SetMode(AUTO_CONNECT_MODE value);
+    std::string GetAPN();
+    void SetAPN(std::string value);
 
-    int GetRepetitions();
+    long GetPINCode();
+    void SetPINCode(long value);
 
-    void SetRepetitions(int value);
+    CGXDLMSQualityOfService& GetDefaultQualityOfService();
 
-    int GetRepetitionDelay();
-    void SetRepetitionDelay(int value);
-
-    std::vector<std::pair< CGXDateTime, CGXDateTime> >& GetCallingWindow();
-    void SetCallingWindow(std::vector<std::pair< CGXDateTime, CGXDateTime> > value);
-
-    std::vector< std::string >& GetDestinations();
-
-    void SetDestinations(std::vector< std::string >& value);
+    CGXDLMSQualityOfService& GetRequestedQualityOfService();
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -91,4 +76,5 @@ public:
     // Set value of given attribute.
     int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
-#endif //GXDLMSAUTOCONNECT_H
+
+#endif //GXDLMSGSMDIAGNOSTIC_H

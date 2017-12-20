@@ -43,28 +43,16 @@ class CGXDLMSAssociationLogicalName : public CGXDLMSObject
 {
 private:
 	unsigned char m_pos;
-    DLMS_DLMS_ASSOCIATION_STATUS m_AssociationStatus;
+	unsigned char m_ClientSAP;
+	unsigned short m_ServerSAP;
     CGXDLMSObjectCollection m_ObjectList;
-    unsigned char m_ClientSAP;
-    unsigned short m_ServerSAP;
     CGXApplicationContextName m_ApplicationContextName;
     CGXDLMSContextType m_XDLMSContextInfo;
     CGXAuthenticationMechanismName m_AuthenticationMechanismName;
-    /**
-     * Secret used in Low Level Authentication.
-     */
-    CGXByteBuffer m_LlsSecret;
-    /**
-     * Secret used in High Level Authentication.
-     */
-    CGXByteBuffer m_HlsSecret;
+	DLMS_DLMS_ASSOCIATION_STATUS m_AssociationStatus;
     std::string m_SecuritySetupReference;
 
     void Init();
-
-    void UpdateAccessRights(
-        CGXDLMSObject* pObj,
-        CGXDLMSVariant data);
 
     int GetAccessRights(
         CGXDLMSObject* pItem,
@@ -108,7 +96,7 @@ public:
 
     CGXAuthenticationMechanismName GetAuthenticationMechanismMame();
 
-    CGXByteBuffer& GetSecret();
+    void GetSecret(CGXByteBuffer& lls);
 
     void SetSecret(CGXByteBuffer& value);
 
@@ -130,7 +118,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

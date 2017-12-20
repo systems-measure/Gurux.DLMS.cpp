@@ -39,28 +39,22 @@
 
 class CGXDLMSData : public CGXDLMSObject
 {
-    CGXDLMSVariant m_Value;
+    CArtVariant m_Value;
 public:
     //Constructor.
     CGXDLMSData();
-
-    //SN Constructor.
-    CGXDLMSData(unsigned short sn);
-
-    //SN Constructor.
-    CGXDLMSData(unsigned short sn, CGXDLMSVariant value);
 
     //LN Constructor.
     CGXDLMSData(const char* ln);
 
     //LN Constructor.
-    CGXDLMSData(const char* ln, CGXDLMSVariant value);
+    CGXDLMSData(const char* ln, CArtVariant value);
 
     // Get value of COSEM Data object.
-    CGXDLMSVariant GetValue();
+    CArtVariant GetValue();
 
     // Set value of COSEM Data object.
-    void SetValue(CGXDLMSVariant& value);
+    void SetValue(CArtVariant& value);
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -73,7 +67,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

@@ -38,7 +38,7 @@
 #include "errorcodes.h"
 #include "enums.h"
 
-const unsigned char VECTOR_CAPACITY = 10;
+const unsigned char VECTOR_CAPACITY = 24;
 class CGXByteBuffer
 {
     unsigned char* m_Data;
@@ -78,6 +78,8 @@ public:
 
     //Get buffer capacity.
     unsigned long Capacity();
+
+	void Reserve(unsigned long capacity);
 
     //Fill buffer it with zeros.
     void Zero(unsigned long index, unsigned long count);
@@ -143,7 +145,7 @@ public:
 
     int Get(unsigned char* value, unsigned long count);
 
-    unsigned char* GetData();
+    unsigned char*& GetData();
 
     void ToArray(unsigned char*& value, unsigned long& count);
 

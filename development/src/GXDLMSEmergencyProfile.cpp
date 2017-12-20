@@ -37,11 +37,11 @@
 #include "../include/GXDLMSEmergencyProfile.h"
 #include <sstream>
 
-int CGXDLMSEmergencyProfile::GetID()
+unsigned short CGXDLMSEmergencyProfile::GetID()
 {
     return m_ID;
 }
-void CGXDLMSEmergencyProfile::SetID(int value)
+void CGXDLMSEmergencyProfile::SetID(unsigned short value)
 {
     m_ID = value;
 }
@@ -53,11 +53,11 @@ void CGXDLMSEmergencyProfile::SetActivationTime(CGXDateTime value)
 {
     m_ActivationTime = value;
 }
-int CGXDLMSEmergencyProfile::GetDuration()
+unsigned long CGXDLMSEmergencyProfile::GetDuration()
 {
     return m_Duration;
 }
-void CGXDLMSEmergencyProfile::SetDuration(int value)
+void CGXDLMSEmergencyProfile::SetDuration(unsigned long value)
 {
     m_Duration = value;
 }

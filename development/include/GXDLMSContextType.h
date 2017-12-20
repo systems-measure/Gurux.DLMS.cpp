@@ -41,11 +41,11 @@
 class CGXDLMSContextType
 {
 private:
+	unsigned short m_MaxReceivePduSize;
+	unsigned short m_MaxSendPduSize;
+	unsigned char m_DlmsVersionNumber;
+	char m_QualityOfService;
     DLMS_CONFORMANCE m_Conformance;
-    int m_MaxReceivePduSize;
-    int m_MaxSendPpuSize;
-    int m_DlmsVersionNumber;
-    int m_QualityOfService;
     CGXByteBuffer m_CypheringInfo;
 
 public:
@@ -64,17 +64,17 @@ public:
     */
     void SetConformance(DLMS_CONFORMANCE value);
 
-    int GetMaxPduSize();
-    void SetMaxReceivePduSize(int value);
+	unsigned short GetMaxPduSize();
+    void SetMaxReceivePduSize(unsigned short value);
 
-    int GetMaxSendPpuSize();
-    void SetMaxSendPpuSize(int value);
+	unsigned short GetMaxSendPduSize();
+    void SetMaxSendPduSize(unsigned short value);
 
-    int GetDlmsVersionNumber();
-    void SetDlmsVersionNumber(int value);
+	unsigned char GetDlmsVersionNumber();
+    void SetDlmsVersionNumber(unsigned char value);
 
-    int GetQualityOfService();
-    void SetQualityOfService(int value);
+	char GetQualityOfService();
+    void SetQualityOfService(char value);
 
     CGXByteBuffer& GetCypheringInfo();
     void SetCypheringInfo(CGXByteBuffer& value);

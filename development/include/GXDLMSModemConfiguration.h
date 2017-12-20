@@ -57,13 +57,6 @@ public:
     */
     CGXDLMSModemConfiguration(const char* ln);
 
-    /**
-     Constructor.
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSModemConfiguration(int sn);
-
     DLMS_BAUD_RATE GetCommunicationSpeed();
 
     void SetCommunicationSpeed(DLMS_BAUD_RATE value);
@@ -85,7 +78,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

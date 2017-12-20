@@ -48,11 +48,8 @@ protected:
 public:
     //Constructor.
     CGXDLMSExtendedRegister(void);
-
-    //SN Constructor.
-    CGXDLMSExtendedRegister(unsigned short sn);
-
-    //LN Constructor.
+	
+	//LN Constructor.
     CGXDLMSExtendedRegister(const char* ln);
 
     /**
@@ -80,12 +77,12 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
     int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
-    int GetUIDataType(int index, DLMS_DATA_TYPE& type);
+    int GetUIDataType(signed char index, DLMS_DATA_TYPE& type);
 };
 #endif //GXDLMSEXTENDEDREGISTER_H

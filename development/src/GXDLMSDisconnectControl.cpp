@@ -42,52 +42,10 @@ CGXDLMSDisconnectControl::CGXDLMSDisconnectControl() : CGXDLMSObject(DLMS_OBJECT
 {
 }
 
-//SN Constructor.
-CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL, ln)
 {
 
-}
-
-/**
- Output state of COSEM Disconnect Control object.
-*/
-bool CGXDLMSDisconnectControl::GetOutputState()
-{
-    return m_OutputState;
-}
-void CGXDLMSDisconnectControl::SetOutputState(bool value)
-{
-    m_OutputState = value;
-}
-
-/**
- Control state of COSEM Disconnect Control object.
-*/
-DLMS_CONTROL_STATE CGXDLMSDisconnectControl::GetControlState()
-{
-    return m_ControlState;
-}
-void CGXDLMSDisconnectControl::SetControlState(DLMS_CONTROL_STATE value)
-{
-    m_ControlState = value;
-}
-
-/**
-Control mode of COSEM Disconnect Control object.
-*/
-DLMS_CONTROL_MODE CGXDLMSDisconnectControl::GetControlMode()
-{
-    return m_ControlMode;
-}
-void CGXDLMSDisconnectControl::SetControlMode(DLMS_CONTROL_MODE value)
-{
-    m_ControlMode = value;
 }
 
 // Returns amount of attributes.
@@ -104,13 +62,7 @@ int CGXDLMSDisconnectControl::GetMethodCount()
 
 void CGXDLMSDisconnectControl::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSVariant(m_OutputState).ToString());
-    values.push_back(CGXDLMSConverter::ToString(m_ControlState));
-    values.push_back(CGXDLMSConverter::ToString(m_ControlMode));
+  
 }
 
 void CGXDLMSDisconnectControl::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -137,7 +89,7 @@ void CGXDLMSDisconnectControl::GetAttributeIndexToRead(std::vector<int>& attribu
     }
 }
 
-int CGXDLMSDisconnectControl::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSDisconnectControl::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -165,31 +117,28 @@ int CGXDLMSDisconnectControl::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSDisconnectControl::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(m_OutputState);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetValue(m_ControlState);
-        return DLMS_ERROR_CODE_OK;
+	    return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetValue(m_ControlMode);
-        return DLMS_ERROR_CODE_OK;
+		return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
@@ -199,19 +148,19 @@ int CGXDLMSDisconnectControl::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEv
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        m_OutputState = e.GetValue().boolVal;
+		
     }
     else if (e.GetIndex() == 3)
     {
-        m_ControlState = (DLMS_CONTROL_STATE)e.GetValue().ToInteger();
+		
     }
     else if (e.GetIndex() == 4)
     {
-        m_ControlMode = (DLMS_CONTROL_MODE)e.GetValue().ToInteger();
+		
     }
     else
     {

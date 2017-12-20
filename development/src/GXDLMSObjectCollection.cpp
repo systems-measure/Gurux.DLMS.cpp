@@ -46,6 +46,8 @@
 #include "../include/GXDLMSScriptTable.h"
 #include "../include/GXDLMSPushSetup.h"
 #include "../include/GXDLMSDisconnectControl.h"
+#include "../include/GXDLMSGPRSSetup.h"
+#include "../include/GXDLMSGSMDiagnostic.h"
 #include <sstream>
 
 void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
@@ -91,15 +93,22 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 	case DLMS_OBJECT_TYPE_PUSH_SETUP:
 		constructed_obj = new CGXDLMSPushSetup();
 		break;
+    case DLMS_OBJECT_TYPE_GPRS_SETUP:
+        constructed_obj = new CGXDLMSGPRSSetup();
+        break;
+    case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+        constructed_obj = new CGXDLMSGPRSSetup();
+        break;
 	default:
-		constructed_obj = NULL;
+		constructed_obj = nullptr;
 		break;
 	}
 }
 
 CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	constructed_obj = nullptr;
-	idx_constructed_obj = new uint8_t(0);
+	idx_constructed_obj = new uint8_t;
+    *idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
 }
@@ -138,7 +147,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, std::str
 			if (type_callback != nullptr) {
 				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str(), idx_constructed_obj);
 				CreateObject(o_type);
-				if (constructed_obj != NULL) {
+				if (constructed_obj != nullptr) {
 					GXHelpers::SetLogicalName(ln.c_str(), constructed_obj->m_LN);
 					if (init_callback != nullptr) {
 						init_callback(constructed_obj, idx_constructed_obj);
@@ -148,14 +157,14 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, std::str
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, CGXByteBuffer& ln)
 {
     if (ln.GetSize() != 6)
     {
-        return NULL;
+        return nullptr;
     }
     for (std::vector<CGXDLMSObject*>::iterator it = dlms_only_obj.begin(); it != dlms_only_obj.end(); ++it)
     {
@@ -176,7 +185,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, CGXByteB
 			if (type_callback != nullptr) {
 				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln.c_str(), idx_constructed_obj);
 				CreateObject(o_type);
-				if (constructed_obj != NULL) {
+				if (constructed_obj != nullptr) {
 					memcpy(constructed_obj->m_LN, *it, 6);
 					if (init_callback != nullptr) {
 						init_callback(constructed_obj, idx_constructed_obj);
@@ -186,7 +195,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(DLMS_OBJECT_TYPE type, CGXByteB
 			}
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 unsigned char* CGXDLMSObjectCollection::FindByLN(const char* ln) {
@@ -202,9 +211,26 @@ unsigned char* CGXDLMSObjectCollection::FindByLN(const char* ln) {
 	return nullptr;
 }
 
-CGXDLMSObject* CGXDLMSObjectCollection::FindBySN(unsigned short sn)
-{
-    return NULL;
+unsigned char* CGXDLMSObjectCollection::FindByLN(CGXByteBuffer& ln) {
+	if (ln.GetSize() != 6)
+	{
+		return nullptr;
+	}
+	for (std::vector<CGXDLMSObject*>::iterator it = dlms_only_obj.begin(); it != dlms_only_obj.end(); ++it)
+	{
+		if (memcmp(ln.GetData(), (*it)->m_LN, 6) == 0)
+		{
+			return (*it)->m_LN;
+		}
+	}
+	for (CGXDLMSObjectCollection::iterator it = this->begin(); it != end(); ++it)
+	{
+		if (memcmp(ln.GetData(), (*it), 6) == 0)
+		{
+			return (*it);
+		}
+	}
+	return nullptr;
 }
 
 std::vector<CGXDLMSObject*>& CGXDLMSObjectCollection::GetDlmsObj() {
@@ -282,40 +308,4 @@ void CGXDLMSObjectCollection::FreeConstructedObj() {
 		delete constructed_obj;
 		constructed_obj = nullptr;
 	}
-}
-
-std::string CGXDLMSObjectCollection::ToString()
-{
-    std::stringstream sb;
-	CGXDLMSObject* tmp_obj = NULL;
-	CGXByteBuffer ln;
-    sb << '[';
-    bool empty = true;
-    for (CGXDLMSObjectCollection::iterator it = begin(); it != end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-		ln.Clear();
-		ln.Set(*it, 6);
-		tmp_obj = FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
-        std::string str = tmp_obj->GetName();
-        sb.write(str.c_str(), str.size());
-		tmp_obj = NULL;
-		FreeConstructedObj();
-    }
-	for (std::vector<CGXDLMSObject*>::iterator it = dlms_only_obj.begin(); it != dlms_only_obj.end(); ++it)
-	{
-		if (!empty)
-		{
-			sb << ", ";
-		}
-		empty = false;
-		std::string str = (*it)->GetName();
-		sb.write(str.c_str(), str.size());
-	}
-    sb << ']';
-    return sb.str();
 }

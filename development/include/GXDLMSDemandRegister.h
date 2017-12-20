@@ -39,15 +39,7 @@
 
 class CGXDLMSDemandRegister : public CGXDLMSObject
 {
-    CGXDLMSVariant m_CurrentAvarageValue;
-    CGXDLMSVariant m_LastAvarageValue;
-    signed char m_Scaler;
-    unsigned char m_Unit;
-    CGXDLMSVariant m_Status;
-    CGXDateTime m_CaptureTime;
-    CGXDateTime m_StartTimeCurrent;
-    int m_NumberOfPeriods;
-    unsigned long m_Period;
+
 
 protected:
     bool IsRead(int index);
@@ -65,61 +57,7 @@ public:
     */
     CGXDLMSDemandRegister(const char* ln);
 
-    /**
-     Constructor.
-
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSDemandRegister(int sn);
-
-    /**
-     Current avarage value of COSEM Data object.
-    */
-    CGXDLMSVariant GetCurrentAvarageValue();
-    void SetCurrentAvarageValue(CGXDLMSVariant value);
-
-    /**
-     Last avarage value of COSEM Data object.
-    */
-    CGXDLMSVariant GetLastAvarageValue();
-    void SetLastAvarageValue(CGXDLMSVariant value);
-
-    /**
-     Scaler of COSEM Register object.
-    */
-    double GetScaler();
-    void SetScaler(double value);
-
-    // Unit of COSEM Register object.
-    int GetUnit();
-    void SetUnit(unsigned char value);
-
-    /**
-     Scaler of COSEM Register object.
-    */
-    CGXDLMSVariant GetStatus();
-    void SetStatus(CGXDLMSVariant value);
-
-    /**
-     Capture time of COSEM Register object.
-    */
-    CGXDateTime GetCaptureTime();
-    void SetCaptureTime(CGXDateTime value);
-
-    /**
-     Current start time of COSEM Register object.
-    */
-    CGXDateTime GetStartTimeCurrent();
-    void SetStartTimeCurrent(CGXDateTime value);
-
-    unsigned long GetPeriod();
-    void SetPeriod(unsigned long value);
-
-    int GetNumberOfPeriods();
-    void SetNumberOfPeriods(int value);
-
-    /*
+       /*
      * Reset value.
      */
     void Reset();
@@ -142,7 +80,7 @@ public:
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

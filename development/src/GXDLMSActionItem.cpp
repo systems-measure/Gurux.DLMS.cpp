@@ -49,11 +49,11 @@ void CGXDLMSActionItem::SetLogicalName(std::string value)
     m_LogicalName = value;
 }
 
-int CGXDLMSActionItem::GetScriptSelector()
+unsigned short CGXDLMSActionItem::GetScriptSelector()
 {
     return m_ScriptSelector;
 }
-void CGXDLMSActionItem::SetScriptSelector(int value)
+void CGXDLMSActionItem::SetScriptSelector(unsigned short value)
 {
     m_ScriptSelector = value;
 }

@@ -34,77 +34,73 @@
 
 #include "../include/GXDLMSVariant.h"
 #include "../include/GXDLMSClient.h"
-#include "../include/GXDLMSRegisterActivation.h"
-#include <sstream>
+#include "../include/GXDLMSGSMDiagnostic.h"
 
 //Constructor.
-CGXDLMSRegisterActivation::CGXDLMSRegisterActivation() : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER_ACTIVATION)
+CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic() : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP)
 {
 }
 
 //LN Constructor.
-CGXDLMSRegisterActivation::CGXDLMSRegisterActivation(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER_ACTIVATION, ln)
+CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
 {
-
-}
-
-std::vector<CGXDLMSObjectDefinition>& CGXDLMSRegisterActivation::GetRegisterAssignment()
-{
-    return m_RegisterAssignment;
-}
-
-std::vector<std::pair<CGXByteBuffer, CGXByteBuffer > >& CGXDLMSRegisterActivation::GetMaskList()
-{
-    return m_MaskList;
-}
-
-CGXByteBuffer& CGXDLMSRegisterActivation::GetActiveMask()
-{
-    return m_ActiveMask;
 }
 
 // Returns amount of attributes.
-int CGXDLMSRegisterActivation::GetAttributeCount()
+int CGXDLMSGSMDiagnostic::GetAttributeCount()
 {
-    return 4;
+    return 8;
 }
 
 // Returns amount of methods.
-int CGXDLMSRegisterActivation::GetMethodCount()
+int CGXDLMSGSMDiagnostic::GetMethodCount()
 {
-    return 3;
+    return 0;
 }
 
-void CGXDLMSRegisterActivation::GetValues(std::vector<std::string>& values)
+void CGXDLMSGSMDiagnostic::GetValues(std::vector<std::string>& values)
 {
-   
+
 }
 
-void CGXDLMSRegisterActivation::GetAttributeIndexToRead(std::vector<int>& attributes)
+void CGXDLMSGSMDiagnostic::GetAttributeIndexToRead(std::vector<int>& attributes)
 {
     //LN is static and read only once.
     if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
     {
         attributes.push_back(1);
     }
-    //RegisterAssignment
     if (!IsRead(2))
     {
         attributes.push_back(2);
     }
-    //MaskList
     if (!IsRead(3))
     {
         attributes.push_back(3);
     }
-    //ActiveMask
     if (!IsRead(4))
     {
         attributes.push_back(4);
     }
+    if (!IsRead(5))
+    {
+        attributes.push_back(5);
+    }
+    if (!IsRead(6))
+    {
+        attributes.push_back(6);
+    }
+    if (!IsRead(7))
+    {
+        attributes.push_back(7);
+    }
+    if (!IsRead(8))
+    {
+        attributes.push_back(8);
+    }
 }
 
-int CGXDLMSRegisterActivation::GetDataType(signed char index, DLMS_DATA_TYPE& type)
+int CGXDLMSGSMDiagnostic::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -113,28 +109,51 @@ int CGXDLMSRegisterActivation::GetDataType(signed char index, DLMS_DATA_TYPE& ty
     }
     if (index == 2)
     {
-        return CGXDLMSObject::GetDataType(index, type);
+        type = DLMS_DATA_TYPE_STRING;
+        return DLMS_ERROR_CODE_OK;
     }
     if (index == 3)
     {
-        return CGXDLMSObject::GetDataType(index, type);
+        type = DLMS_DATA_TYPE_ENUM;
+        return DLMS_ERROR_CODE_OK;
     }
     if (index == 4)
     {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
+        type = DLMS_DATA_TYPE_ENUM;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 5)
+    {
+        type = DLMS_DATA_TYPE_ENUM;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 6)
+    {
+        type = DLMS_DATA_TYPE_STRUCTURE;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 7)
+    {
+        type = DLMS_DATA_TYPE_ARRAY;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 8)
+    {
+        type = DLMS_DATA_TYPE_DATETIME;
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 // Returns value of given attribute.
-int CGXDLMSRegisterActivation::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
+int CGXDLMSGSMDiagnostic::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
-    CGXByteBuffer data;
+	CGXByteBuffer data;
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        if ((ret = GetLogicalName(this, data)) != 0)
+		if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
@@ -143,24 +162,37 @@ int CGXDLMSRegisterActivation::GetValue(CGXDLMSSettings& settings, CGXDLMSValueE
     }
     if (e.GetIndex() == 2)
     {
-        
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-       
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 5)
+    {
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 6)
+    {
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 7)
+    {
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 8)
+    {
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 // Set value of given attribute.
-int CGXDLMSRegisterActivation::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
+int CGXDLMSGSMDiagnostic::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     if (e.GetIndex() == 1)
     {
@@ -168,15 +200,30 @@ int CGXDLMSRegisterActivation::SetValue(CGXDLMSSettings& settings, CGXDLMSValueE
     }
     else if (e.GetIndex() == 2)
     {
-        
+
     }
     else if (e.GetIndex() == 3)
     {
-        
     }
     else if (e.GetIndex() == 4)
     {
-        
+
+    }
+    else if (e.GetIndex() == 5)
+    {
+
+    }
+    else if (e.GetIndex() == 6)
+    {
+
+    }
+    else if (e.GetIndex() == 7)
+    {
+
+    }
+    else if (e.GetIndex() == 8)
+    {
+
     }
     else
     {
@@ -184,3 +231,4 @@ int CGXDLMSRegisterActivation::SetValue(CGXDLMSSettings& settings, CGXDLMSValueE
     }
     return DLMS_ERROR_CODE_OK;
 }
+
