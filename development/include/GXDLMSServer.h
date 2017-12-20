@@ -291,7 +291,7 @@ protected:
 	Check than push message exists and need send it by HDLC protocol
 	return true if invokes server's interface is Rs485 and push message exists
 	*/
-	virtual void CheckPushNeeded(unsigned char cntrl_field) = 0;
+	virtual void CheckPushNeeded(CGXReplyData& info) = 0;
 
     /**
      * Accepted connection is made for the server. All initialization is done

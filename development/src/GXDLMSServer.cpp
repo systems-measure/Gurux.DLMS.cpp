@@ -438,7 +438,7 @@ unsigned char ParseSNRM(CGXByteBuffer& data, CGXDLMSLimits& lms) {
 	}
 }
 
-int CGXDLMSServer::HandleSnrmRequest(CGXByteBuffer& data/*, CGXDLMSSettings& settings, CGXByteBuffer& reply*/)
+int CGXDLMSServer::HandleSnrmRequest(CGXByteBuffer& data)
 {
 	m_Settings.GetLimits().SetWindowSizeRX(1);
 	m_Settings.GetLimits().SetWindowSizeTX(1);
@@ -1657,8 +1657,8 @@ int CGXDLMSServer::HandleRequest(
         m_Info.Clear();
         return 0;
     }
-    CheckPushNeeded(m_Info.GetControlField());
     ret = HandleCommand(connectionInfo, m_Info.GetCommand(), m_Info.GetData(), reply);
+	CheckPushNeeded(m_Info);
     m_Info.Clear();
     return ret;
 }
