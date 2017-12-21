@@ -293,6 +293,11 @@ protected:
 	*/
 	virtual void CheckPushNeeded(CGXReplyData& info) = 0;
 
+	/*
+	Check special CALLING device phisical address in SNRM request if push message sended
+	*/
+	virtual bool CheckCallingAfterPush() = 0;
+
     /**
      * Accepted connection is made for the server. All initialization is done
      * here.

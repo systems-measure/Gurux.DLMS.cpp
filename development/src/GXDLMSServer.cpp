@@ -1630,8 +1630,11 @@ int CGXDLMSServer::HandleRequest(
     // Check is data send to this server.
     if (!IsTarget(m_Settings.GetServerAddress(), m_Settings.GetClientAddress()))
     {
-        m_Info.Clear();
-        return 0;
+		if (m_Info.GetCommand() != DLMS_COMMAND_SNRM || !CheckCallingAfterPush() || (m_Info.GetControlField()&0x10 == 0) )
+		{
+			m_Info.Clear();
+			return 0;
+		} 
     }
 
     // If client want next frame.
