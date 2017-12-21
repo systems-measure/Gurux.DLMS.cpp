@@ -37,12 +37,12 @@
 #include "../include/GXDLMSGSMDiagnostic.h"
 
 //Constructor.
-CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic() : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP)
+CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic() : CGXDLMSObject(DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC)
 {
 }
 
 //LN Constructor.
-CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
+CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC, ln)
 {
 }
 

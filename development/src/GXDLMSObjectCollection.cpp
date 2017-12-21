@@ -97,7 +97,7 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
         constructed_obj = new CGXDLMSGPRSSetup();
         break;
     case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
-        constructed_obj = new CGXDLMSGPRSSetup();
+        constructed_obj = new CGXDLMSGSMDiagnostic();
         break;
 	default:
 		constructed_obj = nullptr;

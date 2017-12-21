@@ -70,6 +70,7 @@
 #include "../include/GXDLMSMBusMasterPortSetup.h"
 #include "../include/GXDLMSMessageHandler.h"
 #include "../include/GXDLMSPushSetup.h"
+#include "../include/GXDLMSGSMDiagnostic.h"
 
 // Reserved for internal use.
 CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
@@ -128,6 +129,8 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
         return new CGXDLMSProfileGeneric();
     case DLMS_OBJECT_TYPE_REGISTER:
         return new CGXDLMSRegister();
+    case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+        return new CGXDLMSGSMDiagnostic();
     case DLMS_OBJECT_TYPE_REGISTER_ACTIVATION:
         return new CGXDLMSRegisterActivation();
     case DLMS_OBJECT_TYPE_REGISTER_MONITOR:
