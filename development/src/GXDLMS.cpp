@@ -1661,7 +1661,8 @@ int CGXDLMS::HandleSetResponse(
 int CGXDLMS::HandleGbt(CGXDLMSSettings& settings, CGXReplyData& data)
 {
     int ret;
-    unsigned char ch, bn, bna;
+	unsigned char ch;
+	unsigned short bn, bna;
     data.SetGbt(true);
     int index = data.GetData().GetPosition() - 1;
     if ((ret = data.GetData().GetUInt8(&ch)) != 0)
@@ -1672,43 +1673,43 @@ int CGXDLMS::HandleGbt(CGXDLMSSettings& settings, CGXReplyData& data)
     //TODO: bool streaming = (ch & 0x40) == 1;
     unsigned char window = (ch & 0x3F);
     // Block number.
-    if ((ret = data.GetData().GetUInt8(&bn)) != 0)
+    if ((ret = data.GetData().GetUInt16(&bn)) != 0)
     {
         return ret;
     }
     // Block number acknowledged.
-    if ((ret = data.GetData().GetUInt8(&bna)) != 0)
+    if ((ret = data.GetData().GetUInt16(&bna)) != 0)
     {
         return ret;
     }
-    // Get APU tag.
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0)
-    {
-        //Invalid APU.
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    // Get Addl tag.
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0)
-    {
-        //Invalid APU.
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0)
-    {
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
+    //// Get APU tag.
+    //if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+    //{
+    //    return ret;
+    //}
+    //if (ch != 0)
+    //{
+    //    //Invalid APU.
+    //    return DLMS_ERROR_CODE_INVALID_TAG;
+    //}
+    //// Get Addl tag.
+    //if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+    //{
+    //    return ret;
+    //}
+    //if (ch != 0)
+    //{
+    //    //Invalid APU.
+    //    return DLMS_ERROR_CODE_INVALID_TAG;
+    //}
+    //if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+    //{
+    //    return ret;
+    //}
+    //if (ch != 0)
+    //{
+    //    return DLMS_ERROR_CODE_INVALID_TAG;
+    //}
     data.SetCommand(DLMS_COMMAND_NONE);
     if (window != 0)
     {
