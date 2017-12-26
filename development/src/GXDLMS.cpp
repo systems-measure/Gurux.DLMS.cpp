@@ -180,22 +180,22 @@ int CGXDLMS::ReceiverReady(
     DLMS_COMMAND cmd;
     CGXByteBuffer bb(6);
     std::vector<CGXByteBuffer> tmp;
-    if (settings.GetUseLogicalNameReferencing())
+    /*if (settings.GetUseLogicalNameReferencing())
     {
         if (settings.IsServer())
-        {
+        {*/
             cmd = DLMS_COMMAND_GET_RESPONSE;
-        }
-        else
+        //}
+       /* else
         {
             cmd = DLMS_COMMAND_GET_REQUEST;
-        }
+        }*/
 		bb.SetUInt32(settings.GetBlockIndex());
 		settings.IncreaseBlockIndex();
 		CGXDLMSLNParameters p(&settings, cmd,
 			DLMS_GET_COMMAND_TYPE_NEXT_DATA_BLOCK, &bb, NULL, 0xff);
 		ret = GetLnMessages(p, tmp);
-    }
+    //}
    ///* else
    // {
    //     if (settings.IsServer())
@@ -248,24 +248,24 @@ int CGXDLMS::GetWrapperFrame(
     reply.Clear();
     // Add version.
     reply.SetUInt16(1);
-    if (settings.IsServer())
-    {
+    /*if (settings.IsServer())
+    {*/
         reply.SetUInt16((unsigned short)settings.GetServerAddress());
         reply.SetUInt16((unsigned short)settings.GetClientAddress());
-    }
-    else
+    //}
+    /*else
     {
         reply.SetUInt16((unsigned short)settings.GetClientAddress());
         reply.SetUInt16((unsigned short)settings.GetServerAddress());
-    }
+    }*/
     // Data length.
     reply.SetUInt16((unsigned short)data.GetSize());
     // Data
     reply.Set(&data, data.GetPosition(), -1);
 
     // Remove sent data in server side.
-    if (settings.IsServer())
-    {
+    /*if (settings.IsServer())
+    {*/
         if (data.GetSize() == data.GetPosition())
         {
             data.Clear();
@@ -275,7 +275,7 @@ int CGXDLMS::GetWrapperFrame(
             data.Move(data.GetPosition(), 0, data.GetSize() - data.GetPosition());
             data.SetPosition(0);
         }
-    }
+    //}
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -300,8 +300,8 @@ int CGXDLMS::GetHdlcFrame(
     unsigned short frameSize;
     int ret, len = 0;
     CGXByteBuffer primaryAddress, secondaryAddress;
-    if (settings.IsServer())
-    {
+    /*if (settings.IsServer())
+    {*/
         if ((ret = GetAddressBytes(settings.GetClientAddress(), primaryAddress)) != 0)
         {
             return ret;
@@ -310,8 +310,8 @@ int CGXDLMS::GetHdlcFrame(
         {
             return ret;
         }
-    }
-    else
+    //}
+    /*else
     {
         if ((ret = GetAddressBytes(settings.GetServerAddress(), primaryAddress)) != 0)
         {
@@ -321,7 +321,7 @@ int CGXDLMS::GetHdlcFrame(
         {
             return ret;
         }
-    }
+    }*/
 
     // Add BOP
     reply.SetUInt8(HDLC_FRAME_START_END);
@@ -392,8 +392,8 @@ int CGXDLMS::GetHdlcFrame(
     // Add EOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     // Remove sent data in server side.
-    if (settings.IsServer())
-    {
+    /*if (settings.IsServer())
+    {*/
         if (data != NULL)
         {
             if (data->GetSize() == data->GetPosition())
@@ -406,7 +406,7 @@ int CGXDLMS::GetHdlcFrame(
                 data->SetPosition(0);
             }
         }
-    }
+    //}
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -506,14 +506,14 @@ long CGXDLMS::GetLongInvokeIDPriority(CGXDLMSSettings& settings)
      */
 void AddLLCBytes(CGXDLMSSettings* settings, CGXByteBuffer& data)
 {
-    if (settings->IsServer())
-    {
+    /*if (settings->IsServer())
+    {*/
         data.Set(LLC_REPLY_BYTES, 3);
-    }
-    else
+    //}
+    /*else
     {
         data.Set(LLC_SEND_BYTES, 3);
-    }
+    }*/
 }
 
 /**
@@ -811,14 +811,14 @@ int CGXDLMS::GetLnMessages(
                 ret = GetHdlcFrame(*p.GetSettings(), frame, &reply, tmp);
                 if (ret == 0 && reply.GetPosition() != reply.GetSize())
                 {
-                    if (p.GetSettings()->IsServer())
-                    {
+                    /*if (p.GetSettings()->IsServer())
+                    {*/
                         frame = 0;
-                    }
-                    else
+                    //}
+                    /*else
                     {
                         frame = p.GetSettings()->GetNextSend(0);
-                    }
+                    }*/
                 }
             }
             if (ret != 0)
@@ -1072,7 +1072,6 @@ int CGXDLMS::GetLnMessages(
 //}
 
 int CGXDLMS::GetHdlcData(
-    bool server,
     CGXDLMSSettings& settings,
     CGXByteBuffer& reply,
     CGXReplyData& data,
@@ -1123,7 +1122,7 @@ int CGXDLMS::GetHdlcData(
     if ((frame & 0xF0) != 0xA0)
     {
         // If same data.
-        return GetHdlcData(server, settings, reply, data, frame);
+        return GetHdlcData(settings, reply, data, frame);
     }
     // Check frame length.
     if ((frame & 0x7) != 0)
@@ -1157,13 +1156,13 @@ int CGXDLMS::GetHdlcData(
     }
 
     // Check addresses.
-    ret = CheckHdlcAddress(server, settings, reply, eopPos);
+    ret = CheckHdlcAddress(settings, reply, eopPos);
     if (ret != 0)
     {
         if (ret == DLMS_ERROR_CODE_FALSE)
         {
             // If echo,
-            return GetHdlcData(server, settings, reply, data, frame);
+            return GetHdlcData(settings, reply, data, frame);
         }
         return ret;
     }
@@ -1185,7 +1184,7 @@ int CGXDLMS::GetHdlcData(
     if (!settings.CheckFrame(frame))
     {
         reply.SetPosition(eopPos + 1);
-        return GetHdlcData(server, settings, reply, data, frame);
+        return GetHdlcData(settings, reply, data, frame);
     }
     // Check that header CRC is correct.
     crc = CountFCS16(reply, packetStartID + 1,
@@ -1283,7 +1282,7 @@ int CGXDLMS::GetHdlcData(
         }
         else
         {
-            GetLLCBytes(server, reply);
+            GetLLCBytes(reply);
         }
     }
     return DLMS_ERROR_CODE_OK;
@@ -1292,7 +1291,7 @@ int CGXDLMS::GetHdlcData(
 int CGXDLMS::GetHDLCAddress(
     CGXByteBuffer& buff,
     unsigned long& address,
-    unsigned long& addrSize)
+    unsigned char& addrSize)
 {
     unsigned char ch;
     unsigned short s;
@@ -1360,14 +1359,13 @@ static void GetServerAddress(int address, int& logical, int& physical)
 }
 
 int CGXDLMS::CheckHdlcAddress(
-    bool server,
     CGXDLMSSettings& settings,
     CGXByteBuffer& reply,
     int index)
 {
     unsigned char ch;
     unsigned long source, target;
-    unsigned long srcAddrSize, tgtAddrSize;
+    unsigned char srcAddrSize, tgtAddrSize;
     int ret;
     // Get destination and source addresses.
     if ((ret = GetHDLCAddress(reply, target, tgtAddrSize)) != 0)
@@ -1378,8 +1376,8 @@ int CGXDLMS::CheckHdlcAddress(
     {
         return ret;
     }
-    if (server)
-    {
+    //if (server)
+    //{
         if(tgtAddrSize > MAX_SERVER_ADDR_SIZE) {
             return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
         }
@@ -1433,34 +1431,35 @@ int CGXDLMS::CheckHdlcAddress(
         {
             settings.SetClientAddress(source);
         }
-    }
-    else
-    {
-        // Check that client addresses match.
-        if (settings.GetClientAddress() != target)
-        {
-            // If echo.
-            if (settings.GetClientAddress() == source && settings.GetServerAddress() == target)
-            {
-                reply.SetPosition(index + 1);
-            }
-            return DLMS_ERROR_CODE_FALSE;
-        }
-        // Check that server addresses match.
-        if (settings.GetServerAddress() != source)
-        {
-            //Check logical and physical address separately.
-            //This is done because some meters might send four bytes
-            //when only two bytes is needed.
-            int readLogical, readPhysical, logical, physical;
-            GetServerAddress(source, readLogical, readPhysical);
-            GetServerAddress(settings.GetServerAddress(), logical, physical);
-            if (readLogical != logical || readPhysical != physical)
-            {
-                return DLMS_ERROR_CODE_FALSE;
-            }
-        }
-    }
+  //  }
+  //  else
+  //  {
+		//return DLMS_ERROR_CODE_HARDWARE_FAULT;
+  //      //// Check that client addresses match.
+  //      //if (settings.GetClientAddress() != target)
+  //      //{
+  //      //    // If echo.
+  //      //    if (settings.GetClientAddress() == source && settings.GetServerAddress() == target)
+  //      //    {
+  //      //        reply.SetPosition(index + 1);
+  //      //    }
+  //      //    return DLMS_ERROR_CODE_FALSE;
+  //      //}
+  //      //// Check that server addresses match.
+  //      //if (settings.GetServerAddress() != source)
+  //      //{
+  //      //    //Check logical and physical address separately.
+  //      //    //This is done because some meters might send four bytes
+  //      //    //when only two bytes is needed.
+  //      //    int readLogical, readPhysical, logical, physical;
+  //      //    GetServerAddress(source, readLogical, readPhysical);
+  //      //    GetServerAddress(settings.GetServerAddress(), logical, physical);
+  //      //    if (readLogical != logical || readPhysical != physical)
+  //      //    {
+  //      //        return DLMS_ERROR_CODE_FALSE;
+  //      //    }
+  //      //}
+  //  }
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -1933,14 +1932,14 @@ int CGXDLMS::GetPdu(
             }
             break;
         case DLMS_COMMAND_GLO_GENERAL_CIPHERING:
-            if (settings.IsServer())
-            {
+           /* if (settings.IsServer())
+            {*/
                 HandledGloRequest(settings, data);
-            }
-            else
+            //}
+            /*else
             {
                 HandledGloResponse(settings, data, index);
-            }
+            }*/
             break;
         case DLMS_COMMAND_DATA_NOTIFICATION:
             ret = HandleDataNotification(settings, data);
@@ -1969,8 +1968,8 @@ int CGXDLMS::GetPdu(
             settings.ResetBlockIndex();
         }
         // Get command if operating as a server.
-        if (settings.IsServer())
-        {
+        /*if (settings.IsServer())
+        {*/
             // Ciphered messages are handled after whole PDU is received.
             switch (cmd)
             {
@@ -1986,26 +1985,26 @@ int CGXDLMS::GetPdu(
             default:
                 break;
             }
-        }
-        else
-        {
-            // Client do not need a command any more.
-            data.SetCommand(DLMS_COMMAND_NONE);
-            // Ciphered messages are handled after whole PDU is received.
-            switch (cmd)
-            {
-            case DLMS_COMMAND_GLO_READ_RESPONSE:
-            case DLMS_COMMAND_GLO_WRITE_RESPONSE:
-            case DLMS_COMMAND_GLO_GET_RESPONSE:
-            case DLMS_COMMAND_GLO_SET_RESPONSE:
-            case DLMS_COMMAND_GLO_METHOD_RESPONSE:
-                data.GetData().SetPosition(data.GetCipherIndex());
-                ret = GetPdu(settings, data);
-                break;
-            default:
-                break;
-            }
-        }
+        //}
+        //else
+        //{
+        //    // Client do not need a command any more.
+        //    data.SetCommand(DLMS_COMMAND_NONE);
+        //    // Ciphered messages are handled after whole PDU is received.
+        //    switch (cmd)
+        //    {
+        //    case DLMS_COMMAND_GLO_READ_RESPONSE:
+        //    case DLMS_COMMAND_GLO_WRITE_RESPONSE:
+        //    case DLMS_COMMAND_GLO_GET_RESPONSE:
+        //    case DLMS_COMMAND_GLO_SET_RESPONSE:
+        //    case DLMS_COMMAND_GLO_METHOD_RESPONSE:
+        //        data.GetData().SetPosition(data.GetCipherIndex());
+        //        ret = GetPdu(settings, data);
+        //        break;
+        //    default:
+        //        break;
+        //    }
+        //}
     }
 
     // Get data if all data is read or we want to peek data.
@@ -2028,7 +2027,7 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
     // If DLMS frame is generated.
     if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
     {
-        if ((ret = GetHdlcData(settings.IsServer(), settings, reply, data, frame)) != 0)
+        if ((ret = GetHdlcData(settings, reply, data, frame)) != 0)
         {
             return ret;
         }
@@ -2592,16 +2591,16 @@ void CGXDLMS::GetDataFromFrame(CGXByteBuffer& reply, CGXReplyData& info)
     data.SetPosition(offset);
 }
 
-void CGXDLMS::GetLLCBytes(bool server, CGXByteBuffer& data)
+void CGXDLMS::GetLLCBytes(CGXByteBuffer& data)
 {
-    if (server)
-    {
+    //if (server)
+    //{
         data.Compare((unsigned char*)LLC_SEND_BYTES, 3);
-    }
-    else
-    {
-        data.Compare((unsigned char*)LLC_REPLY_BYTES, 3);
-    }
+    //}
+    //else
+    //{
+    //    data.Compare((unsigned char*)LLC_REPLY_BYTES, 3);
+    //}
 }
 
 int CGXDLMS::CheckWrapperAddress(
@@ -2610,8 +2609,8 @@ int CGXDLMS::CheckWrapperAddress(
 {
     int ret;
     unsigned short value;
-    if (settings.IsServer())
-    {
+    /*if (settings.IsServer())
+    {*/
         if ((ret = buff.GetUInt16(&value)) != 0)
         {
             return ret;
@@ -2641,39 +2640,39 @@ int CGXDLMS::CheckWrapperAddress(
         {
             settings.SetServerAddress(value);
         }
-    }
-    else
-    {
-        if ((ret = buff.GetUInt16(&value)) != 0)
-        {
-            return ret;
-        }
-        // Check that server addresses match.
-        if (settings.GetServerAddress() != 0
-            && settings.GetServerAddress() != value)
-        {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        else
-        {
-            settings.SetServerAddress(value);
-        }
+    //}
+    //else
+    //{
+    //    if ((ret = buff.GetUInt16(&value)) != 0)
+    //    {
+    //        return ret;
+    //    }
+    //    // Check that server addresses match.
+    //    if (settings.GetServerAddress() != 0
+    //        && settings.GetServerAddress() != value)
+    //    {
+    //        return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
+    //    }
+    //    else
+    //    {
+    //        settings.SetServerAddress(value);
+    //    }
 
-        if ((ret = buff.GetUInt16(&value)) != 0)
-        {
-            return ret;
-        }
-        // Check that client addresses match.
-        if (settings.GetClientAddress() != 0
-            && settings.GetClientAddress() != value)
-        {
-            return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
-        }
-        else
-        {
-            settings.SetClientAddress(value);
-        }
-    }
+    //    if ((ret = buff.GetUInt16(&value)) != 0)
+    //    {
+    //        return ret;
+    //    }
+    //    // Check that client addresses match.
+    //    if (settings.GetClientAddress() != 0
+    //        && settings.GetClientAddress() != value)
+    //    {
+    //        return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
+    //    }
+    //    else
+    //    {
+    //        settings.SetClientAddress(value);
+    //    }
+    //}
     return DLMS_ERROR_CODE_OK;
 }
 

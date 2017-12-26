@@ -77,7 +77,7 @@ private:
     // server : Is server.
     // data : Received data.
     /////////////////////////////////////////////////////////////////////////////
-    static void GetLLCBytes(bool server, CGXByteBuffer& data);
+    static void GetLLCBytes(CGXByteBuffer& data);
 
     /////////////////////////////////////////////////////////////////////////////
     //
@@ -237,7 +237,6 @@ public:
         CGXByteBuffer& reply);
 
     static int GetHdlcData(
-        bool server,
         CGXDLMSSettings& settings,
         CGXByteBuffer& reply,
         CGXReplyData& data,
@@ -253,7 +252,7 @@ public:
     static int GetHDLCAddress(
         CGXByteBuffer& buff,
         unsigned long& address,
-        unsigned long& addrSize);
+        unsigned char& addrSize);
 
     /**
      * Check that client and server address match.
@@ -269,7 +268,6 @@ public:
      * @return True, if client and server address match.
      */
     static int CheckHdlcAddress(
-        bool server,
         CGXDLMSSettings& settings,
         CGXByteBuffer& reply,
         int index);

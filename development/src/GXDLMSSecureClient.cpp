@@ -43,7 +43,7 @@ CGXDLMSSecureClient::CGXDLMSSecureClient(bool UseLogicalNameReferencing,
     const char* password,
     DLMS_INTERFACE_TYPE intefaceType) :
     CGXDLMSClient(
-        UseLogicalNameReferencing,
+        /*UseLogicalNameReferencing,*/
         clientAddress,
         serverAddress,
         authentication,

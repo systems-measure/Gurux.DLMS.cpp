@@ -49,25 +49,25 @@
 #endif
 
 
-CGXDLMSServer::CGXDLMSServer(bool logicalNameReferencing,
-    DLMS_INTERFACE_TYPE type) : m_Transaction(nullptr), m_Settings(true),
+CGXDLMSServer::CGXDLMSServer(/*bool logicalNameReferencing,*/
+    DLMS_INTERFACE_TYPE type) : m_Transaction(nullptr), m_Settings(),
     m_LinkEstablished(false)
 {
-    m_Settings.SetUseLogicalNameReferencing(logicalNameReferencing);
+    //m_Settings.SetUseLogicalNameReferencing(logicalNameReferencing);
     m_Settings.SetInterfaceType(type);
 	m_CurrentALN = new CGXDLMSAssociationLogicalName("0.0.40.0.0.255");
 	m_CurrentALN->SetDataValidity(true);
 	m_CurrentALN->SetMethodAccess(1, DLMS_METHOD_ACCESS_MODE_ACCESS);
 	m_CurrentALN->SetMethodAccess(2, DLMS_METHOD_ACCESS_MODE_ACCESS);
-    if (GetUseLogicalNameReferencing())
-    {
+    /*if (GetUseLogicalNameReferencing())
+    {*/
         SetConformance((DLMS_CONFORMANCE)(DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_ACTION |
             DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_SET_OR_WRITE |
             DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_GET_OR_READ |
             DLMS_CONFORMANCE_SET | DLMS_CONFORMANCE_SELECTIVE_ACCESS |
             DLMS_CONFORMANCE_ACTION | DLMS_CONFORMANCE_MULTIPLE_REFERENCES |
             DLMS_CONFORMANCE_GET | DLMS_CONFORMANCE_GENERAL_PROTECTION));
-    }
+    //}
     Reset();
 }
 
@@ -137,19 +137,19 @@ void CGXDLMSServer::SetMaxReceivePDUSize(unsigned short value)
     m_Settings.SetMaxServerPDUSize(value);
 }
 
-bool CGXDLMSServer::GetUseLogicalNameReferencing()
-{
-    return m_Settings.GetUseLogicalNameReferencing();
-}
+//bool CGXDLMSServer::GetUseLogicalNameReferencing()
+//{
+//    return true/*m_Settings.GetUseLogicalNameReferencing()*/;
+//}
 
 /**
  * @param value
  *            Is Logical Name referencing used.
  */
-void CGXDLMSServer::SetUseLogicalNameReferencing(bool value)
-{
-    m_Settings.SetUseLogicalNameReferencing(value);
-}
+//void CGXDLMSServer::SetUseLogicalNameReferencing(bool value)
+//{
+//    m_Settings.SetUseLogicalNameReferencing(value);
+//}
 
 bool CGXDLMSServer::IsLongTransaction() {
 	if (m_Transaction == nullptr) {
@@ -537,12 +537,12 @@ int ReportError(CGXDLMSSettings& settings, DLMS_COMMAND command, DLMS_ERROR_CODE
         break;
     }
 
-    if (settings.GetUseLogicalNameReferencing())
-    {
+    /*if (settings.GetUseLogicalNameReferencing())
+    {*/
         CGXDLMSLNParameters p(&settings, cmd, 1,
 			nullptr, nullptr, error);
         ret = CGXDLMS::GetLNPdu(p, data);
-    }
+    //}
     if (ret == 0)
     {
         if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER)

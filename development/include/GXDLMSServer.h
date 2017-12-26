@@ -452,7 +452,7 @@ public:
      *            Interface type.
      */
     CGXDLMSServer(
-        bool logicalNameReferencing,
+        /*bool logicalNameReferencing,*/
         DLMS_INTERFACE_TYPE type);
 
     /**
@@ -496,14 +496,14 @@ public:
      * @see #getMaxReceivePDUSize
      * @return Is logical name referencing used.
      */
-    bool GetUseLogicalNameReferencing();
+    //bool GetUseLogicalNameReferencing();
 
     /**
      * @param value
      *            Is Logical Name referencing used.
      */
-    void SetUseLogicalNameReferencing(
-        bool value);
+    /*void SetUseLogicalNameReferencing(
+        bool value);*/
 
     /**
      * Initialize server. This must call after server objects are set.

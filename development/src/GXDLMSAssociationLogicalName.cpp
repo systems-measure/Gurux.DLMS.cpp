@@ -151,8 +151,8 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 						m_ObjectList.FreeConstructedObj();
 						return ret;
 					};
-					if (settings.IsServer())
-					{
+					/*if (settings.IsServer())
+					{*/
 						settings.SetIndex(settings.GetIndex() + 1);
 						//If PDU is full.
 						if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
@@ -161,7 +161,7 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 							tmp_obj = nullptr;
 							break;
 						}
-					}
+					//}
 				}
 			}
 			m_ObjectList.FreeConstructedObj();
@@ -193,15 +193,15 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 				{
 					return ret;
 				};
-				if (settings.IsServer())
-				{
+				/*if (settings.IsServer())
+				{*/
 					settings.SetIndex(settings.GetIndex() + 1);
 					//If PDU is full.
 					if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
 					{
 						break;
 					}
-				}
+				//}
 			}
 		}
 	}
