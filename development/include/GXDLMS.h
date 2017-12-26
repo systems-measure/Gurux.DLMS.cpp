@@ -362,13 +362,16 @@ public:
         CGXDLMSSettings& settings,
         CGXReplyData& data);
 
+	static void CopyReplyParam(CGXByteBuffer& reply, CGXReplyData& src, CGXReplyData& dst);
+
     /////////////////////////////////////////////////////////////////////////////
     //
     /////////////////////////////////////////////////////////////////////////////
     static int GetData(
         CGXDLMSSettings& settings,
         CGXByteBuffer& reply,
-        CGXReplyData& data);
+        CGXReplyData& data,
+		CGXReplyData& ui_data);
 
     /////////////////////////////////////////////////////////////////////////////
     // Get action info.
