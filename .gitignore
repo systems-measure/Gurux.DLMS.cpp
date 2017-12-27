@@ -45,7 +45,8 @@ GuruxDLMSTester/
 
 # Build results
 
-[Dd]ebug/
+/development/VS/Debug/
+!/development/VS/x86/Debug/*
 [Rr]elease/
 x64/
 build/
