@@ -2111,7 +2111,7 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
         
     //GetDataFromFrame(reply, data);
     // If keepalive or get next frame request.
-	if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC && data.GetData().GetSize() != 0)
+	if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC && ((frame != 0x13 && data.GetData().GetSize() != 0) || (frame == 0x13 && ui_data.GetData().GetSize() != 0)))
 	{
 		if (reply.GetPosition() != reply.GetSize()) {
 			unsigned long newPos = ((reply.GetPosition() + 3) > reply.GetSize()) ? reply.GetSize() : (reply.GetPosition() + 3);
