@@ -45,10 +45,19 @@ GuruxDLMSTester/
 
 # Build results
 
-/development/VS/Debug/
-!/development/VS/x86/Debug/*
-[Rr]elease/
 x64/
+x86/
+
+/development/VS/Debug/
+!/development/VS/x86/Debug/GuruxDLMS.lib
+
+/development/VS/x64/Debug/*
+!/development/VS/x64/
+/development/VS/x64/*
+!/development/VS/x64/Debug/
+!/development/VS/x64/Debug/GuruxDLMS.lib
+
+[Rr]elease/
 build/
 [Bb]in/
 [Oo]bj/
