@@ -1615,8 +1615,11 @@ int CGXDLMSServer::HandleRequest(
             ret = 0;
         }
 		else {
+			if (m_Info.GetControlField() != 0x13) {
+				m_Info.Clear();
+			}
+			CheckPushNeeded(m_Info);
 			m_ReceivedData.Clear();
-			m_Info.Clear();
 		}
         return ret;
     }
