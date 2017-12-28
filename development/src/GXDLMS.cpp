@@ -1451,6 +1451,12 @@ int CGXDLMS::CheckHdlcAddress(
         // Check that server addresses match.
         if (settings.GetServerAddress() != source)
         {
+			// if this is responce for sended SNRM with CALLING device address
+			if ((srcAddrSize == 2 && settings.GetServerAddress() == 0xFE) ||
+				(srcAddrSize == 4 && settings.GetServerAddress() == 0x7FFE)) {
+				settings.SetServerAddress(source);
+				return DLMS_ERROR_CODE_OK;
+			}
             //Check logical and physical address separately.
             //This is done because some meters might send four bytes
             //when only two bytes is needed.
@@ -1598,11 +1604,12 @@ int CGXDLMS::HandleDataNotification(
         }
         reply.SetTime(&t.dateTime.GetValue());
     }
-    if ((ret = GetDataFromBlock(reply.GetData(), start)) != 0)
-    {
-        return ret;
-    }
-    return GetValueFromData(settings, reply);
+    //if ((ret = GetDataFromBlock(reply.GetData(), start)) != 0)
+    //{
+    //    return ret;
+    //}
+    //return GetValueFromData(settings, reply);
+	return GetDataFromBlock(reply.GetData(), start);
 }
 
 int CGXDLMS::HandleSetResponse(
@@ -1822,7 +1829,7 @@ int CGXDLMS::GetPdu(
     unsigned char ch;
     DLMS_COMMAND cmd = data.GetCommand();
     // If header is not read yet or GBT message.
-    if (cmd == DLMS_COMMAND_NONE || data.GetGbt())
+    if (cmd == DLMS_COMMAND_NONE /*|| data.GetGbt()*/)
     {
         // If PDU is missing.
         if (data.GetData().GetSize() - data.GetData().GetPosition() == 0)
@@ -2137,7 +2144,7 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
         return ret;
     }
 
-    if (frame == 0x13 && ui_data.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
+    if (frame == 0x13 /*&& ui_data.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION*/)
     {
         // Check is there more messages left. This is Push message special
         // case.
