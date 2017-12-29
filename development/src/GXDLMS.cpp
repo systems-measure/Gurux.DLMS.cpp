@@ -323,64 +323,69 @@ int CGXDLMS::GetHdlcFrame(
     // Add BOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     frameSize = settings.GetLimits().GetMaxInfoTX().ToInteger();
-    // If no data
-    if (data == NULL || data->GetSize() == 0)
-    {
-        reply.SetUInt8(0xA0);
-    }
-    else if (data->GetSize() - data->GetPosition() <= frameSize)
-    {
-        len = data->GetSize() - data->GetPosition();
-        // Is last packet.
-        reply.SetUInt8(0xA0 | ((len >> 8) & 0x7));
-    }
-    else
-    {
-        len = frameSize;
-        // More data to left.
-        reply.SetUInt8(0xA8 | ((len >> 8) & 0x7));
-    }
-    // Frame len.
-    if (len == 0)
-    {
-        reply.SetUInt8((unsigned char)(5 + primaryAddress.GetSize() +
-            secondaryAddress.GetSize() + len));
-    }
-    else
-    {
-        reply.SetUInt8((unsigned char)(7 + primaryAddress.GetSize() +
-            secondaryAddress.GetSize() + len));
-    }
-    // Add primary address.
-    reply.Set(&primaryAddress);
-    // Add secondary address.
-    reply.Set(&secondaryAddress);
+	// If no data
+	if (data == NULL || data->GetSize() == 0)
+	{
+		reply.SetUInt8(0xA0);
+	}
+	else if (data->GetSize() - data->GetPosition() <= frameSize - (9 + primaryAddress.GetSize() + secondaryAddress.GetSize()))
+	{
+		len = data->GetSize() - data->GetPosition();
+		// Is last packet.
+		reply.SetUInt8(0xA0 | ((len >> 8) & 0x7));
+	}
+	else
+	{
+		len = frameSize - 2;
+		// More data to left.
+		reply.SetUInt8(0xA8 | ((len >> 8) & 0x7));
+	}
+	// Frame len.
+	if (len == 0)
+	{
+		reply.SetUInt8((unsigned char)(5 + primaryAddress.GetSize() +
+			secondaryAddress.GetSize() + len));
+	}
+	else
+	{
+		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
+			reply.SetUInt8((unsigned char)((frameSize - 2) & 0xFF));
+			len = (frameSize)-(9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
+		}
+		else {
+			reply.SetUInt8((unsigned char)(len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize()));
+		}
+	}
+	// Add primary address.
+	reply.Set(&primaryAddress);
+	// Add secondary address.
+	reply.Set(&secondaryAddress);
 
-    // Add frame ID.
-    if (frame == 0)
-    {
-        reply.SetUInt8(settings.GetNextSend(1));
-    }
-    else
-    {
+	// Add frame ID.
+	if (frame == 0)
+	{
+		reply.SetUInt8(settings.GetNextSend(1));
+	}
+	else
+	{
 		if (frame == 0x01) {
 			reply.SetUInt8(settings.GetKeepAlive());
 		}
 		else {
 			reply.SetUInt8(frame);
 		}
-    }
-    // Add header CRC.
-    int crc = CountFCS16(reply, 1, reply.GetSize() - 1);
-    reply.SetUInt16(crc);
-    if (len != 0)
-    {
-        // Add data.
-        reply.Set(data, data->GetPosition(), len);
-        // Add data CRC.
-        crc = CountFCS16(reply, 1, reply.GetSize() - 1);
-        reply.SetUInt16(crc);
-    }
+	}
+	// Add header CRC.
+	int crc = CountFCS16(reply, 1, reply.GetSize() - 1);
+	reply.SetUInt16(crc);
+	if (len != 0)
+	{
+		// Add data.
+		reply.Set(data, data->GetPosition(), len);
+		// Add data CRC.
+		crc = CountFCS16(reply, 1, reply.GetSize() - 1);
+		reply.SetUInt16(crc);
+	}
     // Add EOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     // Remove sent data in server side.
