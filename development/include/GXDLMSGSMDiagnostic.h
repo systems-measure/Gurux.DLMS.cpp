@@ -32,45 +32,30 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 
-#ifndef GXDLMSDEMANDREGISTER_H
-#define GXDLMSDEMANDREGISTER_H
+#ifndef GXDLMSGSMDIAGNOSTIC_H
+#define GXDLMSGSMDIAGNOSTIC_H
 
 #include "GXDLMSObject.h"
+#include "GXDLMSQualityOfService.h"
 
-class CGXDLMSDemandRegister : public CGXDLMSObject
+class CGXDLMSGSMDiagnostic : public CGXDLMSObject
 {
-
-
-protected:
-    bool IsRead(int index);
-
 public:
-    /**
-     Constructor.
-    */
-    CGXDLMSDemandRegister();
+    //Constructor.
+    CGXDLMSGSMDiagnostic();
+	
+	//LN Constructor.
+    CGXDLMSGSMDiagnostic(const char* ln);
 
-    /**
-     Constructor.
+    std::string GetAPN();
+    void SetAPN(std::string value);
 
-     @param ln Logical Name of the object.
-    */
-    CGXDLMSDemandRegister(const char* ln);
+    long GetPINCode();
+    void SetPINCode(long value);
 
-       /*
-     * Reset value.
-     */
-    void Reset();
+    CGXDLMSQualityOfService& GetDefaultQualityOfService();
 
-    /*
-     * Next period.
-     */
-    void NextPeriod();
-
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
+    CGXDLMSQualityOfService& GetRequestedQualityOfService();
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -78,13 +63,18 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
+    //Get attribute values of object.
+    void GetValues(std::vector<std::string>& values);
+
+    void GetAttributeIndexToRead(std::vector<int>& attributes);
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
+    // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
+    // Set value of given attribute.
     int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
 
-#endif //GXDLMSDEMANDREGISTER_H
+#endif //GXDLMSGSMDIAGNOSTIC_H
