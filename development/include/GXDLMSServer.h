@@ -97,7 +97,7 @@ private:
 
     int HandleSetRequest(
         CGXByteBuffer& data,
-        short type,
+        unsigned char& type,
         CGXDLMSLNParameters& p);
 
     int HanleSetRequestWithDataBlock(
@@ -117,7 +117,6 @@ private:
     * Handle received command.
     */
     int HandleCommand(
-        CGXDLMSConnectionEventArgs& connectionInfo,
         DLMS_COMMAND& cmd,
         CGXByteBuffer& data,
         CGXByteBuffer& reply);
@@ -128,8 +127,7 @@ private:
     * @return Reply to the client.
     */
     int HandleAarqRequest(
-        CGXByteBuffer& data,
-        CGXDLMSConnectionEventArgs& connectionInfo);
+        CGXByteBuffer& data);
 
     /**
      * Handle Set request.
@@ -155,8 +153,7 @@ private:
     * @return Reply.
     */
     int HandleMethodRequest(
-        CGXByteBuffer& data,
-        CGXDLMSConnectionEventArgs& connectionInfo);    
+        CGXByteBuffer& data);    
     
     /**
     * Handle RR request.
@@ -189,7 +186,7 @@ private:
     *            Read profile generic.
     * @return Rows to fit one PDU.
     */
-    unsigned short GetRowsToPdu(CGXDLMSProfileGeneric* pg);
+    //unsigned short GetRowsToPdu(CGXDLMSProfileGeneric* pg);
 	/**
 	* Is server initialized.
 	*/
@@ -247,21 +244,21 @@ protected:
         DLMS_AUTHENTICATION authentication,
         CGXByteBuffer& password) = 0;
 
-    /**
-     * Find object.
-     *
-     * @param objectType
-     *            Object type.
-     * @param sn
-     *            Short Name. In Logical name referencing this is not used.
-     * @param ln
-     *            Logical Name. In Short Name referencing this is not used.
-     * @return Found object or NULL if object is not found.
-     */
-    virtual CGXDLMSObject* FindObject(
-        DLMS_OBJECT_TYPE objectType,
-        int sn,
-        std::string& ln) = 0;
+    ///**
+    // * Find object.
+    // *
+    // * @param objectType
+    // *            Object type.
+    // * @param sn
+    // *            Short Name. In Logical name referencing this is not used.
+    // * @param ln
+    // *            Logical Name. In Short Name referencing this is not used.
+    // * @return Found object or NULL if object is not found.
+    // */
+    //virtual CGXDLMSObject* FindObject(
+    //    DLMS_OBJECT_TYPE objectType,
+    //    int sn,
+    //    std::string& ln) = 0;
 
     /**
      * Read selected item(s).
@@ -302,7 +299,7 @@ protected:
      * Accepted connection is made for the server. All initialization is done
      * here.
      */
-    virtual void Connected(CGXDLMSConnectionEventArgs& connectionInfo) = 0;
+    virtual void Connected() = 0;
 
     /**
      * Client has try to made invalid connection. Password is incorrect.
@@ -310,12 +307,12 @@ protected:
      * @param connectionInfo
      *            Connection information.
      */
-    virtual void InvalidConnection(CGXDLMSConnectionEventArgs& connectionInfo) = 0;
+    virtual void InvalidConnection() = 0;
 
     /**
      * Server has close the connection. All clean up is made here.
      */
-    virtual void Disconnected(CGXDLMSConnectionEventArgs& connectionInfo) = 0;
+    virtual void Disconnected() = 0;
 
     /**
     * Get attribute access mode.
@@ -348,52 +345,52 @@ protected:
     virtual void PreAction(
         CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Read selected item(s).
-    *
-    * @param args
-    *            Handled read requests.
-    */
-    virtual void PostRead(
-        CGXDLMSValueEventArg* arg) = 0;
+    ///**
+    //* Read selected item(s).
+    //*
+    //* @param args
+    //*            Handled read requests.
+    //*/
+    //virtual void PostRead(
+    //    CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Write selected item(s).
-    *
-    * @param args
-    *            Handled write requests.
-    */
-    virtual void PostWrite(
-        CGXDLMSValueEventArg* arg) = 0;
+    ///**
+    //* Write selected item(s).
+    //*
+    //* @param args
+    //*            Handled write requests.
+    //*/
+    //virtual void PostWrite(
+    //    CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Action is occurred.
-    *
-    * @param args
-    *            Handled action requests.
-    */
-    virtual void PostAction(
-        CGXDLMSValueEventArg* arg) = 0;
+    ///**
+    //* Action is occurred.
+    //*
+    //* @param args
+    //*            Handled action requests.
+    //*/
+    //virtual void PostAction(
+    //    CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Get selected value(s). This is called when example profile generic
-    * request current value.
-    *
-    * @param args
-    *            Value event arguments.
-    */
-    virtual void PreGet(
-        CGXDLMSValueEventArg* arg) = 0;
+    ///**
+    //* Get selected value(s). This is called when example profile generic
+    //* request current value.
+    //*
+    //* @param args
+    //*            Value event arguments.
+    //*/
+    //virtual void PreGet(
+    //    CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Get selected value(s). This is called when example profile generic
-    * request current value.
-    *
-    * @param args
-    *            Value event arguments.
-    */
-    virtual void PostGet(
-        CGXDLMSValueEventArg* arg) = 0;
+    ///**
+    //* Get selected value(s). This is called when example profile generic
+    //* request current value.
+    //*
+    //* @param args
+    //*            Value event arguments.
+    //*/
+    //virtual void PostGet(
+    //    CGXDLMSValueEventArg* arg) = 0;
 
   
 	

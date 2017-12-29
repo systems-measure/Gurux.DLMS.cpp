@@ -282,7 +282,7 @@ public:
     static int GetTcpData(
         CGXDLMSSettings& settings,
         CGXByteBuffer& buff,
-        CGXReplyData& data);
+        CGXReplyData& data, unsigned char& empty);
 
     /////////////////////////////////////////////////////////////////////////////
     // Handle read response and get data from block and/or update error status.
