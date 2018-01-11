@@ -1606,8 +1606,7 @@ int CGXDLMSServer::HandleRequest(
         //Server not Initialized.
         return DLMS_ERROR_CODE_NOT_INITIALIZED;
     }
-    bool first = m_Settings.GetServerAddress() == 0
-        && m_Settings.GetClientAddress() == 0;
+
     if ((ret = CGXDLMS::GetData(m_Settings, m_ReceivedData, m_Info)) != 0)
     {
         //If all data is not received yet.
@@ -1628,15 +1627,12 @@ int CGXDLMSServer::HandleRequest(
     }
     m_ReceivedData.Clear();
 
-    if (first)
-    {
         // Check is data send to this server.
         if (!IsTarget(m_Settings.GetServerAddress(), m_Settings.GetClientAddress()))
         {
             m_Info.Clear();
             return 0;
         }
-    }    
     
     // If client want next frame.
     if ((m_Info.GetMoreData() & DLMS_DATA_REQUEST_TYPES_FRAME) == DLMS_DATA_REQUEST_TYPES_FRAME)

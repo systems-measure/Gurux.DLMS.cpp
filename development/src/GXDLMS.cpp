@@ -43,7 +43,6 @@
 #define MAX_SERVER_ADDR_SIZE    4
 #define MAX_CLIENT_ADDR_SIZE    1
 
-#define DEFAULT_PHY_ADDRESS     16
 
 
 const unsigned char CIPHERING_HEADER_SIZE = 7 + 12 + 3;
@@ -1318,15 +1317,6 @@ int CGXDLMS::CheckHdlcAddress(
             return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
         }
         
-        uint16_t srvPhysicalAddr = (target & 0x7F);    
-        uint16_t srvLogicalAddr = (target & 0x3F80) >> 7;    
-        if(srvPhysicalAddr != DEFAULT_PHY_ADDRESS) {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        if(srvLogicalAddr != 1) {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        
         // Check that server addresses match.
         if (settings.GetServerAddress() != 0 && settings.GetServerAddress() != target)
         {
@@ -1336,7 +1326,7 @@ int CGXDLMS::CheckHdlcAddress(
                 return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
             }
             //If SNRM and client has not call disconnect and changes client ID.
-            if (ch == DLMS_COMMAND_SNRM)
+            if ((ch == DLMS_COMMAND_SNRM) || (ch == DLMS_COMMAND_DISC && !settings.IsConnected()))
             {
                 settings.SetServerAddress(target);
             }

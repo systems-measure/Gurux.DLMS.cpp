@@ -48,6 +48,10 @@
 #include "../include/GXDLMSDisconnectControl.h"
 #include "../include/GXDLMSGPRSSetup.h"
 #include "../include/GXDLMSGSMDiagnostic.h"
+#include "../include/GXDLMSIp4Setup.h"
+#include "../include/GXDLMSTcpUdpSetup.h"
+#include "../include/GXDLMSMacAddressSetup.h"
+
 #include <sstream>
 
 void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
@@ -92,6 +96,15 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 		break;
 	case DLMS_OBJECT_TYPE_PUSH_SETUP:
 		constructed_obj = new CGXDLMSPushSetup();
+		break;
+	case DLMS_OBJECT_TYPE_TCP_UDP_SETUP:
+		constructed_obj = new CGXDLMSTcpUdpSetup();
+		break;
+	case DLMS_OBJECT_TYPE_IP4_SETUP:
+		constructed_obj = new CGXDLMSIp4Setup();
+		break;
+	case DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP:
+		constructed_obj = new CGXDLMSMacAddressSetup();
 		break;
     case DLMS_OBJECT_TYPE_GPRS_SETUP:
         constructed_obj = new CGXDLMSGPRSSetup();
