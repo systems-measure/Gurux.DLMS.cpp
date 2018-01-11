@@ -70,6 +70,7 @@
 #include "../include/GXDLMSMBusMasterPortSetup.h"
 #include "../include/GXDLMSMessageHandler.h"
 #include "../include/GXDLMSPushSetup.h"
+#include "../include/GXDLMSGsmDiagnostic.h"
 
 // Reserved for internal use.
 CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
@@ -98,18 +99,20 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
         return new CGXDLMSMacAddressSetup();
 //    case DLMS_OBJECT_TYPE_EXTENDED_REGISTER:
 //        return new CGXDLMSExtendedRegister();
-//    case DLMS_OBJECT_TYPE_GPRS_SETUP:
-//        return new CGXDLMSGPRSSetup();
+    case DLMS_OBJECT_TYPE_GPRS_SETUP:
+        return new CGXDLMSGPRSSetup();
 //    case DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP:
 //        return new CGXDLMSSecuritySetup();
+	case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+		return new CGXDLMSGsmDiagnostic();
     case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:
         return new CGXDLMSIecHdlcSetup();
     case DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP:
         return new CGXDLMSIECOpticalPortSetup();
     case DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP:
         return new CGXDLMSCustomObject(type);
-//    case DLMS_OBJECT_TYPE_IP4_SETUP:
-//        return new CGXDLMSIp4Setup();
+    case DLMS_OBJECT_TYPE_IP4_SETUP:
+        return new CGXDLMSIp4Setup();
 //    case DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP:
 //        return new CGXDLMSMBusSlavePortSetup();
 //    case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:
@@ -208,6 +211,8 @@ std::string CGXDLMSObjectFactory::ObjectTypeToString(DLMS_OBJECT_TYPE type)
         return "GXDLMSExtendedRegister";
     case DLMS_OBJECT_TYPE_GPRS_SETUP:
         return "GXDLMSGprsSetup";
+	case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+		return "GXDLMSGsmDiagnostic";
     case DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP:
         return "GXDLMSSecuritySetup";
     case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:
