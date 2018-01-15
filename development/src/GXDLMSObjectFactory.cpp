@@ -70,6 +70,7 @@
 #include "../include/GXDLMSMBusMasterPortSetup.h"
 #include "../include/GXDLMSMessageHandler.h"
 #include "../include/GXDLMSPushSetup.h"
+#include "../include/GXDLMSGSMDiagnostic.h"
 
 // Reserved for internal use.
 CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
@@ -128,6 +129,8 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
         return new CGXDLMSProfileGeneric();
     case DLMS_OBJECT_TYPE_REGISTER:
         return new CGXDLMSRegister();
+    case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+        return new CGXDLMSGSMDiagnostic();
     case DLMS_OBJECT_TYPE_REGISTER_ACTIVATION:
         return new CGXDLMSRegisterActivation();
     case DLMS_OBJECT_TYPE_REGISTER_MONITOR:
@@ -208,6 +211,8 @@ std::string CGXDLMSObjectFactory::ObjectTypeToString(DLMS_OBJECT_TYPE type)
         return "GXDLMSExtendedRegister";
     case DLMS_OBJECT_TYPE_GPRS_SETUP:
         return "GXDLMSGprsSetup";
+    case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+        return "GXDLMSGsmDiagnostic";
     case DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP:
         return "GXDLMSSecuritySetup";
     case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:

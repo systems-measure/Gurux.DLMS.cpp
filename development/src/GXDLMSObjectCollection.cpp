@@ -47,6 +47,11 @@
 #include "../include/GXDLMSPushSetup.h"
 #include "../include/GXDLMSDisconnectControl.h"
 #include "../include/GXDLMSGPRSSetup.h"
+#include "../include/GXDLMSGSMDiagnostic.h"
+#include "../include/GXDLMSIp4Setup.h"
+#include "../include/GXDLMSTcpUdpSetup.h"
+#include "../include/GXDLMSMacAddressSetup.h"
+
 #include "Helper\Helper.h"
 
 typedef void(*newObj)(CGXDLMSObject*& constracted);
@@ -188,6 +193,63 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 		create_func[type].execute_func(constructed_obj);
 	}
 	else {
+	switch (type)
+	{
+	case DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR:
+		constructed_obj =  new CGXDLMSActivityCalendar();
+		break;
+	case DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME:
+		constructed_obj = new CGXDLMSAssociationLogicalName();
+		break;
+	case DLMS_OBJECT_TYPE_CLOCK:
+		constructed_obj = new CGXDLMSClock();
+		break;
+	case DLMS_OBJECT_TYPE_DATA:
+		constructed_obj = new CGXDLMSData();
+		break;
+	case DLMS_OBJECT_TYPE_DEMAND_REGISTER:
+		constructed_obj = new CGXDLMSDemandRegister();
+		break;
+	case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:
+		constructed_obj = new CGXDLMSIecHdlcSetup();
+		break;
+	case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
+		constructed_obj = new CGXDLMSDisconnectControl();
+		break;
+	case DLMS_OBJECT_TYPE_LIMITER:
+		constructed_obj = new CGXDLMSLimiter();
+		break;
+	case DLMS_OBJECT_TYPE_PROFILE_GENERIC:
+		constructed_obj = new CGXDLMSProfileGeneric();
+		break;
+	case DLMS_OBJECT_TYPE_REGISTER:
+		constructed_obj = new CGXDLMSRegister();
+		break;
+	case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
+		constructed_obj = new CGXDLMSScriptTable();
+		break;
+	case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
+		constructed_obj = new CGXDLMSSpecialDaysTable();
+		break;
+	case DLMS_OBJECT_TYPE_PUSH_SETUP:
+		constructed_obj = new CGXDLMSPushSetup();
+		break;
+	case DLMS_OBJECT_TYPE_TCP_UDP_SETUP:
+		constructed_obj = new CGXDLMSTcpUdpSetup();
+		break;
+	case DLMS_OBJECT_TYPE_IP4_SETUP:
+		constructed_obj = new CGXDLMSIp4Setup();
+		break;
+	case DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP:
+		constructed_obj = new CGXDLMSMacAddressSetup();
+		break;
+    case DLMS_OBJECT_TYPE_GPRS_SETUP:
+        constructed_obj = new CGXDLMSGPRSSetup();
+        break;
+    case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
+        constructed_obj = new CGXDLMSGSMDiagnostic();
+        break;
+	default:
 		constructed_obj = nullptr;
 	}
 }

@@ -36,12 +36,9 @@
 #include "../include/GXDLMSClient.h"
 #include <sstream>
 
-
-#ifndef __ICCARM__
-
 #if defined(_WIN32) || defined(_WIN64)//Windows includes
 #include "pcap.h"
-#else
+#elif !defined(__ICCARM__)
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -321,5 +318,3 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     }
     return DLMS_ERROR_CODE_OK;
 }
-
-#endif //__ICCARM__
