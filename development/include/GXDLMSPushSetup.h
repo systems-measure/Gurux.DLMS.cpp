@@ -41,15 +41,6 @@
 
 class CGXDLMSPushSetup : public CGXDLMSObject
 {
-private:
-    /*DLMS_SERVICE_TYPE m_Service;
-	DLMS_MESSAGE_TYPE m_Message;
-	unsigned short m_RandomisationStartInterval, m_RepetitionDelay;
-	unsigned char  m_NumberOfRetries;
-    std::string m_Destination;
-    std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject> > m_PushObjectList;
-    std::vector<std::pair<CGXDateTime, CGXDateTime> > m_CommunicationWindow;*/
-    
 public:
     //Constructor.
     CGXDLMSPushSetup();
@@ -57,82 +48,11 @@ public:
     //LN Constructor.
     CGXDLMSPushSetup(const char* ln);
 
-    /**
-        Defines the list of attributes or objects to be pushed.
-        Upon a call of the push (data) method the selected attributes are sent to the desti-nation
-        defined in send_destination_and_method.
-    */
- //   std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject> >& GetPushObjectList()
- //   {
- //       return m_PushObjectList;
- //   }
-
- //   DLMS_SERVICE_TYPE GetService();
- //   void SetService(DLMS_SERVICE_TYPE value);
-
- //   std::string& GetDestination();
- //   void SetDestination(std::string& value);
-
- //   DLMS_MESSAGE_TYPE GetMessage();
- //   void SetMessage(DLMS_MESSAGE_TYPE value);
-
- //   /**
- //    Contains the start and end date/time
- //    stamp when the communication window(s) for the push become active
- //    (for the start instant), or inac-tive (for the end instant).
- //   */
- //   std::vector<std::pair<CGXDateTime, CGXDateTime> >& GetCommunicationWindow()
- //   {
- //       return m_CommunicationWindow;
- //   }
-
- //   /**
- //    To avoid simultaneous network connections of a lot of devices at ex-actly
- //    the same point in time, a randomisation interval in seconds can be defined.
- //    This means that the push operation is not started imme-diately at the
- //    beginning of the first communication window but started randomly delayed.
- //   */
-	//unsigned short GetRandomisationStartInterval()
- //   {
- //       return m_RandomisationStartInterval;
- //   }
- //   void SetRandomisationStartInterval(unsigned short value)
- //   {
- //       m_RandomisationStartInterval = value;
- //   }
- //   /**
- //    The maximum number of retrials in case of unsuccessful push at-tempts. After a successful push no further push attempts are made until the push setup is triggered again.
- //    A value of 0 means no repetitions, i.e. only the initial connection at-tempt is made.
- //   */
-
-	//unsigned char GetNumberOfRetries()
- //   {
- //       return m_NumberOfRetries;
- //   }
- //   void SetNumberOfRetries(unsigned char value)
- //   {
- //       m_NumberOfRetries = value;
- //   }
-
-	//unsigned short GetRepetitionDelay()
- //   {
- //       return m_RepetitionDelay;
- //   }
-
- //   void SetRepetitionDelay(unsigned short value)
- //   {
- //       m_RepetitionDelay = value;
- //   }
     // Returns amount of attributes.
     int GetAttributeCount();
 
     // Returns amount of methods.
     int GetMethodCount();
-
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 

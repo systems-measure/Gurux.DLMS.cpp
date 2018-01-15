@@ -64,25 +64,6 @@ int CGXDLMSScriptTable::GetMethodCount()
     return 1;
 }
 
-void CGXDLMSScriptTable::GetValues(std::vector<std::string>& values)
-{
-    
-}
-
-void CGXDLMSScriptTable::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Scripts
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-}
-
 int CGXDLMSScriptTable::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)

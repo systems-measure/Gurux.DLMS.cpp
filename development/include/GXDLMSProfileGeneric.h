@@ -149,11 +149,6 @@ public:
     */
     int Capture(CGXDLMSServer* server);
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
     //Returns amount of attributes.
     int GetAttributeCount();
 

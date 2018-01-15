@@ -75,35 +75,6 @@ int CGXDLMSRegisterActivation::GetMethodCount()
     return 3;
 }
 
-void CGXDLMSRegisterActivation::GetValues(std::vector<std::string>& values)
-{
-   
-}
-
-void CGXDLMSRegisterActivation::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //RegisterAssignment
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //MaskList
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //ActiveMask
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-}
-
 int CGXDLMSRegisterActivation::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)

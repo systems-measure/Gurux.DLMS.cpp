@@ -62,77 +62,6 @@ int CGXDLMSLimiter::GetMethodCount()
     return 2;
 }
 
-void CGXDLMSLimiter::GetValues(std::vector<std::string>& values)
-{
-   
-}
-
-void CGXDLMSLimiter::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //MonitoredValue
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-
-    //ThresholdActive
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-
-    //ThresholdNormal
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-
-    //ThresholdEmergency
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
-
-    //MinOverThresholdDuration
-    if (CanRead(6))
-    {
-        attributes.push_back(6);
-    }
-
-    //MinUnderThresholdDuration
-    if (CanRead(7))
-    {
-        attributes.push_back(7);
-    }
-
-    //EmergencyProfile
-    if (CanRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //EmergencyProfileGroup
-    if (CanRead(9))
-    {
-        attributes.push_back(9);
-    }
-
-    //EmergencyProfileActive
-    if (CanRead(10))
-    {
-        attributes.push_back(10);
-    }
-    //Actions
-    if (CanRead(11))
-    {
-        attributes.push_back(11);
-    }
-}
-
 int CGXDLMSLimiter::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
@@ -145,15 +74,15 @@ int CGXDLMSLimiter::GetDataType(signed char index, DLMS_DATA_TYPE& type)
     }
     else if (index == 3)
     {
-		
+		return CGXDLMSObject::GetDataType(index, type);
     }
     else if (index == 4)
     {
-		
+		return CGXDLMSObject::GetDataType(index, type);
     }
     else if (index == 5)
     {
-		
+		return CGXDLMSObject::GetDataType(index, type);
     }
     else if (index == 6)
     {

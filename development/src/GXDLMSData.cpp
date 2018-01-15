@@ -75,25 +75,6 @@ int CGXDLMSData::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSData::GetValues(std::vector<std::string>& values)
-{
-    
-}
-
-void CGXDLMSData::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Value
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-}
-
 int CGXDLMSData::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
@@ -106,6 +87,19 @@ int CGXDLMSData::GetDataType(signed char index, DLMS_DATA_TYPE& type)
         return CGXDLMSObject::GetDataType(index, type);
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
+}
+
+DLMS_DATA_TYPE CGXDLMSData::GetDataType(signed char index)
+{
+	if (index == 1)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return CGXDLMSObject::GetDataType(index);
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

@@ -40,45 +40,14 @@
 //Constructor.
 CGXDLMSPushSetup::CGXDLMSPushSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP)
 {
-   /* m_RandomisationStartInterval = m_NumberOfRetries = m_RepetitionDelay = 0;
-    GXHelpers::SetLogicalName("0.7.25.9.0.255", m_LN);
-    m_Service = DLMS_SERVICE_TYPE_TCP;
-    m_Message = DLMS_MESSAGE_TYPE_COSEM_APDU;*/
 }
 
 //LN Constructor.
 CGXDLMSPushSetup::CGXDLMSPushSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP, ln)
 {
-    /*m_RandomisationStartInterval = m_NumberOfRetries = m_RepetitionDelay = 0;*/
     GXHelpers::SetLogicalName(ln, m_LN);
 }
 
-//DLMS_SERVICE_TYPE CGXDLMSPushSetup::GetService()
-//{
-//    return m_Service;
-//}
-//void CGXDLMSPushSetup::SetService(DLMS_SERVICE_TYPE value)
-//{
-//    m_Service = value;
-//}
-//
-//std::string& CGXDLMSPushSetup::GetDestination()
-//{
-//    return m_Destination;
-//}
-//void CGXDLMSPushSetup::SetDestination(std::string& value)
-//{
-//    m_Destination = value;
-//}
-//
-//DLMS_MESSAGE_TYPE CGXDLMSPushSetup::GetMessage()
-//{
-//    return m_Message;
-//}
-//void CGXDLMSPushSetup::SetMessage(DLMS_MESSAGE_TYPE value)
-//{
-//    m_Message = value;
-//}
 // Returns amount of attributes.
 int CGXDLMSPushSetup::GetAttributeCount()
 {
@@ -89,51 +58,6 @@ int CGXDLMSPushSetup::GetAttributeCount()
 int CGXDLMSPushSetup::GetMethodCount()
 {
     return 1;
-}
-
-void CGXDLMSPushSetup::GetValues(std::vector<std::string>& values)
-{
-   
-}
-
-void CGXDLMSPushSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //PushObjectList
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-
-    //SendDestinationAndMethod
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //CommunicationWindow
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //RandomisationStartInterval
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //NumberOfRetries
-    if (CanRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //RepetitionDelay
-    if (CanRead(7))
-    {
-        attributes.push_back(7);
-    }
 }
 
 int CGXDLMSPushSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)

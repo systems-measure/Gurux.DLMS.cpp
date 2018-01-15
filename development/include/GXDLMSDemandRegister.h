@@ -40,10 +40,6 @@
 class CGXDLMSDemandRegister : public CGXDLMSObject
 {
 
-
-protected:
-    bool IsRead(int index);
-
 public:
     /**
      Constructor.
@@ -66,11 +62,6 @@ public:
      * Next period.
      */
     void NextPeriod();
-
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
 
     // Returns amount of attributes.
     int GetAttributeCount();

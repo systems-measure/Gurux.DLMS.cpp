@@ -39,10 +39,10 @@
 
 void CGXDLMSClock::Init()
 {
-    m_Deviation = m_ClockBase = DLMS_CLOCK_BASE_NONE;
-    m_Enabled = false;
-    m_TimeZone = 0;
-    m_Status = DLMS_CLOCK_STATUS_OK;
+    //m_Deviation = m_ClockBase = DLMS_CLOCK_BASE_NONE;
+    //m_Enabled = false;
+    //m_TimeZone = 0;
+    //m_Status = DLMS_CLOCK_STATUS_OK;
 }
 
 /**
@@ -65,87 +65,87 @@ CGXDLMSClock::CGXDLMSClock(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOC
 /**
  Time of COSEM Clock object.
 */
-CGXDateTime& CGXDLMSClock::GetTime()
-{
-    return m_Time;
-}
-void CGXDLMSClock::SetTime(CGXDateTime& value)
-{
-    m_Time = value;
-}
-
-/**
- TimeZone of COSEM Clock object.
-*/
-short CGXDLMSClock::GetTimeZone()
-{
-    return m_TimeZone;
-}
-void CGXDLMSClock::SetTimeZone(short value)
-{
-    m_TimeZone = value;
-}
-
-/**
- Status of COSEM Clock object.
-*/
-DLMS_CLOCK_STATUS CGXDLMSClock::GetStatus()
-{
-    return m_Status;
-}
-void CGXDLMSClock::SetStatus(DLMS_CLOCK_STATUS value)
-{
-    m_Status = value;
-}
-
-CGXDateTime& CGXDLMSClock::GetBegin()
-{
-    return m_Begin;
-}
-
-void CGXDLMSClock::SetBegin(CGXDateTime& value)
-{
-    m_Begin = value;
-}
-
-CGXDateTime& CGXDLMSClock::GetEnd()
-{
-    return m_End;
-}
-void CGXDLMSClock::SetEnd(CGXDateTime& value)
-{
-    m_End = value;
-}
-
-char CGXDLMSClock::GetDeviation()
-{
-    return m_Deviation;
-}
-void CGXDLMSClock::SetDeviation(char value)
-{
-    m_Deviation = value;
-}
-
-bool CGXDLMSClock::GetEnabled()
-{
-    return m_Enabled;
-}
-void CGXDLMSClock::SetEnabled(bool value)
-{
-    m_Enabled = value;
-}
-
-/**
- Clock base of COSEM Clock object.
-*/
-DLMS_CLOCK_BASE CGXDLMSClock::GetClockBase()
-{
-    return m_ClockBase;
-}
-void CGXDLMSClock::SetClockBase(DLMS_CLOCK_BASE value)
-{
-    m_ClockBase = value;
-}
+//CGXDateTime& CGXDLMSClock::GetTime()
+//{
+//    return m_Time;
+//}
+//void CGXDLMSClock::SetTime(CGXDateTime& value)
+//{
+//    m_Time = value;
+//}
+//
+///**
+// TimeZone of COSEM Clock object.
+//*/
+//short CGXDLMSClock::GetTimeZone()
+//{
+//    return m_TimeZone;
+//}
+//void CGXDLMSClock::SetTimeZone(short value)
+//{
+//    m_TimeZone = value;
+//}
+//
+///**
+// Status of COSEM Clock object.
+//*/
+//DLMS_CLOCK_STATUS CGXDLMSClock::GetStatus()
+//{
+//    return m_Status;
+//}
+//void CGXDLMSClock::SetStatus(DLMS_CLOCK_STATUS value)
+//{
+//    m_Status = value;
+//}
+//
+//CGXDateTime& CGXDLMSClock::GetBegin()
+//{
+//    return m_Begin;
+//}
+//
+//void CGXDLMSClock::SetBegin(CGXDateTime& value)
+//{
+//    m_Begin = value;
+//}
+//
+//CGXDateTime& CGXDLMSClock::GetEnd()
+//{
+//    return m_End;
+//}
+//void CGXDLMSClock::SetEnd(CGXDateTime& value)
+//{
+//    m_End = value;
+//}
+//
+//char CGXDLMSClock::GetDeviation()
+//{
+//    return m_Deviation;
+//}
+//void CGXDLMSClock::SetDeviation(char value)
+//{
+//    m_Deviation = value;
+//}
+//
+//bool CGXDLMSClock::GetEnabled()
+//{
+//    return m_Enabled;
+//}
+//void CGXDLMSClock::SetEnabled(bool value)
+//{
+//    m_Enabled = value;
+//}
+//
+///**
+// Clock base of COSEM Clock object.
+//*/
+//DLMS_CLOCK_BASE CGXDLMSClock::GetClockBase()
+//{
+//    return m_ClockBase;
+//}
+//void CGXDLMSClock::SetClockBase(DLMS_CLOCK_BASE value)
+//{
+//    m_ClockBase = value;
+//}
 
 // Returns amount of attributes.
 int CGXDLMSClock::GetAttributeCount()
@@ -157,73 +157,6 @@ int CGXDLMSClock::GetAttributeCount()
 int CGXDLMSClock::GetMethodCount()
 {
     return 6;
-}
-
-void CGXDLMSClock::GetValues(std::vector<std::string>& values)
-{
-    
-}
-
-void CGXDLMSClock::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Time
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //TimeZone
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //Status
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //Begin
-    if (!IsRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //End
-    if (!IsRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //Deviation
-    if (!IsRead(7))
-    {
-        attributes.push_back(7);
-    }
-    //Enabled
-    if (!IsRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //ClockBase
-    if (!IsRead(9))
-    {
-        attributes.push_back(9);
-    }
-}
-
-int CGXDLMSClock::GetUIDataType(signed char index, DLMS_DATA_TYPE& type)
-{
-    if (index == 2 || index == 5 || index == 6)
-    {
-        type = DLMS_DATA_TYPE_DATETIME;
-    }
-    else
-    {
-        return CGXDLMSObject::GetUIDataType(index, type);
-    }
-    return DLMS_ERROR_CODE_OK;
 }
 
 int CGXDLMSClock::GetDataType(signed char index, DLMS_DATA_TYPE& type)

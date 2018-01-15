@@ -72,29 +72,6 @@ int CGXDLMSMBusMasterPortSetup::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSMBusMasterPortSetup::GetValues(std::vector<std::string>& values)
-{
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSConverter::ToString(m_CommSpeed));*/
-}
-
-void CGXDLMSMBusMasterPortSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //CommSpeed
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-}
-
 int CGXDLMSMBusMasterPortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
@@ -116,7 +93,7 @@ int CGXDLMSMBusMasterPortSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValue
     if (e.GetIndex() == 1)
     {
         int ret;
-//		e.SetByteArray(true);
+
 		CGXByteBuffer data;
         if ((ret = GetLogicalName(this, data)) != 0)
         {
@@ -127,7 +104,7 @@ int CGXDLMSMBusMasterPortSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValue
     }
     if (e.GetIndex() == 2)
     {
-        //e.SetValue(m_CommSpeed);
+
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -142,7 +119,6 @@ int CGXDLMSMBusMasterPortSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValue
     }
     else if (e.GetIndex() == 2)
     {
-        //m_CommSpeed = (DLMS_BAUD_RATE)e.GetValue().ToInteger();
     }
     else
     {

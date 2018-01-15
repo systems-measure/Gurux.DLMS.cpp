@@ -54,7 +54,7 @@ private:
 
     void Init();
 
-    int GetAccessRights(
+    void GetAccessRights(
         CGXDLMSObject* pItem,
         CGXDLMSServer* server,
         CGXByteBuffer& data);
@@ -114,13 +114,11 @@ public:
     int GetMethodCount();
 
     //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
+	void GetContextInfo(CGXByteBuffer& data);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
     int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

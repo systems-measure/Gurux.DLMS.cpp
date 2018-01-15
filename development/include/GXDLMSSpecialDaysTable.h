@@ -55,11 +55,6 @@ class CGXDLMSSpecialDaysTable : public CGXDLMSObject
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.

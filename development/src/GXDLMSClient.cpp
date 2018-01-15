@@ -295,7 +295,7 @@ int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& 
                             delete pObj;
                             return DLMS_ERROR_CODE_INVALID_PARAMETER;
                         }
-                        pObj->SetAccess(id, (DLMS_ACCESS_MODE)value.Arr[3].Arr[0].Arr[pos].Arr[1].ToInteger());
+                        //pObj->SetAccess(id, (DLMS_ACCESS_MODE)value.Arr[3].Arr[0].Arr[pos].Arr[1].ToInteger());
                         //Get access_selectors
                         if (value.Arr[3].Arr[0].Arr[pos].Arr[2].vt == DLMS_DATA_TYPE_ARRAY)
                         {
@@ -335,7 +335,7 @@ int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& 
                             delete pObj;
                             return DLMS_ERROR_CODE_INVALID_PARAMETER;
                         }
-                        pObj->SetMethodAccess(id, (DLMS_METHOD_ACCESS_MODE)tmp.Arr[1].ToInteger());
+                       // pObj->SetMethodAccess(id, (DLMS_METHOD_ACCESS_MODE)tmp.Arr[1].ToInteger());
                     }
                 }
                 // method_access_item End
@@ -350,7 +350,7 @@ int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& 
                 {
                     return ret;
                 }
-                objects.push_back(pObj);
+                objects.push_back(ln_v.byteArr);
             }
         }
     }
@@ -375,8 +375,8 @@ int CGXDLMSClient::ParseObjects(CGXByteBuffer& data, CGXDLMSObjectCollection& ob
             return ret;
         }
     }*/
-    m_Settings.GetObjects()->Free();
-    m_Settings.GetObjects()->insert(m_Settings.GetObjects()->end(), objects.begin(), objects.end());
+    /*m_Settings.GetObjects()->Free();
+    m_Settings.GetObjects()->insert(m_Settings.GetObjects()->end(), objects.begin(), objects.end());*/
     return 0;
 }
 

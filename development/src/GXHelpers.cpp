@@ -1898,23 +1898,6 @@ int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
 		++pos;
 		++i;
 	}
-   /* int ret;
-    int v1, v2, v3, v4, v5, v6;
-#if _MSC_VER > 1000
-    ret = sscanf_s(name, "%u.%u.%u.%u.%u.%u", &v1, &v2, &v3, &v4, &v5, &v6);
-#else
-    ret = sscanf(name, "%u.%u.%u.%u.%u.%u", &v1, &v2, &v3, &v4, &v5, &v6);
-#endif
-    if (ret != 6)
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    ln[0] = (unsigned char)v1;
-    ln[1] = (unsigned char)v2;
-    ln[2] = (unsigned char)v3;
-    ln[3] = (unsigned char)v4;
-    ln[4] = (unsigned char)v5;
-    ln[5] = (unsigned char)v6;*/
     return DLMS_ERROR_CODE_OK;
 }
 
