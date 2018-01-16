@@ -58,47 +58,6 @@ int CGXDLMSGSMDiagnostic::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSGSMDiagnostic::GetValues(std::vector<std::string>& values)
-{
-
-}
-
-void CGXDLMSGSMDiagnostic::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-    if (!IsRead(5))
-    {
-        attributes.push_back(5);
-    }
-    if (!IsRead(6))
-    {
-        attributes.push_back(6);
-    }
-    if (!IsRead(7))
-    {
-        attributes.push_back(7);
-    }
-    if (!IsRead(8))
-    {
-        attributes.push_back(8);
-    }
-}
 
 int CGXDLMSGSMDiagnostic::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
@@ -149,7 +108,6 @@ int CGXDLMSGSMDiagnostic::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 int CGXDLMSGSMDiagnostic::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
