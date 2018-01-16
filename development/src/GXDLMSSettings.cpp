@@ -140,7 +140,9 @@ bool CGXDLMSSettings::CheckFrame(unsigned char frame)
     // If U frame.
     if ((frame & 0x3) == 3)
     {
-        ResetFrameSequence();
+		if (frame == DLMS_COMMAND_SNRM || frame == DLMS_COMMAND_UA) {
+			ResetFrameSequence();
+		}
         return true;
     }
     // If S -frame

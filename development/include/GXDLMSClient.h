@@ -282,7 +282,8 @@ public:
 
     int GetData(
         CGXByteBuffer& reply,
-        CGXReplyData& data);
+        CGXReplyData& data,
+		CGXReplyData& ui_data);
 
     static std::string ObjectTypeToString(
         DLMS_OBJECT_TYPE type);
