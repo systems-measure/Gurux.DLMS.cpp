@@ -100,8 +100,24 @@ void CreatePushSetup(CGXDLMSObject*& constracted) {
 	constracted = new CGXDLMSPushSetup();
 }
 
+void CreateTcpUdpSetup(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSTcpUdpSetup();
+}
+
+void CreateIp4Setup(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSIp4Setup();
+}
+
+void CreateMacAddressSetup(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSMacAddressSetup();
+}
+
 void CreateGPRSSetup(CGXDLMSObject*& constracted) {
 	constracted = new CGXDLMSGPRSSetup();
+}
+
+void CreateGSMDiagnostic(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSGSMDiagnostic();
 }
 
 void CreateDisconectControl(CGXDLMSObject*& constracted) {
@@ -154,13 +170,13 @@ const tabFunc<newObj> create_func[] = {
 	{ DLMS_OBJECT_TYPE_NONE,										NULL },
 	{ DLMS_OBJECT_TYPE_NONE,										NULL },
 	{ DLMS_OBJECT_TYPE_PUSH_SETUP,						 CreatePushSetup },
-	{ DLMS_OBJECT_TYPE_TCP_UDP_SETUP,								NULL },
-	{ DLMS_OBJECT_TYPE_IP4_SETUP,									NULL },
-	{ DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP,							NULL },
+	{ DLMS_OBJECT_TYPE_TCP_UDP_SETUP,				   CreateTcpUdpSetup },
+	{ DLMS_OBJECT_TYPE_IP4_SETUP,						  CreateIp4Setup },
+	{ DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP,		   CreateMacAddressSetup },
 	{ DLMS_OBJECT_TYPE_PPP_SETUP,									NULL },
 	{ DLMS_OBJECT_TYPE_GPRS_SETUP,						 CreateGPRSSetup },
 	{ DLMS_OBJECT_TYPE_SMTP_SETUP,									NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
+	{ DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC,				 CreateGSMDiagnostic },
 	{ DLMS_OBJECT_TYPE_NONE,										NULL },
 	{ DLMS_OBJECT_TYPE_NONE,										NULL },
 	{ DLMS_OBJECT_TYPE_NONE,										NULL },
@@ -193,63 +209,6 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 		create_func[type].execute_func(constructed_obj);
 	}
 	else {
-	switch (type)
-	{
-	case DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR:
-		constructed_obj =  new CGXDLMSActivityCalendar();
-		break;
-	case DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME:
-		constructed_obj = new CGXDLMSAssociationLogicalName();
-		break;
-	case DLMS_OBJECT_TYPE_CLOCK:
-		constructed_obj = new CGXDLMSClock();
-		break;
-	case DLMS_OBJECT_TYPE_DATA:
-		constructed_obj = new CGXDLMSData();
-		break;
-	case DLMS_OBJECT_TYPE_DEMAND_REGISTER:
-		constructed_obj = new CGXDLMSDemandRegister();
-		break;
-	case DLMS_OBJECT_TYPE_IEC_HDLC_SETUP:
-		constructed_obj = new CGXDLMSIecHdlcSetup();
-		break;
-	case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
-		constructed_obj = new CGXDLMSDisconnectControl();
-		break;
-	case DLMS_OBJECT_TYPE_LIMITER:
-		constructed_obj = new CGXDLMSLimiter();
-		break;
-	case DLMS_OBJECT_TYPE_PROFILE_GENERIC:
-		constructed_obj = new CGXDLMSProfileGeneric();
-		break;
-	case DLMS_OBJECT_TYPE_REGISTER:
-		constructed_obj = new CGXDLMSRegister();
-		break;
-	case DLMS_OBJECT_TYPE_SCRIPT_TABLE:
-		constructed_obj = new CGXDLMSScriptTable();
-		break;
-	case DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE:
-		constructed_obj = new CGXDLMSSpecialDaysTable();
-		break;
-	case DLMS_OBJECT_TYPE_PUSH_SETUP:
-		constructed_obj = new CGXDLMSPushSetup();
-		break;
-	case DLMS_OBJECT_TYPE_TCP_UDP_SETUP:
-		constructed_obj = new CGXDLMSTcpUdpSetup();
-		break;
-	case DLMS_OBJECT_TYPE_IP4_SETUP:
-		constructed_obj = new CGXDLMSIp4Setup();
-		break;
-	case DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP:
-		constructed_obj = new CGXDLMSMacAddressSetup();
-		break;
-    case DLMS_OBJECT_TYPE_GPRS_SETUP:
-        constructed_obj = new CGXDLMSGPRSSetup();
-        break;
-    case DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC:
-        constructed_obj = new CGXDLMSGSMDiagnostic();
-        break;
-	default:
 		constructed_obj = nullptr;
 	}
 }
@@ -334,7 +293,6 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(uint8_t* ln)
 	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
 		if (memcmp(ln, objects_ln[i], 6) == 0)
 		{
-			//std::string ln;
 			char ln[24];
 			GXHelpers::GetLogicalName(objects_ln[i], ln);
 			if (type_callback != nullptr) {
@@ -365,7 +323,6 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(CGXByteBuffer& ln)
 	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
 		if (memcmp(ln.GetData(), objects_ln[i], 6) == 0)
 		{
-			//std::string ln;
 			char ln[24];
 			GXHelpers::GetLogicalName(objects_ln[i], ln);
 			if (type_callback != nullptr) {
@@ -472,26 +429,6 @@ TypeObj CGXDLMSObjectCollection::GetTypeObjCallback() {
 
 void CGXDLMSObjectCollection::SetTypeObjCallback(TypeObj type) {
 	type_callback = type;
-}
-
-void CGXDLMSObjectCollection::Free()
-{
-	//if (size_collection != 0) {
-	//	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
-
-	//		objects_ln[i] = nullptr;
-	//	}
-	//}
-	//if (dlms_only_obj.size() != 0) {
-	//	for (std::vector<CGXDLMSObject*>::iterator it = dlms_only_obj.begin(); it != dlms_only_obj.end(); ++it) {
-	//		delete (*it);
-	//	}
-	//}
-	//std::vector<unsigned char*>::clear();
-	////dlms_only_obj.clear();
-	//m_currentALN = nullptr;
-	//*idx_constructed_obj = 0;
-	//FreeConstructedObj();
 }
 
 void CGXDLMSObjectCollection::FreeConstructedObj() {

@@ -106,8 +106,6 @@ public:
 
 	void SetTypeObjCallback(TypeObj type);
 
-    void Free();
-
 	void FreeConstructedObj();
 
 };
