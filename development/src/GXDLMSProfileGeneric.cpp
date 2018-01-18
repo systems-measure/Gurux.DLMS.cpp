@@ -144,55 +144,6 @@ int CGXDLMSProfileGeneric::Capture(CGXDLMSClient& client, std::vector<CGXByteBuf
 	return 0;
 }
 
-void CGXDLMSProfileGeneric::GetValues(std::vector<std::string>& values)
-{
-   
-}
-
-void CGXDLMSProfileGeneric::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Buffer
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //CaptureObjects
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //CapturePeriod
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //SortMethod
-    if (!IsRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //SortObject
-    if (!IsRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //EntriesInUse
-    if (!IsRead(7))
-    {
-        attributes.push_back(7);
-    }
-    //ProfileEntries
-    if (!IsRead(8))
-    {
-        attributes.push_back(8);
-    }
-}
-
 //Returns amount of attributes.
 int CGXDLMSProfileGeneric::GetAttributeCount()
 {

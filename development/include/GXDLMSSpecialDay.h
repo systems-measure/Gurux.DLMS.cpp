@@ -39,12 +39,10 @@
 
 class CGXDLMSSpecialDay
 {
-    int m_Index;
-    CGXDateTime m_Date;
-    int m_DayId;
+
 
 public:
-    int GetIndex();
+    /*int GetIndex();
     void SetIndex(int value);
 
     CGXDateTime& GetDate();
@@ -53,6 +51,6 @@ public:
     int GetDayId();
     void SetDayId(int value);
 
-    std::string ToString();
+    std::string ToString();*/
 };
 #endif //GXDLMSSPECIALDAY_H

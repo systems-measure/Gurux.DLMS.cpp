@@ -43,31 +43,31 @@
 #include "../include/GXDLMSSNParameters.h"
 
 
-CGXDLMSClient::CGXDLMSClient(bool UseLogicalNameReferencing,
+CGXDLMSClient::CGXDLMSClient(/*bool UseLogicalNameReferencing,*/
     int clientAddress,
     int serverAddress,
     //Authentication type.
     DLMS_AUTHENTICATION authentication,
     //Password if authentication is used.
     const char* password,
-    DLMS_INTERFACE_TYPE intefaceType) : m_Settings(false)
+    DLMS_INTERFACE_TYPE intefaceType) : m_Settings()
 {
     m_IsAuthenticationRequired = false;
-    m_Settings.SetUseLogicalNameReferencing(UseLogicalNameReferencing);
+    //m_Settings.SetUseLogicalNameReferencing(UseLogicalNameReferencing);
     m_Settings.SetClientAddress(clientAddress);
     m_Settings.SetServerAddress(serverAddress);
     m_Settings.SetInterfaceType(intefaceType);
     m_Settings.SetAuthentication(authentication);
     m_Settings.GetPassword().AddString(password);
-    if (UseLogicalNameReferencing)
-    {
+    /*if (UseLogicalNameReferencing)
+    {*/
         SetProposedConformance((DLMS_CONFORMANCE)(DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_ACTION |
             DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_SET_OR_WRITE |
             DLMS_CONFORMANCE_BLOCK_TRANSFER_WITH_GET_OR_READ |
             DLMS_CONFORMANCE_SET | DLMS_CONFORMANCE_SELECTIVE_ACCESS |
             DLMS_CONFORMANCE_ACTION | DLMS_CONFORMANCE_MULTIPLE_REFERENCES |
             DLMS_CONFORMANCE_GET | DLMS_CONFORMANCE_GENERAL_PROTECTION));
-    }
+    //}
     /*else
     {
         SetProposedConformance((DLMS_CONFORMANCE)(DLMS_CONFORMANCE_INFORMATION_REPORT |
@@ -105,7 +105,7 @@ void CGXDLMSClient::SetProposedConformance(DLMS_CONFORMANCE value)
 
 bool CGXDLMSClient::GetUseLogicalNameReferencing()
 {
-    return m_Settings.GetUseLogicalNameReferencing();
+    return true/*m_Settings.GetUseLogicalNameReferencing()*/;
 }
 
 DLMS_INTERFACE_TYPE CGXDLMSClient::GetInterfaceType()
@@ -295,7 +295,7 @@ int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& 
                             delete pObj;
                             return DLMS_ERROR_CODE_INVALID_PARAMETER;
                         }
-                        pObj->SetAccess(id, (DLMS_ACCESS_MODE)value.Arr[3].Arr[0].Arr[pos].Arr[1].ToInteger());
+                        //pObj->SetAccess(id, (DLMS_ACCESS_MODE)value.Arr[3].Arr[0].Arr[pos].Arr[1].ToInteger());
                         //Get access_selectors
                         if (value.Arr[3].Arr[0].Arr[pos].Arr[2].vt == DLMS_DATA_TYPE_ARRAY)
                         {
@@ -335,7 +335,7 @@ int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& 
                             delete pObj;
                             return DLMS_ERROR_CODE_INVALID_PARAMETER;
                         }
-                        pObj->SetMethodAccess(id, (DLMS_METHOD_ACCESS_MODE)tmp.Arr[1].ToInteger());
+                       // pObj->SetMethodAccess(id, (DLMS_METHOD_ACCESS_MODE)tmp.Arr[1].ToInteger());
                     }
                 }
                 // method_access_item End
@@ -350,7 +350,7 @@ int CGXDLMSClient::ParseLNObjects(CGXByteBuffer& buff, CGXDLMSObjectCollection& 
                 {
                     return ret;
                 }
-                objects.push_back(pObj);
+                objects.push_back(ln_v.byteArr);
             }
         }
     }
@@ -375,8 +375,8 @@ int CGXDLMSClient::ParseObjects(CGXByteBuffer& data, CGXDLMSObjectCollection& ob
             return ret;
         }
     }*/
-    m_Settings.GetObjects()->Free();
-    m_Settings.GetObjects()->insert(m_Settings.GetObjects()->end(), objects.begin(), objects.end());
+    /*m_Settings.GetObjects()->Free();
+    m_Settings.GetObjects()->insert(m_Settings.GetObjects()->end(), objects.begin(), objects.end());*/
     return 0;
 }
 

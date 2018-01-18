@@ -68,10 +68,10 @@ class CGXDLMSSettings
     bool m_CustomChallenges;
 
 	// Is Logical Name referencing used.
-	bool m_UseLogicalNameReferencing;
+	//bool m_UseLogicalNameReferencing;
   
-	// Is this server or client.
-	bool m_Server;
+	//// Is this server or client.
+	//bool m_Server;
 
 	// Invoke ID.
 	unsigned char m_InvokeID;
@@ -165,7 +165,7 @@ class CGXDLMSSettings
 
 public:
     // Constructor.
-    CGXDLMSSettings(bool isServer);
+    CGXDLMSSettings();
 
     //Destructor.
     ~CGXDLMSSettings();
@@ -229,8 +229,8 @@ public:
     // Increases block index.
     void IncreaseBlockIndex();
 
-    //Is acting as server or client.
-    bool IsServer();
+    ////Is acting as server or client.
+    //bool IsServer();
 
     // Information from the frame size that server can handle.
     CGXDLMSLimits& GetLimits();
@@ -272,10 +272,10 @@ public:
     int SetMaxServerPDUSize(unsigned short value);
 
     // Is Logical Name Referencing used.
-    bool GetUseLogicalNameReferencing();
+    //bool GetUseLogicalNameReferencing();
 
     // Is Logical Name Referencing used.
-    void SetUseLogicalNameReferencing(bool value);
+    //void SetUseLogicalNameReferencing(bool value);
 
     // Used priority.
     DLMS_PRIORITY GetPriority();

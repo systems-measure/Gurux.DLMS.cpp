@@ -65,10 +65,6 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    void GetValues(std::vector<std::string>& attributes);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.

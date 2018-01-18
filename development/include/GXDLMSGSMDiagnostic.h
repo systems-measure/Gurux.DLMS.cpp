@@ -47,26 +47,11 @@ public:
 	//LN Constructor.
     CGXDLMSGSMDiagnostic(const char* ln);
 
-    std::string GetAPN();
-    void SetAPN(std::string value);
-
-    long GetPINCode();
-    void SetPINCode(long value);
-
-    CGXDLMSQualityOfService& GetDefaultQualityOfService();
-
-    CGXDLMSQualityOfService& GetRequestedQualityOfService();
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
     // Returns amount of methods.
     int GetMethodCount();
-
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 

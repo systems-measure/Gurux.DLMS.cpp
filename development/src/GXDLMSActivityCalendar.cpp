@@ -63,66 +63,6 @@ int CGXDLMSActivityCalendar::GetMethodCount()
     return 1;
 }
 
-void CGXDLMSActivityCalendar::GetValues(std::vector<std::string>& values)
-{
-   
-}
-
-void CGXDLMSActivityCalendar::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //CalendarNameActive
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //SeasonProfileActive
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-
-    //WeekProfileTableActive
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //DayProfileTableActive
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //CalendarNamePassive
-    if (CanRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //SeasonProfilePassive
-    if (CanRead(7))
-    {
-        attributes.push_back(7);
-    }
-    //WeekProfileTablePassive
-    if (CanRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //DayProfileTablePassive
-    if (CanRead(9))
-    {
-        attributes.push_back(9);
-    }
-    //Time.
-    if (CanRead(10))
-    {
-        attributes.push_back(10);
-    }
-}
-
 int CGXDLMSActivityCalendar::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)

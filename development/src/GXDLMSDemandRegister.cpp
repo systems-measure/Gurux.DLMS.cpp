@@ -37,11 +37,6 @@
 #include "../include/GXDLMSConverter.h"
 #include "../include/GXDLMSDemandRegister.h"
 
-bool CGXDLMSDemandRegister::IsRead(int index)
-{
-   	return true;
-}
-
 /**
  Constructor.
 */
@@ -76,60 +71,6 @@ void CGXDLMSDemandRegister::NextPeriod()
 
 }
 
-void CGXDLMSDemandRegister::GetValues(std::vector<std::string>& values)
-{
-    
-}
-
-void CGXDLMSDemandRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //ScalerUnit
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //CurrentAvarageValue
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //LastAvarageValue
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //Status
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //CaptureTime
-    if (CanRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //StartTimeCurrent
-    if (CanRead(7))
-    {
-        attributes.push_back(7);
-    }
-    //Period
-    if (CanRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //NumberOfPeriods
-    if (CanRead(9))
-    {
-        attributes.push_back(9);
-    }
-}
-
 // Returns amount of attributes.
 int CGXDLMSDemandRegister::GetAttributeCount()
 {
@@ -162,19 +103,21 @@ int CGXDLMSDemandRegister::GetDataType(signed char index, DLMS_DATA_TYPE& type)
     }
     if (index == 2)
     {
-		
+		return CGXDLMSObject::GetDataType(index, type);
     }
     if (index == 3)
     {
-		
+		return CGXDLMSObject::GetDataType(index, type);
     }
     if (index == 4)
     {
-        
+		type = DLMS_DATA_TYPE_STRUCTURE;
+		return DLMS_ERROR_CODE_OK;
     }
     if (index == 5)
     {
-		
+		type = DLMS_DATA_TYPE_UINT8;
+		return DLMS_ERROR_CODE_OK;
     }
     if (index == 6)
     {

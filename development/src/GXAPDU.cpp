@@ -108,8 +108,8 @@ int GenerateApplicationContextName(
     // Len
     data.SetUInt8(0x07);
     bool ciphered = cipher != NULL && cipher->IsCiphered();
-    if (settings.GetUseLogicalNameReferencing())
-    {
+    //if (settings.GetUseLogicalNameReferencing())
+    //{
         if (ciphered)
         {
             data.Set(LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING, sizeof(LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING));
@@ -118,7 +118,7 @@ int GenerateApplicationContextName(
         {
             data.Set(LOGICAL_NAME_OBJECT_ID, sizeof(LOGICAL_NAME_OBJECT_ID));
         }
-    }
+    //}
     /*else
     {
         if (ciphered)
@@ -131,22 +131,22 @@ int GenerateApplicationContextName(
         }
     }*/
     // Add system title.
-    if (!settings.IsServer() &&
-        (ciphered || settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC))
-    {
-        if (cipher->GetSystemTitle().GetSize() == 0)
-        {
-            return DLMS_ERROR_CODE_INVALID_PARAMETER;
-        }
-        // Add calling-AP-title
-        data.SetUInt8((BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | 6));
-        // LEN
-        GXHelpers::SetObjectCount(2 + cipher->GetSystemTitle().GetSize(), data);
-        data.SetUInt8(BER_TYPE_OCTET_STRING);
-        // LEN
-        GXHelpers::SetObjectCount(cipher->GetSystemTitle().GetSize(), data);
-        data.Set(cipher->GetSystemTitle().GetData(), cipher->GetSystemTitle().GetSize());
-    }
+    //if (!settings.IsServer() &&
+    //    (ciphered || settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC))
+    //{
+    //    if (cipher->GetSystemTitle().GetSize() == 0)
+    //    {
+    //        return DLMS_ERROR_CODE_INVALID_PARAMETER;
+    //    }
+    //    // Add calling-AP-title
+    //    data.SetUInt8((BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | 6));
+    //    // LEN
+    //    GXHelpers::SetObjectCount(2 + cipher->GetSystemTitle().GetSize(), data);
+    //    data.SetUInt8(BER_TYPE_OCTET_STRING);
+    //    // LEN
+    //    GXHelpers::SetObjectCount(cipher->GetSystemTitle().GetSize(), data);
+    //    data.Set(cipher->GetSystemTitle().GetData(), cipher->GetSystemTitle().GetSize());
+    //}
     return 0;
 }
 
@@ -388,8 +388,8 @@ int ParseUserInformation(
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     // Get DLMS version number.
-    if (settings.IsServer())
-	{
+    /*if (settings.IsServer())
+	{*/
 		if ((ret = data.GetUInt8(&ch)) != 0)
 		{
 			return ret;
@@ -400,19 +400,19 @@ int ParseUserInformation(
 			//Invalid DLMS version number.
 			return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
 		}
-	}
-	else
-	{
-        if ((ret = data.GetUInt8(&ch)) != 0)
-        {
-            return ret;
-        }
-        if (ch != 6)
-        {
-            //Invalid DLMS version number.
-            return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
-        }
-    }
+	//}
+	//else
+	//{
+ //       if ((ret = data.GetUInt8(&ch)) != 0)
+ //       {
+ //           return ret;
+ //       }
+ //       if (ch != 6)
+ //       {
+ //           //Invalid DLMS version number.
+ //           return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
+ //       }
+ //   }
 
     // Tag for conformance block
     if ((ret = data.GetUInt8(&tag)) != 0)
@@ -448,20 +448,20 @@ int ParseUserInformation(
     bb.SetUInt8(0);
     bb.Set(tmp, 3);
     bb.GetUInt32(&v);
-    if (settings.IsServer())
-    {
+   /* if (settings.IsServer())
+    {*/
         settings.SetNegotiatedConformance((DLMS_CONFORMANCE)(v & settings.GetProposedConformance()));
 		if (settings.GetNegotiatedConformance() == 0) {
 			return DLMS_ERROR_CODE_INVALID_PARAMETER;
 		}
-    }
-    else
+    //}
+   /* else
     {
         settings.SetNegotiatedConformance((DLMS_CONFORMANCE)v);
-    }
+    }*/
 
-    if (settings.IsServer())
-    {
+   /* if (settings.IsServer())
+    {*/
         if ((ret = data.GetUInt16(&pduSize)) != 0)
         {
             return ret;
@@ -474,15 +474,15 @@ int ParseUserInformation(
 		if ((ret = settings.SetMaxReceivePDUSize(pduSize)) != 0) {
 			return ret;
 		}
-    }
-    else
+    //}
+    /*else
     {
         if ((ret = data.GetUInt16(&pduSize)) != 0)
         {
             return ret;
         }
         settings.SetMaxReceivePDUSize(pduSize);
-    }
+    }*/
     if (response)
     {
         // VAA Name
@@ -491,23 +491,23 @@ int ParseUserInformation(
         {
             return ret;
         }
-        if (vaa == 0x0007)
-        {
-            // If LN
-            if (!settings.GetUseLogicalNameReferencing())
-            {
-                //Invalid VAA.
-                return DLMS_ERROR_CODE_INVALID_PARAMETER;
-            }
-        }
-        else if (vaa == 0xFA00)
+        //if (vaa == 0x0007)
+        //{
+        //    // If LN
+        //    /*if (!settings.GetUseLogicalNameReferencing())
+        //    {*/
+        //        //Invalid VAA.
+        //        return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        //    //}
+        //}
+        /*else*/ if (vaa == 0xFA00)
         {
             // If SN
-            if (settings.GetUseLogicalNameReferencing())
-            {
+            /*if (settings.GetUseLogicalNameReferencing())
+            {*/
                 //Invalid VAA.
                 return DLMS_ERROR_CODE_INVALID_PARAMETER;
-            }
+            //}
         }
         else
         {
@@ -551,7 +551,7 @@ int ParseApplicationContextName(
         //Encoding failed. Not an Object ID.
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
-    if (settings.IsServer() && settings.GetCipher() != NULL)
+    if (/*settings.IsServer() &&*/ settings.GetCipher() != NULL)
     {
         settings.GetCipher()->SetSecurity(DLMS_SECURITY_NONE);
     }
@@ -560,8 +560,8 @@ int ParseApplicationContextName(
     {
         return ret;
     }
-    if (settings.GetUseLogicalNameReferencing())
-    {
+    /*if (settings.GetUseLogicalNameReferencing())
+    {*/
         if (buff.Compare((unsigned char*)LOGICAL_NAME_OBJECT_ID, sizeof(LOGICAL_NAME_OBJECT_ID)))
         {
             return 0;
@@ -575,7 +575,7 @@ int ParseApplicationContextName(
         {
             return 0;
         }
-    }
+    //}
     //if (buff.Compare((unsigned char*)SHORT_NAME_OBJECT_ID, sizeof(SHORT_NAME_OBJECT_ID)))
     //{
     //    return 0;
@@ -598,16 +598,16 @@ int ValidateAare(
     {
         return ret;
     }
-    if (settings.IsServer())
-    {
+    /*if (settings.IsServer())
+    {*/
         if (tag != (BER_TYPE_APPLICATION
             | BER_TYPE_CONSTRUCTED
             | PDU_TYPE_PROTOCOL_VERSION))
         {
             return DLMS_ERROR_CODE_INVALID_TAG;
         }
-    }
-    else
+    //}
+    /*else
     {
         if (tag != (BER_TYPE_APPLICATION
             | BER_TYPE_CONSTRUCTED
@@ -615,7 +615,7 @@ int ValidateAare(
         {
             return DLMS_ERROR_CODE_INVALID_TAG;
         }
-    }
+    }*/
     return 0;
 }
 
@@ -772,10 +772,10 @@ int GetUserInformation(
 		data.Set(&bb, 1, 3);
 		data.SetUInt16(settings.GetMaxPduSize());
 		// VAA Name VAA name (0x0007 for LN referencing and 0xFA00 for SN)
-		if (settings.GetUseLogicalNameReferencing())
-		{
+		/*if (settings.GetUseLogicalNameReferencing())
+		{*/
 			data.SetUInt16(0x0007);
-		}
+		//}
 		/*else
 		{
 			data.SetUInt16(0xFA00);

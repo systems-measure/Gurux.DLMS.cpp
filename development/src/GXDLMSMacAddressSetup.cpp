@@ -75,29 +75,6 @@ int CGXDLMSMacAddressSetup::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSMacAddressSetup::GetValues(std::vector<std::string>& values)
-{
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(m_MacAddress);*/
-}
-
-void CGXDLMSMacAddressSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //MacAddress
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-}
-
 int CGXDLMSMacAddressSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
@@ -120,7 +97,6 @@ int CGXDLMSMacAddressSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 int CGXDLMSMacAddressSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
@@ -133,12 +109,7 @@ int CGXDLMSMacAddressSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEven
     }
     if (e.GetIndex() == 2)
     {
-        /*std::string add = GetMacAddress();
-        GXHelpers::Replace(add, ":", ".");
-		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-		data.SetUInt8(add.length());
-		data.AddString(add);
-        e.SetValue(data);*/
+       
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -153,15 +124,6 @@ int CGXDLMSMacAddressSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEven
     }
     else if (e.GetIndex() == 2)
     {
-       /* CGXDLMSVariant newValue;
-        int ret = CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_OCTET_STRING, newValue);
-        if (ret != DLMS_ERROR_CODE_OK)
-        {
-            return ret;
-        }
-        std::string add = e.GetValue().ToString();
-        GXHelpers::Replace(add, ".", ":");
-        SetMacAddress(add);*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

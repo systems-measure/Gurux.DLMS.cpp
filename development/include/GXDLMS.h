@@ -77,7 +77,7 @@ private:
     // server : Is server.
     // data : Received data.
     /////////////////////////////////////////////////////////////////////////////
-    static void GetLLCBytes(bool server, CGXByteBuffer& data);
+    static void GetLLCBytes(CGXByteBuffer& data);
 
     /////////////////////////////////////////////////////////////////////////////
     //
@@ -183,6 +183,8 @@ public:
         CGXByteBuffer& data,
         CGXByteBuffer& reply);
 
+	static long GetLongInvokeIDPriority(CGXDLMSSettings& settings);
+
     /**
     * Get next logical name PDU.
     *
@@ -235,7 +237,6 @@ public:
         CGXByteBuffer& reply);
 
     static int GetHdlcData(
-        bool server,
         CGXDLMSSettings& settings,
         CGXByteBuffer& reply,
         CGXReplyData& data,
@@ -251,7 +252,7 @@ public:
     static int GetHDLCAddress(
         CGXByteBuffer& buff,
         unsigned long& address,
-        unsigned long& addrSize);
+        unsigned char& addrSize);
 
     /**
      * Check that client and server address match.
@@ -267,7 +268,6 @@ public:
      * @return True, if client and server address match.
      */
     static int CheckHdlcAddress(
-        bool server,
         CGXDLMSSettings& settings,
         CGXByteBuffer& reply,
         int index);
@@ -282,7 +282,7 @@ public:
     static int GetTcpData(
         CGXDLMSSettings& settings,
         CGXByteBuffer& buff,
-        CGXReplyData& data);
+        CGXReplyData& data, unsigned char& empty);
 
     /////////////////////////////////////////////////////////////////////////////
     // Handle read response and get data from block and/or update error status.

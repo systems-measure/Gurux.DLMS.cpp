@@ -164,109 +164,6 @@ int CGXDLMSIp4Setup::GetMethodCount()
     return 3;
 }
 
-void CGXDLMSIp4Setup::GetValues(std::vector<std::string>& values)
-{
-    //values.clear();
-    //std::string ln;
-    //GetLogicalName(ln);
-    //values.push_back(ln);
-    ////CGXDLMSVariant().ToString()
-    //values.push_back(m_DataLinkLayerReference);
-    //values.push_back(m_IPAddress);
-    //std::stringstream sb;
-    //sb << '[';
-    //bool empty = true;
-    //for (std::vector<unsigned long>::iterator it = m_MulticastIPAddress.begin(); it != m_MulticastIPAddress.end(); ++it)
-    //{
-    //    if (!empty)
-    //    {
-    //        sb << ", ";
-    //    }
-    //    empty = false;
-    //    std::string str = CGXDLMSVariant(*it).ToString();
-    //    sb.write(str.c_str(), str.size());
-    //}
-    //sb << ']';
-    //values.push_back(sb.str());
-
-    ////Clear str.
-    //sb.str(std::string());
-    //sb << '[';
-    //empty = true;
-    //for (std::vector<CGXDLMSIp4SetupIpOption>::iterator it = m_IPOptions.begin(); it != m_IPOptions.end(); ++it)
-    //{
-    //    if (!empty)
-    //    {
-    //        sb << ", ";
-    //    }
-    //    empty = false;
-    //    std::string str = it->ToString();
-    //    sb.write(str.c_str(), str.size());
-    //}
-    //sb << ']';
-    //values.push_back(sb.str());
-
-    //values.push_back(CGXDLMSVariant(m_SubnetMask).ToString());
-    //values.push_back(CGXDLMSVariant(m_GatewayIPAddress).ToString());
-    //values.push_back(CGXDLMSVariant(m_UseDHCP).ToString());
-    //values.push_back(CGXDLMSVariant(m_PrimaryDNSAddress).ToString());
-    //values.push_back(CGXDLMSVariant(m_SecondaryDNSAddress).ToString());
-}
-
-void CGXDLMSIp4Setup::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //DataLinkLayerReference
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //IPAddress
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //MulticastIPAddress
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //IPOptions
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //SubnetMask
-    if (CanRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //GatewayIPAddress
-    if (CanRead(7))
-    {
-        attributes.push_back(7);
-    }
-    //UseDHCP
-    if (!IsRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //PrimaryDNSAddress
-    if (CanRead(9))
-    {
-        attributes.push_back(9);
-    }
-    //SecondaryDNSAddress
-    if (CanRead(10))
-    {
-        attributes.push_back(10);
-    }
-}
-
 int CGXDLMSIp4Setup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
@@ -320,7 +217,6 @@ int CGXDLMSIp4Setup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 int CGXDLMSIp4Setup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
@@ -332,82 +228,39 @@ int CGXDLMSIp4Setup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     }
     else if (e.GetIndex() == 2)
     {
-        /*CGXDLMSVariant tmp;
-        GXHelpers::SetLogicalName(m_DataLinkLayerReference.c_str(), tmp);
-        e.SetValue(tmp);*/
+
     }
     else if (e.GetIndex() == 3)
     {
-        //if (m_IPAddress.size() == 0)
-        //{
-        //    return 0;
-        //}
-        //struct sockaddr_in add;
-        //add.sin_addr.s_addr = inet_addr(m_IPAddress.c_str());
-        ////If address is give as name
-        //if (add.sin_addr.s_addr == INADDR_NONE)
-        //{
-        //    struct hostent *Hostent = gethostbyname(m_IPAddress.c_str());
-        //    if (Hostent == NULL)
-        //    {
-        //        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-        //    };
-        //    add.sin_addr = *(in_addr*)(void*)Hostent->h_addr_list[0];
-        //};
-        //e.SetValue((unsigned long)add.sin_addr.s_addr);
+      
     }
     else if (e.GetIndex() == 4)
     {
-        /*e.SetByteArray(true);
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount((unsigned long)m_MulticastIPAddress.size(), data);
-        int ret;
-        for (std::vector<unsigned long>::iterator it = m_MulticastIPAddress.begin(); it != m_MulticastIPAddress.end(); ++it)
-        {
-			data.SetUInt8(DLMS_DATA_TYPE_UINT32);
-			data.SetUInt32(*it);
-        }
-        e.SetValue(data);*/
+       
     }
     else if (e.GetIndex() == 5)
     {
-       /* e.SetByteArray(true);
-		data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount((unsigned long)m_IPOptions.size(), data);
-        int ret;
-        for (std::vector<CGXDLMSIp4SetupIpOption>::iterator it = m_IPOptions.begin(); it != m_IPOptions.end(); ++it)
-        {
-			data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-			data.SetUInt8(3);
-			data.SetUInt8(DLMS_DATA_TYPE_UINT8);
-			data.SetUInt8(it->GetType());
-			data.SetUInt8(DLMS_DATA_TYPE_UINT8);
-			data.SetUInt8(it->GetLength());
-			data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-			data.SetUInt8(it->GetData().GetSize());
-			data.Set(it->GetData().GetData(), it->GetData().GetSize());
-        }
-        e.SetValue(data);*/
+      
     }
     else if (e.GetIndex() == 6)
     {
-        //e.SetValue(m_SubnetMask);
+
     }
     else if (e.GetIndex() == 7)
     {
-        //e.SetValue(m_GatewayIPAddress);
+
     }
     else if (e.GetIndex() == 8)
     {
-       // e.SetValue(m_UseDHCP);
+
     }
     else if (e.GetIndex() == 9)
     {
-       // e.SetValue(m_PrimaryDNSAddress);
+
     }
     else if (e.GetIndex() == 10)
     {
-       // e.SetValue(m_SecondaryDNSAddress);
+
     }
     else
     {
@@ -425,76 +278,39 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     }
     else if (e.GetIndex() == 2)
     {
-        /*if (e.GetValue().vt == DLMS_DATA_TYPE_STRING)
-        {
-            m_DataLinkLayerReference = e.GetValue().ToString();
-        }
-        else
-        {
-            m_DataLinkLayerReference.clear();
-            GXHelpers::GetLogicalName(e.GetValue().byteArr, m_DataLinkLayerReference);
-        }*/
+        
     }
     else if (e.GetIndex() == 3)
     {
-        /*long tmp = e.GetValue().ToInteger();
-        CGXByteBuffer bb;
-        bb.AddIntAsString(tmp & 0xFF);
-        bb.SetInt8('.');
-        bb.AddIntAsString((tmp >> 8) & 0xFF);
-        bb.SetInt8('.');
-        bb.AddIntAsString((tmp >> 16) & 0xFF);
-        bb.SetInt8('.');
-        bb.AddIntAsString((tmp >> 24) & 0xFF);
-        m_IPAddress = bb.ToString();*/
+       
     }
     else if (e.GetIndex() == 4)
     {
-       /* m_MulticastIPAddress.clear();
-        if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-        {
-            for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
-            {
-                m_MulticastIPAddress.push_back((*it).ToInteger());
-            }
-        }*/
+       
     }
     else if (e.GetIndex() == 5)
     {
-        /*m_IPOptions.clear();
-        if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-        {
-            for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
-            {
-                CGXDLMSIp4SetupIpOption item;
-                item.SetType((IP_OPTION_TYPE)it->Arr[0].ToInteger());
-                item.SetLength(it->Arr[1].ToInteger());
-                CGXByteBuffer tmp;
-                tmp.Set(it->Arr[2].byteArr, it->Arr[2].size);
-                item.SetData(tmp);
-                m_IPOptions.push_back(item);
-            }
-        }*/
+        
     }
     else if (e.GetIndex() == 6)
     {
-       // m_SubnetMask = e.GetValue().ToInteger();
+       
     }
     else if (e.GetIndex() == 7)
     {
-       // m_GatewayIPAddress = e.GetValue().ToInteger();
+       
     }
     else if (e.GetIndex() == 8)
     {
-       // m_UseDHCP = e.GetValue().boolVal;
+      
     }
     else if (e.GetIndex() == 9)
     {
-       // m_PrimaryDNSAddress = e.GetValue().ToInteger();
+      
     }
     else if (e.GetIndex() == 10)
     {
-        //m_SecondaryDNSAddress = e.GetValue().ToInteger();
+        
     }
     else
     {

@@ -79,7 +79,7 @@ public:
          * @param interfaceType
          *            Object type.
          */
-    CGXDLMSNotify(bool useLogicalNameReferencing,
+    CGXDLMSNotify(/*bool useLogicalNameReferencing,*/
         int clientAddress,
         int serverAddress,
         DLMS_INTERFACE_TYPE interfaceType);
@@ -122,13 +122,13 @@ public:
      *
      * @return Is Logical Name referencing used.
      */
-    bool GetUseLogicalNameReferencing();
+    /*bool GetUseLogicalNameReferencing();*/
 
     /**
      * @param value
      *            Is Logical Name referencing used.
      */
-    void SetUseLogicalNameReferencing(bool value);
+   /* void SetUseLogicalNameReferencing(bool value);*/
 
     /**
      * @return Used Priority.

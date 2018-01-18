@@ -41,6 +41,8 @@
 #include "GXHelpers.h"
 #include "GXDateTime.h"
 
+typedef uint8_t(*TypeAttrCallback)(uint8_t construct_idx);
+
 class CGXDLMSObjectCollection;
 
 class CGXDLMSObject : public IGXDLMSBase
@@ -51,21 +53,14 @@ class CGXDLMSObject : public IGXDLMSBase
     friend class CGXDLMSAssociationLogicalName;
     friend class CGXDLMSAssociationShortName;
 
-    CGXAttributeCollection* m_Attributes;
-    CGXAttributeCollection* m_MethodAttributes;
     void Initialize(unsigned short class_id, unsigned char version, CGXByteBuffer* pLogicalName);
     DLMS_OBJECT_TYPE m_ObjectType;
     unsigned char m_Version;
+	TypeAttrCallback get_data_type;
 protected:
    	bool m_DataValidity;
     unsigned char m_LN[6];
-	
-    /*
-     * Is attribute read. This can be used with static attributes to make
-     * meter reading faster.
-     */
-    bool IsRead(int index);
-    bool CanRead(int index);
+	unsigned char constr_idx;
 
     static int GetLogicalName(CGXDLMSObject * target, CGXByteBuffer& value);
     static int SetLogicalName(CGXDLMSObject * target, CArtVariant& value);
@@ -89,10 +84,14 @@ public:
 
     virtual ~CGXDLMSObject(void);
 
+	void SetDataTypeFunc(TypeAttrCallback callback);
+
 	//Get Object's Data validity
 	bool GetDataValidity();
 
 	void SetDataValidity(bool validity);
+
+	void SetConstructedIdx(uint8_t* idx);
 
     //Get Object's Logical or Short Name as a std::string.
     std::string GetName();
@@ -103,36 +102,16 @@ public:
     DLMS_OBJECT_TYPE GetObjectType();
 
     //Get Object's Logical Name.
-    void GetLogicalName(std::string& ln);
+    void GetLogicalName(char* ln);
 
 	void GetLogicalName(unsigned char* c_ln);
 
     void SetVersion(unsigned char value);
     unsigned char GetVersion();
 
-    CGXAttributeCollection* GetAttributes();
-    CGXAttributeCollection* GetMethodAttributes();
-    virtual int SetDataType(signed char index, DLMS_DATA_TYPE type);
     virtual int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
-    virtual int GetUIDataType(signed char index, DLMS_DATA_TYPE& type);
-	int SetUIDataType(signed char index, DLMS_DATA_TYPE type);
-
-    DLMS_ACCESS_MODE GetAccess(signed char index);
-	int SetAccess(signed char index, DLMS_ACCESS_MODE access);
-    DLMS_METHOD_ACCESS_MODE GetMethodAccess(signed char index);
-	int SetMethodAccess(signed char index, DLMS_METHOD_ACCESS_MODE access);
-
-    //Get values as std::string.
-    virtual void GetValues(std::vector<std::string>& values)
-    {
-        assert(0);
-    }
-
-    virtual void GetAttributeIndexToRead(std::vector<int>& attributes)
-    {
-        assert(0);
-    }
+	virtual DLMS_DATA_TYPE GetDataType(signed char index);
 
     // Returns amount of attributes.
     virtual int GetAttributeCount()

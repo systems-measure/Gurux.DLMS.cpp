@@ -92,6 +92,27 @@ public:
 		++size;
 	}
 
+	static void GetNum16(unsigned short& num, char* ln, unsigned char& size) {
+		if (num >= 10000) {
+			*(ln + size) = (num_codes[num / 10000]);
+			++size;
+		}
+		if (num >= 1000) {
+			*(ln + size) = (num_codes[(num / 1000) % 10]);
+			++size;
+		}
+		if (num >= 100) {
+			*(ln + size) = (num_codes[(num / 100) % 10]);
+			++size;
+		}
+		if (num >= 10) {
+			*(ln + size) = (num_codes[(num / 10) % 10]);
+			++size;
+		}
+		*(ln + size) = (num_codes[num % 10]);
+		++size;
+	}
+
     static void GetLogicalName(unsigned char* buff, std::string& ln)
     {
         
@@ -123,20 +144,36 @@ public:
 			GetNum(buff[5], tmp, dataSize);
 			ln.append(tmp, dataSize);
 		}
-
-//#if _MSC_VER > 1000
-//            dataSize = sprintf_s(tmp, 25, "%d.%d.%d.%d.%d.%d", buff[0], buff[1], buff[2], buff[3], buff[4], buff[5]) + 1;
-//#else
-//           dataSize = sprintf(tmp, "%d.%d.%d.%d.%d.%d", buff[0], buff[1], buff[2], buff[3], buff[4], buff[5]) + 1;
-//#endif
-//            if (dataSize > 25)
-//            {
-//                assert(0);
-//            }
-//            ln.clear();
-//            ln.append(tmp, dataSize - 1);
-//        }
     }
+
+	static void GetLogicalName(unsigned char* buff, char* ln)
+	{
+		//If Script Action target is not set it is null
+		if (buff != NULL)
+		{
+			unsigned char dataSize = 0;
+			GetNum(buff[0], ln, dataSize);
+			ln[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[1], ln, dataSize);
+			ln[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[2], ln, dataSize);
+			ln[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[3], ln, dataSize);
+			ln[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[4], ln, dataSize);
+			ln[dataSize] = '.';
+			++dataSize;
+			GetNum(buff[5], ln, dataSize);
+			ln[dataSize] = '\0';
+		}
+		else {
+			memset(ln, 0, 24);
+		}
+	}
 
     static void GetLogicalName(CGXByteBuffer& buff, std::string& ln)
     {

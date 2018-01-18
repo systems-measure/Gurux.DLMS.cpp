@@ -139,71 +139,6 @@ int CGXDLMSIECOpticalPortSetup::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSIECOpticalPortSetup::GetValues(std::vector<std::string>& values)
-{
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSVariant(m_DefaultMode).ToString());
-    values.push_back(CGXDLMSConverter::ToString(m_DefaultBaudrate));
-    values.push_back(CGXDLMSConverter::ToString(m_ProposedBaudrate));
-    values.push_back(CGXDLMSVariant(m_ResponseTime).ToString());
-    values.push_back(m_DeviceAddress);
-    values.push_back(m_Password1);
-    values.push_back(m_Password2);
-    values.push_back(m_Password5);*/
-}
-
-void CGXDLMSIECOpticalPortSetup::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //DefaultMode
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //DefaultBaudrate
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //ProposedBaudrate
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //ResponseTime
-    if (!IsRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //DeviceAddress
-    if (!IsRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //Password1
-    if (!IsRead(7))
-    {
-        attributes.push_back(7);
-    }
-    //Password2
-    if (!IsRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //Password5
-    if (!IsRead(9))
-    {
-        attributes.push_back(9);
-    }
-}
-
 int CGXDLMSIECOpticalPortSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
@@ -256,7 +191,6 @@ int CGXDLMSIECOpticalPortSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValue
     {
         int ret;
 		CGXByteBuffer data;
-//		e.SetByteArray(true);
         if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
@@ -266,42 +200,34 @@ int CGXDLMSIECOpticalPortSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValue
     }
     if (e.GetIndex() == 2)
     {
-        //e.SetValue(GetDefaultMode());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        //e.SetValue(GetDefaultBaudrate());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        //e.SetValue(GetProposedBaudrate());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-       // e.SetValue(GetResponseTime());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        //e.GetValue().Add(&m_DeviceAddress[0], (unsigned long)m_DeviceAddress.size());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 7)
     {
-        //e.GetValue().Add(&m_Password1[0], (unsigned long)m_Password1.size());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 8)
     {
-        //e.GetValue().Add(&m_Password2[0], (unsigned long)m_Password2.size());
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 9)
     {
-        //e.GetValue().Add(&m_Password5[0], (int)m_Password5.size());
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -316,50 +242,34 @@ int CGXDLMSIECOpticalPortSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValue
     }
     else if (e.GetIndex() == 2)
     {
-        //SetDefaultMode((DLMS_OPTICAL_PROTOCOL_MODE)e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 3)
     {
-        //SetDefaultBaudrate((DLMS_BAUD_RATE)e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 4)
     {
-        //SetProposedBaudrate((DLMS_BAUD_RATE)e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 5)
     {
-        //SetResponseTime((DLMS_LOCAL_PORT_RESPONSE_TIME)e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 6)
     {
-        /*CGXDLMSVariant tmp;
-        CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_STRING, tmp);
-        SetDeviceAddress(tmp.strVal);*/
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 7)
     {
-        /*CGXDLMSVariant tmp;
-        CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_STRING, tmp);
-        SetPassword1(tmp.strVal);*/
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 8)
     {
-        /*CGXDLMSVariant tmp;
-        CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_STRING, tmp);
-        SetPassword2(tmp.strVal);*/
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 9)
     {
-        /*CGXDLMSVariant tmp;
-        CGXDLMSClient::ChangeType(e.GetValue(), DLMS_DATA_TYPE_STRING, tmp);
-        SetPassword5(tmp.strVal);*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

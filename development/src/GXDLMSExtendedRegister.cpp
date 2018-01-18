@@ -36,14 +36,6 @@
 #include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSExtendedRegister.h"
 
-bool CGXDLMSExtendedRegister::IsRead(int index)
-{
-    if (index == 3)
-    {
-        return m_Unit != 0;
-    }
-    return CGXDLMSObject::IsRead(index);
-}
 //Constructor.
 CGXDLMSExtendedRegister::CGXDLMSExtendedRegister(void) : CGXDLMSRegister(DLMS_OBJECT_TYPE_EXTENDED_REGISTER, "0.0.0.0.0.0")
 {
@@ -79,19 +71,6 @@ void CGXDLMSExtendedRegister::SetCaptureTime(CGXDateTime value)
     m_CaptureTime = value;
 }
 
-int CGXDLMSExtendedRegister::GetUIDataType(signed char index, DLMS_DATA_TYPE& type)
-{
-    if (index == 5)
-    {
-        type = DLMS_DATA_TYPE_DATETIME;
-    }
-    else
-    {
-        return CGXDLMSObject::GetUIDataType(index, type);
-    }
-    return DLMS_ERROR_CODE_OK;
-}
-
 // Returns amount of attributes.
 int CGXDLMSExtendedRegister::GetAttributeCount()
 {
@@ -102,26 +81,6 @@ int CGXDLMSExtendedRegister::GetAttributeCount()
 int CGXDLMSExtendedRegister::GetMethodCount()
 {
     return 1;
-}
-
-void CGXDLMSExtendedRegister::GetValues(std::vector<std::string>& values)
-{
-   
-}
-
-void CGXDLMSExtendedRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    CGXDLMSRegister::GetAttributeIndexToRead(attributes);
-    //Status
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //CaptureTime
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
 }
 
 int CGXDLMSExtendedRegister::GetDataType(signed char index, DLMS_DATA_TYPE& type)

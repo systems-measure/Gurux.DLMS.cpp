@@ -60,35 +60,6 @@ int CGXDLMSDisconnectControl::GetMethodCount()
     return 2;
 }
 
-void CGXDLMSDisconnectControl::GetValues(std::vector<std::string>& values)
-{
-  
-}
-
-void CGXDLMSDisconnectControl::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //OutputState
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //ControlState
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //ControlMode
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-}
-
 int CGXDLMSDisconnectControl::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)

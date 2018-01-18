@@ -86,7 +86,7 @@ public:
     //Constructor
     /////////////////////////////////////////////////////////////////////////////
     CGXDLMSClient(
-        bool UseLogicalNameReferencing = true,
+        /*bool UseLogicalNameReferencing = true,*/
         int ClientAddress = 16,
         int ServerAddress = 1,
         //Authentication type.

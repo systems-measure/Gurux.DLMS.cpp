@@ -180,53 +180,12 @@ int CGXDLMS::ReceiverReady(
     DLMS_COMMAND cmd;
     CGXByteBuffer bb(6);
     std::vector<CGXByteBuffer> tmp;
-    if (settings.GetUseLogicalNameReferencing())
-    {
-        if (settings.IsServer())
-        {
             cmd = DLMS_COMMAND_GET_RESPONSE;
-        }
-        else
-        {
-            cmd = DLMS_COMMAND_GET_REQUEST;
-        }
 		bb.SetUInt32(settings.GetBlockIndex());
 		settings.IncreaseBlockIndex();
 		CGXDLMSLNParameters p(&settings, cmd,
 			DLMS_GET_COMMAND_TYPE_NEXT_DATA_BLOCK, &bb, NULL, 0xff);
 		ret = GetLnMessages(p, tmp);
-    }
-   ///* else
-   // {
-   //     if (settings.IsServer())
-   //     {
-   //         cmd = DLMS_COMMAND_READ_RESPONSE;
-   //     }
-   //     else
-   //     {
-   //         cmd = DLMS_COMMAND_READ_REQUEST;
-   //     }
-   // }*/
-   // if (settings.GetUseLogicalNameReferencing())
-   // {
-   //    
-   // }
-   // /*else
-   // {
-   //     bb.SetUInt16((unsigned short)settings.GetBlockIndex());
-   // }*/
-   // 
-   // if (settings.GetUseLogicalNameReferencing())
-   // {
-   //     
-   // }
-   // /*else
-   // {
-   //     CGXDLMSSNParameters p(&settings, cmd, 1,
-   //         DLMS_VARIABLE_ACCESS_SPECIFICATION_BLOCK_NUMBER_ACCESS,
-   //         &bb, NULL);
-   //     ret = GetSnMessages(p, tmp);
-   // }*/
     reply.Set(&tmp.at(0), 0, -1);
     return ret;
 }
@@ -248,24 +207,14 @@ int CGXDLMS::GetWrapperFrame(
     reply.Clear();
     // Add version.
     reply.SetUInt16(1);
-    if (settings.IsServer())
-    {
         reply.SetUInt16((unsigned short)settings.GetServerAddress());
         reply.SetUInt16((unsigned short)settings.GetClientAddress());
-    }
-    else
-    {
-        reply.SetUInt16((unsigned short)settings.GetClientAddress());
-        reply.SetUInt16((unsigned short)settings.GetServerAddress());
-    }
     // Data length.
     reply.SetUInt16((unsigned short)data.GetSize());
     // Data
     reply.Set(&data, data.GetPosition(), -1);
 
     // Remove sent data in server side.
-    if (settings.IsServer())
-    {
         if (data.GetSize() == data.GetPosition())
         {
             data.Clear();
@@ -275,7 +224,6 @@ int CGXDLMS::GetWrapperFrame(
             data.Move(data.GetPosition(), 0, data.GetSize() - data.GetPosition());
             data.SetPosition(0);
         }
-    }
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -300,8 +248,6 @@ int CGXDLMS::GetHdlcFrame(
     unsigned short frameSize;
     int ret, len = 0;
     CGXByteBuffer primaryAddress, secondaryAddress;
-    if (settings.IsServer())
-    {
         if ((ret = GetAddressBytes(settings.GetClientAddress(), primaryAddress)) != 0)
         {
             return ret;
@@ -310,19 +256,6 @@ int CGXDLMS::GetHdlcFrame(
         {
             return ret;
         }
-    }
-    else
-    {
-        if ((ret = GetAddressBytes(settings.GetServerAddress(), primaryAddress)) != 0)
-        {
-            return ret;
-        }
-        if ((ret = GetAddressBytes(settings.GetClientAddress(), secondaryAddress)) != 0)
-        {
-            return ret;
-        }
-    }
-
     // Add BOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     frameSize = settings.GetLimits().GetMaxInfoTX();
@@ -353,7 +286,7 @@ int CGXDLMS::GetHdlcFrame(
     { 
 		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
 			reply.SetUInt8((unsigned char)((frameSize - 2) & 0xFF));
-			len = (frameSize ) - ( 9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
+			len = (frameSize)-(9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
 		}
 		else {
 			reply.SetUInt8((unsigned char)(len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize()));
@@ -392,8 +325,6 @@ int CGXDLMS::GetHdlcFrame(
     // Add EOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     // Remove sent data in server side.
-    if (settings.IsServer())
-    {
         if (data != NULL)
         {
             if (data->GetSize() == data->GetPosition())
@@ -406,7 +337,6 @@ int CGXDLMS::GetHdlcFrame(
                 data->SetPosition(0);
             }
         }
-    }
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -480,7 +410,7 @@ unsigned char GetInvokeIDPriority(CGXDLMSSettings& settings)
      *            DLMS settings.
      * @return Invoke ID and priority.
      */
-long GetLongInvokeIDPriority(CGXDLMSSettings& settings)
+long CGXDLMS::GetLongInvokeIDPriority(CGXDLMSSettings& settings)
 {
     long value = 0;
     if (settings.GetPriority() == DLMS_PRIORITY_HIGH)
@@ -506,14 +436,7 @@ long GetLongInvokeIDPriority(CGXDLMSSettings& settings)
      */
 void AddLLCBytes(CGXDLMSSettings* settings, CGXByteBuffer& data)
 {
-    if (settings->IsServer())
-    {
         data.Set(LLC_REPLY_BYTES, 3);
-    }
-    else
-    {
-        data.Set(LLC_SEND_BYTES, 3);
-    }
 }
 
 /**
@@ -554,6 +477,27 @@ void MultipleBlocks(
         // Add command type and invoke and priority.
         p.SetLastBlock(!(8 + reply.GetSize() + len > p.GetSettings()->GetMaxPduSize()));
     }
+}
+
+int IfChiphering(CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
+	CGXByteBuffer tmp;
+	int ret = p.GetSettings()->GetCipher()->Encrypt(
+		p.GetSettings()->GetCipher()->GetSecurity(),
+		DLMS_COUNT_TYPE_PACKET,
+		p.GetSettings()->GetCipher()->GetFrameCounter(),
+		GetGloMessage(p.GetCommand()),
+		p.GetSettings()->GetCipher()->GetSystemTitle(),
+		reply, tmp);
+	if (ret != 0)
+	{
+		return ret;
+	}
+	reply.SetSize(0);
+	if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
+	{
+		AddLLCBytes(p.GetSettings(), reply);
+	}
+	reply.Set(&tmp, 0, tmp.GetSize());
 }
 
 int CGXDLMS::GetLNPdu(
@@ -600,8 +544,8 @@ int CGXDLMS::GetLNPdu(
         // Add command.
         reply.SetUInt8((unsigned char)p.GetCommand());
 
-        if (p.GetCommand() != DLMS_COMMAND_DATA_NOTIFICATION)
-        {
+        //if (p.GetCommand() != DLMS_COMMAND_DATA_NOTIFICATION)
+        //{
             // Get request size can be bigger than PDU size.
             if (p.GetCommand() != DLMS_COMMAND_GET_REQUEST && p.GetData() != NULL
                 && p.GetData()->GetSize() != 0)
@@ -639,30 +583,31 @@ int CGXDLMS::GetLNPdu(
             reply.SetUInt8(p.GetRequestType());
             // Add Invoke Id And Priority.
             reply.SetUInt8(GetInvokeIDPriority(*p.GetSettings()));
-        }
-        else
-        {
-            // Add Long-Invoke-Id-And-Priority
-            reply.SetUInt32(GetLongInvokeIDPriority(*p.GetSettings()));
-            // Add date time.
-            if (p.GetTime() == NULL)
-            {
-                reply.SetUInt8(DLMS_DATA_TYPE_NONE);
-            }
-            else
-            {
-                // Data is send in octet string. Remove data type.
-                int pos = reply.GetSize();
-                CGXDateTime tmp(*p.GetTime());
-				reply.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-				reply.SetUInt8(12);
-				GXHelpers::SetDateTime(reply, tmp);
-                reply.Move(pos + 1, pos, reply.GetSize() - pos - 1);
-            }
-        }
+    //    }
+    //    else
+    //    {
+    ////        // Add Long-Invoke-Id-And-Priority
+    ////        reply.SetUInt32(GetLongInvokeIDPriority(*p.GetSettings()));
+    ////        // Add date time.
+    ////        if (p.GetTime() == NULL)
+    ////        {
+    ////            reply.SetUInt8(DLMS_DATA_TYPE_NONE);
+    ////        }
+    ////        else
+    ////        {
+    ////            // Data is send in octet string. Remove data type.
+				////reply.SetUInt8(12);
+				////uint8_t tmp_dt[9];
+				////TimeToStr(tmp_dt, *p.GetTime());
+				////reply.Set(tmp_dt, 9);
+				////reply.SetUInt16(0x8000);
+				////reply.SetUInt8(0x00);
+				//////GXHelpers::SetDateTime(reply, tmp);
+    ////        }
+    //    }
         // Add attribute descriptor.
         reply.Set(p.GetAttributeDescriptor());
-        if (p.GetCommand() != DLMS_COMMAND_DATA_NOTIFICATION &&
+        if (/*p.GetCommand() != DLMS_COMMAND_DATA_NOTIFICATION &&*/
             (p.GetSettings()->GetNegotiatedConformance() & DLMS_CONFORMANCE_GENERAL_BLOCK_TRANSFER) == 0)
         {
             // If multiple blocks.
@@ -749,26 +694,9 @@ int CGXDLMS::GetLNPdu(
         }
         if (ciphering)
         {
-            CGXByteBuffer tmp;
-            ret = p.GetSettings()->GetCipher()->Encrypt(
-                p.GetSettings()->GetCipher()->GetSecurity(),
-                DLMS_COUNT_TYPE_PACKET,
-                p.GetSettings()->GetCipher()->GetFrameCounter(),
-                GetGloMessage(p.GetCommand()),
-                p.GetSettings()->GetCipher()->GetSystemTitle(),
-                reply, tmp);
-            if (ret != 0)
-            {
-                return ret;
+			IfChiphering(p, reply);
             }
-            reply.SetSize(0);
-            if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-            {
-                AddLLCBytes(p.GetSettings(), reply);
             }
-            reply.Set(&tmp, 0, tmp.GetSize());
-        }
-    }
     return 0;
 }
 
@@ -783,6 +711,9 @@ int CGXDLMS::GetLnMessages(
     {
         frame = 0x10;
     }
+	else if (p.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION) {
+		frame = 0x13;
+	}
     do
     {
         if ((ret = GetLNPdu(p, reply)) != 0)
@@ -805,16 +736,9 @@ int CGXDLMS::GetLnMessages(
                 ret = GetHdlcFrame(*p.GetSettings(), frame, &reply, tmp);
                 if (ret == 0 && reply.GetPosition() != reply.GetSize())
                 {
-                    if (p.GetSettings()->IsServer())
-                    {
                         frame = 0;
                     }
-                    else
-                    {
-                        frame = p.GetSettings()->GetNextSend(0);
                     }
-                }
-            }
             if (ret != 0)
             {
                 break;
@@ -827,246 +751,7 @@ int CGXDLMS::GetLnMessages(
     return ret;
 }
 
-//int AppendMultipleSNBlocks(
-//    CGXDLMSSNParameters& p,
-//    CGXByteBuffer* header,
-//    CGXByteBuffer& reply)
-//{
-//    bool ciphering = p.GetSettings()->GetCipher() != NULL && p.GetSettings()->GetCipher()->GetSecurity() != DLMS_SECURITY_NONE;
-//    unsigned long hSize = reply.GetSize() + 3;
-//    if (header != NULL)
-//    {
-//        hSize += header->GetSize();
-//    }
-//    // Add LLC bytes.
-//    if (p.GetCommand() == DLMS_COMMAND_WRITE_REQUEST
-//        || p.GetCommand() == DLMS_COMMAND_READ_REQUEST)
-//    {
-//        hSize += 1 + GXHelpers::GetObjectCountSizeInBytes(p.GetCount());
-//    }
-//    unsigned long maxSize = p.GetSettings()->GetMaxPduSize() - hSize;
-//    if (ciphering)
-//    {
-//        maxSize -= CIPHERING_HEADER_SIZE;
-//        if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-//        {
-//            maxSize -= 3;
-//        }
-//    }
-//    maxSize -= GXHelpers::GetObjectCountSizeInBytes(maxSize);
-//    if (p.GetData()->GetSize() - p.GetData()->GetPosition() > maxSize)
-//    {
-//        // More blocks.
-//        reply.SetUInt8(0);
-//    }
-//    else
-//    {
-//        // Last block.
-//        reply.SetUInt8(1);
-//        maxSize = p.GetData()->GetSize() - p.GetData()->GetPosition();
-//    }
-//    // Add block index.
-//    reply.SetUInt16(p.GetBlockIndex());
-//    if (p.GetCommand() == DLMS_COMMAND_WRITE_REQUEST)
-//    {
-//        p.SetBlockIndex(p.GetBlockIndex() + 1);
-//        GXHelpers::SetObjectCount(p.GetCount(), reply);
-//        reply.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-//    }
-//    else if (p.GetCommand() == DLMS_COMMAND_READ_REQUEST)
-//    {
-//        p.SetBlockIndex(p.GetBlockIndex() + 1);
-//    }
-//
-//    if (header != NULL)
-//    {
-//        GXHelpers::SetObjectCount(maxSize + header->GetSize(), reply);
-//        reply.Set(header);
-//    }
-//    else
-//    {
-//        GXHelpers::SetObjectCount(maxSize, reply);
-//    }
-//    return maxSize;
-//}
-
-//int CGXDLMS::GetSNPdu(
-//    CGXDLMSSNParameters& p,
-//    CGXByteBuffer& reply)
-//{
-//    int ret;
-//    unsigned char ciphering = p.GetSettings()->GetCipher() != NULL
-//        && p.GetSettings()->GetCipher()->GetSecurity() != DLMS_SECURITY_NONE;
-//    if (!ciphering
-//        && p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-//    {
-//        AddLLCBytes(p.GetSettings(), reply);
-//    }
-//    int cnt = 0, cipherSize = 0;
-//    if (ciphering)
-//    {
-//        cipherSize = CIPHERING_HEADER_SIZE;
-//    }
-//    if (p.GetData() != NULL)
-//    {
-//        cnt = p.GetData()->GetSize() - p.GetData()->GetPosition();
-//    }
-//    // Add command.
-//    if (p.GetCommand() != DLMS_COMMAND_AARQ && p.GetCommand() != DLMS_COMMAND_AARE)
-//    {
-//        reply.SetUInt8((unsigned char)p.GetCommand());
-//        if (p.GetCount() != 0xFF)
-//        {
-//            GXHelpers::SetObjectCount(p.GetCount(), reply);
-//        }
-//        if (p.GetRequestType() != 0xFF)
-//        {
-//            reply.SetUInt8(p.GetRequestType());
-//        }
-//        reply.Set(p.GetAttributeDescriptor());
-//
-//        if (!p.IsMultipleBlocks())
-//        {
-//            p.SetMultipleBlocks(reply.GetSize() + cipherSize + cnt > p.GetSettings()->GetMaxPduSize());
-//            // If reply data is not fit to one PDU.
-//            if (p.IsMultipleBlocks())
-//            {
-//                CGXByteBuffer tmp;
-//                int offset = 1;
-//                if (!ciphering && p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-//                {
-//                    offset = 4;
-//                }
-//                tmp.Set(reply.GetData() + offset, reply.GetSize() - offset);
-//                reply.SetSize(0);
-//                if (!ciphering && p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-//                {
-//                    AddLLCBytes(p.GetSettings(), reply);
-//                }
-//                if (p.GetCommand() == DLMS_COMMAND_WRITE_REQUEST)
-//                {
-//                    p.SetRequestType(
-//                        DLMS_VARIABLE_ACCESS_SPECIFICATION_WRITE_DATA_BLOCK_ACCESS);
-//                }
-//                else if (p.GetCommand() == DLMS_COMMAND_READ_REQUEST)
-//                {
-//                    p.SetRequestType(DLMS_VARIABLE_ACCESS_SPECIFICATION_READ_DATA_BLOCK_ACCESS);
-//                }
-//                else if (p.GetCommand() == DLMS_COMMAND_READ_RESPONSE)
-//                {
-//                    p.SetRequestType(DLMS_SINGLE_READ_RESPONSE_DATA_BLOCK_RESULT);
-//                }
-//                else
-//                {
-//                    //Invalid command.
-//                    return DLMS_ERROR_CODE_INVALID_COMMAND;
-//                }
-//                reply.SetUInt8((unsigned char)p.GetCommand());
-//                // Set object count.
-//                reply.SetUInt8(1);
-//                if (p.GetRequestType() != 0xFF)
-//                {
-//                    reply.SetUInt8(p.GetRequestType());
-//                }
-//                cnt = AppendMultipleSNBlocks(p, &tmp, reply);
-//            }
-//        }
-//        else
-//        {
-//            cnt = AppendMultipleSNBlocks(p, NULL, reply);
-//        }
-//    }
-//    // Add data.
-//    if (p.GetData() != NULL)
-//    {
-//        reply.Set(p.GetData(), p.GetData()->GetPosition(), cnt);
-//    }
-//    // If all data is transfered.
-//    if (p.GetData() != NULL && p.GetData()->GetPosition() == p.GetData()->GetSize())
-//    {
-//        p.GetSettings()->SetIndex(0);
-//        p.GetSettings()->SetCount(0);
-//    }
-//    // If Ciphering is used.
-//    if (ciphering && p.GetCommand() != DLMS_COMMAND_AARQ
-//        && p.GetCommand() != DLMS_COMMAND_AARE)
-//    {
-//        CGXByteBuffer tmp;
-//        ret = p.GetSettings()->GetCipher()->Encrypt(
-//            p.GetSettings()->GetCipher()->GetSecurity(),
-//            DLMS_COUNT_TYPE_PACKET,
-//            p.GetSettings()->GetCipher()->GetFrameCounter(),
-//            GetGloMessage(p.GetCommand()),
-//            p.GetSettings()->GetCipher()->GetSystemTitle(),
-//            reply, tmp);
-//        if (ret != 0)
-//        {
-//            return ret;
-//        }
-//        reply.SetSize(0);
-//        if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-//        {
-//            AddLLCBytes(p.GetSettings(), reply);
-//        }
-//        reply.Set(&tmp, 0, tmp.GetSize());
-//    }
-//    return 0;
-//}
-
-//int CGXDLMS::GetSnMessages(
-//    CGXDLMSSNParameters& p,
-//    std::vector<CGXByteBuffer>& messages)
-//{
-//    int ret;
-//    CGXByteBuffer data, reply;
-//    unsigned char frame = 0x0;
-//    if (p.GetCommand() == DLMS_COMMAND_AARQ)
-//    {
-//        frame = 0x10;
-//    }
-//    else if (p.GetCommand() == DLMS_COMMAND_NONE)
-//    {
-//        frame = p.GetSettings()->GetNextSend(1);
-//    }
-//    do
-//    {
-//        ret = GetSNPdu(p, data);
-//        // Command is not add to next PDUs.
-//        while (data.GetPosition() != data.GetSize())
-//        {
-//            if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER)
-//            {
-//                ret = GetWrapperFrame(*p.GetSettings(), data, reply);
-//            }
-//            else
-//            {
-//                ret = GetHdlcFrame(*p.GetSettings(), frame, &data, reply);
-//                if (data.GetPosition() != data.GetSize())
-//                {
-//                    if (p.GetSettings()->IsServer())
-//                    {
-//                        frame = 0;
-//                    }
-//                    else
-//                    {
-//                        frame = p.GetSettings()->GetNextSend(0);
-//                    }
-//                }
-//            }
-//            if (ret != 0)
-//            {
-//                break;
-//            }
-//            messages.push_back(reply);
-//            reply.Clear();
-//        }
-//        reply.Clear();
-//    } while (ret == 0 && p.GetData() != NULL && p.GetData()->GetPosition() != p.GetData()->GetSize());
-//    return 0;
-//}
-
 int CGXDLMS::GetHdlcData(
-    bool server,
     CGXDLMSSettings& settings,
     CGXByteBuffer& reply,
     CGXReplyData& data,
@@ -1092,7 +777,7 @@ int CGXDLMS::GetHdlcData(
     if ((frame & 0xF0) != 0xA0)
     {
         // If same data.
-        return GetHdlcData(server, settings, reply, data, frame);
+        return GetHdlcData(settings, reply, data, frame);
     }
     // Check frame length.
     if ((frame & 0x7) != 0)
@@ -1112,13 +797,13 @@ int CGXDLMS::GetHdlcData(
     //int eopPos = frameLen;
 
     // Check addresses.
-    ret = CheckHdlcAddress(server, settings, reply, frameLen);
+    ret = CheckHdlcAddress(settings, reply, frameLen);
     if (ret != 0)
     {
         if (ret == DLMS_ERROR_CODE_FALSE)
         {
             // If echo,
-            return GetHdlcData(server, settings, reply, data, frame);
+            return GetHdlcData(settings, reply, data, frame);
         }
         return ret;
     }
@@ -1140,7 +825,7 @@ int CGXDLMS::GetHdlcData(
     if (!settings.CheckFrame(frame))
     {
         reply.SetPosition(frameLen);
-        return GetHdlcData(server, settings, reply, data, frame);
+        return GetHdlcData(settings, reply, data, frame);
     }
     // Check that header CRC is correct.
     crc = CountFCS16(reply, 0, reply.GetPosition());
@@ -1213,7 +898,7 @@ int CGXDLMS::GetHdlcData(
         }
         else
         {
-            GetLLCBytes(server, reply);
+            GetLLCBytes(reply);
         }
     }
     return DLMS_ERROR_CODE_OK;
@@ -1222,7 +907,7 @@ int CGXDLMS::GetHdlcData(
 int CGXDLMS::GetHDLCAddress(
     CGXByteBuffer& buff,
     unsigned long& address,
-    unsigned long& addrSize)
+    unsigned char& addrSize)
 {
     unsigned char ch;
     unsigned short s;
@@ -1290,14 +975,13 @@ static void GetServerAddress(int address, int& logical, int& physical)
 }
 
 int CGXDLMS::CheckHdlcAddress(
-    bool server,
     CGXDLMSSettings& settings,
     CGXByteBuffer& reply,
     int index)
 {
     unsigned char ch;
     unsigned long source, target;
-    unsigned long srcAddrSize, tgtAddrSize;
+    unsigned char srcAddrSize, tgtAddrSize;
     int ret;
     // Get destination and source addresses.
     if ((ret = GetHDLCAddress(reply, target, tgtAddrSize)) != 0)
@@ -1308,12 +992,10 @@ int CGXDLMS::CheckHdlcAddress(
     {
         return ret;
     }
-    if (server)
-    {
-        if(tgtAddrSize > MAX_SERVER_ADDR_SIZE) {
+	if (tgtAddrSize > MAX_SERVER_ADDR_SIZE) {
             return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
         }
-        if(srcAddrSize > MAX_CLIENT_ADDR_SIZE) {
+	if (srcAddrSize > MAX_CLIENT_ADDR_SIZE) {
             return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
         }
         
@@ -1349,7 +1031,7 @@ int CGXDLMS::CheckHdlcAddress(
                 return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
             }
             //If SNRM and client has not call disconnect and changes client ID.
-            if (ch == DLMS_COMMAND_SNRM||
+		if (ch == DLMS_COMMAND_SNRM ||
 				(ch == DLMS_COMMAND_DISC && !settings.IsConnected()))
             {
                 settings.SetClientAddress(source);
@@ -1363,34 +1045,6 @@ int CGXDLMS::CheckHdlcAddress(
         {
             settings.SetClientAddress(source);
         }
-    }
-    else
-    {
-        // Check that client addresses match.
-        if (settings.GetClientAddress() != target)
-        {
-            // If echo.
-            if (settings.GetClientAddress() == source && settings.GetServerAddress() == target)
-            {
-                reply.SetPosition(index + 1);
-            }
-            return DLMS_ERROR_CODE_FALSE;
-        }
-        // Check that server addresses match.
-        if (settings.GetServerAddress() != source)
-        {
-            //Check logical and physical address separately.
-            //This is done because some meters might send four bytes
-            //when only two bytes is needed.
-            int readLogical, readPhysical, logical, physical;
-            GetServerAddress(source, readLogical, readPhysical);
-            GetServerAddress(settings.GetServerAddress(), logical, physical);
-            if (readLogical != logical || readPhysical != physical)
-            {
-                return DLMS_ERROR_CODE_FALSE;
-            }
-        }
-    }
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -1577,7 +1231,7 @@ int CGXDLMS::HandleSetResponse(
 int CGXDLMS::HandleGbt(CGXDLMSSettings& settings, CGXReplyData& data)
 {
     int ret;
-    unsigned char ch, bn, bna;
+    unsigned char ch, tmp, bn, bna;
     data.SetGbt(true);
     int index = data.GetData().GetPosition() - 1;
     if ((ret = data.GetData().GetUInt8(&ch)) != 0)
@@ -1598,31 +1252,23 @@ int CGXDLMS::HandleGbt(CGXDLMSSettings& settings, CGXReplyData& data)
         return ret;
     }
     // Get APU tag.
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+    if ((ret = data.GetData().GetUInt8(&tmp)) != 0)
     {
         return ret;
     }
-    if (ch != 0)
+    if (tmp != 0)
     {
         //Invalid APU.
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     // Get Addl tag.
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+    if ((ret = data.GetData().GetUInt8(&tmp)) != 0)
     {
         return ret;
     }
-    if (ch != 0)
+    if (tmp != 0)
     {
         //Invalid APU.
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = data.GetData().GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0)
-    {
         return DLMS_ERROR_CODE_INVALID_TAG;
     }
     data.SetCommand(DLMS_COMMAND_NONE);
@@ -1742,7 +1388,7 @@ int CGXDLMS::GetPdu(
             // Invalid PDU.
             return DLMS_ERROR_CODE_INVALID_PARAMETER;
         }
-        int index = data.GetData().GetPosition();
+       // int index = data.GetData().GetPosition();
         // Get Command.
         if ((ret = data.GetData().GetUInt8(&ch)) != 0)
         {
@@ -1752,35 +1398,27 @@ int CGXDLMS::GetPdu(
         data.SetCommand(cmd);
         switch (cmd)
         {
-        case DLMS_COMMAND_READ_RESPONSE:
-            if ((ret = HandleReadResponse(settings, data, index)) != 0)
-            {
-                if (ret == DLMS_ERROR_CODE_FALSE)
-                {
-                    return 0;
-                }
-                return ret;
-            }
-            break;
-        case DLMS_COMMAND_GET_RESPONSE:
-            if ((ret = HandleGetResponse(settings, data, index)) != 0)
-            {
-                if (ret == DLMS_ERROR_CODE_FALSE)
-                {
-                    return 0;
-                }
-                return ret;
-            }
-            break;
-        case DLMS_COMMAND_SET_RESPONSE:
-            ret = HandleSetResponse(settings, data);
-            break;
-        case DLMS_COMMAND_WRITE_RESPONSE:
-            ret = HandleWriteResponse(data);
-            break;
-        case DLMS_COMMAND_METHOD_RESPONSE:
-            ret = HandleMethodResponse(settings, data);
-            break;
+        //case DLMS_COMMAND_READ_RESPONSE:
+        //           return 0;
+        //case DLMS_COMMAND_GET_RESPONSE:
+        //    if ((ret = HandleGetResponse(settings, data, index)) != 0)
+        //    {
+        //        if (ret == DLMS_ERROR_CODE_FALSE)
+        //        {
+        //            return 0;
+        //        }
+        //        return ret;
+        //    }
+        //    break;
+        //case DLMS_COMMAND_SET_RESPONSE:
+        //    ret = HandleSetResponse(settings, data);
+        //    break;
+        //case DLMS_COMMAND_WRITE_RESPONSE:
+        //    ret = HandleWriteResponse(data);
+        //    break;
+        //case DLMS_COMMAND_METHOD_RESPONSE:
+        //    ret = HandleMethodResponse(settings, data);
+        //    break;
         case DLMS_COMMAND_GENERAL_BLOCK_TRANSFER:
             ret = HandleGbt(settings, data);
             break;
@@ -1789,14 +1427,14 @@ int CGXDLMS::GetPdu(
             // This is parsed later.
             data.GetData().SetPosition(data.GetData().GetPosition() - 1);
             break;
-        case DLMS_COMMAND_DISCONNECT_RESPONSE:
-            break;
-        case DLMS_COMMAND_EXCEPTION_RESPONSE:
-            /* TODO:
-            throw new GXDLMSException(
-                StateError.values()[data.getData().getUInt8() - 1],
-                ServiceError.values()[data.getData().getUInt8() - 1]);
-                */
+        //case DLMS_COMMAND_DISCONNECT_RESPONSE:
+        //    break;
+        //case DLMS_COMMAND_EXCEPTION_RESPONSE:
+        //    /* TODO:
+        //    throw new GXDLMSException(
+        //        StateError.values()[data.getData().getUInt8() - 1],
+        //        ServiceError.values()[data.getData().getUInt8() - 1]);
+        //        */
         case DLMS_COMMAND_GET_REQUEST:
         case DLMS_COMMAND_READ_REQUEST:
         case DLMS_COMMAND_WRITE_REQUEST:
@@ -1804,10 +1442,10 @@ int CGXDLMS::GetPdu(
         case DLMS_COMMAND_METHOD_REQUEST:
         case DLMS_COMMAND_DISCONNECT_REQUEST:
             // Server handles this.
-            if ((data.GetMoreData() & DLMS_DATA_REQUEST_TYPES_FRAME) != 0)
+            /*if ((data.GetMoreData() & DLMS_DATA_REQUEST_TYPES_FRAME) != 0)
             {
                 break;
-            }
+            }*/
             break;
         case DLMS_COMMAND_GLO_READ_REQUEST:
         case DLMS_COMMAND_GLO_WRITE_REQUEST:
@@ -1842,48 +1480,41 @@ int CGXDLMS::GetPdu(
             }
             // Server handles this.
             break;
-        case DLMS_COMMAND_GLO_READ_RESPONSE:
-        case DLMS_COMMAND_GLO_WRITE_RESPONSE:
-        case DLMS_COMMAND_GLO_GET_RESPONSE:
-        case DLMS_COMMAND_GLO_SET_RESPONSE:
-        case DLMS_COMMAND_GLO_METHOD_RESPONSE:
-            if (settings.GetCipher() == NULL)
-            {
-                //Secure connection is not supported.
-                return DLMS_ERROR_CODE_INVALID_PARAMETER;
-            }
-            // If all frames are read.
-            if ((data.GetMoreData() & DLMS_DATA_REQUEST_TYPES_FRAME) == 0)
-            {
-                data.GetData().SetPosition(data.GetData().GetPosition() - 1);
-                CGXByteBuffer bb(data.GetData());
-                data.GetData().SetPosition(index);
-                data.GetData().SetSize(index);
-                DLMS_SECURITY security;
-                if ((ret = settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), bb, security)) != 0)
-                {
-                    return ret;
-                }
-                data.GetData().Set(&bb, bb.GetPosition(), bb.GetSize() - bb.GetPosition());
-                data.SetCommand(DLMS_COMMAND_NONE);
-                ret = GetPdu(settings, data);
-                data.SetCipherIndex((unsigned short)data.GetData().GetSize());
-            }
-            break;
+        //case DLMS_COMMAND_GLO_READ_RESPONSE:
+        //case DLMS_COMMAND_GLO_WRITE_RESPONSE:
+        //case DLMS_COMMAND_GLO_GET_RESPONSE:
+        //case DLMS_COMMAND_GLO_SET_RESPONSE:
+        //case DLMS_COMMAND_GLO_METHOD_RESPONSE:
+        //    if (settings.GetCipher() == NULL)
+        //    {
+        //        //Secure connection is not supported.
+        //        return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        //    }
+        //    // If all frames are read.
+        //    if ((data.GetMoreData() & DLMS_DATA_REQUEST_TYPES_FRAME) == 0)
+        //    {
+        //        data.GetData().SetPosition(data.GetData().GetPosition() - 1);
+        //        CGXByteBuffer bb(data.GetData());
+        //        data.GetData().SetPosition(index);
+        //        data.GetData().SetSize(index);
+        //        DLMS_SECURITY security;
+        //        if ((ret = settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), bb, security)) != 0)
+        //        {
+        //            return ret;
+        //        }
+        //        data.GetData().Set(&bb, bb.GetPosition(), bb.GetSize() - bb.GetPosition());
+        //        data.SetCommand(DLMS_COMMAND_NONE);
+        //        ret = GetPdu(settings, data);
+        //        data.SetCipherIndex((unsigned short)data.GetData().GetSize());
+        //    }
+        //    break;
         case DLMS_COMMAND_GLO_GENERAL_CIPHERING:
-            if (settings.IsServer())
-            {
                 HandledGloRequest(settings, data);
-            }
-            else
-            {
-                HandledGloResponse(settings, data, index);
-            }
             break;
-        case DLMS_COMMAND_DATA_NOTIFICATION:
-            ret = HandleDataNotification(settings, data);
-            // Client handles this.
-            break;
+        //case DLMS_COMMAND_DATA_NOTIFICATION:
+        //    ret = HandleDataNotification(settings, data);
+        //    // Client handles this.
+        //    break;
         default:
             // Invalid DLMS_COMMAND_
             return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -1906,9 +1537,6 @@ int CGXDLMS::GetPdu(
             }
             settings.ResetBlockIndex();
         }
-        // Get command if operating as a server.
-        if (settings.IsServer())
-        {
             // Ciphered messages are handled after whole PDU is received.
             switch (cmd)
             {
@@ -1925,37 +1553,23 @@ int CGXDLMS::GetPdu(
                 break;
             }
         }
-        else
-        {
-            // Client do not need a command any more.
-            data.SetCommand(DLMS_COMMAND_NONE);
-            // Ciphered messages are handled after whole PDU is received.
-            switch (cmd)
-            {
-            case DLMS_COMMAND_GLO_READ_RESPONSE:
-            case DLMS_COMMAND_GLO_WRITE_RESPONSE:
-            case DLMS_COMMAND_GLO_GET_RESPONSE:
-            case DLMS_COMMAND_GLO_SET_RESPONSE:
-            case DLMS_COMMAND_GLO_METHOD_RESPONSE:
-                data.GetData().SetPosition(data.GetCipherIndex());
-                ret = GetPdu(settings, data);
-                break;
-            default:
-                break;
-            }
-        }
-    }
 
     // Get data if all data is read or we want to peek data.
-    if (data.GetData().GetPosition() != data.GetData().GetSize()
-        && (cmd == DLMS_COMMAND_READ_RESPONSE || cmd == DLMS_COMMAND_GET_RESPONSE)
-        && (data.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE
-            || data.GetPeek()))
-    {
-        ret = GetValueFromData(settings, data);
-    }
+    //if (data.GetData().GetPosition() != data.GetData().GetSize()
+    //    && (/*cmd == DLMS_COMMAND_READ_RESPONSE || */cmd == DLMS_COMMAND_GET_RESPONSE)
+    //    && (data.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE
+    //        || data.GetPeek()))
+    //{
+    //    ret = GetValueFromData(settings, data);
+    //}
     return ret;
 }
+
+typedef int(*getFrameHdrData)(CGXDLMSSettings& settings, CGXByteBuffer& reply, CGXReplyData& data, unsigned char& frame);
+const tabFunc<getFrameHdrData> get_fr_data_func[] = {
+	{0, CGXDLMS::GetHdlcData },
+	{1,	CGXDLMS::GetTcpData }
+};
 
 int CGXDLMS::GetData(CGXDLMSSettings& settings,
     CGXByteBuffer& reply,
@@ -1964,20 +1578,24 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
     int ret;
     unsigned char frame = 0;
     // If DLMS frame is generated.
-    if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
+    if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC || settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER)
     {
-        if ((ret = GetHdlcData(settings.IsServer(), settings, reply, data, frame)) != 0)
+		ret = get_fr_data_func[settings.GetInterfaceType()].execute_func(settings, reply, data, frame);
+		if (ret != 0) {
+			return ret;
+		}
+    /*    if ((ret = GetHdlcData(settings, reply, data, frame)) != 0)
         {
             return ret;
         }
     }
     else if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER)
     {
-        if ((ret = GetTcpData(settings, reply, data)) != 0)
+        if ((ret = GetTcpData(settings, reply, data, frame)) != 0)
         {
             return ret;
+        }*/
         }
-    }
     else
     {
         // Invalid Interface type.
@@ -2366,7 +1984,7 @@ int CGXDLMS::HandleReadResponse(
 int CGXDLMS::GetTcpData(
     CGXDLMSSettings& settings,
     CGXByteBuffer& buff,
-    CGXReplyData& data)
+    CGXReplyData& data, unsigned char& empty)
 {
     int ret;
     // If whole frame is not received yet.
@@ -2530,16 +2148,9 @@ void CGXDLMS::GetDataFromFrame(CGXByteBuffer& reply, CGXReplyData& info)
     data.SetPosition(offset);
 }
 
-void CGXDLMS::GetLLCBytes(bool server, CGXByteBuffer& data)
+void CGXDLMS::GetLLCBytes(CGXByteBuffer& data)
 {
-    if (server)
-    {
         data.Compare((unsigned char*)LLC_SEND_BYTES, 3);
-    }
-    else
-    {
-        data.Compare((unsigned char*)LLC_REPLY_BYTES, 3);
-    }
 }
 
 int CGXDLMS::CheckWrapperAddress(
@@ -2548,8 +2159,6 @@ int CGXDLMS::CheckWrapperAddress(
 {
     int ret;
     unsigned short value;
-    if (settings.IsServer())
-    {
         if ((ret = buff.GetUInt16(&value)) != 0)
         {
             return ret;
@@ -2579,39 +2188,6 @@ int CGXDLMS::CheckWrapperAddress(
         {
             settings.SetServerAddress(value);
         }
-    }
-    else
-    {
-        if ((ret = buff.GetUInt16(&value)) != 0)
-        {
-            return ret;
-        }
-        // Check that server addresses match.
-        if (settings.GetServerAddress() != 0
-            && settings.GetServerAddress() != value)
-        {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        else
-        {
-            settings.SetServerAddress(value);
-        }
-
-        if ((ret = buff.GetUInt16(&value)) != 0)
-        {
-            return ret;
-        }
-        // Check that client addresses match.
-        if (settings.GetClientAddress() != 0
-            && settings.GetClientAddress() != value)
-        {
-            return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
-        }
-        else
-        {
-            settings.SetClientAddress(value);
-        }
-    }
     return DLMS_ERROR_CODE_OK;
 }
 /*
