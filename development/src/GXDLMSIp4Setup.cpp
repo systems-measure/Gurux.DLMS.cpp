@@ -41,6 +41,8 @@
 
 #if defined(_WIN32) || defined(_WIN64)//Windows includes
 #include "winsock.h"
+
+#pragma comment(lib, "ws2_32.lib")
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
