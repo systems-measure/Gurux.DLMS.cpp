@@ -323,64 +323,69 @@ int CGXDLMS::GetHdlcFrame(
     // Add BOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     frameSize = settings.GetLimits().GetMaxInfoTX().ToInteger();
-    // If no data
-    if (data == NULL || data->GetSize() == 0)
-    {
-        reply.SetUInt8(0xA0);
-    }
-    else if (data->GetSize() - data->GetPosition() <= frameSize)
-    {
-        len = data->GetSize() - data->GetPosition();
-        // Is last packet.
-        reply.SetUInt8(0xA0 | ((len >> 8) & 0x7));
-    }
-    else
-    {
-        len = frameSize;
-        // More data to left.
-        reply.SetUInt8(0xA8 | ((len >> 8) & 0x7));
-    }
-    // Frame len.
-    if (len == 0)
-    {
-        reply.SetUInt8((unsigned char)(5 + primaryAddress.GetSize() +
-            secondaryAddress.GetSize() + len));
-    }
-    else
-    {
-        reply.SetUInt8((unsigned char)(7 + primaryAddress.GetSize() +
-            secondaryAddress.GetSize() + len));
-    }
-    // Add primary address.
-    reply.Set(&primaryAddress);
-    // Add secondary address.
-    reply.Set(&secondaryAddress);
+	// If no data
+	if (data == NULL || data->GetSize() == 0)
+	{
+		reply.SetUInt8(0xA0);
+	}
+	else if (data->GetSize() - data->GetPosition() <= frameSize - (9 + primaryAddress.GetSize() + secondaryAddress.GetSize()))
+	{
+		len = data->GetSize() - data->GetPosition();
+		// Is last packet.
+		reply.SetUInt8(0xA0 | ((len >> 8) & 0x7));
+	}
+	else
+	{
+		len = frameSize - 2;
+		// More data to left.
+		reply.SetUInt8(0xA8 | ((len >> 8) & 0x7));
+	}
+	// Frame len.
+	if (len == 0)
+	{
+		reply.SetUInt8((unsigned char)(5 + primaryAddress.GetSize() +
+			secondaryAddress.GetSize() + len));
+	}
+	else
+	{
+		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
+			reply.SetUInt8((unsigned char)((frameSize - 2) & 0xFF));
+			len = (frameSize)-(9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
+		}
+		else {
+			reply.SetUInt8((unsigned char)(len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize()));
+		}
+	}
+	// Add primary address.
+	reply.Set(&primaryAddress);
+	// Add secondary address.
+	reply.Set(&secondaryAddress);
 
-    // Add frame ID.
-    if (frame == 0)
-    {
-        reply.SetUInt8(settings.GetNextSend(1));
-    }
-    else
-    {
+	// Add frame ID.
+	if (frame == 0)
+	{
+		reply.SetUInt8(settings.GetNextSend(1));
+	}
+	else
+	{
 		if (frame == 0x01) {
 			reply.SetUInt8(settings.GetKeepAlive());
 		}
 		else {
 			reply.SetUInt8(frame);
 		}
-    }
-    // Add header CRC.
-    int crc = CountFCS16(reply, 1, reply.GetSize() - 1);
-    reply.SetUInt16(crc);
-    if (len != 0)
-    {
-        // Add data.
-        reply.Set(data, data->GetPosition(), len);
-        // Add data CRC.
-        crc = CountFCS16(reply, 1, reply.GetSize() - 1);
-        reply.SetUInt16(crc);
-    }
+	}
+	// Add header CRC.
+	int crc = CountFCS16(reply, 1, reply.GetSize() - 1);
+	reply.SetUInt16(crc);
+	if (len != 0)
+	{
+		// Add data.
+		reply.Set(data, data->GetPosition(), len);
+		// Add data CRC.
+		crc = CountFCS16(reply, 1, reply.GetSize() - 1);
+		reply.SetUInt16(crc);
+	}
     // Add EOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     // Remove sent data in server side.
@@ -1376,16 +1381,7 @@ int CGXDLMS::CheckHdlcAddress(
         if(srcAddrSize > MAX_CLIENT_ADDR_SIZE) {
             return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
         }
-        
-        uint16_t srvPhysicalAddr = (target & 0x7F);    
-        uint16_t srvLogicalAddr = (target & 0x3F80) >> 7;    
-        if(srvPhysicalAddr != DEFAULT_PHY_ADDRESS) {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        if(srvLogicalAddr != 1) {
-            return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-        }
-        
+                
         // Check that server addresses match.
         if (settings.GetServerAddress() != 0 && settings.GetServerAddress() != target)
         {
@@ -1438,6 +1434,18 @@ int CGXDLMS::CheckHdlcAddress(
         // Check that client addresses match.
         if (settings.GetClientAddress() != target)
         {
+			// If push message
+			if (target == 0x10 && ((srcAddrSize == 2 && ((source & 0x3F80) >> 7) == 0x01) ||
+								   (srcAddrSize == 4 && ((source & 0x0FFFC000) >> 14) == 0x01))) {
+				if (reply.GetUInt8(reply.GetPosition(), &ch) != 0)
+				{
+					return DLMS_ERROR_CODE_INVALID_PARAMETER;
+				}
+				if (ch == 0x13)
+				{
+					return DLMS_ERROR_CODE_OK;
+				}
+			}
             // If echo.
             if (settings.GetClientAddress() == source && settings.GetServerAddress() == target)
             {
@@ -1448,6 +1456,12 @@ int CGXDLMS::CheckHdlcAddress(
         // Check that server addresses match.
         if (settings.GetServerAddress() != source)
         {
+			// if this is responce for sended SNRM with CALLING device address
+			if ((srcAddrSize == 2 && settings.GetServerAddress() == 0xFE) ||
+				(srcAddrSize == 4 && settings.GetServerAddress() == 0x7FFE)) {
+				settings.SetServerAddress(source);
+				return DLMS_ERROR_CODE_OK;
+			}
             //Check logical and physical address separately.
             //This is done because some meters might send four bytes
             //when only two bytes is needed.
@@ -1595,11 +1609,12 @@ int CGXDLMS::HandleDataNotification(
         }
         reply.SetTime(&t.dateTime.GetValue());
     }
-    if ((ret = GetDataFromBlock(reply.GetData(), start)) != 0)
-    {
-        return ret;
-    }
-    return GetValueFromData(settings, reply);
+    //if ((ret = GetDataFromBlock(reply.GetData(), start)) != 0)
+    //{
+    //    return ret;
+    //}
+    //return GetValueFromData(settings, reply);
+	return GetDataFromBlock(reply.GetData(), start);
 }
 
 int CGXDLMS::HandleSetResponse(
@@ -1819,7 +1834,7 @@ int CGXDLMS::GetPdu(
     unsigned char ch;
     DLMS_COMMAND cmd = data.GetCommand();
     // If header is not read yet or GBT message.
-    if (cmd == DLMS_COMMAND_NONE || data.GetGbt())
+    if (cmd == DLMS_COMMAND_NONE /*|| data.GetGbt()*/)
     {
         // If PDU is missing.
         if (data.GetData().GetSize() - data.GetData().GetPosition() == 0)
@@ -2013,7 +2028,9 @@ int CGXDLMS::GetPdu(
         else
         {
             // Client do not need a command any more.
-            data.SetCommand(DLMS_COMMAND_NONE);
+			if (data.IsMoreData()) {
+				data.SetCommand(DLMS_COMMAND_NONE);
+			}
             // Ciphered messages are handled after whole PDU is received.
             switch (cmd)
             {
@@ -2042,23 +2059,45 @@ int CGXDLMS::GetPdu(
     return ret;
 }
 
+void CGXDLMS::CopyReplyParam(CGXByteBuffer& reply, CGXReplyData& src, CGXReplyData& dst) {
+	if (dst.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE) {
+		dst.Clear();
+	}
+	dst.SetControlField(src.GetControlField());
+	if (src.GetCommand() != DLMS_COMMAND_NONE) {
+		dst.SetCommand(src.GetCommand());
+	}
+	dst.SetPacketLength(src.GetPacketLength());
+	if (src.GetMoreData() == DLMS_DATA_REQUEST_TYPES_FRAME) {
+		dst.SetMoreData((DLMS_DATA_REQUEST_TYPES)(dst.GetMoreData() | DLMS_DATA_REQUEST_TYPES_FRAME));
+	}
+	if (src.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE) {
+		dst.SetMoreData((DLMS_DATA_REQUEST_TYPES)(dst.GetMoreData() &~ DLMS_DATA_REQUEST_TYPES_FRAME));
+	}
+	//dst.SetMoreData(src.GetMoreData());
+	dst.SetComplete(src.IsComplete());
+	GetDataFromFrame(reply, dst);
+}
+
 int CGXDLMS::GetData(CGXDLMSSettings& settings,
     CGXByteBuffer& reply,
-    CGXReplyData& data)
+    CGXReplyData& data,
+	CGXReplyData& ui_data)
 {
     int ret;
     unsigned char frame = 0;
+	CGXReplyData tmp_data;
     // If DLMS frame is generated.
     if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
     {
-        if ((ret = GetHdlcData(settings.IsServer(), settings, reply, data, frame)) != 0)
+        if ((ret = GetHdlcData(settings.IsServer(), settings, reply, tmp_data, frame)) != 0)
         {
             return ret;
         }
     }
     else if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER)
     {
-        if ((ret = GetTcpData(settings, reply, data)) != 0)
+        if ((ret = GetTcpData(settings, reply, tmp_data)) != 0)
         {
             return ret;
         }
@@ -2069,35 +2108,48 @@ int CGXDLMS::GetData(CGXDLMSSettings& settings,
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
     // If all data is not read yet.
-    if (!data.IsComplete())\
+    if (!tmp_data.IsComplete())\
     {
         return DLMS_ERROR_CODE_FALSE;
     }
-    data.SetControlField(frame);
+	tmp_data.SetControlField(frame);
+	if (frame == 0x13) {
+		CopyReplyParam(reply, tmp_data, ui_data);
+	}
+	else {
+		CopyReplyParam(reply, tmp_data, data);
+	}
+    
         
-    GetDataFromFrame(reply, data);
+    //GetDataFromFrame(reply, data);
     // If keepalive or get next frame request.
+	if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC && ((frame != 0x13 && data.GetData().GetSize() != 0) || (frame == 0x13 && ui_data.GetData().GetSize() != 0)))
+	{
+		if (reply.GetPosition() != reply.GetSize()) {
+			unsigned long newPos = ((reply.GetPosition() + 3) > reply.GetSize()) ? reply.GetSize() : (reply.GetPosition() + 3);
+			reply.SetPosition(newPos);
+		}
+	}
     if (frame != 0x13 && (frame & 0x1) != 0)
     {
-        if (settings.GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC && data.GetData().GetSize() != 0)
-        {
-            if (reply.GetPosition() != reply.GetSize()) {
-                unsigned long newPos = ((reply.GetPosition() + 3) > reply.GetSize())?reply.GetSize():(reply.GetPosition() + 3);                                
-                reply.SetPosition(newPos);
-            }
-        }
         if (data.GetCommand() == DLMS_COMMAND_REJECTED)
         {
             return DLMS_ERROR_CODE_REJECTED;
         }
         return DLMS_ERROR_CODE_OK;
     }
-    if ((ret = GetPdu(settings, data)) != 0)
+	if (frame != 0x13) {
+		ret = GetPdu(settings, data);
+	}
+	else {
+		ret = GetPdu(settings, ui_data);
+	}
+    if (ret != 0)
     {
         return ret;
     }
 
-    if (data.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION)
+    if (frame == 0x13 /*&& ui_data.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION*/)
     {
         // Check is there more messages left. This is Push message special
         // case.

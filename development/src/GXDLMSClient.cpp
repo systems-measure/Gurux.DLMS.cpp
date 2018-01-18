@@ -1023,9 +1023,9 @@ int CGXDLMSClient::DisconnectRequest(std::vector<CGXByteBuffer>& packets)
     return ret;
 }
 
-int CGXDLMSClient::GetData(CGXByteBuffer& reply, CGXReplyData& data)
+int CGXDLMSClient::GetData(CGXByteBuffer& reply, CGXReplyData& data, CGXReplyData& ui_data)
 {
-    return CGXDLMS::GetData(m_Settings, reply, data);
+    return CGXDLMS::GetData(m_Settings, reply, data, ui_data);
 }
 
 int CGXDLMSClient::GetObjectsRequest(std::vector<CGXByteBuffer>& reply)

@@ -2152,7 +2152,7 @@ int CGXDLMSServer::HandleRequest(
     m_ReceivedData.Set(buff, size);
     bool first = m_Settings.GetServerAddress() == 0
         && m_Settings.GetClientAddress() == 0;
-    if ((ret = CGXDLMS::GetData(m_Settings, m_ReceivedData, m_Info)) != 0)
+    if ((ret = CGXDLMS::GetData(m_Settings, m_ReceivedData, m_Info, m_Info)) != 0)
     {
         //If all data is not received yet.
         if (ret == DLMS_ERROR_CODE_FALSE)
