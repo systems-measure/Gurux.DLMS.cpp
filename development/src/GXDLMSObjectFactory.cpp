@@ -115,8 +115,8 @@ CGXDLMSObject* CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE type)
         return new CGXDLMSIp4Setup();
 //    case DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP:
 //        return new CGXDLMSMBusSlavePortSetup();
-//    case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:
-//        return new CGXDLMSImageTransfer();
+    case DLMS_OBJECT_TYPE_IMAGE_TRANSFER:
+        return new CGXDLMSImageTransfer();
     case DLMS_OBJECT_TYPE_DISCONNECT_CONTROL:
         return new CGXDLMSDisconnectControl();
     case DLMS_OBJECT_TYPE_LIMITER:
