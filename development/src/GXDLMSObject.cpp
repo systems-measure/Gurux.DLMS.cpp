@@ -187,6 +187,7 @@ DLMS_DATA_TYPE CGXDLMSObject::GetDataType(signed char index) {
 	if (get_data_type != nullptr && constr_idx != 0xFF) {
 		return (DLMS_DATA_TYPE)get_data_type(constr_idx);
 	}
+    return DLMS_DATA_TYPE_NONE;
 }
 
 //int CGXDLMSObject::SetDataType(signed char index, DLMS_DATA_TYPE type)

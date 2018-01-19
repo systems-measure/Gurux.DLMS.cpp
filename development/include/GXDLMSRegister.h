@@ -92,7 +92,7 @@ public:
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
-	DLMS_DATA_TYPE GetDataType(signed char index);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

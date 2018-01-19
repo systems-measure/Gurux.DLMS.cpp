@@ -164,7 +164,8 @@ int CGXDLMSServer::Initialize()
 			GetItems()->FreeConstructedObj();
 		}
 	}
-	GetItems()->GetCurALN()->GetLogicalName(ln);
+	///<  @TODO: Необходимо переписать данную строчку т.к. GetItems()->GetCurALN() == 0 в этой точке кода.
+    ///< GetItems()->GetCurALN()->GetLogicalName(ln);
 	if(strlen(ln) == 0){
 			//Invalid Logical Name.
 			return DLMS_ERROR_CODE_INVALID_LOGICAL_NAME;
@@ -881,7 +882,6 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 					}
 					else {
 						GXHelpers::GetDataCA(data, parameters);
-						}
 					}	
 				}
 			}
