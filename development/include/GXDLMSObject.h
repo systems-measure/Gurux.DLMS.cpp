@@ -103,8 +103,8 @@ public:
 
     //Get Object's Logical Name.
     void GetLogicalName(char* ln);
-
 	void GetLogicalName(unsigned char* c_ln);
+    void GetLogicalName(signed char* c_ln) { GetLogicalName((unsigned char*)c_ln); }
 
     void SetVersion(unsigned char value);
     unsigned char GetVersion();

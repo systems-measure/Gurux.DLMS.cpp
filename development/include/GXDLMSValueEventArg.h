@@ -61,7 +61,7 @@ private:
 
 	CArtVariant m_Parameters;
 
-	unsigned char event_param[10];//0-5 target_name, 6-m_Index, 7-m_Selector, 8-m_Error, 9-m_SkipMaxPduSize
+	signed char event_param[10];//0-5 target_name, 6-m_Index, 7-m_Selector, 8-m_Error, 9-m_SkipMaxPduSize
 
 	unsigned short row_param[3];//0-m_RowToPdu, 1-m_RowBeginIndex , 2-m_RowEndIndex
     
@@ -136,7 +136,7 @@ public:
     void SetTarget(CGXDLMSObject* value);
 
 
-	unsigned char* GetTargetName();
+	signed char* GetTargetName();
 
 	/*
 	Set target name and delete target object
@@ -145,7 +145,7 @@ public:
     /**
     * @return Attribute index of queried object.
     */
-    unsigned char& GetIndex();
+    signed char& GetIndex();
 
     void SetIndex(unsigned char value);
 
@@ -160,7 +160,7 @@ public:
     /**
     * @return Optional selector.
     */
-	unsigned char& GetSelector();
+	signed char& GetSelector();
 
     /**
     * @param value

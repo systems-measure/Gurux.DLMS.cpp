@@ -46,7 +46,7 @@ void CGXDLMSValueEventArg::SetTarget(CGXDLMSObject* value)
     m_Target = value;
 }
 
-unsigned char* CGXDLMSValueEventArg::GetTargetName() 
+signed char* CGXDLMSValueEventArg::GetTargetName() 
 {
 	return event_param;
 }
@@ -58,7 +58,7 @@ void CGXDLMSValueEventArg::SetTargetName() {
 	}
 }
 
-unsigned char& CGXDLMSValueEventArg::GetIndex()
+signed char& CGXDLMSValueEventArg::GetIndex()
 {
     return event_param[6];
 }
@@ -82,7 +82,7 @@ void CGXDLMSValueEventArg::SetValue(CGXByteBuffer& value) {
 	c_Value = value;
 }
 
-unsigned char& CGXDLMSValueEventArg::GetSelector()
+signed char& CGXDLMSValueEventArg::GetSelector()
 {
     return event_param[7];
 }

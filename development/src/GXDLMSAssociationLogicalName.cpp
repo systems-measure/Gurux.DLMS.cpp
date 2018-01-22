@@ -605,9 +605,7 @@ int CGXDLMSAssociationLogicalName::SetValue(CGXDLMSSettings& settings, CGXDLMSVa
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		e.GetCAValue().SetUInt8('\0');
-#ifdef __ICCARM__
 		mpro::wr_flash_inf(&mpro::UserMem.ExtMem.LLSSecret, e.GetCAValue().GetCurPtr(), v_info.size + 1);
-#endif
 		e.GetServer()->Configurated();
     }
     else if (e.GetIndex() == 8)
