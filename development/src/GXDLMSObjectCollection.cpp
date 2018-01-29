@@ -51,6 +51,7 @@
 #include "../include/GXDLMSIp4Setup.h"
 #include "../include/GXDLMSTcpUdpSetup.h"
 #include "../include/GXDLMSMacAddressSetup.h"
+#include "../include/GXDLMSImageTransfer.h"
 
 #include "Helper\Helper.h"
 
@@ -86,6 +87,10 @@ void CreateSpecDayTable(CGXDLMSObject*& constracted) {
 
 void CreateALN(CGXDLMSObject*& constracted) {
 	constracted = new CGXDLMSAssociationLogicalName();
+}
+
+void CreateImageTransfer(CGXDLMSObject*& constracted) {
+	constracted = new CGXDLMSImageTransfer();
 }
 
 void CreateActivityCalendar(CGXDLMSObject*& constracted) {
@@ -147,7 +152,7 @@ const tabFunc<newObj> create_func[] = {
 	{ DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME,			   CreateALN },
 	{ DLMS_OBJECT_TYPE_NONE,										NULL },
 	{ DLMS_OBJECT_TYPE_SAP_ASSIGNMENT,								NULL },
-	{ DLMS_OBJECT_TYPE_IMAGE_TRANSFER,								NULL },
+	{ DLMS_OBJECT_TYPE_IMAGE_TRANSFER,				 CreateImageTransfer },
 	{ DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP,						NULL },
 	{ DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR,		  CreateActivityCalendar },
 	{ DLMS_OBJECT_TYPE_REGISTER_MONITOR,							NULL },
