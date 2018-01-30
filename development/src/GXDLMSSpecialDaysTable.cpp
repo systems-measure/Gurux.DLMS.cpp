@@ -33,9 +33,9 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSSpecialDaysTable.h"
-#include <sstream>
+//#include <sstream>
 
 //Constructor.
 CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable() : CGXDLMSObject(DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE)
@@ -79,6 +79,18 @@ int CGXDLMSSpecialDaysTable::GetDataType(signed char index, DLMS_DATA_TYPE& type
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
+}
+
+DLMS_DATA_TYPE CGXDLMSSpecialDaysTable::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

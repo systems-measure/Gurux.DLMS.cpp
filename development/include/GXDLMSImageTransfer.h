@@ -36,16 +36,16 @@
 #define GXDLMSIMAGETRANSFER_H
 
 #include "GXDLMSObject.h"
-#include "GXDLMSImageActivateInfo.h"
+//#include "GXDLMSImageActivateInfo.h"
 
 class CGXDLMSImageTransfer : public CGXDLMSObject
 {
-    long m_ImageBlockSize;
+    /*long m_ImageBlockSize;
     std::string m_ImageTransferredBlocksStatus;
     long m_ImageFirstNotTransferredBlockNumber;
     bool m_ImageTransferEnabled;
     DLMS_IMAGE_TRANSFER_STATUS m_ImageTransferStatus;
-    std::vector<CGXDLMSImageActivateInfo> m_ImageActivateInfo;
+    std::vector<CGXDLMSImageActivateInfo> m_ImageActivateInfo;*/
 public:
     //Constructor.
     CGXDLMSImageTransfer();
@@ -57,39 +57,39 @@ public:
      Holds the ImageBlockSize, expressed in octets,
      * which can be handled by the server
     */
-    long GetImageBlockSize();
-    void SetImageBlockSize(long value);
+    //long GetImageBlockSize();
+    //void SetImageBlockSize(long value);
 
-    /**
-     * Provides information about the transfer status of each
-     * ImageBlock. Each bit in the bit-std::string provides information about
-     * one individual ImageBlock.
-    */
-    std::string& GetImageTransferredBlocksStatus();
-    void SetImageTransferredBlocksStatus(std::string value);
+    ///**
+    // * Provides information about the transfer status of each
+    // * ImageBlock. Each bit in the bit-std::string provides information about
+    // * one individual ImageBlock.
+    //*/
+    //std::string& GetImageTransferredBlocksStatus();
+    //void SetImageTransferredBlocksStatus(std::string value);
 
-    /**
-     Provides the ImageBlockNumber of the first ImageBlock not transferred.
-     * NOTE If the Image is complete, the value returned should be above the
-     * number of blocks calculated from the Image size and the ImageBlockSize
-    */
-    long GetImageFirstNotTransferredBlockNumber();
-    void SetImageFirstNotTransferredBlockNumber(long value);
+    ///**
+    // Provides the ImageBlockNumber of the first ImageBlock not transferred.
+    // * NOTE If the Image is complete, the value returned should be above the
+    // * number of blocks calculated from the Image size and the ImageBlockSize
+    //*/
+    //long GetImageFirstNotTransferredBlockNumber();
+    //void SetImageFirstNotTransferredBlockNumber(long value);
 
-    /**
-     * Controls enabling the Image transfer process. The method can
-     * be invoked successfully only if the value of this attribute is true.
-     */
-    bool GetImageTransferEnabled();
-    void SetImageTransferEnabled(bool value);
+    ///**
+    // * Controls enabling the Image transfer process. The method can
+    // * be invoked successfully only if the value of this attribute is true.
+    // */
+    //bool GetImageTransferEnabled();
+    //void SetImageTransferEnabled(bool value);
 
-    /**
-     * Holds the status of the Image transfer process.
-     */
-    DLMS_IMAGE_TRANSFER_STATUS GetImageTransferStatus();
-    void SetImageTransferStatus(DLMS_IMAGE_TRANSFER_STATUS value);
+    ///**
+    // * Holds the status of the Image transfer process.
+    // */
+    //DLMS_IMAGE_TRANSFER_STATUS GetImageTransferStatus();
+    //void SetImageTransferStatus(DLMS_IMAGE_TRANSFER_STATUS value);
 
-    std::vector<CGXDLMSImageActivateInfo>& GetImageActivateInfo();
+    //std::vector<CGXDLMSImageActivateInfo>& GetImageActivateInfo();
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -98,6 +98,7 @@ public:
     int GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

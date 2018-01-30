@@ -37,7 +37,7 @@
 
 #include <string.h>
 //#include <locale>
-#include <vector>
+//#include <vector>
 #include <assert.h>
 
 //Get UTC offset in minutes.

@@ -33,9 +33,9 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSDisconnectControl.h"
-#include "../include/GXDLMSConverter.h"
+//#include "../include/GXDLMSConverter.h"
 
 //Constructor.
 CGXDLMSDisconnectControl::CGXDLMSDisconnectControl() : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL)
@@ -83,6 +83,26 @@ int CGXDLMSDisconnectControl::GetDataType(signed char index, DLMS_DATA_TYPE& typ
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
     return DLMS_ERROR_CODE_OK;
+}
+
+DLMS_DATA_TYPE CGXDLMSDisconnectControl::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_BOOLEAN;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

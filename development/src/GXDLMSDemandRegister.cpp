@@ -33,8 +33,8 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
-#include "../include/GXDLMSConverter.h"
+//#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSConverter.h"
 #include "../include/GXDLMSDemandRegister.h"
 
 /**
@@ -140,6 +140,46 @@ int CGXDLMSDemandRegister::GetDataType(signed char index, DLMS_DATA_TYPE& type)
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
+}
+
+DLMS_DATA_TYPE CGXDLMSDemandRegister::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return CGXDLMSObject::GetDataType(index);;
+	}
+	if (index == 3)
+	{
+		return CGXDLMSObject::GetDataType(index);;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_UINT8;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_UINT32;
+	}
+	if (index == 9)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 int CGXDLMSDemandRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)

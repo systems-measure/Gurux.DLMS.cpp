@@ -33,7 +33,7 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSHdlcSetup.h"
-#include "../include/GXDLMSConverter.h"
+//#include "../include/GXDLMSConverter.h"
 
 //Constructor.
 CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP)
@@ -102,6 +102,46 @@ int CGXDLMSIecHdlcSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
     return DLMS_ERROR_CODE_OK;
+}
+
+DLMS_DATA_TYPE CGXDLMSIecHdlcSetup::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_UINT8;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_UINT8;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	if (index == 9)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

@@ -37,7 +37,7 @@
 
 
 
-#include <vector>
+//#include <vector>
 #include "GXDLMSObject.h"
 
 typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint8_t* idx_cnstrd);

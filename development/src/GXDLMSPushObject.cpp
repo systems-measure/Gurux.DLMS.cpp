@@ -33,7 +33,7 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSPushObject.h"
-#include <sstream>
+//#include <sstream>
 
 DLMS_OBJECT_TYPE CGXDLMSPushObject::GetType()
 {

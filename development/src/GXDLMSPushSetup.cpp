@@ -33,9 +33,9 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSPushSetup.h"
-#include "../include/GXDLMSClient.h"
-#include "../include/GXDLMSObjectFactory.h"
-#include <sstream>
+//#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSObjectFactory.h"
+//#include <sstream>
 
 //Constructor.
 CGXDLMSPushSetup::CGXDLMSPushSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP)
@@ -96,6 +96,38 @@ int CGXDLMSPushSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
     return DLMS_ERROR_CODE_OK;
+}
+
+DLMS_DATA_TYPE CGXDLMSPushSetup::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_UINT8;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

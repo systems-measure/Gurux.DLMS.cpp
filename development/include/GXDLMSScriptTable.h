@@ -58,6 +58,7 @@ public:
     int GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

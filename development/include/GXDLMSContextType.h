@@ -35,7 +35,7 @@
 #ifndef GXDLMSCONTEXTTYPE_H
 #define GXDLMSCONTEXTTYPE_H
 
-#include <string>
+//#include <string>
 #include "GXBytebuffer.h"
 
 class CGXDLMSContextType
@@ -79,6 +79,6 @@ public:
     CGXByteBuffer& GetCypheringInfo();
     void SetCypheringInfo(CGXByteBuffer& value);
 
-    std::string ToString();
+    //std::string ToString();
 };
 #endif //GXDLMSCONTEXTTYPE_H

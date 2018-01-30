@@ -90,19 +90,19 @@ void CGXDLMSContextType::SetCypheringInfo(CGXByteBuffer& value)
     m_CypheringInfo = value;
 }
 
-std::string CGXDLMSContextType::ToString()
-{
-    CGXByteBuffer bb;
-    bb.AddIntAsString(m_Conformance);
-    bb.SetInt8(' ');
-    bb.AddIntAsString(m_MaxReceivePduSize);
-    bb.SetInt8(' ');
-    bb.AddIntAsString(m_MaxSendPduSize);
-    bb.SetInt8(' ');
-    bb.AddIntAsString(m_DlmsVersionNumber);
-    bb.SetInt8(' ');
-    bb.AddIntAsString(m_QualityOfService);
-    bb.SetInt8(' ');
-    bb.Set(&m_CypheringInfo, 0, -1);
-    return bb.ToString();
-}
+//std::string CGXDLMSContextType::ToString()
+//{
+//    CGXByteBuffer bb;
+//    bb.AddIntAsString(m_Conformance);
+//    bb.SetInt8(' ');
+//    bb.AddIntAsString(m_MaxReceivePduSize);
+//    bb.SetInt8(' ');
+//    bb.AddIntAsString(m_MaxSendPduSize);
+//    bb.SetInt8(' ');
+//    bb.AddIntAsString(m_DlmsVersionNumber);
+//    bb.SetInt8(' ');
+//    bb.AddIntAsString(m_QualityOfService);
+//    bb.SetInt8(' ');
+//    bb.Set(&m_CypheringInfo, 0, -1);
+//    return bb.ToString();
+//}

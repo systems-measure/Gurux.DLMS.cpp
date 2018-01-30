@@ -36,7 +36,7 @@
 #define GXDLMSCLIENT_H
 
 #include "GXDLMS.h"
-#include "GXStandardObisCodeCollection.h"
+//#include "GXStandardObisCodeCollection.h"
 #include "GXDLMSProfileGeneric.h"
 #include "GXSecure.h"
 #include "GXDateTime.h"
@@ -282,8 +282,8 @@ public:
         CGXByteBuffer& reply,
         CGXReplyData& data);
 
-    static std::string ObjectTypeToString(
-        DLMS_OBJECT_TYPE type);
+    //static std::string ObjectTypeToString(
+    //    DLMS_OBJECT_TYPE type);
 
     /**
     * Reads the Association view from the device. This method is used to get
@@ -581,9 +581,9 @@ public:
      *            Set to NULL if standard formula is used.
      * @return Server address.
      */
-    static int GetServerAddress(
-        unsigned long serialNumber,
-        const char* formula = NULL);
+    //static int GetServerAddress(
+    //    unsigned long serialNumber,
+    //    const char* formula = NULL);
 
     /**
      * Convert physical address and logical address to server address.

@@ -39,10 +39,10 @@
 #include "GXDLMSLongTransaction.h"
 #include "GXReplyData.h"
 #include "GXDLMSSettings.h"
-#include "GXSNInfo.h"
-#include "GXDLMSSNParameters.h"
+//#include "GXSNInfo.h"
+//#include "GXDLMSSNParameters.h"
 #include "GXDLMSLNParameters.h"
-#include "GXDLMSConnectionEventArgs.h"
+//#include "GXDLMSConnectionEventArgs.h"
 
 class CGXDLMSProfileGeneric;
 class CGXDLMSServer

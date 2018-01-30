@@ -33,17 +33,17 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSTcpUdpSetup.h"
 
 
 void CGXDLMSTcpUdpSetup::Init()
 {
-    m_Port = 4059;
+ /*   m_Port = 4059;
     m_IPReference = "127.0.0.1";
     m_MaximumSimultaneousConnections = 1;
     SetInactivityTimeout(180);
-    SetMaximumSegmentSize(576);
+    SetMaximumSegmentSize(576);*/
 }
 
 /**
@@ -64,51 +64,51 @@ CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup(const char* ln) : CGXDLMSObject(DLMS_OBJE
     Init();
 }
 
-int CGXDLMSTcpUdpSetup::GetPort()
-{
-    return m_Port;
-}
-
-void CGXDLMSTcpUdpSetup::SetPort(int value)
-{
-    m_Port = value;
-}
-
-std::string CGXDLMSTcpUdpSetup::GetIPReference()
-{
-    return m_IPReference;
-}
-void CGXDLMSTcpUdpSetup::SetIPReference(std::string value)
-{
-    m_IPReference = value;
-}
-
-int CGXDLMSTcpUdpSetup::GetMaximumSegmentSize()
-{
-    return m_MaximumSegmentSize;
-}
-void CGXDLMSTcpUdpSetup::SetMaximumSegmentSize(int value)
-{
-    m_MaximumSegmentSize = value;
-}
-
-int CGXDLMSTcpUdpSetup::GetMaximumSimultaneousConnections()
-{
-    return m_MaximumSimultaneousConnections;
-}
-void CGXDLMSTcpUdpSetup::SetMaximumSimultaneousConnections(int value)
-{
-    m_MaximumSimultaneousConnections = value;
-}
-
-int CGXDLMSTcpUdpSetup::GetInactivityTimeout()
-{
-    return m_InactivityTimeout;
-}
-void CGXDLMSTcpUdpSetup::SetInactivityTimeout(int value)
-{
-    m_InactivityTimeout = value;
-}
+//int CGXDLMSTcpUdpSetup::GetPort()
+//{
+//    return m_Port;
+//}
+//
+//void CGXDLMSTcpUdpSetup::SetPort(int value)
+//{
+//    m_Port = value;
+//}
+//
+//std::string CGXDLMSTcpUdpSetup::GetIPReference()
+//{
+//    return m_IPReference;
+//}
+//void CGXDLMSTcpUdpSetup::SetIPReference(std::string value)
+//{
+//    m_IPReference = value;
+//}
+//
+//int CGXDLMSTcpUdpSetup::GetMaximumSegmentSize()
+//{
+//    return m_MaximumSegmentSize;
+//}
+//void CGXDLMSTcpUdpSetup::SetMaximumSegmentSize(int value)
+//{
+//    m_MaximumSegmentSize = value;
+//}
+//
+//int CGXDLMSTcpUdpSetup::GetMaximumSimultaneousConnections()
+//{
+//    return m_MaximumSimultaneousConnections;
+//}
+//void CGXDLMSTcpUdpSetup::SetMaximumSimultaneousConnections(int value)
+//{
+//    m_MaximumSimultaneousConnections = value;
+//}
+//
+//int CGXDLMSTcpUdpSetup::GetInactivityTimeout()
+//{
+//    return m_InactivityTimeout;
+//}
+//void CGXDLMSTcpUdpSetup::SetInactivityTimeout(int value)
+//{
+//    m_InactivityTimeout = value;
+//}
 
 // Returns amount of attributes.
 int CGXDLMSTcpUdpSetup::GetAttributeCount()
@@ -153,6 +153,34 @@ int CGXDLMSTcpUdpSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
     return DLMS_ERROR_CODE_OK;
+}
+
+DLMS_DATA_TYPE CGXDLMSTcpUdpSetup::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_UINT8;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_UINT16;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

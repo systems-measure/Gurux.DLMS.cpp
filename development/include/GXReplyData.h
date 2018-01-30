@@ -35,7 +35,7 @@
 #ifndef GXREPLYDATA_H
 #define GXREPLYDATA_H
 
-#include "GXDLMSConverter.h"
+//#include "GXDLMSConverter.h"
 #include "GXBytebuffer.h"
 #include "GXDLMSVariant.h"
 

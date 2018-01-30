@@ -32,10 +32,11 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
-#include "../include/GXDLMSObjectFactory.h"
+//#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXDLMSAssociationLogicalName.h"
 #include "../include/GXDLMSServer.h"
+#include "../include/GXSecure.h"
 
 #include "converter_mpro\converter_mpro.h"
 
@@ -325,6 +326,46 @@ int CGXDLMSAssociationLogicalName::GetDataType(signed char index, DLMS_DATA_TYPE
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
+}
+
+DLMS_DATA_TYPE CGXDLMSAssociationLogicalName::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	if (index == 9)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)

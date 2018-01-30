@@ -36,7 +36,7 @@
 #define GXDLMSSPECIALDAYSTABLE_H
 
 #include "GXDLMSObject.h"
-#include "GXDLMSSpecialDay.h"
+//#include "GXDLMSSpecialDay.h"
 
 class CGXDLMSSpecialDaysTable : public CGXDLMSObject
 {
@@ -56,6 +56,7 @@ class CGXDLMSSpecialDaysTable : public CGXDLMSObject
     int GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

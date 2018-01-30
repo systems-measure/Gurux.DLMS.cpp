@@ -34,8 +34,8 @@
 
 #include "../include/GXDLMS.h"
 #include "../include/GXAPDU.h"
-#include "../include/GXDLMSClient.h"
-#include "../include/GXDLMSObjectFactory.h"
+//#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXBytebuffer.h"
 #include "Helper\Helper.h"
 

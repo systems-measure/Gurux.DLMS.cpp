@@ -33,9 +33,9 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSClock.h"
-#include "../include/GXDLMSConverter.h"
+//#include "../include/GXDLMSConverter.h"
 
 void CGXDLMSClock::Init()
 {
@@ -204,6 +204,45 @@ int CGXDLMSClock::GetDataType(signed char index, DLMS_DATA_TYPE& type)
     return DLMS_ERROR_CODE_OK;
 }
 
+DLMS_DATA_TYPE CGXDLMSClock::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_INT16;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_UINT8;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_INT8;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_BOOLEAN;
+	}
+	if (index == 9)
+	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	return DLMS_DATA_TYPE_NONE;
+}
 /*
  * Returns value of given attribute.
  */

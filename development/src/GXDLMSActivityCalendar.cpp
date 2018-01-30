@@ -33,9 +33,9 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSActivityCalendar.h"
-#include <sstream>
+//#include <sstream>
 
 CGXDLMSActivityCalendar::CGXDLMSActivityCalendar() : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR, "0.0.13.0.0.255")
 {
@@ -117,6 +117,50 @@ int CGXDLMSActivityCalendar::GetDataType(signed char index, DLMS_DATA_TYPE& type
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
+}
+
+DLMS_DATA_TYPE CGXDLMSActivityCalendar::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 9)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 10)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

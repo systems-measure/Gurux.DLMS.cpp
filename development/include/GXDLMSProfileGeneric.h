@@ -35,7 +35,8 @@
 #define GXDLMSPROFILEGENERIC_H
 
 #include "GXDLMSCaptureObject.h"
-#include "GXDLMSRegister.h"
+#include "GXDLMSObject.h"
+//#include "GXDLMSRegister.h"
 
 enum GX_SORT_METHOD
 {
@@ -156,6 +157,7 @@ public:
     int GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

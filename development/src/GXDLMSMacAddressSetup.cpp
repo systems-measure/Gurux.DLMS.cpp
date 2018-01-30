@@ -33,7 +33,7 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSMacAddressSetup.h"
-#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSClient.h"
 
 /**
  Constructor.
@@ -53,15 +53,15 @@ CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(const char* ln) : CGXDLMSObject(D
 
 /**
  Value of COSEM Data object.
-*/
-std::string CGXDLMSMacAddressSetup::GetMacAddress()
-{
-    return m_MacAddress;
-}
-void CGXDLMSMacAddressSetup::SetMacAddress(std::string value)
-{
-    m_MacAddress = value;
-}
+//*/
+//std::string CGXDLMSMacAddressSetup::GetMacAddress()
+//{
+//    return m_MacAddress;
+//}
+//void CGXDLMSMacAddressSetup::SetMacAddress(std::string value)
+//{
+//    m_MacAddress = value;
+//}
 
 // Returns amount of attributes.
 int CGXDLMSMacAddressSetup::GetAttributeCount()
@@ -90,6 +90,18 @@ int CGXDLMSMacAddressSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
     return DLMS_ERROR_CODE_OK;
+}
+
+DLMS_DATA_TYPE CGXDLMSMacAddressSetup::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 

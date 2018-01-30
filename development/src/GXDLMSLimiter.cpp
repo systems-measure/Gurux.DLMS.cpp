@@ -33,10 +33,10 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSLimiter.h"
-#include "../include/GXDLMSClient.h"
-#include "../include/GXDLMSActionSet.h"
-#include "SPODES.h"
-#include <sstream>
+//#include "../include/GXDLMSClient.h"
+//#include "../include/GXDLMSActionSet.h"
+//#include "SPODES.h"
+//#include <sstream>
 
 //Constructor.
 CGXDLMSLimiter::CGXDLMSLimiter() : CGXDLMSObject(DLMS_OBJECT_TYPE_LIMITER)
@@ -113,6 +113,54 @@ int CGXDLMSLimiter::GetDataType(signed char index, DLMS_DATA_TYPE& type)
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
     return DLMS_ERROR_CODE_OK;
+}
+
+DLMS_DATA_TYPE CGXDLMSLimiter::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 3)
+	{
+		return CGXDLMSObject::GetDataType(index);;
+	}
+	if (index == 4)
+	{
+		return CGXDLMSObject::GetDataType(index);;
+	}
+	if (index == 5)
+	{
+		return CGXDLMSObject::GetDataType(index);;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_UINT32;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_UINT32;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 9)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 10)
+	{
+		return DLMS_DATA_TYPE_BOOLEAN;
+	}
+	if (index == 11)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.

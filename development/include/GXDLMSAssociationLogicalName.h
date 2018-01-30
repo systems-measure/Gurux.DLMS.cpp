@@ -38,6 +38,7 @@
 #include "GXApplicationContextName.h"
 #include "GXDLMSContextType.h"
 #include "GXAuthenticationMechanismName.h"
+#include "GXDLMSObjectCollection.h"
 
 class CGXDLMSAssociationLogicalName : public CGXDLMSObject
 {
@@ -116,7 +117,7 @@ public:
     //Get attribute values of object.
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
-    DLMS_DATA_TYPE GetDataType(signed char index) override { return DLMS_DATA_TYPE_NONE; };
+    DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 	void GetContextInfo(CGXByteBuffer& data);

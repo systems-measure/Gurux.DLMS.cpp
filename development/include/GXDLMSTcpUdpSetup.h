@@ -35,13 +35,15 @@
 #ifndef GXDLMSTCPUDPSETUP_H
 #define GXDLMSTCPUDPSETUP_H
 
+#include "GXDLMSObject.h"
+
 class CGXDLMSTcpUdpSetup : public CGXDLMSObject
 {
-    int m_Port;
-    std::string m_IPReference;
-    int m_MaximumSimultaneousConnections;
-    int m_InactivityTimeout;
-    int m_MaximumSegmentSize;
+    //int m_Port;
+    //std::string m_IPReference;
+    //int m_MaximumSimultaneousConnections;
+    //int m_InactivityTimeout;
+    //int m_MaximumSegmentSize;
 
     void Init();
 
@@ -58,7 +60,7 @@ public:
     */
     CGXDLMSTcpUdpSetup(const char* ln);
 
-    int GetPort();
+   /* int GetPort();
 
     void SetPort(int value);
 
@@ -77,7 +79,7 @@ public:
     int GetInactivityTimeout();
 
     void SetInactivityTimeout(int value);
-
+*/
     // Returns amount of attributes.
     int GetAttributeCount();
 
@@ -85,6 +87,7 @@ public:
     int GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

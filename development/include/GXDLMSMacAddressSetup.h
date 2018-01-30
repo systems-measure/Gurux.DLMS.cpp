@@ -39,7 +39,7 @@
 
 class CGXDLMSMacAddressSetup : public CGXDLMSObject
 {
-    std::string m_MacAddress;
+    //std::string m_MacAddress;
 public:
     /**
      Constructor.
@@ -55,9 +55,9 @@ public:
     /**
      Value of COSEM Data object.
     */
-    std::string GetMacAddress();
+   /* std::string GetMacAddress();
     void SetMacAddress(std::string value);
-
+*/
     // Returns amount of attributes.
     int GetAttributeCount();
 
@@ -65,6 +65,7 @@ public:
     int GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
