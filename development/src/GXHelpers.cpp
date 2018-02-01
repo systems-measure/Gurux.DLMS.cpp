@@ -995,7 +995,6 @@ int GetOctetString(CGXByteBuffer& buff, CGXDataInfo& info, bool knownType, CGXDL
     }
     else
     {
-//        value.byteArr = new unsigned char[len];
         value.byteArr =(unsigned char*)malloc(len);
         if ((ret = buff.Get(value.byteArr, len)) != 0)
         {
@@ -2177,10 +2176,6 @@ void GXHelpers::Write(char* fileName, char* pData, int len)
 {
     if (len != 0 && pData != NULL)
     {
-//        std::ofstream trace;
-//        trace.open(fileName, std::ios::out | std::ios::app);
-//        trace.write(pData, len);
-//        trace.close();
     }
 }
 
@@ -2188,10 +2183,6 @@ void GXHelpers::Write(std::string fileName, std::string data)
 {
     if (data.size() != 0)
     {
-//        std::ofstream trace;
-//        trace.open(fileName.c_str(), std::ios::out | std::ios::app);
-//        trace.write(&data[0], data.size());
-//        trace.close();
     }
 }
 

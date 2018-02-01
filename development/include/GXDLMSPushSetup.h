@@ -36,8 +36,6 @@
 #define GXDLMSPUSHSETUP_H
 
 #include "GXDLMSObject.h"
-//#include "GXDLMSPushObject.h"
-#include "GXDLMSCaptureObject.h"
 
 class CGXDLMSPushSetup : public CGXDLMSObject
 {

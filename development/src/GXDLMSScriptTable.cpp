@@ -33,7 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSScriptTable.h"
-//#include <sstream>
 
 //Constructor.
 CGXDLMSScriptTable::CGXDLMSScriptTable() : CGXDLMSObject(DLMS_OBJECT_TYPE_SCRIPT_TABLE)

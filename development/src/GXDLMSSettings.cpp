@@ -122,16 +122,8 @@ void CGXDLMSSettings::SetDlmsVersionNumber(unsigned char value)
 
 void CGXDLMSSettings::ResetFrameSequence()
 {
-    //if (m_Server)
-    //{
-        m_SenderFrame = SERVER_START_SENDER_FRAME_SEQUENCE;
-        m_ReceiverFrame = SERVER_START_RECEIVER_FRAME_SEQUENCE;
-   /* }
-    else
-    {
-        m_SenderFrame = CLIENT_START_SENDER_FRAME_SEQUENCE;
-        m_ReceiverFrame = CLIENT_START_RCEIVER_FRAME_SEQUENCE;
-    }*/
+	m_SenderFrame = SERVER_START_SENDER_FRAME_SEQUENCE;
+	m_ReceiverFrame = SERVER_START_RECEIVER_FRAME_SEQUENCE;
 }
 
 bool CGXDLMSSettings::CheckFrame(unsigned char frame)
@@ -246,11 +238,6 @@ void CGXDLMSSettings::IncreaseBlockIndex()
     m_BlockIndex += 1;
 }
 
-//bool CGXDLMSSettings::IsServer()
-//{
-//    return m_Server;
-//}
-
 CGXDLMSLimits& CGXDLMSSettings::GetLimits()
 {
     return m_Limits;
@@ -330,17 +317,6 @@ int CGXDLMSSettings::SetMaxServerPDUSize(unsigned short value)
     m_MaxServerPDUSize = value;
     return 0;
 }
-
-
-//bool CGXDLMSSettings::GetUseLogicalNameReferencing()
-//{
-//    return m_UseLogicalNameReferencing;
-//}
-
-//void CGXDLMSSettings::SetUseLogicalNameReferencing(bool value)
-//{
-//    m_UseLogicalNameReferencing = value;
-//}
 
 DLMS_PRIORITY CGXDLMSSettings::GetPriority()
 {

@@ -36,7 +36,6 @@
 
 #include "GXDLMSCaptureObject.h"
 #include "GXDLMSObject.h"
-//#include "GXDLMSRegister.h"
 
 enum GX_SORT_METHOD
 {
@@ -180,7 +179,7 @@ public:
     *            Action bytes.
     * @return Result code.
     */
-    int Reset(CGXDLMSClient& client, std::vector<CGXByteBuffer>& reply);
+    int Reset(std::vector<CGXByteBuffer>& reply);
 
     /**
     * Copies the values of the objects to capture into the buffer by reading
@@ -192,6 +191,6 @@ public:
     *            Action bytes.
     * @return Result code.
     */
-    int Capture(CGXDLMSClient& client, std::vector<CGXByteBuffer>& reply);
+    int Capture(std::vector<CGXByteBuffer>& reply);
 };
 #endif //GXDLMSPROFILEGENERIC_H

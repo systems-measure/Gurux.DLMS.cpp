@@ -33,9 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSPushSetup.h"
-//#include "../include/GXDLMSClient.h"
-//#include "../include/GXDLMSObjectFactory.h"
-//#include <sstream>
 
 //Constructor.
 CGXDLMSPushSetup::CGXDLMSPushSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_PUSH_SETUP)

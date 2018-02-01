@@ -33,7 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSMacAddressSetup.h"
-//#include "../include/GXDLMSClient.h"
 
 /**
  Constructor.
@@ -50,18 +49,6 @@ CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup() : CGXDLMSObject(DLMS_OBJECT_TYP
 CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP, ln)
 {
 }
-
-/**
- Value of COSEM Data object.
-//*/
-//std::string CGXDLMSMacAddressSetup::GetMacAddress()
-//{
-//    return m_MacAddress;
-//}
-//void CGXDLMSMacAddressSetup::SetMacAddress(std::string value)
-//{
-//    m_MacAddress = value;
-//}
 
 // Returns amount of attributes.
 int CGXDLMSMacAddressSetup::GetAttributeCount()

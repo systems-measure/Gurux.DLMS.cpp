@@ -33,9 +33,7 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSSpecialDaysTable.h"
-//#include <sstream>
 
 //Constructor.
 CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable() : CGXDLMSObject(DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE)

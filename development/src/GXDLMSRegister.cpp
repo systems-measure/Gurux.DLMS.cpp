@@ -32,9 +32,7 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 #include "../include/GXDLMSVariant.h"
-//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSRegister.h"
-//#include "../include/GXDLMSConverter.h"
 
 void CGXDLMSRegister::Init()
 {

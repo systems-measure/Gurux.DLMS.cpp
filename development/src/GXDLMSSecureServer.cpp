@@ -36,9 +36,7 @@
 
 CGXDLMSSecureServer::CGXDLMSSecureServer(bool UseLogicalNameReferencing,
     DLMS_INTERFACE_TYPE intefaceType) :
-    CGXDLMSServer(
-        /*UseLogicalNameReferencing,*/
-        intefaceType), m_Cipher("ABCDEFGH")
+    CGXDLMSServer( intefaceType), m_Cipher("ABCDEFGH")
 {
     m_Settings.SetCipher(&m_Cipher);
 }

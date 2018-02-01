@@ -35,16 +35,13 @@
 #ifndef GXDLMSOBJECTCOLLECTION_H
 #define GXDLMSOBJECTCOLLECTION_H
 
-
-
-//#include <vector>
 #include "GXDLMSObject.h"
 
 typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint8_t* idx_cnstrd);
 
 typedef unsigned char(*TypeObj)(const char* obis, uint8_t* idx_cnstrd);
 
-class CGXDLMSObjectCollection /*: public std::vector<unsigned char*>*/
+class CGXDLMSObjectCollection
 {
 private:
 	CGXDLMSObject* constructed_obj;

@@ -41,19 +41,14 @@
 
 class CGXDLMSObject;
 class CGXDLMSServer;
-class CGXDLMSClient;
-class CGXDLMSNotify;
 class CGXDLMSSettings;
 class CGXDLMSAssociationLogicalName;
 
 class CGXDLMSValueEventArg
 {
-    friend class CGXDLMSClient;
     friend class CGXDLMSServer;
-    friend class CGXDLMSNotify;
     friend class CGXDLMSProfileGeneric;
     friend class CGXDLMSAssociationLogicalName;
-    friend class CGXDLMSAssociationShortName;
 
 private:
 

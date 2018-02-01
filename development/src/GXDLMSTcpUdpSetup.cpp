@@ -33,17 +33,12 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSTcpUdpSetup.h"
 
 
 void CGXDLMSTcpUdpSetup::Init()
 {
- /*   m_Port = 4059;
-    m_IPReference = "127.0.0.1";
-    m_MaximumSimultaneousConnections = 1;
-    SetInactivityTimeout(180);
-    SetMaximumSegmentSize(576);*/
+
 }
 
 /**
@@ -63,52 +58,6 @@ CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup(const char* ln) : CGXDLMSObject(DLMS_OBJE
 {
     Init();
 }
-
-//int CGXDLMSTcpUdpSetup::GetPort()
-//{
-//    return m_Port;
-//}
-//
-//void CGXDLMSTcpUdpSetup::SetPort(int value)
-//{
-//    m_Port = value;
-//}
-//
-//std::string CGXDLMSTcpUdpSetup::GetIPReference()
-//{
-//    return m_IPReference;
-//}
-//void CGXDLMSTcpUdpSetup::SetIPReference(std::string value)
-//{
-//    m_IPReference = value;
-//}
-//
-//int CGXDLMSTcpUdpSetup::GetMaximumSegmentSize()
-//{
-//    return m_MaximumSegmentSize;
-//}
-//void CGXDLMSTcpUdpSetup::SetMaximumSegmentSize(int value)
-//{
-//    m_MaximumSegmentSize = value;
-//}
-//
-//int CGXDLMSTcpUdpSetup::GetMaximumSimultaneousConnections()
-//{
-//    return m_MaximumSimultaneousConnections;
-//}
-//void CGXDLMSTcpUdpSetup::SetMaximumSimultaneousConnections(int value)
-//{
-//    m_MaximumSimultaneousConnections = value;
-//}
-//
-//int CGXDLMSTcpUdpSetup::GetInactivityTimeout()
-//{
-//    return m_InactivityTimeout;
-//}
-//void CGXDLMSTcpUdpSetup::SetInactivityTimeout(int value)
-//{
-//    m_InactivityTimeout = value;
-//}
 
 // Returns amount of attributes.
 int CGXDLMSTcpUdpSetup::GetAttributeCount()

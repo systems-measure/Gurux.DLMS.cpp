@@ -41,13 +41,10 @@ CGXReplyData::CGXReplyData(
     bool complete)
 {
     Clear();
-    //m_DataType = DLMS_DATA_TYPE_NONE;
     m_MoreData = more;
     m_Command = cmd;
-    //m_CommandType = 0;
     m_Data = buff;
     m_Complete = complete;
-   // m_Time = NULL;
     m_ControlField = 0xFF;
 }
 
@@ -55,16 +52,6 @@ CGXReplyData::CGXReplyData()
 {
     Clear();
 }
-
-//DLMS_DATA_TYPE CGXReplyData::GetValueType()
-//{
-//    return m_DataType;
-//}
-//
-//void CGXReplyData::SetValueType(DLMS_DATA_TYPE value)
-//{
-//    m_DataType = value;
-//}
 
 CArtVariant& CGXReplyData::GetValue()
 {
@@ -118,7 +105,6 @@ void CGXReplyData::SetTotalCount(int value)
 
 void CGXReplyData::Clear()
 {
-   // m_Time = NULL;
     m_MoreData = DLMS_DATA_REQUEST_TYPES_NONE;
     m_Command = DLMS_COMMAND_NONE;
     m_Data.Clear();
@@ -128,7 +114,6 @@ void CGXReplyData::Clear()
     m_DataValue.Clear();
     m_ReadPosition = 0;
     m_PacketLength = 0;
-    //m_DataType = DLMS_DATA_TYPE_NONE;
     m_CipherIndex = 0;
     m_Gbt = false;
 }
@@ -152,17 +137,6 @@ DLMS_COMMAND& CGXReplyData::GetCommand()
 {
     return m_Command;
 }
-
-//void CGXReplyData::SetCommandType(unsigned char value)
-//{
-//    m_CommandType = value;
-//}
-//
-//unsigned char CGXReplyData::GetCommandType()
-//{
-//    return m_CommandType;
-//}
-
 
 CGXByteBuffer& CGXReplyData::GetData()
 {
@@ -220,31 +194,6 @@ void CGXReplyData::SetGbt(bool value)
 {
     m_Gbt = value;
 }
-
-//struct tm* CGXReplyData::GetTime()
-//{
-//    return m_Time;
-//}
-//
-//void CGXReplyData::SetTime(struct tm* value)
-//{
-//    if (value == NULL)
-//    {
-//        if (m_Time != NULL)
-//        {
-//            free(m_Time);
-//        }
-//        m_Time = value;
-//    }
-//    else
-//    {
-//        if (m_Time == NULL)
-//        {
-//            m_Time = (struct tm*) malloc(sizeof(struct tm));
-//        }
-//        memcpy(m_Time, value, sizeof(struct tm));
-//    }
-//}
 
 unsigned char CGXReplyData::GetControlField(void)
 {

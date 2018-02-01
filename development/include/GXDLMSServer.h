@@ -39,10 +39,7 @@
 #include "GXDLMSLongTransaction.h"
 #include "GXReplyData.h"
 #include "GXDLMSSettings.h"
-//#include "GXSNInfo.h"
-//#include "GXDLMSSNParameters.h"
 #include "GXDLMSLNParameters.h"
-//#include "GXDLMSConnectionEventArgs.h"
 
 class CGXDLMSProfileGeneric;
 class CGXDLMSServer
@@ -375,9 +372,7 @@ public:
      * @param type
      *            Interface type.
      */
-    CGXDLMSServer(
-        /*bool logicalNameReferencing,*/
-        DLMS_INTERFACE_TYPE type);
+    CGXDLMSServer( DLMS_INTERFACE_TYPE type);
 
     /**
     * Destructor.

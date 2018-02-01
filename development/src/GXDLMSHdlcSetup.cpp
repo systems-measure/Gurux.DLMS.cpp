@@ -33,7 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSHdlcSetup.h"
-//#include "../include/GXDLMSConverter.h"
 
 //Constructor.
 CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IEC_HDLC_SETUP)

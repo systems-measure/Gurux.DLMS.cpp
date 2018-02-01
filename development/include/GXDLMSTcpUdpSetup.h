@@ -39,12 +39,6 @@
 
 class CGXDLMSTcpUdpSetup : public CGXDLMSObject
 {
-    //int m_Port;
-    //std::string m_IPReference;
-    //int m_MaximumSimultaneousConnections;
-    //int m_InactivityTimeout;
-    //int m_MaximumSegmentSize;
-
     void Init();
 
 public:
@@ -60,26 +54,6 @@ public:
     */
     CGXDLMSTcpUdpSetup(const char* ln);
 
-   /* int GetPort();
-
-    void SetPort(int value);
-
-    std::string GetIPReference();
-
-    void SetIPReference(std::string value);
-
-    int GetMaximumSegmentSize();
-
-    void SetMaximumSegmentSize(int value);
-
-    int GetMaximumSimultaneousConnections();
-
-    void SetMaximumSimultaneousConnections(int value);
-
-    int GetInactivityTimeout();
-
-    void SetInactivityTimeout(int value);
-*/
     // Returns amount of attributes.
     int GetAttributeCount();
 

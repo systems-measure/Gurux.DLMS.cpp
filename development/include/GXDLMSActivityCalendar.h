@@ -36,9 +36,6 @@
 #define GXDLMSACTIVITYCALENDAR_H
 
 #include "GXDLMSObject.h"
-//#include "GXDLMSSeasonProfile.h"
-//#include "GXDLMSWeekProfile.h"
-//#include "GXDLMSDayProfile.h"
 
 class CGXDLMSActivityCalendar : public CGXDLMSObject
 {

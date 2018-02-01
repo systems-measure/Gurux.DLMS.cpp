@@ -33,11 +33,7 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSProfileGeneric.h"
-//#include "../include/GXDLMSClient.h"
-//#include "../include/GXDLMSObjectFactory.h"
-//#include "../include/GXDLMSDemandRegister.h"
 #include "../include/GXDLMSServer.h"
-//#include "../include/GXDLMSObject.h"
 
 CGXDLMSProfileGeneric::~CGXDLMSProfileGeneric()
 {
@@ -133,13 +129,13 @@ int CGXDLMSProfileGeneric::Capture(CGXDLMSServer* server)
     return 0;
 }
 
-int CGXDLMSProfileGeneric::Reset(CGXDLMSClient& client, std::vector<CGXByteBuffer>& reply)
+int CGXDLMSProfileGeneric::Reset(std::vector<CGXByteBuffer>& reply)
 {
     
 	return 0;
 }
 
-int CGXDLMSProfileGeneric::Capture(CGXDLMSClient& client, std::vector<CGXByteBuffer>& reply)
+int CGXDLMSProfileGeneric::Capture(std::vector<CGXByteBuffer>& reply)
 {
     
 	return 0;

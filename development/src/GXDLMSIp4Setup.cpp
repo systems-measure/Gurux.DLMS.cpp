@@ -33,8 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSIp4Setup.h"
-//#include "../include/GXDLMSClient.h"
-//#include <sstream>
 
 #if defined(_WIN32) || defined(_WIN64)//Windows includes
 #include "pcap.h"
@@ -49,108 +47,14 @@
 //Constructor.
 CGXDLMSIp4Setup::CGXDLMSIp4Setup() : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP)
 {
-    //m_IPAddress.empty();
-    //m_SubnetMask = 0;
-    //m_GatewayIPAddress = 0;
-    //m_UseDHCP = false;
-    //m_PrimaryDNSAddress = 0;
-    //m_SecondaryDNSAddress = 0;
+    
 }
 
 //LN Constructor.
 CGXDLMSIp4Setup::CGXDLMSIp4Setup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP, ln)
 {
-    //m_IPAddress.empty();
-    //m_SubnetMask = 0;
-    //m_GatewayIPAddress = 0;
-    //m_UseDHCP = false;
-    //m_PrimaryDNSAddress = 0;
-    //m_SecondaryDNSAddress = 0;
+   
 }
-
-//std::string& CGXDLMSIp4Setup::GetDataLinkLayerReference()
-//{
-//    return m_DataLinkLayerReference;
-//}
-//void CGXDLMSIp4Setup::SetDataLinkLayerReference(std::string value)
-//{
-//    m_DataLinkLayerReference = value;
-//}
-//
-//std::string& CGXDLMSIp4Setup::GetIPAddress()
-//{
-//    return m_IPAddress;
-//}
-//
-//void CGXDLMSIp4Setup::SetIPAddress(std::string& value)
-//{
-//    m_IPAddress = value;
-//}
-//
-//std::vector<unsigned long>& CGXDLMSIp4Setup::GetMulticastIPAddress()
-//{
-//    return m_MulticastIPAddress;
-//}
-//
-//std::vector<CGXDLMSIp4SetupIpOption>& CGXDLMSIp4Setup::GetIPOptions()
-//{
-//    return m_IPOptions;
-//}
-//void CGXDLMSIp4Setup::SetIPOptions(std::vector<CGXDLMSIp4SetupIpOption>& value)
-//{
-//    m_IPOptions.clear();
-//    for (std::vector<CGXDLMSIp4SetupIpOption>::iterator it = value.begin(); it != value.end(); ++it)
-//    {
-//        m_IPOptions.push_back(*it);
-//    }
-//}
-//
-//unsigned long CGXDLMSIp4Setup::GetSubnetMask()
-//{
-//    return m_SubnetMask;
-//}
-//
-//void CGXDLMSIp4Setup::SetSubnetMask(unsigned long value)
-//{
-//    m_SubnetMask = value;
-//}
-//
-//unsigned long CGXDLMSIp4Setup::GetGatewayIPAddress()
-//{
-//    return m_GatewayIPAddress;
-//}
-//void CGXDLMSIp4Setup::SetGatewayIPAddress(unsigned long value)
-//{
-//    m_GatewayIPAddress = value;
-//}
-//
-//bool CGXDLMSIp4Setup::GetUseDHCP()
-//{
-//    return m_UseDHCP;
-//}
-//void CGXDLMSIp4Setup::SetUseDHCP(bool value)
-//{
-//    m_UseDHCP = value;
-//}
-//
-//unsigned long CGXDLMSIp4Setup::GetPrimaryDNSAddress()
-//{
-//    return m_PrimaryDNSAddress;
-//}
-//void CGXDLMSIp4Setup::SetPrimaryDNSAddress(unsigned long value)
-//{
-//    m_PrimaryDNSAddress = value;
-//}
-//
-//unsigned long CGXDLMSIp4Setup::GetSecondaryDNSAddress()
-//{
-//    return m_SecondaryDNSAddress;
-//}
-//
-//void CGXDLMSIp4Setup::SetSecondaryDNSAddress(unsigned long value)
-//{
-//    m_SecondaryDNSAddress = value;
-//}
 
 // Returns amount of attributes.
 int CGXDLMSIp4Setup::GetAttributeCount()

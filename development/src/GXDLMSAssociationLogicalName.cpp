@@ -32,8 +32,6 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 #include "../include/GXDLMSVariant.h"
-//#include "../include/GXDLMSClient.h"
-//#include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXDLMSAssociationLogicalName.h"
 #include "../include/GXDLMSServer.h"
 #include "../include/GXSecure.h"

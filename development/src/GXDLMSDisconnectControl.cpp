@@ -33,9 +33,7 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-//#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSDisconnectControl.h"
-//#include "../include/GXDLMSConverter.h"
 
 //Constructor.
 CGXDLMSDisconnectControl::CGXDLMSDisconnectControl() : CGXDLMSObject(DLMS_OBJECT_TYPE_DISCONNECT_CONTROL)

@@ -36,7 +36,6 @@
 #define GXDLMSSPECIALDAYSTABLE_H
 
 #include "GXDLMSObject.h"
-//#include "GXDLMSSpecialDay.h"
 
 class CGXDLMSSpecialDaysTable : public CGXDLMSObject
 {

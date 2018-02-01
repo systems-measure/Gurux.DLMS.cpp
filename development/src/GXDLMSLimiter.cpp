@@ -33,10 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSLimiter.h"
-//#include "../include/GXDLMSClient.h"
-//#include "../include/GXDLMSActionSet.h"
-//#include "SPODES.h"
-//#include <sstream>
 
 //Constructor.
 CGXDLMSLimiter::CGXDLMSLimiter() : CGXDLMSObject(DLMS_OBJECT_TYPE_LIMITER)

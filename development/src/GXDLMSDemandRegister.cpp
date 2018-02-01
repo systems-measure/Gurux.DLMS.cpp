@@ -33,8 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-//#include "../include/GXDLMSClient.h"
-//#include "../include/GXDLMSConverter.h"
 #include "../include/GXDLMSDemandRegister.h"
 
 /**

@@ -34,11 +34,8 @@
 
 #include "../include/GXDLMSServer.h"
 #include "../include/GXDLMS.h"
-//#include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXDLMSProfileGeneric.h"
-//#include "../include/GXDLMSAssociationShortName.h"
 #include "../include/GXDLMSAssociationLogicalName.h"
-//#include "../include/GXDLMSClient.h"
 #include "../include/GXAPDU.h"
 #include "../include/GXSecure.h"
 #include "../include/GXDLMSValueEventCollection.h"
@@ -649,7 +646,6 @@ int CGXDLMSServer::HandleSetRequest(
 					e->SetValue(value);
 					if (p.IsMultipleBlocks())
 					{
-						//CGXDLMSValueEventCollection list;
 						list.push_back(e);
 						m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
 					}
@@ -867,7 +863,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 		else
 		{
 			// Access selection
-			unsigned char /*selection,*/ selector = 0;
+			unsigned char selector = 0;
 			CArtVariant parameters;
 			if ((ret = data.GetUInt8(&selector)) != 0)
 			{

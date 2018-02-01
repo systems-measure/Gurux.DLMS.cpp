@@ -101,20 +101,11 @@ void CGXDLMSObject::Initialize(unsigned short class_id, unsigned char version, C
     }
 	get_data_type = nullptr;
 	constr_idx = 0xFF;
-	//m_Attributes = nullptr;
-	//m_MethodAttributes = nullptr;
 }
 
 CGXDLMSObject::~CGXDLMSObject(void)
 {
-	//if (m_Attributes != nullptr) {
-	//	delete m_Attributes;
-	//	m_Attributes = nullptr;
-	//}
-	//if (m_MethodAttributes != nullptr) {
-	//	delete m_MethodAttributes;
-	//	m_MethodAttributes = nullptr;
-	//}
+	
 }
 
 void CGXDLMSObject::SetDataTypeFunc(TypeAttrCallback callback) {
@@ -157,30 +148,14 @@ DLMS_OBJECT_TYPE CGXDLMSObject::GetObjectType()
 
 int CGXDLMSObject::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
-    if (index == 0)
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-	//if (index == 1) {
-	//	type = DLMS_DATA_TYPE_OCTET_STRING;
-	//}
-	//else {
-		if (get_data_type != nullptr && constr_idx != 0xFF) {
-			type = (DLMS_DATA_TYPE)get_data_type(constr_idx);
-		}
-		/*if (m_Attributes != nullptr ) {
-			for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
-				if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
-					type = (m_Attributes->GetCollection())[i].GetDataType();
-					return DLMS_ERROR_CODE_OK;
-				}
-			}
-		}
-		else {
-			type = DLMS_DATA_TYPE_NONE;
-		}*/
-	//}
-    return DLMS_ERROR_CODE_OK;
+	if (index == 0)
+	{
+		return DLMS_ERROR_CODE_INVALID_PARAMETER;
+	}
+	if (get_data_type != nullptr && constr_idx != 0xFF) {
+		type = (DLMS_DATA_TYPE)get_data_type(constr_idx);
+	}
+	return DLMS_ERROR_CODE_OK;
 }
 
 DLMS_DATA_TYPE CGXDLMSObject::GetDataType(signed char index) {
@@ -189,146 +164,6 @@ DLMS_DATA_TYPE CGXDLMSObject::GetDataType(signed char index) {
 	}
     return DLMS_DATA_TYPE_NONE;
 }
-
-//int CGXDLMSObject::SetDataType(signed char index, DLMS_DATA_TYPE type)
-//{
-//	if (index == 1 && type != DLMS_DATA_TYPE_OCTET_STRING) {
-//		return DLMS_ERROR_CODE_INVALID_PARAMETER;
-//	}
-//	else {
-//		if (m_Attributes == nullptr) {
-//			m_Attributes = new CGXAttributeCollection(this->GetAttributeCount());
-//		}
-//		for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
-//			if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
-//				(m_Attributes->GetCollection())[i].SetDataType(type);
-//				return DLMS_ERROR_CODE_OK;
-//			}
-//		}
-//		(m_Attributes->GetCollection())[m_Attributes->GetCountCollection()].SetIndex(index);
-//		(m_Attributes->GetCollection())[m_Attributes->GetCountCollection()].SetDataType(type);
-//		m_Attributes->IncreaseCountCollection();
-//		return DLMS_ERROR_CODE_OK;
-//	}
-//}
-
-//DLMS_ACCESS_MODE CGXDLMSObject::GetAccess(signed char index)
-//{
-//	//LN is read only.
-//	if (index == 1)
-//	{
-//		return DLMS_ACCESS_MODE_READ;
-//	}
-//	else {
-//		if (m_Attributes != nullptr) {
-//			for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
-//				if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
-//					return (m_Attributes->GetCollection())[i].GetAccess();
-//				}
-//			}
-//		}
-//	}
-//	return DLMS_ACCESS_MODE_READ;
-//}
-//
-//// Set attribute access.
-//int CGXDLMSObject::SetAccess(signed char index, DLMS_ACCESS_MODE access)
-//{
-//	if (index == 1 && access != DLMS_ACCESS_MODE_READ) {
-//		return DLMS_ERROR_CODE_INVALID_PARAMETER;
-//	}
-//	else {
-//		if (m_Attributes == nullptr) {
-//			m_Attributes = new CGXAttributeCollection(this->GetAttributeCount());
-//		}
-//		for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
-//			if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
-//				(m_Attributes->GetCollection())[i].SetAccess(access);
-//				return DLMS_ERROR_CODE_OK;
-//			}
-//		}
-//		(m_Attributes->GetCollection())[m_Attributes->GetCountCollection()].SetIndex(index);
-//		(m_Attributes->GetCollection())[m_Attributes->GetCountCollection()].SetAccess(access);
-//		m_Attributes->IncreaseCountCollection();
-//		return DLMS_ERROR_CODE_OK;
-//	}
-//}
-//
-//DLMS_METHOD_ACCESS_MODE CGXDLMSObject::GetMethodAccess(signed char index)
-//{
-//	if (m_MethodAttributes != nullptr) {
-//		for (unsigned char i = 0; i < m_MethodAttributes->GetCountCollection(); ++i) {
-//			if (index == (m_MethodAttributes->GetCollection())[i].GetIndex()) {
-//				return (m_MethodAttributes->GetCollection())[i].GetMethodAccess();
-//			}
-//		}
-//	}
-//	return DLMS_METHOD_ACCESS_MODE_NONE;
-//}
-//
-//int CGXDLMSObject::SetMethodAccess(signed char index, DLMS_METHOD_ACCESS_MODE access)
-//{
-//	/*if (m_MethodAttributes == nullptr) {
-//		m_MethodAttributes = new CGXAttributeCollection(this->GetMethodCount());
-//	}
-//	for (unsigned char i = 0; i < m_MethodAttributes->GetCountCollection(); ++i) {
-//		if (index == (m_MethodAttributes->GetCollection())[i].GetIndex()) {
-//			(m_MethodAttributes->GetCollection())[i].SetMethodAccess(access);
-//			return DLMS_ERROR_CODE_OK;
-//		}
-//	}
-//	(m_MethodAttributes->GetCollection())[m_MethodAttributes->GetCountCollection()].SetIndex(index);
-//	(m_MethodAttributes->GetCollection())[m_MethodAttributes->GetCountCollection()].SetMethodAccess(access);
-//	m_MethodAttributes->IncreaseCountCollection();*/
-//	return DLMS_ERROR_CODE_OK;
-//}
-
-//int CGXDLMSObject::GetUIDataType(signed char index, DLMS_DATA_TYPE& type)
-//{
-//	/*if (index == 0)
-//	{
-//		return DLMS_ERROR_CODE_INVALID_PARAMETER;
-//	}
-//	if (index == 1) {
-//		type = DLMS_DATA_TYPE_OCTET_STRING;
-//	}
-//	else {
-//		if (m_Attributes != nullptr) {
-//			for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
-//				if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
-//					type = (m_Attributes->GetCollection())[i].GetUIDataType();
-//					return DLMS_ERROR_CODE_OK;
-//				}
-//			}
-//		}
-//		else {
-//			type = DLMS_DATA_TYPE_NONE;
-//		}
-//	}*/
-//	return DLMS_ERROR_CODE_OK;
-//}
-//
-//int CGXDLMSObject::SetUIDataType(signed char index, DLMS_DATA_TYPE type)
-//{
-//	//if (index == 1 && type != DLMS_DATA_TYPE_OCTET_STRING) {
-//	//	return DLMS_ERROR_CODE_INVALID_PARAMETER;
-//	//}
-//	//else {
-//	//	if (m_Attributes == nullptr) {
-//	//		m_Attributes = new CGXAttributeCollection(this->GetAttributeCount());
-//	//	}
-//	//	for (unsigned char i = 0; i < m_Attributes->GetCountCollection(); ++i) {
-//	//		if (index == (m_Attributes->GetCollection())[i].GetIndex()) {
-//	//			(m_Attributes->GetCollection())[i].SetUIDataType(type);
-//	//			return DLMS_ERROR_CODE_OK;
-//	//		}
-//	//	}
-//	//	(m_Attributes->GetCollection())[m_Attributes->GetCountCollection()].SetIndex(index);
-//	//	(m_Attributes->GetCollection())[m_Attributes->GetCountCollection()].SetUIDataType(type);
-//	//	m_Attributes->IncreaseCountCollection();
-//	//	return DLMS_ERROR_CODE_OK;
-//	//}
-//}
 
 void CGXDLMSObject::GetLogicalName(char* ln)
 {
@@ -349,36 +184,11 @@ unsigned char CGXDLMSObject::GetVersion()
     return m_Version;
 }
 
-//CGXAttributeCollection* CGXDLMSObject::GetAttributes()
-//{
-//    return m_Attributes;
-//}
-//
-//CGXAttributeCollection* CGXDLMSObject::GetMethodAttributes()
-//{
-//    return m_MethodAttributes;
-//}
 
 void CGXDLMSObject::SetAttributeCount(unsigned char count) {
-	/*if (m_Attributes != nullptr) {
-		delete[] m_Attributes;
-	}
-	m_Attributes = new CGXAttributeCollection(count);*/
+	
 }
 
 void CGXDLMSObject::SetMethodCount(unsigned char count) {
-	/*if (m_MethodAttributes != nullptr) {
-		delete[] m_MethodAttributes;
-	}
-	m_MethodAttributes = new CGXAttributeCollection(count);*/
+	
 }
-
-//bool CGXDLMSObject::IsRead(int index)
-//{
-//	return 0;
-//}
-//
-//bool CGXDLMSObject::CanRead(int index)
-//{
-//    return GetAccess(index) != DLMS_ACCESS_MODE_NONE;
-//}

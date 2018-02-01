@@ -105,21 +105,6 @@ private:
         CGXByteBuffer& reply,
         CGXReplyData& info);
 
-    /**
-    * Handle read response data block result.
-    *
-    * @param settings
-    *            DLMS settings.
-    * @param reply
-    *            Received reply.
-    * @param index
-    *            Starting index.
-    */
-    static int ReadResponseDataBlockResult(
-        CGXDLMSSettings& settings,
-        CGXReplyData& reply,
-        int index);
-
     static int HandledGloRequest(CGXDLMSSettings& settings,
         CGXReplyData& data);
 
@@ -285,16 +270,6 @@ public:
         CGXReplyData& data, unsigned char& empty);
 
     /////////////////////////////////////////////////////////////////////////////
-    // Handle read response and get data from block and/or update error status.
-    /////////////////////////////////////////////////////////////////////////////
-    // data : Received data from the client.
-    /////////////////////////////////////////////////////////////////////////////
-    static int HandleReadResponse(
-        CGXDLMSSettings& settings,
-        CGXReplyData& data,
-        int index);
-
-    /////////////////////////////////////////////////////////////////////////////
     // Handle method response and get data from block and/or update error status.
     /////////////////////////////////////////////////////////////////////////////
     // data : Received data from the client.
@@ -330,14 +305,6 @@ public:
     static int HandleDataNotification(
         CGXDLMSSettings& settings,
         CGXReplyData& reply);
-
-    /////////////////////////////////////////////////////////////////////////////
-    // Handle write response and update error status.
-    /////////////////////////////////////////////////////////////////////////////
-    // reply : Received data from the client.
-    /////////////////////////////////////////////////////////////////////////////
-    static int HandleWriteResponse(
-        CGXReplyData& data);
 
     /////////////////////////////////////////////////////////////////////////////
     // Handle get response and get data from block and/or update error status.

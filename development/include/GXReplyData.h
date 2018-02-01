@@ -35,7 +35,6 @@
 #ifndef GXREPLYDATA_H
 #define GXREPLYDATA_H
 
-//#include "GXDLMSConverter.h"
 #include "GXBytebuffer.h"
 #include "GXDLMSVariant.h"
 
@@ -56,8 +55,6 @@ private:
 	*/
 	unsigned char m_ControlField;
 
-	//DLMS_DATA_TYPE m_DataType;
-
 	/**
 	* Is received message General Block Transfer message.
 	*/
@@ -72,11 +69,6 @@ private:
 	* Try Get value.
 	*/
 	bool m_Peek;
-
-    /**
-    * Received command type.
-    */
-   // unsigned char m_CommandType;
 
 	/**
 	* Cipher index is position where data is decrypted.
@@ -106,11 +98,6 @@ private:
      * Read value.
      */
     CArtVariant m_DataValue;
-
-	 /**
-     * Data notification date time.
-     */
-   // struct tm* m_Time;
     
    
 public:
@@ -137,11 +124,6 @@ public:
      */
     CGXReplyData();
 
-    //DLMS_DATA_TYPE GetValueType();
-
-    //void SetValueType(DLMS_DATA_TYPE value);
-
-
     CArtVariant& GetValue();
 
 
@@ -156,11 +138,6 @@ public:
     void SetPacketLength(int value);
 
     void SetCommand(DLMS_COMMAND value);
-
-   /* void SetCommandType(unsigned char value);
-
-    unsigned char GetCommandType();*/
-
 
     void SetData(CGXByteBuffer& value);
 
@@ -267,18 +244,6 @@ public:
      */
     void SetGbt(bool value);
 
-    ///**
-    // * @return Data notification date time.
-    // */
-    //struct tm* GetTime();
-
-
-    ///**
-    // * @param time
-    // *            Data notification date time.
-    // */
-    //void SetTime(struct tm* value);
-    
     /**
      * @return Control field value.
      */
