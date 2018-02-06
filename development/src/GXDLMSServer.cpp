@@ -1579,3 +1579,8 @@ void CGXDLMSServer::SetConformance(DLMS_CONFORMANCE value)
 {
     m_Settings.SetProposedConformance(value);
 }
+
+CGXDLMSValueEventArg * CGXDLMSServer::getCGXDLMSValueEventArg(CGXDLMSServer* server, CGXDLMSObject* target, int index, int selector, CArtVariant& parameters)
+{
+	return new CGXDLMSValueEventArg(server, target, index, selector, parameters);
+}

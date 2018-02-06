@@ -50,11 +50,6 @@ class CGXDLMSServer
     friend class CGXDLMSAssociationShortName;
 private:
     CGXReplyData m_Info;
- 
-    /**
-     * Reply data.
-     */
-    CGXByteBuffer m_ReplyData;
 
     /**
      * Long get or read transaction information.
@@ -143,17 +138,7 @@ private:
     */
     int HandleGetRequest(
         CGXByteBuffer& data);
-
-    /**
-    * Handle action request.
-    *
-    * @param reply
-    *            Received data from the client.
-    * @return Reply.
-    */
-    int HandleMethodRequest(
-        CGXByteBuffer& data);    
-    
+  
     /**
     * Handle RR request.
     *
@@ -182,6 +167,27 @@ private:
    
 protected:
   
+	/**
+	* Handle action request.
+	*
+	* @param reply
+	*            Received data from the client.
+	* @return Reply.
+	*/
+	virtual int HandleMethodRequest(
+		CGXByteBuffer& data);
+
+	CGXDLMSValueEventArg * getCGXDLMSValueEventArg(
+		CGXDLMSServer* server,
+		CGXDLMSObject* target,
+		int index,
+		int selector,
+		CArtVariant& parameters);
+	/**
+	* Reply data.
+	*/
+	CGXByteBuffer m_ReplyData;
+
    bool m_LinkEstablished;
 	/**
 	* Received data.
