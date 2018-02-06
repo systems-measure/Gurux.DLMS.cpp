@@ -32,24 +32,24 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
-#include "../include/GXDLMSObjectFactory.h"
 #include "../include/GXDLMSAssociationLogicalName.h"
 #include "../include/GXDLMSServer.h"
-#include "memory\memory_srv.h"
+#include "../include/GXSecure.h"
+
+#include "converter_mpro\converter_mpro.h"
 
 void CGXDLMSAssociationLogicalName::Init()
 {
     m_AssociationStatus = DLMS_DLMS_ASSOCIATION_STATUS_NON_ASSOCIATED;
 }
 
-int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMSServer* server, CGXByteBuffer* data)
+void CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMSServer* server, CGXByteBuffer& data)
 {
     int8_t cnt = (int8_t)pItem->GetAttributeCount();
-    data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-    data->SetUInt8(2);
-    data->SetUInt8(DLMS_DATA_TYPE_ARRAY);
-    GXHelpers::SetObjectCount(cnt, *data);
+    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+    data.SetUInt8(2);
+    data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+    GXHelpers::SetObjectCount(cnt, data);
     CGXDLMSValueEventArg e(server, pItem, 0);
 	int8_t index, access;
     for (int8_t pos = 0; pos != cnt; ++pos)
@@ -65,17 +65,17 @@ int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMS
             access = DLMS_ACCESS_MODE_READ_WRITE;
         }
         //attribute_access_item
-        data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        data->SetUInt8(3);
-		data->SetUInt8(DLMS_DATA_TYPE_INT8);
-		data->SetUInt8(index);
-		data->SetUInt8(DLMS_DATA_TYPE_ENUM);
-		data->SetUInt8(access);
-		data->SetUInt8(DLMS_DATA_TYPE_NONE);
+        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        data.SetUInt8(3);
+		data.SetUInt8(DLMS_DATA_TYPE_INT8);
+		data.SetUInt8(index);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(access);
+		data.SetUInt8(DLMS_DATA_TYPE_NONE);
     }
     cnt = pItem->GetMethodCount();
-    data->SetUInt8(DLMS_DATA_TYPE_ARRAY);
-    GXHelpers::SetObjectCount(cnt, *data);
+    data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+    GXHelpers::SetObjectCount(cnt, data);
     for (int8_t pos = 0; pos != cnt; ++pos)
     {
         e.SetIndex(pos + 1);
@@ -89,119 +89,87 @@ int CGXDLMSAssociationLogicalName::GetAccessRights(CGXDLMSObject* pItem, CGXDLMS
             access = DLMS_METHOD_ACCESS_MODE_ACCESS;
         }
         //attribute_access_item
-        data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        data->SetUInt8(2);
-		data->SetUInt8(DLMS_DATA_TYPE_INT8);
-		data->SetUInt8(index);
-		data->SetUInt8(DLMS_DATA_TYPE_ENUM);
-		data->SetUInt8(access);
+        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        data.SetUInt8(2);
+		data.SetUInt8(DLMS_DATA_TYPE_INT8);
+		data.SetUInt8(index);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(access);
     }
-    return DLMS_ERROR_CODE_OK;
 }
 
 // Returns LN Association View.
 int CGXDLMSAssociationLogicalName::GetObjects(
     CGXDLMSSettings& settings,
     CGXDLMSValueEventArg& e,
-    CGXByteBuffer* data)
+    CGXByteBuffer& data)
 {
-    int ret;
     //Add count only for first time.
+	e.SetTargetName();
     if (settings.GetIndex() == 0)
     {
 		m_pos = 0;
-		settings.SetCount((unsigned short)m_ObjectList.size() + m_ObjectList.sizeRequiredObj());
-		if(e.GetTarget()->GetName().compare("0.0.40.0.2.255") == 0){
+		settings.SetCount((unsigned short)m_ObjectList.size() + 1);
+		const unsigned char reader_ln[] = { 0x00, 0x00, 0x28, 0x00, 0x02, 0xFF };
+		if(memcmp(e.GetTargetName(), reader_ln,6) == 0 && settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH){
 			settings.SetCount(settings.GetCount() - 1);
+			m_pos = 1;
 		}
-        data->SetUInt8(DLMS_DATA_TYPE_ARRAY);
+		data.Reserve(settings.GetMaxPduSize() + 10);
+        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         //Add count
-        GXHelpers::SetObjectCount((unsigned long)settings.GetCount(), *data);
+        GXHelpers::SetObjectCount((unsigned long)settings.GetCount(), data);
     }
+	m_ObjectList.FreeConstructedObj();
 	CGXDLMSObject* tmp_obj = nullptr;
-	CGXByteBuffer ln;
 	if (m_pos < m_ObjectList.size()) {
-		CGXDLMSObjectCollection::iterator it = m_ObjectList.begin();
-		it += m_pos;
-		for (it; it != m_ObjectList.end(); ++it)
+		data.Reserve(settings.GetMaxPduSize() + 10);
+		for (uint8_t i = m_pos; i < m_ObjectList.size(); ++i)
 		{
-			ln.Clear();
-			ln.Set(*it, 6);
-			tmp_obj = m_ObjectList.FindByLN(DLMS_OBJECT_TYPE_ALL, ln);
-			if (tmp_obj != nullptr) {
-				++m_pos;
-				if (m_pos <= settings.GetCount())
+			++m_pos;
+			tmp_obj = m_ObjectList.MakeByPosition(i);
+			if (tmp_obj != nullptr && m_pos < settings.GetCount()) {
+				data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+				data.SetUInt8(4);//Count
+				data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+				data.SetUInt16(tmp_obj->GetObjectType());//ClassID
+				data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+				data.SetUInt8(tmp_obj->GetVersion());//Version
+				data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+				data.SetUInt8(0x06);
+				data.Set(tmp_obj->m_LN, 6);//LN
+				//Access rights.
+				GetAccessRights(tmp_obj, e.GetServer(), data);
+				settings.SetIndex(settings.GetIndex() + 1);
+				//If PDU is full.
+				if (!e.GetSkipMaxPduSize() && data.GetSize() >= settings.GetMaxPduSize())
 				{
-					data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-					data->SetUInt8(4);//Count
-					data->SetUInt8(DLMS_DATA_TYPE_UINT16);
-					data->SetUInt16(tmp_obj->GetObjectType());//ClassID
-					data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-					data->SetUInt8(tmp_obj->GetVersion());//Version
-					data->SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-					data->SetUInt8(0x06);
-					data->Set(tmp_obj->m_LN, 6);//LN
-											   //Access rights.
-					if ((ret = GetAccessRights(tmp_obj, e.GetServer(), data)) != 0)
-					{
-						tmp_obj = nullptr;
-						m_ObjectList.FreeConstructedObj();
-						return ret;
-					};
-					if (settings.IsServer())
-					{
-						settings.SetIndex(settings.GetIndex() + 1);
-						//If PDU is full.
-						if (!e.GetSkipMaxPduSize() && data->GetSize() >= settings.GetMaxPduSize())
-						{
-							m_ObjectList.FreeConstructedObj();
-							tmp_obj = nullptr;
-							break;
-						}
-					}
+					m_ObjectList.FreeConstructedObj();
+					tmp_obj = nullptr;
+					return DLMS_ERROR_CODE_OK;
 				}
 			}
 			m_ObjectList.FreeConstructedObj();
 			tmp_obj = nullptr;
-
 		}
 	}
-	if (data->GetSize() < settings.GetMaxPduSize() || e.GetSkipMaxPduSize())
+	if (data.GetSize() < settings.GetMaxPduSize() || e.GetSkipMaxPduSize())
 	{
-		std::vector<CGXDLMSObject*> tmp_dlms_obj = m_ObjectList.GetDlmsObj();
-		std::vector<CGXDLMSObject*>::iterator it = tmp_dlms_obj.begin();
-		if (settings.GetCount() == m_ObjectList.size() + m_ObjectList.sizeRequiredObj() - 1) {
-			++it;
-		}
-		it += m_pos - m_ObjectList.size();
-		for (; it != tmp_dlms_obj.end(); ++it) {
+		if (settings.GetIndex() < settings.GetCount())
+		{
+			data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+			data.SetUInt8(4);//Count
+			data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+			data.SetUInt16(m_ObjectList.GetCurALN()->GetObjectType());//ClassID
+			data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+			data.SetUInt8(m_ObjectList.GetCurALN()->GetVersion());//Version
+			data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+			data.SetUInt8(0x06);
+			data.Set(m_ObjectList.GetCurALN()->m_LN, 6);//LN
+			//Access rights.
+			GetAccessRights(m_ObjectList.GetCurALN(), e.GetServer(), data);
+			settings.SetIndex(settings.GetCount());
 			++m_pos;
-			if (m_pos <= settings.GetCount())
-			{
-				data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-				data->SetUInt8(4);//Count
-				data->SetUInt8(DLMS_DATA_TYPE_UINT16);
-				data->SetUInt16((*it)->GetObjectType());//ClassID
-				data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-				data->SetUInt8((*it)->GetVersion());//Version
-				data->SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-				data->SetUInt8(0x06);
-				data->Set((*it)->m_LN, 6);//LN
-				//Access rights.
-				if ((ret = GetAccessRights((*it), e.GetServer(), data)) != 0)
-				{
-					return ret;
-				};
-				if (settings.IsServer())
-				{
-					settings.SetIndex(settings.GetIndex() + 1);
-					//If PDU is full.
-					if (!e.GetSkipMaxPduSize() && data->GetSize() >= settings.GetMaxPduSize())
-					{
-						break;
-					}
-				}
-			}
 		}
 	}
 	return DLMS_ERROR_CODE_OK;
@@ -308,60 +276,7 @@ int CGXDLMSAssociationLogicalName::GetMethodCount()
     return 4;
 }
 
-void CGXDLMSAssociationLogicalName::GetValues(std::vector<std::string>& values)
-{
-}
-
-void CGXDLMSAssociationLogicalName::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //ObjectList is static and read only once.
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //associated_partners_id is static and read only once.
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //Application Context Name is static and read only once.
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //xDLMS Context Info
-    if (!IsRead(5))
-    {
-        attributes.push_back(5);
-    }
-    // Authentication Mechanism Name
-    if (!IsRead(6))
-    {
-        attributes.push_back(6);
-    }
-    // Secret
-    if (!IsRead(7))
-    {
-        attributes.push_back(7);
-    }
-    // Association Status
-    if (!IsRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //Security Setup Reference is from version 1.
-    if (GetVersion() > 0 && !IsRead(9))
-    {
-        attributes.push_back(9);
-    }
-}
-
-int CGXDLMSAssociationLogicalName::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSAssociationLogicalName::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -411,6 +326,46 @@ int CGXDLMSAssociationLogicalName::GetDataType(unsigned char index, DLMS_DATA_TY
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
+DLMS_DATA_TYPE CGXDLMSAssociationLogicalName::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 3)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 4)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 7)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	if (index == 9)
+	{
+		return DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	return DLMS_DATA_TYPE_NONE;
+}
+
 int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     // Check reply_to_HLS_authentication
@@ -418,8 +373,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
     {
 		VarInfo v_info;
 		e.GetParameters().GetVar(v_info);
-		//e.SetByteArray(true);
-        int ret;
+		int ret;
         unsigned long ic = 0;
         CGXByteBuffer* readSecret;
 		CGXByteBuffer m_HlsSecret;
@@ -488,6 +442,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		e.GetParameters().GetVar(v_info);
 		e.GetParameters().SetUInt8('\0');
 		mpro::wr_flash_inf(&mpro::UserMem.ExtMem.HLSSecret, e.GetParameters().GetCurPtr(), v_info.size + 1);
+		e.GetServer()->Configurated();
 		return 0;
 	}
     else
@@ -497,153 +452,167 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
     return 0;
 }
 
+void CGXDLMSAssociationLogicalName::GetContextInfo(CGXByteBuffer& data) {
+	CGXByteBuffer info = m_XDLMSContextInfo.GetCypheringInfo();
+	data.Reserve(16 + info.GetSize());
+	data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+	data.SetUInt8(6);
+	data.SetUInt8(DLMS_DATA_TYPE_BIT_STRING);
+	uint32_t tmp = m_XDLMSContextInfo.GetConformance();
+	GXHelpers::SetObjectCount(24, data);
+	data.SetUInt8((tmp >> 16) & 0xFF);
+	data.SetUInt8((tmp >> 8) & 0xFF);
+	data.SetUInt8(tmp & 0xFF);
+	data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+	data.SetUInt8(m_XDLMSContextInfo.GetMaxPduSize());
+	data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+	data.SetUInt8(m_XDLMSContextInfo.GetMaxSendPduSize());
+	data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+	data.SetUInt8(m_XDLMSContextInfo.GetDlmsVersionNumber());
+	data.SetUInt8(DLMS_DATA_TYPE_INT8);
+	data.SetUInt8(m_XDLMSContextInfo.GetQualityOfService());
+	data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+	GXHelpers::SetObjectCount(info.GetSize(), data);
+	data.Set(info.GetData(), info.GetSize());
+}
+
 int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     int ret;
-	CGXByteBuffer* data = new CGXByteBuffer;
+	CGXByteBuffer data;
 	if (e.GetIndex() == 1)
     {
-		if ((ret = GetLogicalName(this, *data)) != 0)
+		data.Reserve(6);
+		if ((ret = GetLogicalName(e.GetTarget(), data)) != 0)
         {
             return ret;
         }
-        e.SetValue(*data);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
         ret = GetObjects(settings, e, data);
-		e.SetValue(*data);
+		e.SetValue(data);
         return ret;
     }
     if (e.GetIndex() == 3)
     {
-        data->SetUInt8(DLMS_DATA_TYPE_ARRAY);
+		data.Reserve(7);
+        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         //Add count
-        data->SetUInt8(2);
-        data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-        data->SetUInt8(m_ClientSAP);
-        data->SetUInt8(DLMS_DATA_TYPE_UINT16);
-        data->SetUInt16(m_ServerSAP);
-        e.SetValue(*data);
+        data.SetUInt8(2);
+        data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+        data.SetUInt8(m_ClientSAP);
+        data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+        data.SetUInt16(m_ServerSAP);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+
+		data.Reserve(17);
+        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         //Add count
-        data->SetUInt8(0x7);
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_ApplicationContextName.GetJointIsoCtt());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_ApplicationContextName.GetCountry());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT16);
-		data->SetUInt16(m_ApplicationContextName.GetCountryName());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_ApplicationContextName.GetIdentifiedOrganization());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_ApplicationContextName.GetDlmsUA());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_ApplicationContextName.GetApplicationContext());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_ApplicationContextName.GetContextId());
-        e.SetValue(*data);
+        data.SetUInt8(0x7);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_ApplicationContextName.GetJointIsoCtt());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_ApplicationContextName.GetCountry());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_ApplicationContextName.GetCountryName());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_ApplicationContextName.GetIdentifiedOrganization());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_ApplicationContextName.GetDlmsUA());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_ApplicationContextName.GetApplicationContext());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_ApplicationContextName.GetContextId());
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        CGXByteBuffer info = m_XDLMSContextInfo.GetCypheringInfo();
-        data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        data->SetUInt8(6);
-		data->SetUInt8(DLMS_DATA_TYPE_BIT_STRING);
-		uint32_t tmp = m_XDLMSContextInfo.GetConformance();
-		GXHelpers::SetObjectCount(24, *data);
-		data->SetUInt8((tmp >> 16) & 0xFF);
-		data->SetUInt8((tmp >> 8) & 0xFF);
-		data->SetUInt8(tmp & 0xFF);
-		data->SetUInt8(DLMS_DATA_TYPE_UINT16);
-		data->SetUInt8(m_XDLMSContextInfo.GetMaxPduSize());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT16);
-		data->SetUInt8(m_XDLMSContextInfo.GetMaxSendPduSize());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_XDLMSContextInfo.GetDlmsVersionNumber());
-		data->SetUInt8(DLMS_DATA_TYPE_INT8);
-		data->SetUInt8(m_XDLMSContextInfo.GetQualityOfService());
-		data->SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-		GXHelpers::SetObjectCount(info.GetSize(), *data);
-		data->Set(info.GetData(),info.GetSize());
-        e.SetValue(*data);
+		GetContextInfo(data);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        data->SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+		data.Reserve(17);
+        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         //Add count
-        data->SetUInt8(0x7);
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_AuthenticationMechanismName.GetJointIsoCtt());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_AuthenticationMechanismName.GetCountry());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT16);
-		data->SetUInt16(m_AuthenticationMechanismName.GetCountryName());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_AuthenticationMechanismName.GetIdentifiedOrganization());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_AuthenticationMechanismName.GetDlmsUA());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_AuthenticationMechanismName.GetAuthenticationMechanismName());
-		data->SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data->SetUInt8(m_AuthenticationMechanismName.GetMechanismId());
-        e.SetValue(*data);
+        data.SetUInt8(0x7);
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_AuthenticationMechanismName.GetJointIsoCtt());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_AuthenticationMechanismName.GetCountry());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT16);
+		data.SetUInt16(m_AuthenticationMechanismName.GetCountryName());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_AuthenticationMechanismName.GetIdentifiedOrganization());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_AuthenticationMechanismName.GetDlmsUA());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_AuthenticationMechanismName.GetAuthenticationMechanismName());
+		data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		data.SetUInt8(m_AuthenticationMechanismName.GetMechanismId());
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 7)
 	{
-		data->SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.Reserve(66);
+		uint8_t size_str = 0;
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
 		if (e.GetTarget()->GetName().compare("0.0.40.0.0.255") == 0) {
 			if (settings.GetAuthentication() == DLMS_AUTHENTICATION_LOW) {
-				uint8_t size_str = strlen((const char*)mpro::UserMem.ExtMem.LLSSecret);
-				GXHelpers::SetObjectCount(size_str, *data);
-				data->Set(mpro::UserMem.ExtMem.LLSSecret, size_str);
+				size_str = strlen((const char*)mpro::UserMem.ExtMem.LLSSecret);
+				GXHelpers::SetObjectCount(size_str, data);
+				data.Set(mpro::UserMem.ExtMem.LLSSecret, size_str);
 			}
 			else {
 				if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH) {
-					uint8_t size_str = strlen((const char*)mpro::UserMem.ExtMem.HLSSecret);
-					GXHelpers::SetObjectCount(size_str, *data);
-					data->Set(mpro::UserMem.ExtMem.HLSSecret, size_str);
+					size_str = strlen((const char*)mpro::UserMem.ExtMem.HLSSecret);
+					GXHelpers::SetObjectCount(size_str, data);
+					data.Set(mpro::UserMem.ExtMem.HLSSecret, size_str);
 				}
 			}
 		}
 		else {
 			if (e.GetTarget()->GetName().compare("0.0.40.0.2.255") == 0) {
-				uint8_t size_str = strlen((const char*)mpro::UserMem.ExtMem.LLSSecret);
-				GXHelpers::SetObjectCount(size_str, *data);
-				data->Set(mpro::UserMem.ExtMem.LLSSecret, size_str);
+				size_str = strlen((const char*)mpro::UserMem.ExtMem.LLSSecret);
+				GXHelpers::SetObjectCount(size_str, data);
+				data.Set(mpro::UserMem.ExtMem.LLSSecret, size_str);
 			}
 			else {
-				uint8_t size_str = strlen((const char*)mpro::UserMem.ExtMem.HLSSecret);
-				GXHelpers::SetObjectCount(size_str, *data);
-				data->Set(mpro::UserMem.ExtMem.HLSSecret, size_str);
+				size_str = strlen((const char*)mpro::UserMem.ExtMem.HLSSecret);
+				GXHelpers::SetObjectCount(size_str, data);
+				data.Set(mpro::UserMem.ExtMem.HLSSecret, size_str);
 			}
 		}
-		e.SetValue(*data);
+		e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 8)
     {
-		data->SetUInt8(DLMS_DATA_TYPE_ENUM);
-		data->SetUInt8((unsigned char)m_AssociationStatus);
-        e.SetValue(*data);
+		data.Reserve(2);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8((unsigned char)m_AssociationStatus);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 9)
     {
+		data.Reserve(8);
         unsigned char tmp[6];
 		GXHelpers::SetLogicalName(m_SecuritySetupReference.c_str(), tmp);
-		data->SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-		data->SetUInt8(6);
-		data->Set(tmp, 6);
-        e.SetValue(*data);
+		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		data.SetUInt8(6);
+		data.Set(tmp, 6);
+        e.SetValue(data);
 		return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -676,6 +645,7 @@ int CGXDLMSAssociationLogicalName::SetValue(CGXDLMSSettings& settings, CGXDLMSVa
 		e.GetCAValue().GetVar(v_info);
 		e.GetCAValue().SetUInt8('\0');
 		mpro::wr_flash_inf(&mpro::UserMem.ExtMem.LLSSecret, e.GetCAValue().GetCurPtr(), v_info.size + 1);
+		e.GetServer()->Configurated();
     }
     else if (e.GetIndex() == 8)
     {

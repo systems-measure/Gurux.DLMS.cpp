@@ -44,12 +44,12 @@ CGXDLMSSettings& CGXDLMSNotify::GetSettings()
     return m_Settings;
 }
 
-CGXDLMSNotify::CGXDLMSNotify(bool useLogicalNameReferencing,
+CGXDLMSNotify::CGXDLMSNotify(/*bool useLogicalNameReferencing,*/
     int clientAddress,
     int serverAddress,
-    DLMS_INTERFACE_TYPE interfaceType) : m_Settings(true)
+    DLMS_INTERFACE_TYPE interfaceType) : m_Settings()
 {
-    m_Settings.SetUseLogicalNameReferencing(useLogicalNameReferencing);
+    //m_Settings.SetUseLogicalNameReferencing(useLogicalNameReferencing);
     m_Settings.SetClientAddress(clientAddress);
     m_Settings.SetServerAddress(serverAddress);
     m_Settings.SetInterfaceType(interfaceType);
@@ -75,15 +75,15 @@ void CGXDLMSNotify::SetMaxReceivePDUSize(int value)
     m_Settings.SetMaxReceivePDUSize(value);
 }
 
-bool CGXDLMSNotify::GetUseLogicalNameReferencing()
-{
-    return m_Settings.GetUseLogicalNameReferencing();
-}
+//bool CGXDLMSNotify::GetUseLogicalNameReferencing()
+//{
+//    return true/*m_Settings.GetUseLogicalNameReferencing()*/;
+//}
 
-void CGXDLMSNotify::SetUseLogicalNameReferencing(bool value)
-{
-    m_Settings.SetUseLogicalNameReferencing(value);
-}
+//void CGXDLMSNotify::SetUseLogicalNameReferencing(bool value)
+//{
+//    m_Settings.SetUseLogicalNameReferencing(value);
+//}
 
 DLMS_PRIORITY CGXDLMSNotify::GetPriority()
 {
@@ -155,12 +155,12 @@ int CGXDLMSNotify::GenerateDataNotificationMessages(
     std::vector<CGXByteBuffer>& reply)
 {
     int ret;
-    if (GetUseLogicalNameReferencing())
-    {
+    /*if (GetUseLogicalNameReferencing())
+    {*/
         CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_DATA_NOTIFICATION, 0, NULL, &data, 0xff);
         p.SetTime(time);
         ret = CGXDLMS::GetLnMessages(p, reply);
-    }
+    //}
    /* else
     {
         CGXDLMSSNParameters p(&m_Settings, DLMS_COMMAND_DATA_NOTIFICATION, 1, 0, &data, NULL);
@@ -189,7 +189,7 @@ int CGXDLMSNotify::GeneratePushSetupMessages(
     CGXDLMSPushSetup* push,
     std::vector<CGXByteBuffer>& reply)
 {
-    if (push == NULL)
+    /*if (push == NULL)
     {
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
@@ -199,8 +199,8 @@ int CGXDLMSNotify::GeneratePushSetupMessages(
     for (std::vector<std::pair<CGXDLMSObject*, CGXDLMSCaptureObject> >::iterator it = push->GetPushObjectList().begin(); it != push->GetPushObjectList().end(); ++it)
     {
         AddData(it->first, it->second.GetAttributeIndex(), buff);
-    }
-    return GenerateDataNotificationMessages(date, buff, reply);
+    }*/
+    return 0;
 }
 
 int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std::pair<CGXDLMSObject*, unsigned char> >& items)

@@ -36,32 +36,29 @@
 #define GXDLMSIP4SETUP_H
 
 #include "GXDLMSObject.h"
-#include "GXDLMSIp4SetupIpOption.h"
+//#include "GXDLMSIp4SetupIpOption.h"
 
 class CGXDLMSIp4Setup : public CGXDLMSObject
 {
-    std::string m_DataLinkLayerReference;
-    std::string m_IPAddress;
-    std::vector<unsigned long> m_MulticastIPAddress;
-    std::vector<CGXDLMSIp4SetupIpOption> m_IPOptions;
-    unsigned long m_SubnetMask;
-    unsigned long m_GatewayIPAddress;
-    bool m_UseDHCP;
-    unsigned long m_PrimaryDNSAddress;
-    unsigned long m_SecondaryDNSAddress;
+    //std::string m_DataLinkLayerReference;
+    //std::string m_IPAddress;
+    //std::vector<unsigned long> m_MulticastIPAddress;
+    //std::vector<CGXDLMSIp4SetupIpOption> m_IPOptions;
+    //unsigned long m_SubnetMask;
+    //unsigned long m_GatewayIPAddress;
+    //bool m_UseDHCP;
+    //unsigned long m_PrimaryDNSAddress;
+    //unsigned long m_SecondaryDNSAddress;
 
-    CGXDLMSVariant m_Value;
+    //CGXDLMSVariant m_Value;
 public:
     //Constructor.
     CGXDLMSIp4Setup();
 
-    //SN Constructor.
-    CGXDLMSIp4Setup(unsigned short sn);
-
     //LN Constructor.
     CGXDLMSIp4Setup(const char* ln);
 
-    std::string& GetDataLinkLayerReference();
+   /* std::string& GetDataLinkLayerReference();
     void SetDataLinkLayerReference(std::string value);
 
     std::string& GetIPAddress();
@@ -86,7 +83,7 @@ public:
     void SetPrimaryDNSAddress(unsigned long value);
 
     unsigned long GetSecondaryDNSAddress();
-    void SetSecondaryDNSAddress(unsigned long value);
+    void SetSecondaryDNSAddress(unsigned long value);*/
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -94,12 +91,8 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

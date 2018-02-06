@@ -41,12 +41,6 @@ CGXDLMSSchedule::CGXDLMSSchedule() : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE)
 {
 }
 
-//SN Constructor.
-CGXDLMSSchedule::CGXDLMSSchedule(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSSchedule::CGXDLMSSchedule(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, ln)
 {
@@ -77,31 +71,7 @@ int CGXDLMSSchedule::GetMethodCount()
     return 3;
 }
 
-void CGXDLMSSchedule::GetValues(std::vector<std::string>& values)
-{
-    //values.clear();
-    //std::string ln;
-    //GetLogicalName(ln);
-    //values.push_back(ln);
-    //values.push_back("");
-    ////TODO: values.push_back(m_Entries.ToString());
-}
-
-void CGXDLMSSchedule::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Entries
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-}
-
-int CGXDLMSSchedule::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSSchedule::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -123,7 +93,6 @@ int CGXDLMSSchedule::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     {
         int ret;
 		CGXByteBuffer data;
-//		e.SetByteArray(true);
         if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
@@ -144,27 +113,7 @@ int CGXDLMSSchedule::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     }
     else if (e.GetIndex() == 2)
     {
-        /*m_Entries.clear();
-        CGXDLMSVariant tmp;
-        for (std::vector<CGXDLMSVariant >::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
-        {
-            CGXDLMSScheduleEntry item;
-            item.SetIndex((*it).Arr[0].ToInteger());
-            item.SetEnable((*it).Arr[1].boolVal);
-            CGXDLMSClient::ChangeType((*it).Arr[2], DLMS_DATA_TYPE_OCTET_STRING, tmp);
-            item.SetLogicalName(tmp.ToString());
-            item.SetScriptSelector((*it).Arr[3].ToInteger());
-            CGXDLMSClient::ChangeType((*it).Arr[4], DLMS_DATA_TYPE_DATETIME, tmp);
-            item.SetSwitchTime(tmp.dateTime);
-            item.SetValidityWindow((*it).Arr[5].ToInteger());
-            item.SetExecWeekdays((*it).Arr[6].strVal);
-            item.SetExecSpecDays((*it).Arr[7].strVal);
-            CGXDLMSClient::ChangeType((*it).Arr[8], DLMS_DATA_TYPE_DATETIME, tmp);
-            item.SetBeginDate(tmp.dateTime);
-            CGXDLMSClient::ChangeType((*it).Arr[9], DLMS_DATA_TYPE_DATETIME, tmp);
-            item.SetEndDate(tmp.dateTime);
-            m_Entries.push_back(item);
-        }*/
+       
     }
     else
     {

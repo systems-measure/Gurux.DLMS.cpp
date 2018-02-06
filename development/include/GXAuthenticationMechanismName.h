@@ -36,7 +36,7 @@
 #define GXAUTHENTICATIONMECHANISMNAME_H
 
 #include "enums.h"
-#include <string>
+//#include <string>
 
 class CGXAuthenticationMechanismName
 {
@@ -76,6 +76,6 @@ public:
     DLMS_AUTHENTICATION GetMechanismId();
     void SetMechanismId(DLMS_AUTHENTICATION value);
 
-    std::string ToString();
+    //std::string ToString();
 };
 #endif //GXAUTHENTICATIONMECHANISMNAME_H

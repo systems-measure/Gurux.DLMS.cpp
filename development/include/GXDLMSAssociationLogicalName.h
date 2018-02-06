@@ -38,6 +38,7 @@
 #include "GXApplicationContextName.h"
 #include "GXDLMSContextType.h"
 #include "GXAuthenticationMechanismName.h"
+#include "GXDLMSObjectCollection.h"
 
 class CGXDLMSAssociationLogicalName : public CGXDLMSObject
 {
@@ -54,16 +55,16 @@ private:
 
     void Init();
 
-    int GetAccessRights(
+    void GetAccessRights(
         CGXDLMSObject* pItem,
         CGXDLMSServer* server,
-        CGXByteBuffer* data);
+        CGXByteBuffer& data);
 
     // Returns LN Association View.
     int GetObjects(
         CGXDLMSSettings& settings,
         CGXDLMSValueEventArg& e,
-        CGXByteBuffer* data);
+        CGXByteBuffer& data);
 
 public:
     /**
@@ -114,13 +115,12 @@ public:
     int GetMethodCount();
 
     //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
 
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+    DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
+	void GetContextInfo(CGXByteBuffer& data);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
     int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

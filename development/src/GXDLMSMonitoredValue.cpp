@@ -44,7 +44,7 @@ CGXDLMSMonitoredValue::CGXDLMSMonitoredValue()
 void CGXDLMSMonitoredValue::Update(CGXDLMSObject* pObj, int attributeIndex)
 {
     m_ObjectType = pObj->GetObjectType();
-    pObj->GetLogicalName(m_LogicalName);
+    //pObj->GetLogicalName(m_LogicalName);
     m_AttributeIndex = attributeIndex;
 }
 

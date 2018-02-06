@@ -49,10 +49,6 @@ private:
      */
     CGXDLMSSettings *m_Settings;
     /**
-     * Request type.
-     */
-    int m_RequestType;
-    /**
      * Attribute descriptor.
      */
     CGXByteBuffer* m_AttributeDescriptor;
@@ -84,6 +80,10 @@ private:
      * Block index.
      */
     unsigned long m_BlockIndex;
+	/**
+	* Request type.
+	*/
+	int m_RequestType;
 
 public:
     /**

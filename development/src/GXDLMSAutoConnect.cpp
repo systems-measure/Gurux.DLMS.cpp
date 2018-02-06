@@ -49,12 +49,6 @@ CGXDLMSAutoConnect::CGXDLMSAutoConnect() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_C
     Init();
 }
 
-//SN Constructor.
-CGXDLMSAutoConnect::CGXDLMSAutoConnect(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, sn)
-{
-    Init();
-}
-
 //LN Constructor.
 CGXDLMSAutoConnect::CGXDLMSAutoConnect(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_CONNECT, ln)
 {
@@ -119,86 +113,7 @@ int CGXDLMSAutoConnect::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSAutoConnect::GetValues(std::vector<std::string>& values)
-{
-    //values.clear();
-    //std::string ln;
-    //GetLogicalName(ln);
-    //values.push_back(ln);
-    //values.push_back(CGXDLMSVariant(m_Mode).ToString());
-    //values.push_back(CGXDLMSVariant(m_Repetitions).ToString());
-    //values.push_back(CGXDLMSVariant(m_RepetitionDelay).ToString());
-    //std::stringstream sb;
-    //sb << '[';
-    //bool empty = true;
-    //for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_CallingWindow.begin(); it != m_CallingWindow.end(); ++it)
-    //{
-    //    if (!empty)
-    //    {
-    //        sb << ", ";
-    //    }
-    //    empty = false;
-    //    std::string str = it->first.ToString();
-    //    sb.write(str.c_str(), str.size());
-    //    sb << " ";
-    //    str = it->second.ToString();
-    //    sb.write(str.c_str(), str.size());
-    //}
-    //sb << ']';
-    //values.push_back(sb.str());
-
-    ////Clear str.
-    //sb.str(std::string());
-    //sb << '[';
-    //empty = true;
-    //for (std::vector< std::string >::iterator it = m_Destinations.begin(); it != m_Destinations.end(); ++it)
-    //{
-    //    if (!empty)
-    //    {
-    //        sb << ", ";
-    //    }
-    //    empty = false;
-    //    sb.write(it->c_str(), it->size());
-    //}
-    //sb << ']';
-    //values.push_back(sb.str());
-}
-
-void CGXDLMSAutoConnect::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Mode
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //Repetitions
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //RepetitionDelay
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //CallingWindow
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //Destinations
-    if (CanRead(6))
-    {
-        attributes.push_back(6);
-    }
-}
-
-int CGXDLMSAutoConnect::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSAutoConnect::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

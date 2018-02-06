@@ -43,16 +43,11 @@ private:
     CGXDateTime m_CaptureTime;
     CGXDLMSVariant m_Status;
 
-protected:
-    bool IsRead(int index);
 public:
     //Constructor.
     CGXDLMSExtendedRegister(void);
-
-    //SN Constructor.
-    CGXDLMSExtendedRegister(unsigned short sn);
-
-    //LN Constructor.
+	
+	//LN Constructor.
     CGXDLMSExtendedRegister(const char* ln);
 
     /**
@@ -75,17 +70,12 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
     int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
-    int GetUIDataType(int index, DLMS_DATA_TYPE& type);
+    //int GetUIDataType(signed char index, DLMS_DATA_TYPE& type);
 };
 #endif //GXDLMSEXTENDEDREGISTER_H

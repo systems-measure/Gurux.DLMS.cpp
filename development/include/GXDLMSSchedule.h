@@ -45,9 +45,6 @@ public:
     //Constructor.
     CGXDLMSSchedule();
 
-    //SN Constructor.
-    CGXDLMSSchedule(unsigned short sn);
-
     //LN Constructor.
     CGXDLMSSchedule(const char* ln);
 
@@ -63,12 +60,7 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

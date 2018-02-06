@@ -39,7 +39,7 @@
 
 
 CArtVariant::CArtVariant() {
-	byteArr = nullptr;
+	byteArr = NULL;
 	size = 0;
 	position = 0;
 	capacity = 0;
@@ -64,8 +64,8 @@ CArtVariant::CArtVariant(const CArtVariant& value) {
 
 CArtVariant& CArtVariant::operator=(CArtVariant& value) {
 	if (this != &value) {
-		if (byteArr != nullptr) {
-			std::free(byteArr);
+		if (byteArr != NULL) {
+			free(byteArr);
 		}
 		byteArr = value.byteArr;
 		size = value.size;
@@ -81,8 +81,8 @@ CArtVariant& CArtVariant::operator=(CArtVariant& value) {
 
 CArtVariant& CArtVariant::operator=(CGXByteBuffer& value) {
 	if (this->byteArr != value.GetData()) {
-		if (byteArr != nullptr) {
-			std::free(byteArr);
+		if (byteArr != NULL) {
+			free(byteArr);
 		}
 		byteArr = value.GetData();
 		size = value.GetSize();
@@ -100,11 +100,21 @@ CArtVariant& CArtVariant::operator=(CGXByteBuffer& value) {
 
 void CArtVariant::Set(unsigned char* buff, unsigned long size_buff) {
 	if (size + size_buff > capacity) {
-		byteArr = (unsigned char*)realloc(byteArr, size + size_buff);
-		capacity = size + size_buff;
+		unsigned char* tmp_ptr = (unsigned char*)malloc(size + size_buff);
+		if (tmp_ptr != NULL) {
+			memcpy(tmp_ptr, byteArr, size);
+			free(byteArr);
+			byteArr = tmp_ptr;
+			tmp_ptr = NULL;
+			capacity = size + size_buff;
+			memcpy(byteArr + size, buff, size_buff);
+			size += size_buff;
+		}
 	}
-	memcpy(byteArr + size, buff, size_buff);
-	size += size_buff;
+	else{
+		memcpy(byteArr + size, buff, size_buff);
+		size += size_buff;
+	}
 }
 
 unsigned char*  CArtVariant::GetCurPtr() {
@@ -113,9 +123,38 @@ unsigned char*  CArtVariant::GetCurPtr() {
 
 bool CArtVariant::Reserve(unsigned long new_size) {
 	if (new_size > capacity) {
-		byteArr = (unsigned char*)realloc(byteArr, new_size);
-		capacity = new_size;
+		unsigned char* tmp_ptr = (unsigned char*)malloc(new_size);
+		if (tmp_ptr != NULL) {
+			memcpy(tmp_ptr, byteArr, size);
+			free(byteArr);
+			byteArr = tmp_ptr;
+			tmp_ptr = NULL;
+			capacity = new_size;
+		}
 		return true;
+	}
+	else {
+		if (new_size < size) {
+			unsigned char* tmp_ptr = (unsigned char*)malloc(new_size);
+			if (tmp_ptr != NULL) {
+				memcpy(tmp_ptr, byteArr, new_size);
+				free(byteArr);
+				byteArr = tmp_ptr;
+				tmp_ptr = NULL;
+				capacity = new_size;
+				size = new_size;
+			}
+			return true;
+		}
+		else {
+			if (byteArr != NULL) {
+				free(byteArr);
+			}
+			byteArr = NULL;
+			size = 0;
+			capacity = 0;
+			position = 0;
+		}
 	}
 	return false;
 }
@@ -129,7 +168,7 @@ bool  CArtVariant::IncreasePosition(unsigned short diff) {
 }
 
 bool CArtVariant::DecreasePosition(unsigned short diff) {
-	if (position - diff < 0) {
+	if ((long long)position - diff < 0) {
 		return false;
 	}
 	position -= diff;
@@ -145,7 +184,7 @@ bool CArtVariant::SetPosition(unsigned long pos) {
 }
 
 void CArtVariant::GetVar(VarInfo& v_info) {
-	if (byteArr != nullptr && position + 1 < size) {
+	if (byteArr != NULL && position + 1 < size) {
 		v_info.vt = (DLMS_DATA_TYPE)*(byteArr + position);
 		++position;
 		int8_t type_size = spodesSizeof(v_info.vt);
@@ -235,7 +274,7 @@ unsigned char CArtVariant::GetUInt8(unsigned char* value) {
 }
 
 unsigned char CArtVariant::GetUInt16(unsigned short* value) {
-	if (position + 2 >= size)
+	if (position + 2 > size)
 	{
 		return DLMS_ERROR_CODE_OUTOFMEMORY;
 	}
@@ -337,8 +376,9 @@ unsigned char CArtVariant::GetDouble(double* value) {
 void CArtVariant::SetUInt8(unsigned char item)
 {
 	if (size == capacity) {
-		++capacity;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);	
+		//++capacity;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);	
+		Reserve(size + 1);
 	}
 	byteArr[size] = item;
 	++size;
@@ -347,8 +387,9 @@ void CArtVariant::SetUInt8(unsigned char item)
 void CArtVariant::SetUInt16(unsigned short item)
 {
 	if (size + 2 > capacity) {
-		capacity = size + 2;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = size + 2;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(size + 2);
 	}
 	byteArr[size] = (item >> 8) & 0xFF;
 	byteArr[size + 1] = item & 0xFF;
@@ -358,8 +399,9 @@ void CArtVariant::SetUInt16(unsigned short item)
 void CArtVariant::SetUInt32( unsigned long item)
 {
 	if (size + 4 > capacity) {
-		capacity = size + 4;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);	
+		//capacity = size + 4;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);	
+		Reserve(size + 4);
 	}
 	byteArr[size] = (item >> 24) & 0xFF;
 	byteArr[size + 1] = (item >> 16) & 0xFF;
@@ -371,8 +413,9 @@ void CArtVariant::SetUInt32( unsigned long item)
 void CArtVariant::SetUInt64(unsigned long long item)
 {
 	if (size + 8 > capacity) {
-		capacity = size + 8;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = size + 8;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(size + 8);
 	}
 	byteArr[size]	  = (item >> 56) & 0xFF;
 	byteArr[size + 1] = (item >> 48) & 0xFF;
@@ -387,8 +430,9 @@ void CArtVariant::SetUInt64(unsigned long long item)
 
 void CArtVariant::SetUInt8(unsigned long index, unsigned char item) {
 	if (index + 1 > capacity) {
-		capacity = index + 1;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = index + 1;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(index + 1);
 	}
 	byteArr[index] = item;
 	if (size < index + 1) {
@@ -399,8 +443,9 @@ void CArtVariant::SetUInt8(unsigned long index, unsigned char item) {
 
 void CArtVariant::SetUInt16(unsigned long index, unsigned short item) {
 	if (index + 2 > capacity) {
-		capacity = index + 2;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = index + 2;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(index + 2);
 	}
 	byteArr[index] = (item >> 8) & 0xFF;
 	byteArr[index + 1] = item & 0xFF;
@@ -412,8 +457,9 @@ void CArtVariant::SetUInt16(unsigned long index, unsigned short item) {
 
 void CArtVariant::SetUInt32(unsigned long index, unsigned long item) {
 	if (index + 4 > capacity) {
-		capacity = index + 4;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = index + 4;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(index + 4);
 	}
 	byteArr[index] = (item >> 24) & 0xFF;
 	byteArr[index + 1] = (item >> 16) & 0xFF;
@@ -427,8 +473,9 @@ void CArtVariant::SetUInt32(unsigned long index, unsigned long item) {
 
 void CArtVariant::SetUInt64(unsigned long index, unsigned long long item) {
 	if (index + 8 > capacity) {
-		capacity = index + 8;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = index + 8;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(index + 8);
 	}
 	byteArr[index] = (item >> 56) & 0xFF;
 	byteArr[index + 1] = (item >> 48) & 0xFF;
@@ -455,8 +502,9 @@ void CArtVariant::SetFloat(float item) {
 	tmp.value = item;
 	if (size + 4 > capacity)
 	{
-		capacity = size + 4;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = size + 4;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(size + 4);
 	}
 	byteArr[size] = tmp.b[3];
 	byteArr[size + 1] = tmp.b[2];
@@ -476,8 +524,9 @@ void CArtVariant::SetDouble(double item) {
 	tmp.value = item;
 	if (size + 8 > capacity)
 	{
-		capacity = size + 8;
-		byteArr = (unsigned char*)realloc(byteArr, capacity);
+		//capacity = size + 8;
+		//byteArr = (unsigned char*)realloc(byteArr, capacity);
+		Reserve(size + 8);
 	}
 	byteArr[size]	  = tmp.b[7];
 	byteArr[size + 1] = tmp.b[6];
@@ -567,9 +616,9 @@ void CArtVariant::SetObjectCount(unsigned long count)
 }
 
 void CArtVariant::Clear() {
-	if (byteArr != nullptr) {
-		std::free(byteArr);
-		byteArr = nullptr;
+	if (byteArr != NULL) {
+		free(byteArr);
+		byteArr = NULL;
 	}
 	size = 0;
 	position = 0;

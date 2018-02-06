@@ -63,16 +63,6 @@ CGXDLMSAutoAnswer::CGXDLMSAutoAnswer(const char* ln) : CGXDLMSObject(DLMS_OBJECT
     Init();
 }
 
-/**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSAutoAnswer::CGXDLMSAutoAnswer(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_ANSWER, sn)
-{
-    Init();
-}
 
 AUTO_CONNECT_MODE CGXDLMSAutoAnswer::GetMode()
 {
@@ -142,77 +132,7 @@ int CGXDLMSAutoAnswer::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSAutoAnswer::GetValues(std::vector<std::string>& values)
-{
-    //values.clear();
-    //std::string ln;
-    //GetLogicalName(ln);
-    //values.push_back(ln);
-    //values.push_back(CGXDLMSVariant(m_Mode).ToString());
-    //std::stringstream sb;
-    //sb << '[';
-    //bool empty = true;
-    //for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_ListeningWindow.begin(); it != m_ListeningWindow.end(); ++it)
-    //{
-    //    if (!empty)
-    //    {
-    //        sb << ", ";
-    //    }
-    //    empty = false;
-    //    std::string str = it->first.ToString();
-    //    sb.write(str.c_str(), str.size());
-    //    sb << " ";
-    //    str = it->second.ToString();
-    //    sb.write(str.c_str(), str.size());
-    //}
-    //sb << ']';
-    //values.push_back(sb.str());
-    //values.push_back(CGXDLMSVariant(m_Status).ToString());
-    //values.push_back(CGXDLMSVariant(m_NumberOfCalls).ToString());
-    ////Clean
-    //sb.str(std::string());
-    //sb << m_NumberOfRingsInListeningWindow;
-    //sb << "/";
-    //sb << m_NumberOfRingsOutListeningWindow;
-    //values.push_back(sb.str());
-}
-
-void CGXDLMSAutoAnswer::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Mode is static and read only once.
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //ListeningWindow is static and read only once.
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //Status is not static.
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-
-    //NumberOfCalls is static and read only once.
-    if (!IsRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //NumberOfRingsInListeningWindow is static and read only once.
-    if (!IsRead(6))
-    {
-        attributes.push_back(6);
-    }
-}
-
-int CGXDLMSAutoAnswer::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSAutoAnswer::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

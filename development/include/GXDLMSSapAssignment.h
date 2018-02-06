@@ -53,12 +53,6 @@ public:
     */
     CGXDLMSSapAssignment(const char* ln);
 
-    /**
-     Constructor.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSSapAssignment(int sn);
-
     std::map<int, std::string >& GetSapAssignmentList();
 
     void SetSapAssignmentList(std::map<int, std::string >& value);
@@ -69,12 +63,7 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

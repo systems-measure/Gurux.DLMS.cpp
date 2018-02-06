@@ -77,7 +77,7 @@ private:
     // server : Is server.
     // data : Received data.
     /////////////////////////////////////////////////////////////////////////////
-    static void GetLLCBytes(bool server, CGXByteBuffer& data);
+    static void GetLLCBytes(CGXByteBuffer& data);
 
     /////////////////////////////////////////////////////////////////////////////
     //
@@ -104,21 +104,6 @@ private:
     static void GetDataFromFrame(
         CGXByteBuffer& reply,
         CGXReplyData& info);
-
-    /**
-    * Handle read response data block result.
-    *
-    * @param settings
-    *            DLMS settings.
-    * @param reply
-    *            Received reply.
-    * @param index
-    *            Starting index.
-    */
-    static int ReadResponseDataBlockResult(
-        CGXDLMSSettings& settings,
-        CGXReplyData& reply,
-        int index);
 
     static int HandledGloRequest(CGXDLMSSettings& settings,
         CGXReplyData& data);
@@ -183,6 +168,8 @@ public:
         CGXByteBuffer& data,
         CGXByteBuffer& reply);
 
+	static long GetLongInvokeIDPriority(CGXDLMSSettings& settings);
+
     /**
     * Get next logical name PDU.
     *
@@ -235,7 +222,6 @@ public:
         CGXByteBuffer& reply);
 
     static int GetHdlcData(
-        bool server,
         CGXDLMSSettings& settings,
         CGXByteBuffer& reply,
         CGXReplyData& data,
@@ -251,7 +237,7 @@ public:
     static int GetHDLCAddress(
         CGXByteBuffer& buff,
         unsigned long& address,
-        unsigned long& addrSize);
+        unsigned char& addrSize);
 
     /**
      * Check that client and server address match.
@@ -267,7 +253,6 @@ public:
      * @return True, if client and server address match.
      */
     static int CheckHdlcAddress(
-        bool server,
         CGXDLMSSettings& settings,
         CGXByteBuffer& reply,
         int index);
@@ -282,17 +267,7 @@ public:
     static int GetTcpData(
         CGXDLMSSettings& settings,
         CGXByteBuffer& buff,
-        CGXReplyData& data);
-
-    /////////////////////////////////////////////////////////////////////////////
-    // Handle read response and get data from block and/or update error status.
-    /////////////////////////////////////////////////////////////////////////////
-    // data : Received data from the client.
-    /////////////////////////////////////////////////////////////////////////////
-    static int HandleReadResponse(
-        CGXDLMSSettings& settings,
-        CGXReplyData& data,
-        int index);
+        CGXReplyData& data, unsigned char& empty);
 
     /////////////////////////////////////////////////////////////////////////////
     // Handle method response and get data from block and/or update error status.
@@ -330,14 +305,6 @@ public:
     static int HandleDataNotification(
         CGXDLMSSettings& settings,
         CGXReplyData& reply);
-
-    /////////////////////////////////////////////////////////////////////////////
-    // Handle write response and update error status.
-    /////////////////////////////////////////////////////////////////////////////
-    // reply : Received data from the client.
-    /////////////////////////////////////////////////////////////////////////////
-    static int HandleWriteResponse(
-        CGXReplyData& data);
 
     /////////////////////////////////////////////////////////////////////////////
     // Handle get response and get data from block and/or update error status.

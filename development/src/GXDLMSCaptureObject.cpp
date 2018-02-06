@@ -33,7 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSCaptureObject.h"
 
 // Constructor.

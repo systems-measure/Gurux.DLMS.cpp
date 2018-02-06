@@ -40,11 +40,10 @@ CGXByteBuffer::CGXByteBuffer()
 //Constructor.
 CGXByteBuffer::CGXByteBuffer(int capacity)
 {
-    m_Capacity = 0;
-    m_Data = NULL;
+    m_Capacity = capacity;
+    m_Data = (unsigned char*)malloc(m_Capacity);
     m_Position = 0;
     m_Size = 0;
-    Capacity(capacity);
 }
 
 //Copy constructor.
@@ -132,6 +131,15 @@ void CGXByteBuffer::Capacity(unsigned long capacity)
 unsigned long CGXByteBuffer::Capacity()
 {
     return m_Capacity;
+}
+
+void CGXByteBuffer::Reserve(unsigned long capacity) {
+	if (m_Data == NULL) {
+		m_Capacity = capacity;
+		m_Data = (unsigned char*)malloc(m_Capacity);
+		m_Position = 0;
+		m_Size = 0;
+	}
 }
 
 // Fill buffer it with zeros.

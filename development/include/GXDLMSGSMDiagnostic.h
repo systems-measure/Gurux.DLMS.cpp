@@ -32,19 +32,20 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 
-#ifndef GXDLMSDISCONNECTCONTROL_H
-#define GXDLMSDISCONNECTCONTROL_H
+#ifndef GXDLMSGSMDIAGNOSTIC_H
+#define GXDLMSGSMDIAGNOSTIC_H
 
 #include "GXDLMSObject.h"
+//#include "GXDLMSQualityOfService.h"
 
-class CGXDLMSDisconnectControl : public CGXDLMSObject
+class CGXDLMSGSMDiagnostic : public CGXDLMSObject
 {
 public:
     //Constructor.
-    CGXDLMSDisconnectControl();
-
+    CGXDLMSGSMDiagnostic();
+	
 	//LN Constructor.
-    CGXDLMSDisconnectControl(const char* ln);
+    CGXDLMSGSMDiagnostic(const char* ln);
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -61,4 +62,5 @@ public:
     // Set value of given attribute.
     int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
-#endif //GXDLMSDISCONNECTCONTROL_H
+
+#endif //GXDLMSGSMDIAGNOSTIC_H

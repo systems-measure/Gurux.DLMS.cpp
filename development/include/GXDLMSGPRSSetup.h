@@ -36,35 +36,16 @@
 #define GXDLMSGPRSSETUP_H
 
 #include "GXDLMSObject.h"
-#include "GXDLMSQualityOfService.h"
+//#include "GXDLMSQualityOfService.h"
 
 class CGXDLMSGPRSSetup : public CGXDLMSObject
 {
-private:
-    std::string m_APN;
-    long m_PINCode;
-    CGXDLMSQualityOfService m_DefaultQualityOfService;
-    CGXDLMSQualityOfService m_RequestedQualityOfService;
-
 public:
     //Constructor.
     CGXDLMSGPRSSetup();
-
-    //SN Constructor.
-    CGXDLMSGPRSSetup(unsigned short sn);
-
-    //LN Constructor.
+	
+	//LN Constructor.
     CGXDLMSGPRSSetup(const char* ln);
-
-    std::string GetAPN();
-    void SetAPN(std::string value);
-
-    long GetPINCode();
-    void SetPINCode(long value);
-
-    CGXDLMSQualityOfService& GetDefaultQualityOfService();
-
-    CGXDLMSQualityOfService& GetRequestedQualityOfService();
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -72,12 +53,8 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

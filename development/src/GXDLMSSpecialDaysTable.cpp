@@ -33,19 +33,11 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSClient.h"
 #include "../include/GXDLMSSpecialDaysTable.h"
-#include <sstream>
 
 //Constructor.
 CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable() : CGXDLMSObject(DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE)
 {
-}
-
-//SN Constructor.
-CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE, sn)
-{
-
 }
 
 //LN Constructor.
@@ -56,17 +48,8 @@ CGXDLMSSpecialDaysTable::CGXDLMSSpecialDaysTable(const char* ln) : CGXDLMSObject
 
 CGXDLMSSpecialDaysTable::~CGXDLMSSpecialDaysTable()
 {
-    /*for (std::vector<CGXDLMSSpecialDay*>::iterator it = m_Entries.begin(); it != m_Entries.end(); ++it)
-    {
-        delete *it;
-    }
-    m_Entries.clear();*/
+    
 }
-
-//std::vector<CGXDLMSSpecialDay*>& CGXDLMSSpecialDaysTable::GetEntries()
-//{
-//    return m_Entries;
-//}
 
 // Returns amount of attributes.
 int CGXDLMSSpecialDaysTable::GetAttributeCount()
@@ -80,44 +63,7 @@ int CGXDLMSSpecialDaysTable::GetMethodCount()
     return 2;
 }
 
-void CGXDLMSSpecialDaysTable::GetValues(std::vector<std::string>& values)
-{
-    /*values.clear();
-    std::string ln, str;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<CGXDLMSSpecialDay*>::iterator it = m_Entries.begin(); it != m_Entries.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = (*it)->ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());*/
-}
-
-void CGXDLMSSpecialDaysTable::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //Entries
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-}
-
-int CGXDLMSSpecialDaysTable::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
+int CGXDLMSSpecialDaysTable::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -133,13 +79,24 @@ int CGXDLMSSpecialDaysTable::GetDataType(unsigned char index, DLMS_DATA_TYPE& ty
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
+DLMS_DATA_TYPE CGXDLMSSpecialDaysTable::GetDataType(signed char index) {
+	if (index == 1)
+	{
+		return  DLMS_DATA_TYPE_OCTET_STRING;
+	}
+	if (index == 2)
+	{
+		return DLMS_DATA_TYPE_ARRAY;
+	}
+	return DLMS_DATA_TYPE_NONE;
+}
+
 // Returns value of given attribute.
 int CGXDLMSSpecialDaysTable::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     if (e.GetIndex() == 1)
     {
 		CGXByteBuffer data;
-//		e.SetByteArray(true);
         int ret;
         if ((ret = GetLogicalName(this, data)) != 0)
         {
@@ -150,27 +107,7 @@ int CGXDLMSSpecialDaysTable::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     }
     if (e.GetIndex() == 2)
     {
-        //e.SetByteArray(true);
-        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        ////Add count
-        //GXHelpers::SetObjectCount((unsigned long)m_Entries.size(), data);
-        //int ret;
-        //CGXDLMSVariant index, date, id;
-        //for (std::vector<CGXDLMSSpecialDay*>::iterator it = m_Entries.begin(); it != m_Entries.end(); ++it)
-        //{
-        //    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        //    data.SetUInt8(3); //Count
-        //    index = (*it)->GetIndex();
-        //    date = (*it)->GetDate();
-        //    id = (*it)->GetDayId();
-        //    if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT16, index)) != DLMS_ERROR_CODE_OK ||
-        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, date)) != DLMS_ERROR_CODE_OK ||
-        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, id)) != DLMS_ERROR_CODE_OK)
-        //    {
-        //        return ret;
-        //    }
-        //}
-        //e.SetValue(data);
+        
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -182,7 +119,6 @@ int CGXDLMSSpecialDaysTable::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     if (e.GetIndex() == 1)
     {
         int ret;
-//		e.SetByteArray(true);
 		CGXByteBuffer data;
         if ((ret = GetLogicalName(this, data)) != 0)
         {
@@ -193,24 +129,7 @@ int CGXDLMSSpecialDaysTable::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
     }
     else if (e.GetIndex() == 2)
     {
-        /*for (std::vector<CGXDLMSSpecialDay*>::iterator it = m_Entries.begin(); it != m_Entries.end(); ++it)
-        {
-            delete *it;
-        }
-        m_Entries.clear();
-        if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
-        {
-            CGXDLMSVariant tmp;
-            for (std::vector<CGXDLMSVariant>::iterator item = e.GetValue().Arr.begin(); item != e.GetValue().Arr.end(); ++item)
-            {
-                CGXDLMSSpecialDay *it = new CGXDLMSSpecialDay();
-                it->SetIndex((*item).Arr[0].ToInteger());
-                CGXDLMSClient::ChangeType((*item).Arr[1], DLMS_DATA_TYPE_DATE, tmp);
-                it->SetDate(tmp.dateTime);
-                it->SetDayId((*item).Arr[2].ToInteger());
-                m_Entries.push_back(it);
-            }
-        }*/
+        
     }
     else
     {

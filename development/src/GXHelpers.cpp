@@ -995,7 +995,6 @@ int GetOctetString(CGXByteBuffer& buff, CGXDataInfo& info, bool knownType, CGXDL
     }
     else
     {
-//        value.byteArr = new unsigned char[len];
         value.byteArr =(unsigned char*)malloc(len);
         if ((ret = buff.Get(value.byteArr, len)) != 0)
         {
@@ -1885,7 +1884,7 @@ int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
 	uint8_t pos = 0;
 	uint8_t char_pos = 0;
 	memset(ln, 0, 6);
-	while (i < 6) {
+	while (i < 6 && name[pos] != '\0') {
 		while (name[pos] != '.' && name[pos] != '\0') {
 			while (name[pos] != num_codes[char_pos]) {
 				++char_pos;
@@ -1898,23 +1897,6 @@ int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
 		++pos;
 		++i;
 	}
-   /* int ret;
-    int v1, v2, v3, v4, v5, v6;
-#if _MSC_VER > 1000
-    ret = sscanf_s(name, "%u.%u.%u.%u.%u.%u", &v1, &v2, &v3, &v4, &v5, &v6);
-#else
-    ret = sscanf(name, "%u.%u.%u.%u.%u.%u", &v1, &v2, &v3, &v4, &v5, &v6);
-#endif
-    if (ret != 6)
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    ln[0] = (unsigned char)v1;
-    ln[1] = (unsigned char)v2;
-    ln[2] = (unsigned char)v3;
-    ln[3] = (unsigned char)v4;
-    ln[4] = (unsigned char)v5;
-    ln[5] = (unsigned char)v6;*/
     return DLMS_ERROR_CODE_OK;
 }
 
@@ -2194,10 +2176,6 @@ void GXHelpers::Write(char* fileName, char* pData, int len)
 {
     if (len != 0 && pData != NULL)
     {
-//        std::ofstream trace;
-//        trace.open(fileName, std::ios::out | std::ios::app);
-//        trace.write(pData, len);
-//        trace.close();
     }
 }
 
@@ -2205,10 +2183,6 @@ void GXHelpers::Write(std::string fileName, std::string data)
 {
     if (data.size() != 0)
     {
-//        std::ofstream trace;
-//        trace.open(fileName.c_str(), std::ios::out | std::ios::app);
-//        trace.write(&data[0], data.size());
-//        trace.close();
     }
 }
 

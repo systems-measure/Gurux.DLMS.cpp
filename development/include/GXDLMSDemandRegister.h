@@ -39,18 +39,6 @@
 
 class CGXDLMSDemandRegister : public CGXDLMSObject
 {
-    CArtVariant m_CurrentAvarageValue;
-	CArtVariant m_LastAvarageValue;
-    signed char m_Scaler;
-    unsigned char m_Unit;
-	CArtVariant m_Status;
-    CGXDateTime m_CaptureTime;
-    CGXDateTime m_StartTimeCurrent;
-	unsigned short m_NumberOfPeriods;
-    unsigned long m_Period;
-
-protected:
-    bool IsRead(int index);
 
 public:
     /**
@@ -65,61 +53,7 @@ public:
     */
     CGXDLMSDemandRegister(const char* ln);
 
-    /**
-     Constructor.
-
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSDemandRegister(int sn);
-
-    /**
-     Current avarage value of COSEM Data object.
-    */
-	CArtVariant GetCurrentAvarageValue();
-    void SetCurrentAvarageValue(CArtVariant value);
-
-    /**
-     Last avarage value of COSEM Data object.
-    */
-	CArtVariant GetLastAvarageValue();
-    void SetLastAvarageValue(CArtVariant value);
-
-    /**
-     Scaler of COSEM Register object.
-    */
-    double GetScaler();
-    void SetScaler(double value);
-
-    // Unit of COSEM Register object.
-	unsigned char GetUnit();
-    void SetUnit(unsigned char value);
-
-    /**
-     Scaler of COSEM Register object.
-    */
-	CArtVariant GetStatus();
-    void SetStatus(CArtVariant value);
-
-    /**
-     Capture time of COSEM Register object.
-    */
-    CGXDateTime GetCaptureTime();
-    void SetCaptureTime(CGXDateTime value);
-
-    /**
-     Current start time of COSEM Register object.
-    */
-    CGXDateTime GetStartTimeCurrent();
-    void SetStartTimeCurrent(CGXDateTime value);
-
-    unsigned long GetPeriod();
-    void SetPeriod(unsigned long value);
-
-	unsigned short GetNumberOfPeriods();
-    void SetNumberOfPeriods(unsigned short value);
-
-    /*
+       /*
      * Reset value.
      */
     void Reset();
@@ -129,11 +63,6 @@ public:
      */
     void NextPeriod();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
@@ -142,7 +71,8 @@ public:
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

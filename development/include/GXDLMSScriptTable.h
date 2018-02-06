@@ -40,14 +40,10 @@
 
 class CGXDLMSScriptTable : public CGXDLMSObject
 {
-    //std::vector<CGXDLMSScript*> m_Scripts;
 
 public:
     //Constructor.
     CGXDLMSScriptTable();
-
-    //SN Constructor.
-    CGXDLMSScriptTable(unsigned short sn);
 
     //LN Constructor.
     CGXDLMSScriptTable(const char* ln);
@@ -55,20 +51,14 @@ public:
     //Destructor.
     ~CGXDLMSScriptTable();
 
-   // std::vector<CGXDLMSScript*>& GetScripts();
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

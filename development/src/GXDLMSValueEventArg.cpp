@@ -46,17 +46,19 @@ void CGXDLMSValueEventArg::SetTarget(CGXDLMSObject* value)
     m_Target = value;
 }
 
-unsigned char* CGXDLMSValueEventArg::GetTargetName() 
+signed char* CGXDLMSValueEventArg::GetTargetName() 
 {
 	return event_param;
 }
 
 void CGXDLMSValueEventArg::SetTargetName() {
-	m_Target->GetLogicalName(event_param);
-	m_Target = nullptr;
+	if (m_Target != nullptr) {
+		m_Target->GetLogicalName(event_param);
+		m_Target = nullptr;
+	}
 }
 
-unsigned char& CGXDLMSValueEventArg::GetIndex()
+signed char& CGXDLMSValueEventArg::GetIndex()
 {
     return event_param[6];
 }
@@ -80,7 +82,7 @@ void CGXDLMSValueEventArg::SetValue(CGXByteBuffer& value) {
 	c_Value = value;
 }
 
-unsigned char& CGXDLMSValueEventArg::GetSelector()
+signed char& CGXDLMSValueEventArg::GetSelector()
 {
     return event_param[7];
 }
@@ -120,7 +122,8 @@ void CGXDLMSValueEventArg::Init(
 	row_param[0] = 0;
 	row_param[1] = 0;
 	row_param[2] = 0;
-   
+	m_Parameters.Reserve(0);
+	c_Value.Reserve(0);
 }
 
 CGXDLMSValueEventArg::CGXDLMSValueEventArg(
@@ -172,8 +175,8 @@ CGXDLMSValueEventArg::CGXDLMSValueEventArg(
 
 CGXDLMSValueEventArg::~CGXDLMSValueEventArg() 
 {
-	c_Value.Clear();
-	m_Parameters.Clear();
+	/*c_Value.Clear();
+	m_Parameters.Clear();*/
 }
 
 DLMS_ERROR_CODE CGXDLMSValueEventArg::GetError()

@@ -39,15 +39,6 @@
 
 class CGXDLMSClock : public CGXDLMSObject
 {
-    DLMS_CLOCK_BASE m_ClockBase;
-    char m_Deviation;
-    bool m_Enabled;
-    CGXDateTime m_End;
-    DLMS_CLOCK_STATUS m_Status;
-    CGXDateTime m_Begin;
-    short m_TimeZone;
-    CGXDateTime m_Time;
-
     void Init();
 public:
     /**
@@ -61,63 +52,14 @@ public:
     */
     CGXDLMSClock(const char* ln);
 
-    /**
-     Constructor.
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSClock(const char* ln, int sn);
-
-    /**
-     Time of COSEM Clock object.
-    */
-    CGXDateTime& GetTime();
-
-    void SetTime(CGXDateTime& value);
-
-    /**
-     TimeZone of COSEM Clock object.
-    */
-    short GetTimeZone();
-    void SetTimeZone(short value);
-
-    /**
-     Status of COSEM Clock object.
-    */
-    DLMS_CLOCK_STATUS GetStatus();
-    void SetStatus(DLMS_CLOCK_STATUS value);
-
-    CGXDateTime& GetBegin();
-    void SetBegin(CGXDateTime& value);
-
-    CGXDateTime& GetEnd();
-    void SetEnd(CGXDateTime& value);
-
-    char GetDeviation();
-    void SetDeviation(char value);
-
-    bool GetEnabled();
-    void SetEnabled(bool value);
-
-    /**
-     Clock base of COSEM Clock object.
-    */
-    DLMS_CLOCK_BASE GetClockBase();
-    void SetClockBase(DLMS_CLOCK_BASE value);
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type);
-    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     /*
      * Returns value of given attribute.

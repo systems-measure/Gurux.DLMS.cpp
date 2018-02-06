@@ -35,23 +35,26 @@
 #ifndef GXDLMSOBJECTCOLLECTION_H
 #define GXDLMSOBJECTCOLLECTION_H
 
-
-
-#include <vector>
 #include "GXDLMSObject.h"
 
 typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint8_t* idx_cnstrd);
 
 typedef unsigned char(*TypeObj)(const char* obis, uint8_t* idx_cnstrd);
 
-class CGXDLMSObjectCollection : public std::vector<unsigned char*>
+class CGXDLMSObjectCollection
 {
 private:
 	CGXDLMSObject* constructed_obj;
 
 	uint8_t* idx_constructed_obj;
 
-	std::vector<CGXDLMSObject*> dlms_only_obj;
+	uint8_t** objects_ln;
+
+	uint8_t size_collection;
+
+	uint8_t num_obj_in_collection;
+
+	CGXDLMSObject* m_currentALN;
 
 	InitObjField init_callback;
 
@@ -59,33 +62,38 @@ private:
 
 	void CreateObject(DLMS_OBJECT_TYPE type);
 public:
+
 	CGXDLMSObjectCollection();
+
+	CGXDLMSObjectCollection(uint8_t size);
 
     ~CGXDLMSObjectCollection();
 
-    CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, std::string& ln);
+	CGXDLMSObject* MakeByPosition(uint8_t pos);
+
+    CGXDLMSObject* FindByLN(uint8_t* ln);
 
 	unsigned char* FindByLN(const char* ln);
 
-	unsigned char* FindByLN(CGXByteBuffer& ln);
+    CGXDLMSObject* FindByLN(CGXByteBuffer& ln);
 
-    CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, CGXByteBuffer& ln);
+	CGXDLMSObject* GetCurALN();
 
-	std::vector<CGXDLMSObject*>& GetDlmsObj();
+	uint8_t** GetObjectsCollection();
+
+	bool empty();
+
+	uint8_t size();
+
+	void Init(uint8_t new_size);
 
     void push_back(unsigned char* item);
 
-	void push_back(CGXDLMSObject* item);
-
-	int sizeRequiredObj();
+	void push_back_aln(CGXDLMSObject* item);
 
 	void clear();
 
-	std::vector<CGXDLMSObject*>::iterator insert(std::vector<CGXDLMSObject*>::const_iterator where, 
-		std::vector<CGXDLMSObject*>::const_iterator first, std::vector<CGXDLMSObject*>::const_iterator last);
-
-	std::vector<unsigned char*>::iterator insert(std::vector<unsigned char*>::const_iterator where,
-		std::vector<unsigned char*>::const_iterator first, std::vector<unsigned char*>::const_iterator last);
+	void insert(uint8_t start_pos, uint8_t** src, uint8_t count);
 
 	InitObjField GetInitCallback();
 
@@ -94,8 +102,6 @@ public:
 	TypeObj GetTypeObjCallback();
 
 	void SetTypeObjCallback(TypeObj type);
-
-    void Free();
 
 	void FreeConstructedObj();
 

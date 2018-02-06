@@ -33,7 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXAuthenticationMechanismName.h"
-#include <sstream>
 #include "../include/GXDLMSVariant.h"
 
 CGXAuthenticationMechanismName::CGXAuthenticationMechanismName()
@@ -102,24 +101,4 @@ DLMS_AUTHENTICATION CGXAuthenticationMechanismName::GetMechanismId()
 void CGXAuthenticationMechanismName::SetMechanismId(DLMS_AUTHENTICATION value)
 {
     m_MechanismId = value;
-}
-
-
-std::string CGXAuthenticationMechanismName::ToString()
-{
-    std::stringstream sb;
-    sb << CGXDLMSVariant(m_JointIsoCtt).ToString().c_str();
-    sb << " ";
-    sb << CGXDLMSVariant(m_Country).ToString().c_str();
-    sb << " ";
-    sb << CGXDLMSVariant(m_CountryName).ToString().c_str();
-    sb << " ";
-    sb << CGXDLMSVariant(m_IdentifiedOrganization).ToString().c_str();
-    sb << " ";
-    sb << CGXDLMSVariant(m_DlmsUA).ToString().c_str();
-    sb << " ";
-    sb << CGXDLMSVariant(m_AuthenticationMechanismName).ToString().c_str();
-    sb << " ";
-    sb << CGXDLMSVariant(m_MechanismId).ToString().c_str();
-    return sb.str();
 }

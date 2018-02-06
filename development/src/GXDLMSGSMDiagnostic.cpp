@@ -33,31 +33,32 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSVariant.h"
-#include "../include/GXDLMSGPRSSetup.h"
+#include "../include/GXDLMSGSMDiagnostic.h"
 
 //Constructor.
-CGXDLMSGPRSSetup::CGXDLMSGPRSSetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP)
+CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic() : CGXDLMSObject(DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC)
 {
 }
 
 //LN Constructor.
-CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
+CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC, ln)
 {
 }
 
 // Returns amount of attributes.
-int CGXDLMSGPRSSetup::GetAttributeCount()
+int CGXDLMSGSMDiagnostic::GetAttributeCount()
 {
-    return 4;
+    return 8;
 }
 
 // Returns amount of methods.
-int CGXDLMSGPRSSetup::GetMethodCount()
+int CGXDLMSGSMDiagnostic::GetMethodCount()
 {
     return 0;
 }
 
-int CGXDLMSGPRSSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
+
+int CGXDLMSGSMDiagnostic::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -66,47 +67,82 @@ int CGXDLMSGPRSSetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
     }
     if (index == 2)
     {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
+        type = DLMS_DATA_TYPE_STRING;
         return DLMS_ERROR_CODE_OK;
     }
     if (index == 3)
     {
-        type = DLMS_DATA_TYPE_UINT16;
+        type = DLMS_DATA_TYPE_ENUM;
         return DLMS_ERROR_CODE_OK;
     }
     if (index == 4)
     {
+        type = DLMS_DATA_TYPE_ENUM;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 5)
+    {
+        type = DLMS_DATA_TYPE_ENUM;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 6)
+    {
+        type = DLMS_DATA_TYPE_STRUCTURE;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 7)
+    {
         type = DLMS_DATA_TYPE_ARRAY;
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (index == 8)
+    {
+        type = DLMS_DATA_TYPE_DATETIME;
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
-DLMS_DATA_TYPE CGXDLMSGPRSSetup::GetDataType(signed char index) {
+DLMS_DATA_TYPE CGXDLMSGSMDiagnostic::GetDataType(signed char index) {
 	if (index == 1)
 	{
 		return  DLMS_DATA_TYPE_OCTET_STRING;
 	}
 	if (index == 2)
 	{
-		return DLMS_DATA_TYPE_OCTET_STRING;
+		return DLMS_DATA_TYPE_STRING;
 	}
 	if (index == 3)
 	{
-		return DLMS_DATA_TYPE_UINT16;
+		return DLMS_DATA_TYPE_ENUM;
 	}
 	if (index == 4)
 	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	if (index == 5)
+	{
+		return DLMS_DATA_TYPE_ENUM;
+	}
+	if (index == 6)
+	{
+		return DLMS_DATA_TYPE_STRUCTURE;
+	}
+	if (index == 7)
+	{
 		return DLMS_DATA_TYPE_ARRAY;
+	}
+	if (index == 8)
+	{
+		return DLMS_DATA_TYPE_DATETIME;
 	}
 	return DLMS_DATA_TYPE_NONE;
 }
 
 // Returns value of given attribute.
-int CGXDLMSGPRSSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
+int CGXDLMSGSMDiagnostic::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
@@ -119,7 +155,6 @@ int CGXDLMSGPRSSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
     }
     if (e.GetIndex() == 2)
     {
-
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
@@ -128,14 +163,29 @@ int CGXDLMSGPRSSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
     }
     if (e.GetIndex() == 4)
     {
-       
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 5)
+    {
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 6)
+    {
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 7)
+    {
+        return DLMS_ERROR_CODE_OK;
+    }
+    if (e.GetIndex() == 8)
+    {
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 // Set value of given attribute.
-int CGXDLMSGPRSSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
+int CGXDLMSGSMDiagnostic::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     if (e.GetIndex() == 1)
     {
@@ -143,13 +193,28 @@ int CGXDLMSGPRSSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
     }
     else if (e.GetIndex() == 2)
     {
-      
+
     }
     else if (e.GetIndex() == 3)
     {
-       
     }
     else if (e.GetIndex() == 4)
+    {
+
+    }
+    else if (e.GetIndex() == 5)
+    {
+
+    }
+    else if (e.GetIndex() == 6)
+    {
+
+    }
+    else if (e.GetIndex() == 7)
+    {
+
+    }
+    else if (e.GetIndex() == 8)
     {
 
     }

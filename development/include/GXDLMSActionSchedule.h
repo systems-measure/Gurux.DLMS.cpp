@@ -59,14 +59,6 @@ public:
     */
     CGXDLMSActionSchedule(const char* ln);
 
-    /**
-     Constructor.
-
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSActionSchedule(int sn);
-
     std::string GetExecutedScriptLogicalName();
     void SetExecutedScriptLogicalName(std::string value);
 
@@ -85,12 +77,7 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

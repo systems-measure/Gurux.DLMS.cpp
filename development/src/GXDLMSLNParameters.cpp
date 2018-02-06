@@ -131,5 +131,5 @@ unsigned long CGXDLMSLNParameters::GetBlockIndex()
 
 void CGXDLMSLNParameters::SetBlockIndex(unsigned long value)
 {
-    m_BlockIndex = value;
+	m_BlockIndex = value;
 }

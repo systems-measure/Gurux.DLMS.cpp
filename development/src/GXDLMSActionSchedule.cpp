@@ -61,17 +61,6 @@ CGXDLMSActionSchedule::CGXDLMSActionSchedule(const char* ln) : CGXDLMSObject(DLM
     Init();
 }
 
-/**
- Constructor.
-
- @param ln Logical Name of the object.
- @param sn Short Name of the object.
-*/
-CGXDLMSActionSchedule::CGXDLMSActionSchedule(int sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_ACTION_SCHEDULE, sn)
-{
-    Init();
-}
-
 std::string CGXDLMSActionSchedule::GetExecutedScriptLogicalName()
 {
     return m_ExecutedScriptLogicalName;
@@ -120,56 +109,7 @@ int CGXDLMSActionSchedule::GetMethodCount()
     return 0;
 }
 
-void CGXDLMSActionSchedule::GetValues(std::vector<std::string>& values)
-{
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(m_ExecutedScriptLogicalName + " " + CGXDLMSVariant(m_ExecutedScriptSelector).ToString());
-    values.push_back(CGXDLMSVariant(m_Type).ToString());
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<CGXDateTime>::iterator it = m_ExecutionTime.begin(); it != m_ExecutionTime.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = it->ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());*/
-}
-
-void CGXDLMSActionSchedule::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //ExecutedScriptLogicalName is static and read only once.
-    if (!IsRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //Type is static and read only once.
-    if (!IsRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //ExecutionTime is static and read only once.
-    if (!IsRead(4))
-    {
-        attributes.push_back(4);
-    }
-}
-
-int CGXDLMSActionSchedule::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSActionSchedule::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {

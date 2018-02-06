@@ -67,24 +67,23 @@ class CGXDLMSSettings
     // not generated if it is Set. This is for debugging purposes.
     bool m_CustomChallenges;
 
-	// Is Logical Name referencing used.
-	bool m_UseLogicalNameReferencing;
-    // Invoke ID.
-    unsigned char m_InvokeID;
-    //Long Invoke ID.
-    int m_LongInvokeID;
+	// Invoke ID.
+	unsigned char m_InvokeID;
+
+	// DLMS version number.
+	unsigned char m_DlmsVersionNumber;
+
+	// HDLC sender frame sequence number.
+	unsigned char m_SenderFrame;
+
+	// HDLC receiver block sequence number.
+	unsigned char m_ReceiverFrame;
 
     // Priority.
     DLMS_PRIORITY m_Priority;
 
     // Service class.
     DLMS_SERVICE_CLASS m_ServiceClass;
-
-    // Client address.
-    unsigned long m_ClientAddress;
-
-    // Server address.
-    unsigned long m_ServerAddress;
 
     // Interface type.
     DLMS_INTERFACE_TYPE m_InterfaceType;
@@ -102,26 +101,23 @@ class CGXDLMSSettings
      */
     unsigned short m_Index;
 
-	// Is this server or client.
-	bool m_Server;
-
-    // DLMS version number.
-    unsigned char m_DlmsVersionNumber;
-
     // Maximum receivers PDU size.
     unsigned short m_MaxReceivePDUSize;
 
     // Maximum server PDU size.
     unsigned short m_MaxServerPDUSize;
 
-    // HDLC sender frame sequence number.
-    unsigned char m_SenderFrame;
-
-    // HDLC receiver block sequence number.
-    unsigned char m_ReceiverFrame;
-
-    // Block packet index.
+      // Block packet index.
     unsigned long m_BlockIndex;
+
+	// Client address.
+	unsigned long m_ClientAddress;
+
+	// Server address.
+	unsigned long m_ServerAddress;
+
+	//Long Invoke ID.
+	int m_LongInvokeID;
 
     /**
     * Proposed conformance block. Client asks this funtionality.
@@ -163,7 +159,7 @@ class CGXDLMSSettings
 
 public:
     // Constructor.
-    CGXDLMSSettings(bool isServer);
+    CGXDLMSSettings();
 
     //Destructor.
     ~CGXDLMSSettings();
@@ -227,9 +223,6 @@ public:
     // Increases block index.
     void IncreaseBlockIndex();
 
-    //Is acting as server or client.
-    bool IsServer();
-
     // Information from the frame size that server can handle.
     CGXDLMSLimits& GetLimits();
 
@@ -268,12 +261,6 @@ public:
 
     // Maximum server PDU size.
     int SetMaxServerPDUSize(unsigned short value);
-
-    // Is Logical Name Referencing used.
-    bool GetUseLogicalNameReferencing();
-
-    // Is Logical Name Referencing used.
-    void SetUseLogicalNameReferencing(bool value);
 
     // Used priority.
     DLMS_PRIORITY GetPriority();

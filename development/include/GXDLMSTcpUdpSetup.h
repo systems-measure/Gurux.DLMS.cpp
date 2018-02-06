@@ -35,14 +35,10 @@
 #ifndef GXDLMSTCPUDPSETUP_H
 #define GXDLMSTCPUDPSETUP_H
 
+#include "GXDLMSObject.h"
+
 class CGXDLMSTcpUdpSetup : public CGXDLMSObject
 {
-    int m_Port;
-    std::string m_IPReference;
-    int m_MaximumSimultaneousConnections;
-    int m_InactivityTimeout;
-    int m_MaximumSegmentSize;
-
     void Init();
 
 public:
@@ -58,47 +54,14 @@ public:
     */
     CGXDLMSTcpUdpSetup(const char* ln);
 
-
-    /**
-     Constructor.
-
-     @param ln Logical Name of the object.
-     @param sn Short Name of the object.
-    */
-    CGXDLMSTcpUdpSetup(std::string ln, short sn);
-
-    int GetPort();
-
-    void SetPort(int value);
-
-    std::string GetIPReference();
-
-    void SetIPReference(std::string value);
-
-    int GetMaximumSegmentSize();
-
-    void SetMaximumSegmentSize(int value);
-
-    int GetMaximumSimultaneousConnections();
-
-    void SetMaximumSimultaneousConnections(int value);
-
-    int GetInactivityTimeout();
-
-    void SetInactivityTimeout(int value);
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
+	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

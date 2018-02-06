@@ -52,10 +52,7 @@ public:
     //Constructor.
     CGXDLMSAutoConnect();
 
-    //SN Constructor.
-    CGXDLMSAutoConnect(unsigned short sn);
-
-    //LN Constructor.
+	//LN Constructor.
     CGXDLMSAutoConnect(const char* ln);
 
     AUTO_CONNECT_MODE GetMode();
@@ -81,12 +78,7 @@ public:
     // Returns amount of methods.
     int GetMethodCount();
 
-    //Get attribute values of object.
-    void GetValues(std::vector<std::string>& values);
-
-    void GetAttributeIndexToRead(std::vector<int>& attributes);
-
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

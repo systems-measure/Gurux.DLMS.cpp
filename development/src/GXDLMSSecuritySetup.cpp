@@ -42,12 +42,6 @@ CGXDLMSSecuritySetup::CGXDLMSSecuritySetup() : CGXDLMSObject(DLMS_OBJECT_TYPE_DL
 {
 }
 
-//SN Constructor.
-CGXDLMSSecuritySetup::CGXDLMSSecuritySetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSSecuritySetup::CGXDLMSSecuritySetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP, ln)
 {
@@ -106,58 +100,7 @@ int CGXDLMSSecuritySetup::GetMethodCount()
     return 2;
 }
 
-void CGXDLMSSecuritySetup::GetValues(std::vector<std::string>& values)
-{
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSConverter::ToString((DLMS_SECURITY_POLICY)m_SecurityPolicy));
-    values.push_back(CGXDLMSConverter::ToString(m_SecuritySuite));
-    std::string str = m_ClientSystemTitle.ToHexString();
-    values.push_back(str);
-    str = m_ServerSystemTitle.ToHexString();
-    values.push_back(str);*/
-}
-
-void CGXDLMSSecuritySetup::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //SecurityPolicy
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //SecuritySuite
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-    if (GetVersion() > 0)
-    {
-        //ClientSystemTitle
-        if (CanRead(4))
-        {
-            attributes.push_back(4);
-        }
-        //ServerSystemTitle
-        if (CanRead(5))
-        {
-            attributes.push_back(5);
-        }
-        //Certificates
-        if (CanRead(6))
-        {
-            attributes.push_back(6);
-        }
-    }
-}
-
-int CGXDLMSSecuritySetup::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSSecuritySetup::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -190,7 +133,6 @@ int CGXDLMSSecuritySetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 int CGXDLMSSecuritySetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
 	CGXByteBuffer data;
-//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
@@ -203,29 +145,19 @@ int CGXDLMSSecuritySetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
     }
     else if (e.GetIndex() == 2)
     {
-		/*data.SetUInt8(DLMS_DATA_TYPE_UINT8);
-        data.SetUInt8(m_SecurityPolicy);
-        e.SetValue(data);*/
+
     }
     else if (e.GetIndex() == 3)
     {
-		/*data.SetUInt8(DLMS_DATA_TYPE_UINT8);
-		data.SetUInt8(m_SecuritySuite);
-        e.SetValue(data);*/
+
     }
     else if (e.GetIndex() == 4)
     {
-		/*data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-		data.SetUInt8(m_ClientSystemTitle.GetSize());
-		data.Set(m_ClientSystemTitle.GetData(), m_ClientSystemTitle.GetSize());
-        e.SetValue(data);*/
+
     }
     else if (e.GetIndex() == 5)
     {
-		/*data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-		data.SetUInt8(m_ServerSystemTitle.GetSize());
-		data.Set(m_ServerSystemTitle.GetData(), m_ServerSystemTitle.GetSize());
-		e.SetValue(data);*/
+
     }
     else
     {
@@ -243,19 +175,19 @@ int CGXDLMSSecuritySetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
     }
     else if (e.GetIndex() == 2)
     {
-        //m_SecurityPolicy = (DLMS_SECURITY_POLICY)e.GetValue().ToInteger();
+
     }
     else if (e.GetIndex() == 3)
     {
-       // m_SecuritySuite = (DLMS_SECURITY_SUITE)e.GetValue().ToInteger();
+
     }
     else if (e.GetIndex() == 4)
     {
-        //m_ClientSystemTitle.Set(e.GetValue().byteArr, e.GetValue().size);
+
     }
     else if (e.GetIndex() == 5)
     {
-        //m_ServerSystemTitle.Set(e.GetValue().byteArr, e.GetValue().size);
+
     }
     else
     {

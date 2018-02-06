@@ -41,12 +41,6 @@ CGXDLMSMBusClient::CGXDLMSMBusClient() : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLI
 {
 }
 
-//SN Constructor.
-CGXDLMSMBusClient::CGXDLMSMBusClient(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, sn)
-{
-
-}
-
 //LN Constructor.
 CGXDLMSMBusClient::CGXDLMSMBusClient(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_MBUS_CLIENT, ln)
 {
@@ -173,106 +167,7 @@ int CGXDLMSMBusClient::GetMethodCount()
     return 8;
 }
 
-void CGXDLMSMBusClient::GetValues(std::vector<std::string>& values)
-{
-    /*values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(m_MBusPortReference);
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<std::pair<std::string, std::string> >::iterator it = m_CaptureDefinition.begin(); it != m_CaptureDefinition.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        sb.write(it->first.c_str(), it->first.size());
-        sb << " ";
-        sb.write(it->second.c_str(), it->second.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
-
-    values.push_back(CGXDLMSVariant(m_CapturePeriod).ToString());
-    values.push_back(CGXDLMSVariant(m_PrimaryAddress).ToString());
-    values.push_back(CGXDLMSVariant(m_IdentificationNumber).ToString());
-    values.push_back(CGXDLMSVariant(m_ManufacturerID).ToString());
-    values.push_back(CGXDLMSVariant(m_DataHeaderVersion).ToString());
-    values.push_back(CGXDLMSVariant(m_DeviceType).ToString());
-    values.push_back(CGXDLMSVariant(m_AccessNumber).ToString());
-    values.push_back(CGXDLMSVariant(m_Status).ToString());
-    values.push_back(CGXDLMSVariant(m_Alarm).ToString());*/
-}
-
-void CGXDLMSMBusClient::GetAttributeIndexToRead(std::vector<int>& attributes)
-{
-    //LN is static and read only once.
-    if (CGXDLMSObject::IsLogicalNameEmpty(m_LN))
-    {
-        attributes.push_back(1);
-    }
-    //MBusPortReference
-    if (CanRead(2))
-    {
-        attributes.push_back(2);
-    }
-    //CaptureDefinition
-    if (CanRead(3))
-    {
-        attributes.push_back(3);
-    }
-    //CapturePeriod
-    if (CanRead(4))
-    {
-        attributes.push_back(4);
-    }
-    //PrimaryAddress
-    if (CanRead(5))
-    {
-        attributes.push_back(5);
-    }
-    //IdentificationNumber
-    if (CanRead(6))
-    {
-        attributes.push_back(6);
-    }
-    //ManufacturerID
-    if (CanRead(7))
-    {
-        attributes.push_back(7);
-    }
-    //Version
-    if (CanRead(8))
-    {
-        attributes.push_back(8);
-    }
-    //DeviceType
-    if (CanRead(9))
-    {
-        attributes.push_back(9);
-    }
-    //AccessNumber
-    if (CanRead(10))
-    {
-        attributes.push_back(10);
-    }
-    //Status
-    if (CanRead(11))
-    {
-        attributes.push_back(11);
-    }
-    //Alarm
-    if (CanRead(12))
-    {
-        attributes.push_back(12);
-    }
-}
-
-int CGXDLMSMBusClient::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSMBusClient::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
