@@ -56,77 +56,29 @@ class CGXDLMSValueEventArg
     friend class CGXDLMSAssociationShortName;
 
 private:
-    /**
-    * CGXDLMSVariant value.
-    */
-    CGXDLMSVariant m_Value;
-    /**
-    * Is request handled.
-    */
-    bool m_Handled;
-    /**
-    * Target DLMS object
-    */
-    CGXDLMSObject* m_Target;
-    /**
-    * Attribute index.
-    */
-    int m_Index;
-    /**
-    * Optional selector.
-    */
-    int m_Selector;
-    /**
-    * Optional parameters.
-    */
-    CGXDLMSVariant m_Parameters;
 
-    /**
-     * Occurred error.
-     */
-    DLMS_ERROR_CODE m_Error;
-    /**
-    * Is action. This is reserved for internal use.
-    */
-    bool m_Action;
+	CArtVariant c_Value;
 
-    /**
-    * Is data handled as byte array.
-    */
-    bool m_ByteArray;
+	CArtVariant m_Parameters;
 
-    /**
-    * Is value max PDU size skipped.
-    */
-    bool m_SkipMaxPduSize;
+	unsigned char event_param[10];//0-5 target_name, 6-m_Index, 7-m_Selector, 8-m_Error, 9-m_SkipMaxPduSize
 
-    /**
-    * Row to PDU is used with Profile Generic to tell how many rows are fit to
-    * one PDU.
-    */
-    unsigned short m_RowToPdu;
-    /**
-    * Rows begin index.
-    */
-    unsigned short m_RowBeginIndex;
-    /**
-    * Rows end index.
-    */
-    unsigned short m_RowEndIndex;
-
-    /**
-    * DLMS settings.
-    */
+	unsigned short row_param[3];//0-m_RowToPdu, 1-m_RowBeginIndex , 2-m_RowEndIndex
+    
     CGXDLMSSettings* m_Settings;
-
     /**
     * DLMS server.
     */
     CGXDLMSServer* m_Server;
+	/**
+	* Target DLMS object
+	*/
+	CGXDLMSObject* m_Target;
 
     void Init(
         CGXDLMSServer* server,
         CGXDLMSObject* target,
+		unsigned char * target_name,
         int index,
         int selector);
 
@@ -160,13 +112,22 @@ private:
         CGXDLMSObject* target,
         int index,
         int selector,
-        CGXDLMSVariant& parameters);
+        CArtVariant& parameters);
+
+	CGXDLMSValueEventArg(
+		CGXDLMSServer* server,
+		unsigned char* target_name,
+		int index,
+		int selector,
+		CArtVariant& parameters);
 
     /**
     * DLMS server.
     */
     CGXDLMSServer* GetServer();
 public:
+
+	CArtVariant& GetCAValue();
     /**
     * @return Target DLMS object.
     */
@@ -174,67 +135,49 @@ public:
 
     void SetTarget(CGXDLMSObject* value);
 
+
+	unsigned char* GetTargetName();
+
+	/*
+	Set target name and delete target object
+	*/
+	void SetTargetName();
     /**
     * @return Attribute index of queried object.
     */
-    int GetIndex();
+    unsigned char& GetIndex();
 
-    void SetIndex(int value);
+    void SetIndex(unsigned char value);
 
-    /**
-    * @return CGXDLMSVariant value.
-    */
-    CGXDLMSVariant& GetValue();
+	/**
+	* @param value
+	*            CArtVariant value.
+	*/
+	void SetValue(CArtVariant& value);
 
-    /**
-    * @param value
-    *            CGXDLMSVariant value.
-    */
-    void SetValue(CGXDLMSVariant value);
-
-    /**
-    * @return Data type of the value.
-    */
-    DLMS_DATA_TYPE GetDataType();
-
-    /**
-    * @param value
-    *            Data type of the value.
-    */
-    void SetDataType(DLMS_DATA_TYPE value);
-
-    /**
-    * @return Is request handled.
-    */
-    bool GetHandled();
-
-    /**
-    * @param value
-    *            Is request handled.
-    */
-    void SetHandled(bool value);
+	void SetValue(CGXByteBuffer& value);
 
     /**
     * @return Optional selector.
     */
-    int GetSelector();
+	unsigned char& GetSelector();
 
     /**
     * @param value
     *           Selector.
     */
-    void SetSelector(int value);
+    void SetSelector(unsigned char& value);
 
     /**
     * @return Optional parameters.
     */
-    CGXDLMSVariant& GetParameters();
+    CArtVariant& GetParameters();
 
     /**
     * @param value
     *           Parameters.
     */
-    void SetParameters(CGXDLMSVariant& value);
+    void SetParameters(CArtVariant& value);
 
 
     /**
@@ -265,8 +208,9 @@ public:
         CGXDLMSObject* target,
         int index,
         int selector,
-        CGXDLMSVariant& parameters);
+        CArtVariant& parameters);
 
+	~CGXDLMSValueEventArg();
     /**
     * @return Occurred error.
     */
@@ -277,28 +221,6 @@ public:
      *            Occurred error.
      */
     void SetError(DLMS_ERROR_CODE value);
-
-    /**
-    * @return Is action.
-    */
-    bool IsAction();
-
-    /**
-    * @param value
-    *            Is action.
-    */
-    void SetAction(bool value);
-
-    /**
-       * @return Is byte array.
-       */
-    bool IsByteArray();
-
-    /**
-    * @param value
-    *            Is byte array.
-    */
-    void SetByteArray(bool value);
 
     /**
     * @return Is value max PDU size skipped.
@@ -326,7 +248,7 @@ public:
     /**
     * @return Rows end index.
     */
-    unsigned int GetRowEndIndex();
+    unsigned short& GetRowEndIndex();
 
     /**
     * @param value

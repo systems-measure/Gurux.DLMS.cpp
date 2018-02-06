@@ -55,20 +55,18 @@ private:
     * Received command type.
     */
     unsigned char m_CommandType;
-
+	/**
+	* Is frame complete.
+	*/
+	bool m_Complete;
     /**
      * Received data.
      */
     CGXByteBuffer m_Data;
     /**
-     * Is frame complete.
-     */
-    bool m_Complete;
-
-    /**
      * Read value.
      */
-    CGXDLMSVariant m_DataValue;
+    CArtVariant m_DataValue;
 
     /**
      * Expected count of element in the array.
@@ -101,11 +99,16 @@ private:
     * Is received message General Block Transfer message.
     */
     bool m_Gbt;
-
+	/**
+	* Control filed value
+	*/
+	unsigned char m_ControlField;
     /**
      * Data notification date time.
      */
     struct tm* m_Time;
+    
+    
 
 public:
     /**
@@ -136,10 +139,10 @@ public:
     void SetValueType(DLMS_DATA_TYPE value);
 
 
-    CGXDLMSVariant& GetValue();
+    CArtVariant& GetValue();
 
 
-    void SetValue(CGXDLMSVariant& value);
+    void SetValue(CArtVariant& value);
 
     unsigned long GetReadPosition();
 
@@ -272,6 +275,16 @@ public:
      *            Data notification date time.
      */
     void SetTime(struct tm* value);
+    
+    /**
+     * @return Control field value.
+     */
+    unsigned char GetControlField(void);
+    
+    /**
+     * @param New control field value.
+     */
+    void SetControlField(unsigned char ctl);
 };
 
 #endif //GXREPLYDATA_H

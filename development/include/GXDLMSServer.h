@@ -53,11 +53,7 @@ class CGXDLMSServer
     friend class CGXDLMSAssociationShortName;
 private:
     CGXReplyData m_Info;
-    /**
-     * Received data.
-     */
-    CGXByteBuffer m_ReceivedData;
-
+ 
     /**
      * Reply data.
      */
@@ -67,19 +63,13 @@ private:
      * Long get or read transaction information.
      */
     CGXDLMSLongTransaction* m_Transaction;
-
-    /**
-     * Is server initialized.
-     */
-    bool m_Initialized;
-
-    /**
+	/**
     * Parse SNRM Request. If server do not accept client empty byte array is
     * returned.
     *
     * @return Returns returned UA packet.
     */
-    int HandleSnrmRequest(CGXDLMSSettings& settings, CGXByteBuffer& reply);
+    int HandleSnrmRequest(CGXByteBuffer& data, CGXDLMSSettings& settings, CGXByteBuffer& reply);
 
     /**
     * Handle get request normal command.
@@ -114,30 +104,6 @@ private:
         CGXByteBuffer& data,
         CGXDLMSLNParameters& p);
 
-    /**
-    * Handle read Block in blocks.
-    *
-    * @param data
-    *            Received data.
-    */
-    int HandleReadBlockNumberAccess(
-        CGXByteBuffer& data);
-
-    int HandleReadDataBlockAccess(
-        DLMS_COMMAND command,
-        CGXByteBuffer& data,
-        int cnt);
-
-    int ReturnSNError(
-        DLMS_COMMAND cmd,
-        DLMS_ERROR_CODE error);
-
-    int HandleRead(
-        DLMS_VARIABLE_ACCESS_SPECIFICATION type,
-        CGXByteBuffer& data,
-        CGXDLMSValueEventCollection& list,
-        std::vector<CGXDLMSValueEventArg*>& reads,
-        std::vector<CGXDLMSValueEventArg*>& actions);
 
     /**
     * Reset settings when connection is made or close.
@@ -182,20 +148,6 @@ private:
         CGXByteBuffer& data);
 
     /**
-    * Handle read request.
-    */
-    int HandleReadRequest(CGXByteBuffer& data);
-
-    /**
-    * Handle write request.
-    *
-    * @param reply
-    *            Received data from the client.
-    * @return Reply.
-    */
-    int HandleWriteRequest(CGXByteBuffer& data);
-
-    /**
     * Handle action request.
     *
     * @param reply
@@ -204,8 +156,32 @@ private:
     */
     int HandleMethodRequest(
         CGXByteBuffer& data,
-        CGXDLMSConnectionEventArgs& connectionInfo);
-
+        CGXDLMSConnectionEventArgs& connectionInfo);    
+    
+    /**
+    * Handle RR request.
+    *
+    * @param 
+    *            
+    * @return 
+    */
+    int HandleReadyRead(unsigned char cmd,
+                        unsigned char &frame);           
+    
+    /**
+    *  Checks Control field of frame
+    *
+    * @param ctl 
+    *           Control field value
+    *
+    * @param reply
+    *           Buffer for response in case of error.
+    *        
+    * @return true - control field ok, false - bad control field 
+    */
+    bool CheckCtlField(unsigned char ctl,
+                       CGXByteBuffer &reply);
+    
     /**
     * Count how many rows can fit to one PDU.
     *
@@ -214,19 +190,28 @@ private:
     * @return Rows to fit one PDU.
     */
     unsigned short GetRowsToPdu(CGXDLMSProfileGeneric* pg);
-
-    /**
-    * Update short names.
-    *
-    * @param force
-    *            Force update.
-    */
-    int UpdateShortNames(bool force);
+	/**
+	* Is server initialized.
+	*/
+	bool m_Initialized;
+   
 protected:
+  
+   bool m_LinkEstablished;
+	/**
+	* Received data.
+	*/
+	CGXByteBuffer m_ReceivedData;
+
     /**
      * Server Settings.
      */
     CGXDLMSSettings m_Settings;
+
+	/**
+	* Server Current ALN.
+	*/
+	CGXDLMSAssociationLogicalName *m_CurrentALN;
 
     /**
      * @param value
@@ -234,10 +219,7 @@ protected:
      */
     void SetCipher(CGXCipher* value);
 
-    /**
-    * @return Get settings.
-    */
-    CGXDLMSSettings& GetSettings();
+   
 
     /**
         * Check is data sent to this server.
@@ -288,7 +270,7 @@ protected:
      *            Handled read requests.
      */
     virtual void PreRead(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
      * Write selected item(s).
@@ -297,7 +279,7 @@ protected:
      *            Handled write requests.
      */
     virtual void PreWrite(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
      * Accepted connection is made for the server. All initialization is done
@@ -347,7 +329,7 @@ protected:
      *            Handled action requests.
      */
     virtual void PreAction(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Read selected item(s).
@@ -356,7 +338,7 @@ protected:
     *            Handled read requests.
     */
     virtual void PostRead(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Write selected item(s).
@@ -365,7 +347,7 @@ protected:
     *            Handled write requests.
     */
     virtual void PostWrite(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Action is occurred.
@@ -374,7 +356,7 @@ protected:
     *            Handled action requests.
     */
     virtual void PostAction(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Get selected value(s). This is called when example profile generic
@@ -384,7 +366,7 @@ protected:
     *            Value event arguments.
     */
     virtual void PreGet(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
     /**
     * Get selected value(s). This is called when example profile generic
@@ -394,14 +376,17 @@ protected:
     *            Value event arguments.
     */
     virtual void PostGet(
-        std::vector<CGXDLMSValueEventArg*>& args) = 0;
+        CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-    * Update short names.
-    */
-    int UpdateShortNames();
+  
+	
+	bool IsLongTransaction();
 
 public:
+	/**
+	* @return Get settings.
+	*/
+	CGXDLMSSettings& GetSettings();
     /**
      * @return Client to Server challenge.
      */
@@ -461,12 +446,12 @@ public:
     /**
      * @return List of objects that meter supports.
      */
-    CGXDLMSObjectCollection& GetItems();
+    CGXDLMSObjectCollection*& GetItems();
 
     /**
      * @return Information from the connection size that server can handle.
      */
-    CGXDLMSLimits GetLimits();
+    CGXDLMSLimits& GetLimits();
 
     /**
      * Retrieves the maximum size of received PDU. PDU size tells maximum size
@@ -513,65 +498,17 @@ public:
      */
     void Reset();
 
-    /**
-     * Handles client request.
-     *
-     * @param data
-     *            Received data from the client.
-     * @return Response to the request. Response is NULL if request packet is
-     *         not complete.
-     */
+    ///**
+    // * Handles client request.
+    // *
+    // * @param data
+    // *            Received data from the client.
+    // * @return Response to the request. Response is NULL if request packet is
+    // *         not complete.
+    // */
     int HandleRequest(
-        CGXByteBuffer& data,
         CGXByteBuffer& reply);
 
-    /**
-    * Handles client request.
-    *
-    * @param data
-    *            Received data from the client.
-    * @return Response to the request. Response is NULL if request packet is
-    *         not complete.
-    */
-    int HandleRequest(
-        CGXDLMSConnectionEventArgs& connectionInfo,
-        CGXByteBuffer& data,
-        CGXByteBuffer& reply);
-
-    /**
-     * Handles client request.
-     *
-     * @param data
-     *            Received data from the client.
-     * @return Response to the request. Response is NULL if request packet is
-     *         not complete.
-     */
-    int HandleRequest(
-        unsigned char* data,
-        unsigned short size,
-        CGXByteBuffer& reply);
-
-    /**
-     * Handles client request.
-     *
-     * @param data
-     *            Received data from the client.
-     * @return Response to the request. Response is NULL if request packet is
-     *         not complete.
-     */
-    int HandleRequest(
-        CGXDLMSConnectionEventArgs& connectionInfo,
-        unsigned char* data,
-        unsigned short size,
-        CGXByteBuffer& reply);
-
-
-    /**
-    * Find Short Name object.
-    *
-    * @param sn
-    */
-    int FindSNObject(int sn, CGXSNInfo& i);
 
     /**
     * Server will tell what functionality is available for the client.

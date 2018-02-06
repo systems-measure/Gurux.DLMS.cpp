@@ -55,7 +55,7 @@ CGXDLMSNotify::CGXDLMSNotify(bool useLogicalNameReferencing,
     m_Settings.SetInterfaceType(interfaceType);
 }
 
-CGXDLMSObjectCollection& CGXDLMSNotify::GetObjects()
+CGXDLMSObjectCollection*& CGXDLMSNotify::GetObjects()
 {
     return m_Settings.GetObjects();
 }
@@ -125,7 +125,7 @@ int CGXDLMSNotify::AddData(
     unsigned char index,
     CGXByteBuffer& buff)
 {
-    int ret;
+    /*int ret;
     DLMS_DATA_TYPE dt;
     CGXDLMSValueEventArg e(NULL, obj, index);
     if ((ret = obj->GetValue(m_Settings, e)) != 0)
@@ -145,7 +145,8 @@ int CGXDLMSNotify::AddData(
     {
         dt = e.GetValue().vt;
     }
-    return GXHelpers::SetData(buff, e.GetValue().vt, e.GetValue());
+    return GXHelpers::SetData(buff, e.GetValue().vt, e.GetValue());*/
+	return 0;
 }
 
 int CGXDLMSNotify::GenerateDataNotificationMessages(
@@ -160,11 +161,11 @@ int CGXDLMSNotify::GenerateDataNotificationMessages(
         p.SetTime(time);
         ret = CGXDLMS::GetLnMessages(p, reply);
     }
-    else
+   /* else
     {
         CGXDLMSSNParameters p(&m_Settings, DLMS_COMMAND_DATA_NOTIFICATION, 1, 0, &data, NULL);
         ret = CGXDLMS::GetSnMessages(p, reply);
-    }
+    }*/
     return ret;
 }
 
@@ -204,7 +205,7 @@ int CGXDLMSNotify::GeneratePushSetupMessages(
 
 int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std::pair<CGXDLMSObject*, unsigned char> >& items)
 {
-    CGXDLMSObject *obj;
+    /*CGXDLMSObject *obj;
     int index, pos, ret;
     DLMS_DATA_TYPE dt;
     CGXDLMSVariant tmp, value;
@@ -219,11 +220,11 @@ int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std:
             {
                 return ret;
             }
-            obj = GetObjects().FindByLN((DLMS_OBJECT_TYPE)classID, ln.strVal);
+            obj = GetObjects()->FindByLN((DLMS_OBJECT_TYPE)classID, ln.strVal);
             if (obj == NULL)
             {
                 obj = CGXDLMSObjectFactory::CreateObject((DLMS_OBJECT_TYPE)classID, ln.strVal);
-                GetObjects().push_back(obj);
+                GetObjects()->push_back(obj);
             }
             items.push_back(std::pair<CGXDLMSObject*, unsigned char>(obj, it->Arr[2].ToInteger()));
         }
@@ -250,6 +251,6 @@ int CGXDLMSNotify::ParsePush(std::vector<CGXDLMSVariant>& data, std::vector<std:
         CGXDLMSValueEventArg e(NULL, obj, index);
         e.SetValue(value);
         obj->SetValue(m_Settings, e);
-    }
+    }*/
     return 0;
 }

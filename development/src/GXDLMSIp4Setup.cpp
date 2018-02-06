@@ -36,8 +36,11 @@
 #include "../include/GXDLMSClient.h"
 #include <sstream>
 
+
+#ifndef __ICCARM__
+
 #if defined(_WIN32) || defined(_WIN64)//Windows includes
-#include <Winsock.h> //Add support for sockets
+#include "pcap.h"
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -69,7 +72,7 @@ CGXDLMSIp4Setup::CGXDLMSIp4Setup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_
 }
 
 //LN Constructor.
-CGXDLMSIp4Setup::CGXDLMSIp4Setup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP, ln)
+CGXDLMSIp4Setup::CGXDLMSIp4Setup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_IP4_SETUP, ln)
 {
     m_IPAddress.empty();
     m_SubnetMask = 0;
@@ -177,51 +180,51 @@ int CGXDLMSIp4Setup::GetMethodCount()
 
 void CGXDLMSIp4Setup::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    //CGXDLMSVariant().ToString()
-    values.push_back(m_DataLinkLayerReference);
-    values.push_back(m_IPAddress);
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<unsigned long>::iterator it = m_MulticastIPAddress.begin(); it != m_MulticastIPAddress.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = CGXDLMSVariant(*it).ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    ////CGXDLMSVariant().ToString()
+    //values.push_back(m_DataLinkLayerReference);
+    //values.push_back(m_IPAddress);
+    //std::stringstream sb;
+    //sb << '[';
+    //bool empty = true;
+    //for (std::vector<unsigned long>::iterator it = m_MulticastIPAddress.begin(); it != m_MulticastIPAddress.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    std::string str = CGXDLMSVariant(*it).ToString();
+    //    sb.write(str.c_str(), str.size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
 
-    //Clear str.
-    sb.str(std::string());
-    sb << '[';
-    empty = true;
-    for (std::vector<CGXDLMSIp4SetupIpOption>::iterator it = m_IPOptions.begin(); it != m_IPOptions.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = it->ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
+    ////Clear str.
+    //sb.str(std::string());
+    //sb << '[';
+    //empty = true;
+    //for (std::vector<CGXDLMSIp4SetupIpOption>::iterator it = m_IPOptions.begin(); it != m_IPOptions.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    std::string str = it->ToString();
+    //    sb.write(str.c_str(), str.size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
 
-    values.push_back(CGXDLMSVariant(m_SubnetMask).ToString());
-    values.push_back(CGXDLMSVariant(m_GatewayIPAddress).ToString());
-    values.push_back(CGXDLMSVariant(m_UseDHCP).ToString());
-    values.push_back(CGXDLMSVariant(m_PrimaryDNSAddress).ToString());
-    values.push_back(CGXDLMSVariant(m_SecondaryDNSAddress).ToString());
+    //values.push_back(CGXDLMSVariant(m_SubnetMask).ToString());
+    //values.push_back(CGXDLMSVariant(m_GatewayIPAddress).ToString());
+    //values.push_back(CGXDLMSVariant(m_UseDHCP).ToString());
+    //values.push_back(CGXDLMSVariant(m_PrimaryDNSAddress).ToString());
+    //values.push_back(CGXDLMSVariant(m_SecondaryDNSAddress).ToString());
 }
 
 void CGXDLMSIp4Setup::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -330,103 +333,95 @@ int CGXDLMSIp4Setup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSIp4Setup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	CGXByteBuffer data;
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
     }
     else if (e.GetIndex() == 2)
     {
-        CGXDLMSVariant tmp;
+        /*CGXDLMSVariant tmp;
         GXHelpers::SetLogicalName(m_DataLinkLayerReference.c_str(), tmp);
-        e.SetValue(tmp);
+        e.SetValue(tmp);*/
     }
     else if (e.GetIndex() == 3)
     {
-        if (m_IPAddress.size() == 0)
-        {
-            return 0;
-        }
-        struct sockaddr_in add;
-        add.sin_addr.s_addr = inet_addr(m_IPAddress.c_str());
-        //If address is give as name
-        if (add.sin_addr.s_addr == INADDR_NONE)
-        {
-            struct hostent *Hostent = gethostbyname(m_IPAddress.c_str());
-            if (Hostent == NULL)
-            {
-                return DLMS_ERROR_CODE_INVALID_PARAMETER;
-            };
-            add.sin_addr = *(in_addr*)(void*)Hostent->h_addr_list[0];
-        };
-        e.SetValue((unsigned long)add.sin_addr.s_addr);
+        //if (m_IPAddress.size() == 0)
+        //{
+        //    return 0;
+        //}
+        //struct sockaddr_in add;
+        //add.sin_addr.s_addr = inet_addr(m_IPAddress.c_str());
+        ////If address is give as name
+        //if (add.sin_addr.s_addr == INADDR_NONE)
+        //{
+        //    struct hostent *Hostent = gethostbyname(m_IPAddress.c_str());
+        //    if (Hostent == NULL)
+        //    {
+        //        return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        //    };
+        //    add.sin_addr = *(in_addr*)(void*)Hostent->h_addr_list[0];
+        //};
+        //e.SetValue((unsigned long)add.sin_addr.s_addr);
     }
     else if (e.GetIndex() == 4)
     {
-        e.SetByteArray(true);
-        CGXByteBuffer data;
+        /*e.SetByteArray(true);
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         GXHelpers::SetObjectCount((unsigned long)m_MulticastIPAddress.size(), data);
         int ret;
-        CGXDLMSVariant tmp;
         for (std::vector<unsigned long>::iterator it = m_MulticastIPAddress.begin(); it != m_MulticastIPAddress.end(); ++it)
         {
-            tmp = *it;
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT32, tmp)) != 0)
-            {
-                return ret;
-            }
+			data.SetUInt8(DLMS_DATA_TYPE_UINT32);
+			data.SetUInt32(*it);
         }
-        e.SetValue(data);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 5)
     {
-        e.SetByteArray(true);
-        CGXByteBuffer bb;
-        bb.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        GXHelpers::SetObjectCount((unsigned long)m_IPOptions.size(), bb);
+       /* e.SetByteArray(true);
+		data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        GXHelpers::SetObjectCount((unsigned long)m_IPOptions.size(), data);
         int ret;
-        CGXDLMSVariant type, len, data;
         for (std::vector<CGXDLMSIp4SetupIpOption>::iterator it = m_IPOptions.begin(); it != m_IPOptions.end(); ++it)
         {
-            bb.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            bb.SetUInt8(3);
-            type = it->GetType();
-            len = it->GetLength();
-            data = it->GetData();
-            if ((ret = GXHelpers::SetData(bb, DLMS_DATA_TYPE_UINT8, type)) != 0 ||
-                (ret = GXHelpers::SetData(bb, DLMS_DATA_TYPE_UINT8, len)) != 0 ||
-                (ret = GXHelpers::SetData(bb, DLMS_DATA_TYPE_OCTET_STRING, data)) != 0)
-            {
-                return ret;
-            }
+			data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+			data.SetUInt8(3);
+			data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+			data.SetUInt8(it->GetType());
+			data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+			data.SetUInt8(it->GetLength());
+			data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+			data.SetUInt8(it->GetData().GetSize());
+			data.Set(it->GetData().GetData(), it->GetData().GetSize());
         }
-        e.SetValue(bb);
+        e.SetValue(data);*/
     }
     else if (e.GetIndex() == 6)
     {
-        e.SetValue(m_SubnetMask);
+        //e.SetValue(m_SubnetMask);
     }
     else if (e.GetIndex() == 7)
     {
-        e.SetValue(m_GatewayIPAddress);
+        //e.SetValue(m_GatewayIPAddress);
     }
     else if (e.GetIndex() == 8)
     {
-        e.SetValue(m_UseDHCP);
+       // e.SetValue(m_UseDHCP);
     }
     else if (e.GetIndex() == 9)
     {
-        e.SetValue(m_PrimaryDNSAddress);
+       // e.SetValue(m_PrimaryDNSAddress);
     }
     else if (e.GetIndex() == 10)
     {
-        e.SetValue(m_SecondaryDNSAddress);
+       // e.SetValue(m_SecondaryDNSAddress);
     }
     else
     {
@@ -440,11 +435,11 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_STRING)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_STRING)
         {
             m_DataLinkLayerReference = e.GetValue().ToString();
         }
@@ -452,11 +447,11 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
         {
             m_DataLinkLayerReference.clear();
             GXHelpers::GetLogicalName(e.GetValue().byteArr, m_DataLinkLayerReference);
-        }
+        }*/
     }
     else if (e.GetIndex() == 3)
     {
-        long tmp = e.GetValue().ToInteger();
+        /*long tmp = e.GetValue().ToInteger();
         CGXByteBuffer bb;
         bb.AddIntAsString(tmp & 0xFF);
         bb.SetInt8('.');
@@ -465,22 +460,22 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
         bb.AddIntAsString((tmp >> 16) & 0xFF);
         bb.SetInt8('.');
         bb.AddIntAsString((tmp >> 24) & 0xFF);
-        m_IPAddress = bb.ToString();
+        m_IPAddress = bb.ToString();*/
     }
     else if (e.GetIndex() == 4)
     {
-        m_MulticastIPAddress.clear();
+       /* m_MulticastIPAddress.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
             {
                 m_MulticastIPAddress.push_back((*it).ToInteger());
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 5)
     {
-        m_IPOptions.clear();
+        /*m_IPOptions.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             for (std::vector<CGXDLMSVariant>::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
@@ -493,27 +488,27 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
                 item.SetData(tmp);
                 m_IPOptions.push_back(item);
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 6)
     {
-        m_SubnetMask = e.GetValue().ToInteger();
+       // m_SubnetMask = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 7)
     {
-        m_GatewayIPAddress = e.GetValue().ToInteger();
+       // m_GatewayIPAddress = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 8)
     {
-        m_UseDHCP = e.GetValue().boolVal;
+       // m_UseDHCP = e.GetValue().boolVal;
     }
     else if (e.GetIndex() == 9)
     {
-        m_PrimaryDNSAddress = e.GetValue().ToInteger();
+       // m_PrimaryDNSAddress = e.GetValue().ToInteger();
     }
     else if (e.GetIndex() == 10)
     {
-        m_SecondaryDNSAddress = e.GetValue().ToInteger();
+        //m_SecondaryDNSAddress = e.GetValue().ToInteger();
     }
     else
     {
@@ -521,3 +516,5 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     }
     return DLMS_ERROR_CODE_OK;
 }
+
+#endif //__ICCARM__

@@ -59,7 +59,7 @@ public:
     CGXDLMSMBusClient(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSMBusClient(std::string ln);
+    CGXDLMSMBusClient(const char* ln);
 
     /**
     Provides reference to an "M-Bus master port setup" object, used to configure

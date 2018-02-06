@@ -50,7 +50,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSMacAddressSetup(std::string ln);
+    CGXDLMSMacAddressSetup(const char* ln);
 
     /**
      Constructor.

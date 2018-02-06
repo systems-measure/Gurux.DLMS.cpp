@@ -41,12 +41,12 @@
 class CGXAuthenticationMechanismName
 {
 private:
-    int m_JointIsoCtt;
-    int m_Country;
-    int m_CountryName;
-    int m_IdentifiedOrganization;
-    int m_DlmsUA;
-    int m_AuthenticationMechanismName;
+    unsigned char m_JointIsoCtt;
+	unsigned char m_Country;
+	unsigned short m_CountryName;
+    unsigned char m_IdentifiedOrganization;
+    unsigned char m_DlmsUA;
+    unsigned char m_AuthenticationMechanismName;
     DLMS_AUTHENTICATION m_MechanismId;
 
 public:
@@ -55,23 +55,23 @@ public:
      */
     CGXAuthenticationMechanismName();
 
-    int GetJointIsoCtt();
-    void SetJointIsoCtt(int value);
+	unsigned char GetJointIsoCtt();
+    void SetJointIsoCtt(unsigned char value);
 
-    int GetCountry();
-    void SetCountry(int value);
+	unsigned char GetCountry();
+    void SetCountry(unsigned char value);
 
-    int GetCountryName();
-    void SetCountryName(int value);
+	unsigned short GetCountryName();
+    void SetCountryName(unsigned short value);
 
-    int GetIdentifiedOrganization();
-    void SetIdentifiedOrganization(int value);
+	unsigned char GetIdentifiedOrganization();
+    void SetIdentifiedOrganization(unsigned char value);
 
-    int GetDlmsUA();
-    void SetDlmsUA(int value);
+	unsigned char GetDlmsUA();
+    void SetDlmsUA(unsigned char value);
 
-    int GetAuthenticationMechanismName();
-    void SetAuthenticationMechanismName(int value);
+	unsigned char GetAuthenticationMechanismName();
+    void SetAuthenticationMechanismName(unsigned char value);
 
     DLMS_AUTHENTICATION GetMechanismId();
     void SetMechanismId(DLMS_AUTHENTICATION value);

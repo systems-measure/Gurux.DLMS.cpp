@@ -20,7 +20,7 @@
 /**
 * Key schedule Vector (powers of x).
 */
-static unsigned char R_CON[] =
+const unsigned char R_CON[] =
 {
     0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40,
     0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d,
@@ -32,7 +32,7 @@ static unsigned char R_CON[] =
 /**
 * S box
 */
-static unsigned char S_BOX[] =
+const unsigned char S_BOX[] =
 {
     0x63, 0x7C, 0x77,
     0x7B, 0xF2, 0x6B, 0x6F, 0xC5,
@@ -91,7 +91,7 @@ static unsigned char S_BOX[] =
 /**
 * Rijndael (AES) Encryption fast table.
 */
-static unsigned int AES[] =
+const unsigned int AES[] =
 {
     0xa56363c6, 0x847c7cf8, 0x997777ee, 0x8d7b7bf6, 0x0df2f2ff,
     0xbd6b6bd6, 0xb16f6fde, 0x54c5c591, 0x50303060, 0x03010102,

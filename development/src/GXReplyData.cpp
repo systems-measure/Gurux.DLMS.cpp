@@ -48,6 +48,7 @@ CGXReplyData::CGXReplyData(
     m_Data = buff;
     m_Complete = complete;
     m_Time = NULL;
+    m_ControlField = 0xFF;
 }
 
 CGXReplyData::CGXReplyData()
@@ -65,12 +66,12 @@ void CGXReplyData::SetValueType(DLMS_DATA_TYPE value)
     m_DataType = value;
 }
 
-CGXDLMSVariant& CGXReplyData::GetValue()
+CArtVariant& CGXReplyData::GetValue()
 {
     return m_DataValue;
 }
 
-void CGXReplyData::SetValue(CGXDLMSVariant& value)
+void CGXReplyData::SetValue(CArtVariant& value)
 {
     m_DataValue = value;
 }
@@ -180,9 +181,12 @@ int CGXReplyData::GetTotalCount()
 
 int CGXReplyData::GetCount()
 {
-    if (m_DataValue.vt == DLMS_DATA_TYPE_ARRAY)
+	VarInfo v_info;
+	m_DataValue.GetVar(v_info);
+	m_DataValue.SetPosition(0);
+    if (v_info.vt == DLMS_DATA_TYPE_ARRAY)
     {
-        return (int)m_DataValue.Arr.size();
+        return (int)v_info.size;
     }
     return 0;
 }
@@ -240,4 +244,14 @@ void CGXReplyData::SetTime(struct tm* value)
         }
         memcpy(m_Time, value, sizeof(struct tm));
     }
+}
+
+unsigned char CGXReplyData::GetControlField(void)
+{
+    return m_ControlField;
+}
+        
+void CGXReplyData::SetControlField(unsigned char ctl)
+{
+    m_ControlField = ctl;
 }

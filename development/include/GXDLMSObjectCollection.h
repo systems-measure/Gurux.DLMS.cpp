@@ -35,28 +35,70 @@
 #ifndef GXDLMSOBJECTCOLLECTION_H
 #define GXDLMSOBJECTCOLLECTION_H
 
+
+
 #include <vector>
 #include "GXDLMSObject.h"
 
-class CGXDLMSObjectCollection : public std::vector<CGXDLMSObject*>
+typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint8_t* idx_cnstrd);
+
+typedef unsigned char(*TypeObj)(const char* obis, uint8_t* idx_cnstrd);
+
+class CGXDLMSObjectCollection : public std::vector<unsigned char*>
 {
+private:
+	CGXDLMSObject* constructed_obj;
+
+	uint8_t* idx_constructed_obj;
+
+	std::vector<CGXDLMSObject*> dlms_only_obj;
+
+	InitObjField init_callback;
+
+	TypeObj type_callback;
+
+	void CreateObject(DLMS_OBJECT_TYPE type);
 public:
+	CGXDLMSObjectCollection();
+
     ~CGXDLMSObjectCollection();
 
     CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, std::string& ln);
 
+	unsigned char* FindByLN(const char* ln);
+
+	unsigned char* FindByLN(CGXByteBuffer& ln);
+
     CGXDLMSObject* FindByLN(DLMS_OBJECT_TYPE type, CGXByteBuffer& ln);
 
-    CGXDLMSObject* FindBySN(unsigned short sn);
+	std::vector<CGXDLMSObject*>& GetDlmsObj();
 
-    void GetObjects(DLMS_OBJECT_TYPE type, CGXDLMSObjectCollection& items);
+    void push_back(unsigned char* item);
 
-    void push_back(
-        CGXDLMSObject* item);
+	void push_back(CGXDLMSObject* item);
+
+	int sizeRequiredObj();
+
+	void clear();
+
+	std::vector<CGXDLMSObject*>::iterator insert(std::vector<CGXDLMSObject*>::const_iterator where, 
+		std::vector<CGXDLMSObject*>::const_iterator first, std::vector<CGXDLMSObject*>::const_iterator last);
+
+	std::vector<unsigned char*>::iterator insert(std::vector<unsigned char*>::const_iterator where,
+		std::vector<unsigned char*>::const_iterator first, std::vector<unsigned char*>::const_iterator last);
+
+	InitObjField GetInitCallback();
+
+	void SetInitCallback(InitObjField init);
+
+	TypeObj GetTypeObjCallback();
+
+	void SetTypeObjCallback(TypeObj type);
 
     void Free();
 
-    std::string ToString();
+	void FreeConstructedObj();
+
 };
 
 #endif //GXDLMSOBJECTCOLLECTION_H

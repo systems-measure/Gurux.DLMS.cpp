@@ -41,16 +41,17 @@
 
 class CGXDLMSLimiter : public CGXDLMSObject
 {
-    CGXDLMSObject* m_MonitoredValue;
-    int m_MonitoredAttributeIndex;
-    CGXDLMSVariant m_ThresholdActive;
-    CGXDLMSVariant m_ThresholdNormal;
-    CGXDLMSVariant m_ThresholdEmergency;
-    long m_MinOverThresholdDuration;
-    long m_MinUnderThresholdDuration;
+	// format monitored_value: uint16 iclass, octet_str[6] ln, uint8 attr data type 
+	CArtVariant m_MonitoredValue;
+    CArtVariant m_ThresholdActive;
+	CArtVariant m_ThresholdNormal;
+	CArtVariant m_ThresholdEmergency;
+    unsigned long m_MinOverThresholdDuration;
+	unsigned long m_MinUnderThresholdDuration;
     CGXDLMSEmergencyProfile m_EmergencyProfile;
-    std::vector<int> m_EmergencyProfileGroupIDs;
+    std::vector<unsigned short> m_EmergencyProfileGroupIDs;
     bool m_EmergencyProfileActive;
+	unsigned char m_MonitoredAttributeIndex;
     CGXDLMSActionItem m_ActionOverThreshold;
     CGXDLMSActionItem m_ActionUnderThreshold;
 public:
@@ -61,54 +62,54 @@ public:
     CGXDLMSLimiter(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSLimiter(std::string ln);
+    CGXDLMSLimiter(const char* ln);
 
 
     /**
      Defines an attribute of an object to be monitored.
     */
-    CGXDLMSObject* GetMonitoredValue();
-    void SetMonitoredValue(CGXDLMSObject* value);
+	CArtVariant GetMonitoredValue();
+    void SetMonitoredValue(CArtVariant& value);
 
     /**
      Provides the active threshold value to which the attribute monitored is compared.
     */
-    CGXDLMSVariant& GetThresholdActive();
-    void SetThresholdActive(CGXDLMSVariant value);
+	CArtVariant& GetThresholdActive();
+    void SetThresholdActive(CArtVariant& value);
 
     /**
      Provides the threshold value to which the attribute monitored
      is compared when in normal operation.
     */
-    CGXDLMSVariant& GetThresholdNormal();
-    void SetThresholdNormal(CGXDLMSVariant value);
+	CArtVariant& GetThresholdNormal();
+    void SetThresholdNormal(CArtVariant& value);
 
     /**
      Provides the threshold value to which the attribute monitored
      is compared when an emergency profile is active.
     */
-    CGXDLMSVariant& GetThresholdEmergency();
-    void SetThresholdEmergency(CGXDLMSVariant value);
+	CArtVariant& GetThresholdEmergency();
+    void SetThresholdEmergency(CArtVariant& value);
 
     /**
      Defines minimal over threshold duration in seconds required
      to execute the over threshold action.
     */
-    long GetMinOverThresholdDuration();
-    void SetMinOverThresholdDuration(long value);
+	unsigned long GetMinOverThresholdDuration();
+    void SetMinOverThresholdDuration(unsigned long value);
 
     /**
      Defines minimal under threshold duration in seconds required to
      execute the under threshold action.
     */
-    long GetMinUnderThresholdDuration();
-    void SetMinUnderThresholdDuration(long value);
+	unsigned long GetMinUnderThresholdDuration();
+    void SetMinUnderThresholdDuration(unsigned long value);
 
     CGXDLMSEmergencyProfile& GetEmergencyProfile();
     void SetEmergencyProfile(CGXDLMSEmergencyProfile value);
 
-    std::vector<int>& GetEmergencyProfileGroupIDs();
-    void SetEmergencyProfileGroupIDs(std::vector<int> value);
+    std::vector<unsigned short>& GetEmergencyProfileGroupIDs();
+    void SetEmergencyProfileGroupIDs(std::vector<unsigned short>& value);
 
     /**
      Is Emergency Profile active.
@@ -141,7 +142,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

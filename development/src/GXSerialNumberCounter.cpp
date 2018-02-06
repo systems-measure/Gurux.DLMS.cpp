@@ -138,7 +138,7 @@ int CGXSerialNumberCounter::Count(unsigned long sn, const char* formula)
     unsigned long value;
     if ((ret = FormatString(tmp, str)) != 0)
     {
-        return -1;
+        return ret;
     }
 
     if ((ret = GetValues(str, values)) != 0)

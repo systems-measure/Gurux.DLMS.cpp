@@ -61,7 +61,7 @@ CGXDLMSSettings::CGXDLMSSettings(bool isServer)
 //Destructor.
 CGXDLMSSettings::~CGXDLMSSettings()
 {
-    m_Objects.Free();
+    m_Objects = nullptr;
 }
 
 CGXByteBuffer& CGXDLMSSettings::GetCtoSChallenge()
@@ -220,6 +220,11 @@ unsigned char CGXDLMSSettings::GetKeepAlive()
     return (unsigned char)(m_SenderFrame & 0xF1);
 }
 
+unsigned char CGXDLMSSettings::GetSenderFrame()
+{
+    return m_SenderFrame;
+}
+
 unsigned long CGXDLMSSettings::GetBlockIndex()
 {
     return m_BlockIndex;
@@ -301,7 +306,7 @@ unsigned short CGXDLMSSettings::GetMaxPduSize()
 
 int CGXDLMSSettings::SetMaxReceivePDUSize(unsigned short value)
 {
-    if (value < 64)
+    if (value < 12)
     {
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
@@ -380,7 +385,7 @@ int CGXDLMSSettings::SetLongInvokeID(unsigned long value)
     m_LongInvokeID = value;
     return 0;
 }
-CGXDLMSObjectCollection& CGXDLMSSettings::GetObjects()
+CGXDLMSObjectCollection*& CGXDLMSSettings::GetObjects()
 {
     return m_Objects;
 }

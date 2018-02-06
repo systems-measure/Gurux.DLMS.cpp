@@ -56,7 +56,7 @@ public:
     //SN Constructor.
     CGXDLMSIECOpticalPortSetup(unsigned short sn);
     //LN Constructor.
-    CGXDLMSIECOpticalPortSetup(std::string ln);
+    CGXDLMSIECOpticalPortSetup(const char* ln);
 
     DLMS_OPTICAL_PROTOCOL_MODE GetDefaultMode();
     void SetDefaultMode(DLMS_OPTICAL_PROTOCOL_MODE value);

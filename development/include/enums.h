@@ -37,14 +37,14 @@
 #include <algorithm>
 #include <functional>
 #include <cctype>
-#include <locale>
+//#include <locale>
 #include <stdio.h>
 #include <string.h>
 #include <sstream>
 #include <vector>
 #include <time.h>
 #include <map>
-#include <fstream>
+//#include <fstream>
 #include <assert.h>
 #include <iostream>
 #include <math.h>
@@ -74,14 +74,17 @@ enum DLMS_ASSOCIATION_RESULT
 
 typedef enum
 {
-    DLMS_SOURCE_DIAGNOSTIC_NONE = 0,
-    DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN = 1,
-    //Application context name not supported.
-    DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED = 2,
-    DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_MECHANISM_NAME_NOT_RECOGNISED = 11,
-    DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_MECHANISM_NAME_REQUIRED = 12,
-    DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_FAILURE = 13,
-    DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_REQUIRED = 14,
+	DLMS_SOURCE_DIAGNOSTIC_NONE = 0,
+	DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN = 1,
+	//Application context name not supported.
+	DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED = 2,
+	DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_MECHANISM_NAME_NOT_RECOGNISED = 11,
+	DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_MECHANISM_NAME_REQUIRED = 12,
+	DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_FAILURE = 13,
+	DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_REQUIRED = 14,
+	DLMS_SOURCE_DIAGNOSTIC_ASCE_NULL = 20,
+	DLMS_SOURCE_DIAGNOSTIC_ASCE_NO_REASON_GIVEN = 21,
+	DLMS_SOURCE_DIAGNOSTIC_ASCE_NO_COMMON_VERSION = 22
 } DLMS_SOURCE_DIAGNOSTIC;
 
 /**
@@ -877,6 +880,16 @@ typedef enum
      */
     DLMS_COMMAND_WRITE_RESPONSE = 0xD,
 
+    /**
+     * Ready Read comand, NR=0.
+     */
+    DLMS_COMMAND_RR = 0x11,
+    
+    /**
+     * Disconnected mode (DM) response.
+     */
+    DLMS_COMMAND_DM = 0x1F,
+    
     /**
      * Get request.
      */

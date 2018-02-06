@@ -39,14 +39,14 @@
 
 class CGXDLMSIecHdlcSetup : public CGXDLMSObject
 {
-    int m_InactivityTimeout;
-    int m_DeviceAddress;
-    int m_MaximumInfoLengthTransmit;
-    DLMS_BAUD_RATE m_CommunicationSpeed;
-    int m_WindowSizeTransmit;
-    int m_WindowSizeReceive;
-    int m_InterCharachterTimeout;
-    int m_MaximumInfoLengthReceive;
+	/*unsigned short m_InactivityTimeout;
+	unsigned short m_DeviceAddress;
+	unsigned short m_MaximumInfoLengthTransmit;
+	unsigned short m_InterCharachterTimeout;
+	unsigned short m_MaximumInfoLengthReceive;
+	unsigned char m_WindowSizeTransmit;
+	unsigned char m_WindowSizeReceive;
+    DLMS_BAUD_RATE m_CommunicationSpeed;	*/
 
 public:
     //Constructor.
@@ -56,31 +56,31 @@ public:
     CGXDLMSIecHdlcSetup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSIecHdlcSetup(std::string ln);
+    CGXDLMSIecHdlcSetup(const char* ln);
 
-    DLMS_BAUD_RATE GetCommunicationSpeed();
+    /*DLMS_BAUD_RATE GetCommunicationSpeed();
 
     void SetCommunicationSpeed(DLMS_BAUD_RATE value);
 
-    int GetWindowSizeTransmit();
-    void SetWindowSizeTransmit(int value);
+	unsigned char GetWindowSizeTransmit();
+    void SetWindowSizeTransmit(unsigned char value);
 
-    int GetWindowSizeReceive();
-    void SetWindowSizeReceive(int value);
-    int GetMaximumInfoLengthTransmit();
-    void SetMaximumInfoLengthTransmit(int value);
-    int GetMaximumInfoLengthReceive();
-    void SetMaximumInfoLengthReceive(int value);
+	unsigned char GetWindowSizeReceive();
+    void SetWindowSizeReceive(unsigned char value);
+	unsigned short GetMaximumInfoLengthTransmit();
+    void SetMaximumInfoLengthTransmit(unsigned short value);
+	unsigned short GetMaximumInfoLengthReceive();
+    void SetMaximumInfoLengthReceive(unsigned short value);
 
-    int GetInterCharachterTimeout();
-    void SetInterCharachterTimeout(int value);
+	unsigned short GetInterCharachterTimeout();
+    void SetInterCharachterTimeout(unsigned short value);
 
 
-    int GetInactivityTimeout();
-    void SetInactivityTimeout(int value);
+	unsigned short GetInactivityTimeout();
+    void SetInactivityTimeout(unsigned short value);
 
-    int GetDeviceAddress();
-    void SetDeviceAddress(int value);
+	unsigned short GetDeviceAddress();
+    void SetDeviceAddress(unsigned short value);*/
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -92,7 +92,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

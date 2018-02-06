@@ -49,7 +49,7 @@ CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, unsigned short sn) : CGX
 }
 
 //LN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, std::string ln) : CGXDLMSObject(type, ln)
+CGXDLMSRegister::CGXDLMSRegister(DLMS_OBJECT_TYPE type, const char* ln) : CGXDLMSObject(type, ln)
 {
     Init();
 }
@@ -76,20 +76,20 @@ CGXDLMSRegister::CGXDLMSRegister(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_
 }
 
 //SN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(unsigned short sn, double scaler, int unit, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, sn)
+CGXDLMSRegister::CGXDLMSRegister(unsigned short sn, double scaler, unsigned char unit, CArtVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, sn)
 {
     m_Value = value;
     Init();
 }
 
 //LN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
+CGXDLMSRegister::CGXDLMSRegister(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
 {
     Init();
 }
 
 //LN Constructor.
-CGXDLMSRegister::CGXDLMSRegister(std::string ln, double scaler, int unit, CGXDLMSVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
+CGXDLMSRegister::CGXDLMSRegister(const char* ln, double scaler, unsigned char unit, CArtVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_REGISTER, ln)
 {
     m_Value = value;
     Init();
@@ -98,7 +98,7 @@ CGXDLMSRegister::CGXDLMSRegister(std::string ln, double scaler, int unit, CGXDLM
 /// <summary>
 /// Get value of COSEM Data object.
 /// </summary>
-CGXDLMSVariant CGXDLMSRegister::GetValue()
+CArtVariant CGXDLMSRegister::GetValue()
 {
     return m_Value;
 }
@@ -106,7 +106,7 @@ CGXDLMSVariant CGXDLMSRegister::GetValue()
 /// <summary>
 /// Set value of COSEM Data object.
 /// </summary>
-void CGXDLMSRegister::SetValue(CGXDLMSVariant& value)
+void CGXDLMSRegister::SetValue(CArtVariant& value)
 {
     m_Value = value;
 }
@@ -123,7 +123,7 @@ void CGXDLMSRegister::SetScaler(double value)
 }
 
 // Unit of COSEM Register object.
-int CGXDLMSRegister::GetUnit()
+unsigned char CGXDLMSRegister::GetUnit()
 {
     return m_Unit;
 }
@@ -166,25 +166,25 @@ int CGXDLMSRegister::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 
 void CGXDLMSRegister::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(m_Value.ToString());
-    std::string str = "Scaler: ";
-    double s = GetScaler();
-    //if there is no fractal part.
-    if (s - (long)s == 0)
-    {
-        str += CGXDLMSVariant((long)s).ToString();
-    }
-    else
-    {
-        str += CGXDLMSVariant(s).ToString();
-    }
-    str += " Unit: ";
-    str += CGXDLMSConverter::GetUnitAsString(m_Unit);
-    values.push_back(str);
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    //values.push_back(m_Value.ToString());
+    //std::string str = "Scaler: ";
+    //double s = GetScaler();
+    ////if there is no fractal part.
+    //if (s - (long)s == 0)
+    //{
+    //    str += CGXDLMSVariant((long)s).ToString();
+    //}
+    //else
+    //{
+    //    str += CGXDLMSVariant(s).ToString();
+    //}
+    //str += " Unit: ";
+    //str += CGXDLMSConverter::GetUnitAsString(m_Unit);
+    //values.push_back(str);
 }
 
 void CGXDLMSRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -206,7 +206,7 @@ void CGXDLMSRegister::GetAttributeIndexToRead(std::vector<int>& attributes)
     }
 }
 
-int CGXDLMSRegister::GetDataType(int index, DLMS_DATA_TYPE& type)
+int CGXDLMSRegister::GetDataType(unsigned char index, DLMS_DATA_TYPE& type)
 {
     if (index == 1)
     {
@@ -227,28 +227,33 @@ int CGXDLMSRegister::GetDataType(int index, DLMS_DATA_TYPE& type)
 
 int CGXDLMSRegister::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+//	e.SetByteArray(true);
+	CGXByteBuffer data;
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(m_Value);
+		CArtVariant tmp_val(m_Value);
+        e.SetValue(tmp_val);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
-    {
-        e.GetValue().Clear();
-        e.GetValue().vt = DLMS_DATA_TYPE_STRUCTURE;
-        e.GetValue().Arr.push_back(m_Scaler);
-        e.GetValue().Arr.push_back(m_Unit);
+    {    
+		data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+		data.SetUInt8(2);
+		data.SetUInt8(DLMS_DATA_TYPE_INT8);
+		data.SetUInt8(m_Scaler);
+		data.SetUInt8(DLMS_DATA_TYPE_ENUM);
+		data.SetUInt8(m_Unit);
+		e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -258,26 +263,55 @@ int CGXDLMSRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
         if (m_Scaler != 0)
         {
-            double val = GetScaler();
-            val *= e.GetValue().ToDouble();
-            CGXDLMSVariant tmp(val);
-            SetValue(tmp);
+			VarInfo v_info;
+			e.GetCAValue().GetVar(v_info);
+			unsigned char ret;
+			unsigned long long val;
+			double res;
+			if (v_info.vt == DLMS_DATA_TYPE_UINT8 || v_info.vt == DLMS_DATA_TYPE_UINT16 || v_info.vt == DLMS_DATA_TYPE_UINT32 || v_info.vt == DLMS_DATA_TYPE_UINT64 ||
+				v_info.vt == DLMS_DATA_TYPE_INT8 || v_info.vt == DLMS_DATA_TYPE_INT16 || v_info.vt == DLMS_DATA_TYPE_INT32 || v_info.vt == DLMS_DATA_TYPE_INT64) {
+				if ((ret = e.GetCAValue().GetUInt(v_info.size, &val)) != DLMS_ERROR_CODE_OK) {
+					return ret;
+				}
+				res = (double)val*GetScaler();
+			}
+			else {
+				if (v_info.vt == DLMS_DATA_TYPE_FLOAT32 || v_info.vt == DLMS_DATA_TYPE_FLOAT64) {
+					if ((ret = e.GetCAValue().GetReal(v_info.size, res)) != DLMS_ERROR_CODE_OK) {
+						return ret;
+					}
+					res *= GetScaler();
+				}
+			}
+			CArtVariant tmp_val;
+			tmp_val.Reserve(9);
+			tmp_val.SetUInt8(DLMS_DATA_TYPE_FLOAT64);
+			tmp_val.SetDouble(res);
+            SetValue(tmp_val);
         }
         else
         {
-            SetValue(e.GetValue());
+            SetValue(e.GetCAValue());
         }
     }
-    else if (e.GetIndex() == 3 && e.GetValue().vt == DLMS_DATA_TYPE_STRUCTURE)
+    else if (e.GetIndex() == 3 )
     {
-        m_Scaler = e.GetValue().Arr[0].ToInteger();
-        m_Unit = e.GetValue().Arr[1].ToInteger();
+		VarInfo v_info;
+		e.GetCAValue().GetVar(v_info);
+		if (v_info.vt != DLMS_DATA_TYPE_STRUCTURE || v_info.size != 2) {
+			return DLMS_ERROR_CODE_INVALID_PARAMETER;
+		}
+		e.GetCAValue().GetVar(v_info);
+		m_Scaler = *(e.GetCAValue().GetCurPtr());
+		e.GetCAValue().IncreasePosition(v_info.size);
+		e.GetCAValue().GetVar(v_info);
+		m_Unit = *(e.GetCAValue().GetCurPtr());
     }
     else
     {

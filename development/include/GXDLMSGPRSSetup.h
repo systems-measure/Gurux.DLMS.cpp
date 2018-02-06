@@ -54,7 +54,7 @@ public:
     CGXDLMSGPRSSetup(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSGPRSSetup(std::string ln);
+    CGXDLMSGPRSSetup(const char* ln);
 
     std::string GetAPN();
     void SetAPN(std::string value);

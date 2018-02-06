@@ -49,7 +49,7 @@ public:
     CGXDLMSSchedule(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSSchedule(std::string ln);
+    CGXDLMSSchedule(const char* ln);
 
     // Get value of COSEM Data object.
     std::vector<CGXDLMSScheduleEntry>& GetEntries();

@@ -39,9 +39,9 @@
 
 class CGXDLMSDisconnectControl : public CGXDLMSObject
 {
-    bool m_OutputState;
+    /*bool m_OutputState;
     DLMS_CONTROL_STATE m_ControlState;
-    DLMS_CONTROL_MODE m_ControlMode;
+    DLMS_CONTROL_MODE m_ControlMode;*/
 
 public:
     //Constructor.
@@ -51,25 +51,25 @@ public:
     CGXDLMSDisconnectControl(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSDisconnectControl(std::string ln);
+    CGXDLMSDisconnectControl(const char* ln);
 
     /**
      Output state of COSEM Disconnect Control object.
     */
-    bool GetOutputState();
-    void SetOutputState(bool value);
+    //bool GetOutputState();
+    //void SetOutputState(bool value);
 
-    /**
-     Control state of COSEM Disconnect Control object.
-    */
-    DLMS_CONTROL_STATE GetControlState();
-    void SetControlState(DLMS_CONTROL_STATE value);
+    ///**
+    // Control state of COSEM Disconnect Control object.
+    //*/
+    //DLMS_CONTROL_STATE GetControlState();
+    //void SetControlState(DLMS_CONTROL_STATE value);
 
-    /**
-    Control mode of COSEM Disconnect Control object.
-    */
-    DLMS_CONTROL_MODE GetControlMode();
-    void SetControlMode(DLMS_CONTROL_MODE value);
+    ///**
+    //Control mode of COSEM Disconnect Control object.
+    //*/
+    //DLMS_CONTROL_MODE GetControlMode();
+    //void SetControlMode(DLMS_CONTROL_MODE value);
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -82,7 +82,7 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     // Returns value of given attribute.
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);

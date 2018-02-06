@@ -56,7 +56,7 @@ public:
     CGXDLMSAutoConnect(unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSAutoConnect(std::string ln);
+    CGXDLMSAutoConnect(const char* ln);
 
     AUTO_CONNECT_MODE GetMode();
     void SetMode(AUTO_CONNECT_MODE value);

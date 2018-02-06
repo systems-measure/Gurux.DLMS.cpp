@@ -45,37 +45,37 @@ void CGXDLMSContextType::SetConformance(DLMS_CONFORMANCE value)
     m_Conformance = value;
 }
 
-int CGXDLMSContextType::GetMaxPduSize()
+unsigned short CGXDLMSContextType::GetMaxPduSize()
 {
     return m_MaxReceivePduSize;
 }
-void CGXDLMSContextType::SetMaxReceivePduSize(int value)
+void CGXDLMSContextType::SetMaxReceivePduSize(unsigned short value)
 {
     m_MaxReceivePduSize = value;
 }
 
-int CGXDLMSContextType::GetMaxSendPpuSize()
+unsigned short CGXDLMSContextType::GetMaxSendPduSize()
 {
-    return m_MaxSendPpuSize;
+    return m_MaxSendPduSize;
 }
-void CGXDLMSContextType::SetMaxSendPpuSize(int value)
+void CGXDLMSContextType::SetMaxSendPduSize(unsigned short value)
 {
-    m_MaxSendPpuSize = value;
+    m_MaxSendPduSize = value;
 }
 
-int CGXDLMSContextType::GetDlmsVersionNumber()
+unsigned char CGXDLMSContextType::GetDlmsVersionNumber()
 {
     return m_DlmsVersionNumber;
 }
-void CGXDLMSContextType::SetDlmsVersionNumber(int value)
+void CGXDLMSContextType::SetDlmsVersionNumber(unsigned char value)
 {
     m_DlmsVersionNumber = value;
 }
-int CGXDLMSContextType::GetQualityOfService()
+char CGXDLMSContextType::GetQualityOfService()
 {
     return m_QualityOfService;
 }
-void CGXDLMSContextType::SetQualityOfService(int value)
+void CGXDLMSContextType::SetQualityOfService(char value)
 {
     m_QualityOfService = value;
 }
@@ -97,7 +97,7 @@ std::string CGXDLMSContextType::ToString()
     bb.SetInt8(' ');
     bb.AddIntAsString(m_MaxReceivePduSize);
     bb.SetInt8(' ');
-    bb.AddIntAsString(m_MaxSendPpuSize);
+    bb.AddIntAsString(m_MaxSendPduSize);
     bb.SetInt8(' ');
     bb.AddIntAsString(m_DlmsVersionNumber);
     bb.SetInt8(' ');

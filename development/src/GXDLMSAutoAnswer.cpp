@@ -58,7 +58,7 @@ CGXDLMSAutoAnswer::CGXDLMSAutoAnswer() : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_ANS
 
  @param ln Logical Name of the object.
 */
-CGXDLMSAutoAnswer::CGXDLMSAutoAnswer(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_ANSWER, ln)
+CGXDLMSAutoAnswer::CGXDLMSAutoAnswer(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_AUTO_ANSWER, ln)
 {
     Init();
 }
@@ -144,37 +144,37 @@ int CGXDLMSAutoAnswer::GetMethodCount()
 
 void CGXDLMSAutoAnswer::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back(CGXDLMSVariant(m_Mode).ToString());
-    std::stringstream sb;
-    sb << '[';
-    bool empty = true;
-    for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_ListeningWindow.begin(); it != m_ListeningWindow.end(); ++it)
-    {
-        if (!empty)
-        {
-            sb << ", ";
-        }
-        empty = false;
-        std::string str = it->first.ToString();
-        sb.write(str.c_str(), str.size());
-        sb << " ";
-        str = it->second.ToString();
-        sb.write(str.c_str(), str.size());
-    }
-    sb << ']';
-    values.push_back(sb.str());
-    values.push_back(CGXDLMSVariant(m_Status).ToString());
-    values.push_back(CGXDLMSVariant(m_NumberOfCalls).ToString());
-    //Clean
-    sb.str(std::string());
-    sb << m_NumberOfRingsInListeningWindow;
-    sb << "/";
-    sb << m_NumberOfRingsOutListeningWindow;
-    values.push_back(sb.str());
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    //values.push_back(CGXDLMSVariant(m_Mode).ToString());
+    //std::stringstream sb;
+    //sb << '[';
+    //bool empty = true;
+    //for (std::vector<std::pair< CGXDateTime, CGXDateTime> >::iterator it = m_ListeningWindow.begin(); it != m_ListeningWindow.end(); ++it)
+    //{
+    //    if (!empty)
+    //    {
+    //        sb << ", ";
+    //    }
+    //    empty = false;
+    //    std::string str = it->first.ToString();
+    //    sb.write(str.c_str(), str.size());
+    //    sb << " ";
+    //    str = it->second.ToString();
+    //    sb.write(str.c_str(), str.size());
+    //}
+    //sb << ']';
+    //values.push_back(sb.str());
+    //values.push_back(CGXDLMSVariant(m_Status).ToString());
+    //values.push_back(CGXDLMSVariant(m_NumberOfCalls).ToString());
+    ////Clean
+    //sb.str(std::string());
+    //sb << m_NumberOfRingsInListeningWindow;
+    //sb << "/";
+    //sb << m_NumberOfRingsOutListeningWindow;
+    //values.push_back(sb.str());
 }
 
 void CGXDLMSAutoAnswer::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -252,71 +252,76 @@ int CGXDLMSAutoAnswer::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg&
 {
     if (e.GetIndex() == 1)
     {
+		CGXByteBuffer data;
+//		e.SetByteArray(true);
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        e.SetValue(GetMode());
+       /* e.SetValue(GetMode());*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetByteArray(true);
-        int ret;
-        unsigned long cnt = (unsigned long)m_ListeningWindow.size();
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
-        //Add count
-        GXHelpers::SetObjectCount(cnt, data);
-        CGXDLMSVariant f, s;
-        for (std::vector<std::pair<CGXDateTime, CGXDateTime> >::iterator it =
-            m_ListeningWindow.begin(); it != m_ListeningWindow.end(); ++it)
-        {
-            data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-            data.SetUInt8(2); //Count
-            f = it->first;
-            s = it->second;
-            if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, f)) != 0 || //start_time
-                (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, s)) != 0) //end_time
-            {
-                return ret;
-            }
-        }
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //int ret;
+        //unsigned long cnt = (unsigned long)m_ListeningWindow.size();
+        //CGXByteBuffer data;
+        //data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
+        ////Add count
+        //GXHelpers::SetObjectCount(cnt, data);
+        //CGXDLMSVariant f, s;
+        //for (std::vector<std::pair<CGXDateTime, CGXDateTime> >::iterator it =
+        //    m_ListeningWindow.begin(); it != m_ListeningWindow.end(); ++it)
+        //{
+        //    data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //    data.SetUInt8(2); //Count
+        //    f = it->first;
+        //    s = it->second;
+        //    if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, f)) != 0 || //start_time
+        //        (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_OCTET_STRING, s)) != 0) //end_time
+        //    {
+        //        return ret;
+        //    }
+        //}
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetValue(GetStatus());
+       /* e.SetValue(GetStatus());*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        e.SetValue(GetNumberOfCalls());
+       /* e.SetValue(GetNumberOfCalls());*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        e.SetByteArray(true);
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        GXHelpers::SetObjectCount(2, data);
-        CGXDLMSVariant in = m_NumberOfRingsInListeningWindow;
-        CGXDLMSVariant out = m_NumberOfRingsOutListeningWindow;
-        int ret;
-        if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, in)) != DLMS_ERROR_CODE_OK ||
-            (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, out)) != DLMS_ERROR_CODE_OK)
-        {
-            return ret;
-        }
-        e.SetValue(data);
+  //      e.SetByteArray(true);
+  //      CGXByteBuffer data;
+  //      data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+  //      GXHelpers::SetObjectCount(2, data);
+		//data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		//data.SetUInt8(m_NumberOfRingsInListeningWindow);
+		//data.SetUInt8(DLMS_DATA_TYPE_UINT8);
+		//data.SetUInt8(m_NumberOfRingsOutListeningWindow);
+  //      /*CGXDLMSVariant in = m_NumberOfRingsInListeningWindow;
+  //      CGXDLMSVariant out = m_NumberOfRingsOutListeningWindow;
+  //      int ret;
+  //      if ((ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, in)) != DLMS_ERROR_CODE_OK ||
+  //          (ret = GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, out)) != DLMS_ERROR_CODE_OK)
+  //      {
+  //          return ret;
+  //      }*/
+  //      e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -329,43 +334,43 @@ int CGXDLMSAutoAnswer::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg&
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     if (e.GetIndex() == 2)
     {
-        SetMode((AUTO_CONNECT_MODE)e.GetValue().lVal);
+        /*SetMode((AUTO_CONNECT_MODE)e.GetValue().lVal);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        m_ListeningWindow.clear();
+        /*m_ListeningWindow.clear();
         for (std::vector<CGXDLMSVariant>::iterator item = e.GetValue().Arr.begin(); item != e.GetValue().Arr.end(); ++item)
         {
             CGXDLMSVariant start, end;
             CGXDLMSClient::ChangeType((*item).Arr[0], DLMS_DATA_TYPE_DATETIME, start);
             CGXDLMSClient::ChangeType((*item).Arr[1], DLMS_DATA_TYPE_DATETIME, end);
             m_ListeningWindow.push_back(std::pair< CGXDateTime, CGXDateTime>(start.dateTime, end.dateTime));
-        }
+        }*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        SetStatus((AUTO_ANSWER_STATUS)e.GetValue().lVal);
+        //SetStatus((AUTO_ANSWER_STATUS)e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 5)
     {
-        SetNumberOfCalls(e.GetValue().lVal);
+       // SetNumberOfCalls(e.GetValue().lVal);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 6)
     {
-        m_NumberOfRingsInListeningWindow = m_NumberOfRingsOutListeningWindow = 0;
+        /*m_NumberOfRingsInListeningWindow = m_NumberOfRingsOutListeningWindow = 0;
         if (e.GetValue().vt != DLMS_DATA_TYPE_NONE)
         {
             m_NumberOfRingsInListeningWindow = e.GetValue().Arr[0].ToInteger();
             m_NumberOfRingsOutListeningWindow = e.GetValue().Arr[1].ToInteger();
-        }
+        }*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;

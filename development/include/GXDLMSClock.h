@@ -59,14 +59,14 @@ public:
      Constructor.
      @param ln Logical Name of the object.
     */
-    CGXDLMSClock(std::string ln);
+    CGXDLMSClock(const char* ln);
 
     /**
      Constructor.
      @param ln Logical Name of the object.
      @param sn Short Name of the object.
     */
-    CGXDLMSClock(std::string ln, int sn);
+    CGXDLMSClock(const char* ln, int sn);
 
     /**
      Time of COSEM Clock object.
@@ -116,8 +116,8 @@ public:
 
     void GetAttributeIndexToRead(std::vector<int>& attributes);
 
-    int GetUIDataType(int index, DLMS_DATA_TYPE& type);
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     /*
      * Returns value of given attribute.

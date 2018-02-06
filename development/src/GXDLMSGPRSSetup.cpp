@@ -49,7 +49,7 @@ CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJEC
 }
 
 //LN Constructor.
-CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
+CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_GPRS_SETUP, ln)
 {
     m_PINCode = 0;
 }
@@ -157,34 +157,33 @@ int CGXDLMSGPRSSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 // Returns value of given attribute.
 int CGXDLMSGPRSSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+	CGXByteBuffer data;
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        CGXByteBuffer bb;
-        bb.AddString(m_APN);
-        e.SetValue(bb);
+		/*data.AddString(m_APN);
+        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetValue(m_PINCode);
+        //e.SetValue(m_PINCode);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetByteArray(true);
-        CGXByteBuffer data;
-        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+       
+        /*data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(2);
         data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
         data.SetUInt8(5);
@@ -218,7 +217,7 @@ int CGXDLMSGPRSSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
         {
             return ret;
         }
-        e.SetValue(data);
+        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -229,11 +228,11 @@ int CGXDLMSGPRSSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_STRING)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_STRING)
         {
             m_APN = e.GetValue().ToString();
         }
@@ -241,15 +240,15 @@ int CGXDLMSGPRSSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
         {
             m_APN.clear();
             m_APN.append(e.GetValue().byteArr, e.GetValue().byteArr + e.GetValue().GetSize());
-        }
+        }*/
     }
     else if (e.GetIndex() == 3)
     {
-        m_PINCode = e.GetValue().uiVal;
+        //m_PINCode = e.GetValue().uiVal;
     }
     else if (e.GetIndex() == 4)
     {
-        m_DefaultQualityOfService.SetPrecedence(e.GetValue().Arr[0].Arr[0].iVal);
+       /* m_DefaultQualityOfService.SetPrecedence(e.GetValue().Arr[0].Arr[0].iVal);
         m_DefaultQualityOfService.SetDelay(e.GetValue().Arr[0].Arr[1].iVal);
         m_DefaultQualityOfService.SetReliability(e.GetValue().Arr[0].Arr[2].iVal);
         m_DefaultQualityOfService.SetPeakThroughput(e.GetValue().Arr[0].Arr[3].iVal);
@@ -259,7 +258,7 @@ int CGXDLMSGPRSSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& 
         m_RequestedQualityOfService.SetDelay(e.GetValue().Arr[1].Arr[1].iVal);
         m_RequestedQualityOfService.SetReliability(e.GetValue().Arr[1].Arr[2].iVal);
         m_RequestedQualityOfService.SetPeakThroughput(e.GetValue().Arr[1].Arr[3].iVal);
-        m_RequestedQualityOfService.SetMeanThroughput(e.GetValue().Arr[1].Arr[4].iVal);
+        m_RequestedQualityOfService.SetMeanThroughput(e.GetValue().Arr[1].Arr[4].iVal);*/
     }
     else
     {

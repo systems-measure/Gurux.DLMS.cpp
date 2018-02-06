@@ -95,7 +95,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSAutoAnswer(std::string ln);
+    CGXDLMSAutoAnswer(const char* ln);
 
     /**
      Constructor.

@@ -54,24 +54,25 @@ class CGXDLMSObject : public IGXDLMSBase
     CGXAttributeCollection m_Attributes;
     CGXAttributeCollection m_MethodAttributes;
     void Initialize(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer* pLogicalName);
-    std::string m_Description;
+    //std::string m_Description;
     DLMS_OBJECT_TYPE m_ObjectType;
     char m_AttributeIndex;
-    unsigned short m_DataIndex;
-    unsigned short m_Version;
+    //unsigned short m_DataIndex;
+    unsigned char m_Version;
 protected:
-    std::map<int, time_t> m_ReadTimes;
-    unsigned short m_SN;
+    //std::map<int, time_t> m_ReadTimes;
+   // unsigned short m_SN;
+	bool m_DataValidity;
     unsigned char m_LN[6];
-
+	
     /*
      * Is attribute read. This can be used with static attributes to make
      * meter reading faster.
      */
     bool IsRead(int index);
     bool CanRead(int index);
-    static int GetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value);
-    static int SetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value);
+    static int GetLogicalName(CGXDLMSObject * target, CGXByteBuffer& value);
+    static int SetLogicalName(CGXDLMSObject * target, CArtVariant& value);
 public:
 
     static bool IsLogicalNameEmpty(unsigned char* pLN)
@@ -87,13 +88,18 @@ public:
     CGXDLMSObject(DLMS_OBJECT_TYPE type, unsigned short sn);
 
     //LN Constructor.
-    CGXDLMSObject(DLMS_OBJECT_TYPE type, std::string ln);
+    CGXDLMSObject(DLMS_OBJECT_TYPE type, const char* ln);
     CGXDLMSObject(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer& ln);
 
     virtual ~CGXDLMSObject(void);
 
+	//Get Object's Data validity
+	bool GetDataValidity();
+
+	void SetDataValidity(bool validity);
+
     //Get Object's Logical or Short Name as a std::string.
-    CGXDLMSVariant GetName();
+    std::string GetName();
 
     int SetName(CGXDLMSVariant& value);
 
@@ -101,36 +107,38 @@ public:
     DLMS_OBJECT_TYPE GetObjectType();
 
     //Get Object's Short Name.
-    unsigned short GetShortName();
+   // unsigned short GetShortName();
 
     //Set Object's Short Name.
-    void SetShortName(unsigned short value);
+    //void SetShortName(unsigned short value);
 
     //Get Object's Logical Name.
     void GetLogicalName(std::string& ln);
 
-    void SetVersion(unsigned short value);
-    unsigned short GetVersion();
+	void GetLogicalName(unsigned char* c_ln);
+
+    void SetVersion(unsigned char value);
+    unsigned char GetVersion();
 
     CGXAttributeCollection& GetAttributes();
     CGXAttributeCollection& GetMethodAttributes();
-    virtual int SetDataType(int index, DLMS_DATA_TYPE type);
-    virtual int GetDataType(int index, DLMS_DATA_TYPE& type);
+    virtual int SetDataType(unsigned char index, DLMS_DATA_TYPE type);
+    virtual int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
-    virtual int GetUIDataType(int index, DLMS_DATA_TYPE& type);
-    void SetUIDataType(int index, DLMS_DATA_TYPE type);
+    virtual int GetUIDataType(unsigned char index, DLMS_DATA_TYPE& type);
+    void SetUIDataType(unsigned char index, DLMS_DATA_TYPE type);
 
-    DLMS_ACCESS_MODE GetAccess(int index);
-    void SetAccess(int index, DLMS_ACCESS_MODE access);
-    DLMS_METHOD_ACCESS_MODE GetMethodAccess(int index);
-    void SetMethodAccess(int index, DLMS_METHOD_ACCESS_MODE access);
+    DLMS_ACCESS_MODE GetAccess(unsigned char index);
+    void SetAccess(unsigned char index, DLMS_ACCESS_MODE access);
+    DLMS_METHOD_ACCESS_MODE GetMethodAccess(unsigned char index);
+    void SetMethodAccess(unsigned char index, DLMS_METHOD_ACCESS_MODE access);
 
 
-    //Get description of the object.
-    std::string GetDescription();
+    ////Get description of the object.
+    //std::string GetDescription();
 
-    //Set description of the object.
-    void SetDescription(std::string value);
+    ////Set description of the object.
+    //void SetDescription(std::string value);
 
     //Get values as std::string.
     virtual void GetValues(std::vector<std::string>& values)

@@ -39,14 +39,14 @@
 
 class CGXDLMSDemandRegister : public CGXDLMSObject
 {
-    CGXDLMSVariant m_CurrentAvarageValue;
-    CGXDLMSVariant m_LastAvarageValue;
+    CArtVariant m_CurrentAvarageValue;
+	CArtVariant m_LastAvarageValue;
     signed char m_Scaler;
     unsigned char m_Unit;
-    CGXDLMSVariant m_Status;
+	CArtVariant m_Status;
     CGXDateTime m_CaptureTime;
     CGXDateTime m_StartTimeCurrent;
-    int m_NumberOfPeriods;
+	unsigned short m_NumberOfPeriods;
     unsigned long m_Period;
 
 protected:
@@ -63,7 +63,7 @@ public:
 
      @param ln Logical Name of the object.
     */
-    CGXDLMSDemandRegister(std::string ln);
+    CGXDLMSDemandRegister(const char* ln);
 
     /**
      Constructor.
@@ -76,14 +76,14 @@ public:
     /**
      Current avarage value of COSEM Data object.
     */
-    CGXDLMSVariant GetCurrentAvarageValue();
-    void SetCurrentAvarageValue(CGXDLMSVariant value);
+	CArtVariant GetCurrentAvarageValue();
+    void SetCurrentAvarageValue(CArtVariant value);
 
     /**
      Last avarage value of COSEM Data object.
     */
-    CGXDLMSVariant GetLastAvarageValue();
-    void SetLastAvarageValue(CGXDLMSVariant value);
+	CArtVariant GetLastAvarageValue();
+    void SetLastAvarageValue(CArtVariant value);
 
     /**
      Scaler of COSEM Register object.
@@ -92,14 +92,14 @@ public:
     void SetScaler(double value);
 
     // Unit of COSEM Register object.
-    int GetUnit();
+	unsigned char GetUnit();
     void SetUnit(unsigned char value);
 
     /**
      Scaler of COSEM Register object.
     */
-    CGXDLMSVariant GetStatus();
-    void SetStatus(CGXDLMSVariant value);
+	CArtVariant GetStatus();
+    void SetStatus(CArtVariant value);
 
     /**
      Capture time of COSEM Register object.
@@ -116,8 +116,8 @@ public:
     unsigned long GetPeriod();
     void SetPeriod(unsigned long value);
 
-    int GetNumberOfPeriods();
-    void SetNumberOfPeriods(int value);
+	unsigned short GetNumberOfPeriods();
+    void SetNumberOfPeriods(unsigned short value);
 
     /*
      * Reset value.
@@ -142,7 +142,7 @@ public:
 
     int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 
-    int GetDataType(int index, DLMS_DATA_TYPE& type);
+    int GetDataType(unsigned char index, DLMS_DATA_TYPE& type);
 
     int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 

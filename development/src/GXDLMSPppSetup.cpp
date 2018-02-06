@@ -49,7 +49,7 @@ CGXDLMSPppSetup::CGXDLMSPppSetup(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_
 }
 
 //LN Constructor.
-CGXDLMSPppSetup::CGXDLMSPppSetup(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PPP_SETUP, ln)
+CGXDLMSPppSetup::CGXDLMSPppSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_PPP_SETUP, ln)
 {
     m_Authentication = PPP_AUTHENTICATION_TYPE_NONE;
 }
@@ -229,27 +229,27 @@ int CGXDLMSPppSetup::GetDataType(int index, DLMS_DATA_TYPE& type)
 int CGXDLMSPppSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     CGXByteBuffer data;
+//	e.SetByteArray(true);
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
     {
-        CGXDLMSVariant tmp;
+       /* CGXDLMSVariant tmp;
         GXHelpers::SetLogicalName(m_PHYReference.c_str(), tmp);
-        e.SetValue(tmp);
+        e.SetValue(tmp);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 3)
     {
-        e.SetByteArray(true);
+        /*e.SetByteArray(true);
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         GXHelpers::SetObjectCount((unsigned long)m_LCPOptions.size(), data);
         CGXDLMSVariant type, len;
@@ -264,12 +264,12 @@ int CGXDLMSPppSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
             GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, len);
             GXHelpers::SetData(data, it->GetData().vt, tmp);
         }
-        e.SetValue(data);
+        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 4)
     {
-        e.SetByteArray(true);
+        /*e.SetByteArray(true);
         data.SetUInt8(DLMS_DATA_TYPE_ARRAY);
         GXHelpers::SetObjectCount((unsigned long)m_IPCPOptions.size(), data);
         CGXDLMSVariant type, len;
@@ -283,23 +283,23 @@ int CGXDLMSPppSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
             GXHelpers::SetData(data, DLMS_DATA_TYPE_UINT8, len);
             GXHelpers::SetData(data, it->GetData().vt, it->m_Data);
         }
-        e.SetValue(data);
+        e.SetValue(data);*/
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 5)
     {
-        e.SetByteArray(true);
-        data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
-        data.SetUInt8(2);
-        //Add username.
-        data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-        data.SetUInt8((unsigned char)m_UserName.GetSize());
-        data.Set(&m_UserName, 0, -1);
-        //Add password.
-        data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-        data.SetUInt8((unsigned char)m_Password.GetSize());
-        data.Set(&m_Password, 0, -1);
-        e.SetValue(data);
+        //e.SetByteArray(true);
+        //data.SetUInt8(DLMS_DATA_TYPE_STRUCTURE);
+        //data.SetUInt8(2);
+        ////Add username.
+        //data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+        //data.SetUInt8((unsigned char)m_UserName.GetSize());
+        //data.Set(&m_UserName, 0, -1);
+        ////Add password.
+        //data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+        //data.SetUInt8((unsigned char)m_Password.GetSize());
+        //data.Set(&m_Password, 0, -1);
+        //e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -310,22 +310,22 @@ int CGXDLMSPppSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        if (e.GetValue().vt == DLMS_DATA_TYPE_STRING)
+        /*if (e.GetValue().vt == DLMS_DATA_TYPE_STRING)
         {
             m_PHYReference = e.GetValue().ToString();
         }
         else
         {
             GXHelpers::GetLogicalName(e.GetValue().byteArr, m_PHYReference);
-        }
+        }*/
     }
     else if (e.GetIndex() == 3)
     {
-        m_LCPOptions.clear();
+        /*m_LCPOptions.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             for (std::vector<CGXDLMSVariant>::iterator item = e.GetValue().Arr.begin(); item != e.GetValue().Arr.end(); ++item)
@@ -336,11 +336,11 @@ int CGXDLMSPppSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
                 it.SetData((*item).Arr[2]);
                 m_LCPOptions.push_back(it);
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 4)
     {
-        m_IPCPOptions.clear();
+       /* m_IPCPOptions.clear();
         if (e.GetValue().vt == DLMS_DATA_TYPE_ARRAY)
         {
             for (std::vector<CGXDLMSVariant>::iterator item = e.GetValue().Arr.begin(); item != e.GetValue().Arr.end(); ++item)
@@ -351,14 +351,14 @@ int CGXDLMSPppSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
                 it.SetData((*item).Arr[2]);
                 m_IPCPOptions.push_back(it);
             }
-        }
+        }*/
     }
     else if (e.GetIndex() == 5)
     {
-        m_UserName.Clear();
+        /*m_UserName.Clear();
         m_Password.Clear();
         m_UserName.Set(e.GetValue().Arr[0].byteArr, e.GetValue().Arr[0].size);
-        m_Password.Set(e.GetValue().Arr[1].byteArr, e.GetValue().Arr[1].size);
+        m_Password.Set(e.GetValue().Arr[1].byteArr, e.GetValue().Arr[1].size);*/
     }
     else
     {

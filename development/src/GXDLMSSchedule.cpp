@@ -48,7 +48,7 @@ CGXDLMSSchedule::CGXDLMSSchedule(unsigned short sn) : CGXDLMSObject(DLMS_OBJECT_
 }
 
 //LN Constructor.
-CGXDLMSSchedule::CGXDLMSSchedule(std::string ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, ln)
+CGXDLMSSchedule::CGXDLMSSchedule(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_SCHEDULE, ln)
 {
 
 }
@@ -79,12 +79,12 @@ int CGXDLMSSchedule::GetMethodCount()
 
 void CGXDLMSSchedule::GetValues(std::vector<std::string>& values)
 {
-    values.clear();
-    std::string ln;
-    GetLogicalName(ln);
-    values.push_back(ln);
-    values.push_back("");
-    //TODO: values.push_back(m_Entries.ToString());
+    //values.clear();
+    //std::string ln;
+    //GetLogicalName(ln);
+    //values.push_back(ln);
+    //values.push_back("");
+    ////TODO: values.push_back(m_Entries.ToString());
 }
 
 void CGXDLMSSchedule::GetAttributeIndexToRead(std::vector<int>& attributes)
@@ -122,12 +122,13 @@ int CGXDLMSSchedule::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     if (e.GetIndex() == 1)
     {
         int ret;
-        CGXDLMSVariant tmp;
-        if ((ret = GetLogicalName(this, tmp)) != 0)
+		CGXByteBuffer data;
+//		e.SetByteArray(true);
+        if ((ret = GetLogicalName(this, data)) != 0)
         {
             return ret;
         }
-        e.SetValue(tmp);
+        e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }
     //TODO:
@@ -139,11 +140,11 @@ int CGXDLMSSchedule::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
 {
     if (e.GetIndex() == 1)
     {
-        return SetLogicalName(this, e.GetValue());
+        return SetLogicalName(this, e.GetCAValue());
     }
     else if (e.GetIndex() == 2)
     {
-        m_Entries.clear();
+        /*m_Entries.clear();
         CGXDLMSVariant tmp;
         for (std::vector<CGXDLMSVariant >::iterator it = e.GetValue().Arr.begin(); it != e.GetValue().Arr.end(); ++it)
         {
@@ -163,7 +164,7 @@ int CGXDLMSSchedule::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
             CGXDLMSClient::ChangeType((*it).Arr[9], DLMS_DATA_TYPE_DATETIME, tmp);
             item.SetEndDate(tmp.dateTime);
             m_Entries.push_back(item);
-        }
+        }*/
     }
     else
     {
