@@ -274,6 +274,12 @@ protected:
 	*/
 	virtual bool CheckCallingAfterPush() = 0;
 
+	/*
+	Reset push state if recived SNRM request with valid server address before 
+	recive special CALLING device phisical address in SNRM request
+	*/
+	virtual void ResetPushState() = 0;
+
     /**
      * Accepted connection is made for the server. All initialization is done
      * here.

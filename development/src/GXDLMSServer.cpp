@@ -162,7 +162,7 @@ int CGXDLMSServer::Initialize()
 		}
 	}
 	///<  @TODO: Необходимо переписать данную строчку т.к. GetItems()->GetCurALN() == 0 в этой точке кода.
-    ///< GetItems()->GetCurALN()->GetLogicalName(ln);
+    m_CurrentALN->GetLogicalName(ln);
 	if(strlen(ln) == 0){
 			//Invalid Logical Name.
 			return DLMS_ERROR_CODE_INVALID_LOGICAL_NAME;
@@ -1221,79 +1221,79 @@ int CGXDLMSServer::HandleCommand(
     CGXByteBuffer& data,
     CGXByteBuffer& reply)
 {
-    #if defined(MEMLOG)
-    vMemLog_ReportHeap("--> GXDLMSServer::HandleCommand()\n" );    
-    #endif
-    int ret = 0;
-    unsigned char frame = 0;    
+#if defined(MEMLOG)
+	vMemLog_ReportHeap("--> GXDLMSServer::HandleCommand()\n");
+#endif
+	int ret = 0;
+	unsigned char frame = 0;
 	if (cmd == DLMS_COMMAND_WRITE_REQUEST || cmd == DLMS_COMMAND_READ_REQUEST) {
 		GenerateConfirmedServiceError((DLMS_CONFIRMED_SERVICE_ERROR)cmd,
 			DLMS_SERVICE_ERROR_SERVICE,
 			DLMS_SERVICE_UNSUPPORTED, m_ReplyData);
 	}
 	else {
-    switch (cmd)
-    {
-    case DLMS_COMMAND_GET_REQUEST:
-        if (data.GetSize() != 0)
-        {            
-            ret = HandleGetRequest(data);   
-        }
-        break;
+		switch (cmd)
+		{
+		case DLMS_COMMAND_GET_REQUEST:
+			if (data.GetSize() != 0)
+			{
+				ret = HandleGetRequest(data);
+			}
+			break;
 		case DLMS_COMMAND_SET_REQUEST:
 			ret = HandleSetRequest(data);
-        break;
-    case DLMS_COMMAND_METHOD_REQUEST:
+			break;
+		case DLMS_COMMAND_METHOD_REQUEST:
 			ret = HandleMethodRequest(data);
-        break;
-    case DLMS_COMMAND_SNRM:        
-        ret = HandleSnrmRequest(data);
+			break;
+		case DLMS_COMMAND_SNRM:
+			ret = HandleSnrmRequest(data);
 			if (ret == 0) {
-            frame = DLMS_COMMAND_UA;
-            m_LinkEstablished = true;
-            
+				frame = DLMS_COMMAND_UA;
+				m_LinkEstablished = true;
+				ResetPushState();
 			}
 			else {
-            frame = DLMS_COMMAND_DM;
-        }     
-        break;
-    case DLMS_COMMAND_AARQ:
+				frame = DLMS_COMMAND_DM;
+			}
+			break;
+		case DLMS_COMMAND_AARQ:
 			if (m_LinkEstablished) {
 				ret = HandleAarqRequest(data);
 			}
 			else {
-            ret = DLMS_ERROR_CODE_REJECTED;
-        }
-        break;
-    case DLMS_COMMAND_DISCONNECT_REQUEST:
-    case DLMS_COMMAND_DISC:        
+				ret = DLMS_ERROR_CODE_REJECTED;
+			}
+			break;
+		case DLMS_COMMAND_DISCONNECT_REQUEST:
+		case DLMS_COMMAND_DISC:
 			if (m_LinkEstablished) {
-            ret = GenerateDisconnectRequest(m_Settings, m_ReplyData);
-            m_Settings.SetConnected(false);
+				ret = GenerateDisconnectRequest(m_Settings, m_ReplyData);
+				m_Settings.SetConnected(false);
 				Disconnected();
-            frame = DLMS_COMMAND_UA;
-            Reset(true);
-            m_LinkEstablished = false;
-        
+				frame = DLMS_COMMAND_UA;
+				Reset(true);
+				m_LinkEstablished = false;
+
 			}
 			else {
-            frame = DLMS_COMMAND_DM;
-        }
-        break;
-    case DLMS_COMMAND_NONE:
-        //Get next frame.
+				frame = DLMS_COMMAND_DM;
+			}
+			break;
+		case DLMS_COMMAND_NONE:
+			//Get next frame.
 			break;
 
 		default:
 			if ((cmd & 0x0F) == HDLC_FRAME_TYPE_S_FRAME) { // RR
-            ret = HandleReadyRead(cmd, frame);
-            
+				ret = HandleReadyRead(cmd, frame);
+
 			}
 			else {
-            frame = DLMS_COMMAND_REJECTED;
-        }
-        break;
-    }
+				frame = DLMS_COMMAND_REJECTED;
+			}
+			break;
+		}
 	}
 
     if (ret == 0)
