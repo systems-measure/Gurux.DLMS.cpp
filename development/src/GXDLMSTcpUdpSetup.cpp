@@ -80,7 +80,7 @@ int CGXDLMSTcpUdpSetup::GetPort()
     return m_Port;
 }
 
-void CGXDLMSTcpUdpSetup::SetPort(int value)
+void CGXDLMSTcpUdpSetup::SetPortGX(int value)
 {
     m_Port = value;
 }
@@ -270,7 +270,7 @@ int CGXDLMSTcpUdpSetup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg
     }
     else if (e.GetIndex() == 2)
     {
-        SetPort(e.GetValue().ToInteger());
+        SetPortGX(e.GetValue().ToInteger());
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 3)
