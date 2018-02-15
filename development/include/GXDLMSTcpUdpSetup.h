@@ -69,7 +69,7 @@ public:
 
     int GetPort();
 
-    void SetPortGX(int value);
+    void SetPort(int value);
 
     std::string GetIPReference();
 
