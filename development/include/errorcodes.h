@@ -34,7 +34,7 @@
 #ifndef ERRORCODES_H
 #define ERRORCODES_H
 
-typedef enum
+typedef enum enERRORCODES
 {
     //Meter is not accept frame.
     DLMS_ERROR_CODE_UNACCEPTABLE_FRAME = -3,
