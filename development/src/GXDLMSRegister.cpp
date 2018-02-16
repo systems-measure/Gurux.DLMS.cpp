@@ -82,15 +82,15 @@ void CGXDLMSRegister::SetValue(CArtVariant& value)
 }
 
 // Scaler of COSEM Register object.
-double CGXDLMSRegister::GetScaler()
-{
-    return pow((float)10, m_Scaler);
-}
-
-void CGXDLMSRegister::SetScaler(double value)
-{
-    m_Scaler = (signed char)log10(value);
-}
+//double CGXDLMSRegister::GetScaler()
+//{
+//    return pow((float)10, m_Scaler);
+//}
+//
+//void CGXDLMSRegister::SetScaler(double value)
+//{
+//    m_Scaler = (signed char)log10(value);
+//}
 
 // Unit of COSEM Register object.
 unsigned char CGXDLMSRegister::GetUnit()
@@ -210,7 +210,7 @@ int CGXDLMSRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     }
     else if (e.GetIndex() == 2)
     {
-        if (m_Scaler != 0)
+        /*if (m_Scaler != 0)
         {
 			VarInfo v_info;
 			e.GetCAValue().GetVar(v_info);
@@ -241,11 +241,11 @@ int CGXDLMSRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
         else
         {
             SetValue(e.GetCAValue());
-        }
+        }*/
     }
     else if (e.GetIndex() == 3 )
     {
-		VarInfo v_info;
+		/*VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		if (v_info.vt != DLMS_DATA_TYPE_STRUCTURE || v_info.size != 2) {
 			return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -254,7 +254,7 @@ int CGXDLMSRegister::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
 		m_Scaler = *(e.GetCAValue().GetCurPtr());
 		e.GetCAValue().IncreasePosition(v_info.size);
 		e.GetCAValue().GetVar(v_info);
-		m_Unit = *(e.GetCAValue().GetCurPtr());
+		m_Unit = *(e.GetCAValue().GetCurPtr());*/
     }
     else
     {

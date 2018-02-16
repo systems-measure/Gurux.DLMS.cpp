@@ -67,10 +67,10 @@ public:
     /// </summary>
     void SetValue(CArtVariant& value);
 
-    // Scaler of COSEM Register object.
-    double GetScaler();
+    //// Scaler of COSEM Register object.
+    //double GetScaler();
 
-    void SetScaler(double value);
+    //void SetScaler(double value);
 
     // Unit of COSEM Register object.
 	unsigned char GetUnit();
