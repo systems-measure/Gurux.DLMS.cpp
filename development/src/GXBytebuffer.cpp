@@ -274,7 +274,7 @@ void CGXByteBuffer::SetDouble(double value)
 
 
 
-void CGXByteBuffer::SetInt8(char item)
+void CGXByteBuffer::SetInt8(signed char item)
 {
     CGXByteBuffer::SetUInt8((unsigned char)item);
 }

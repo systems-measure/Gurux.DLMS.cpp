@@ -96,7 +96,7 @@ public:
 
     void SetUInt64(unsigned long long item);
 
-    void SetInt8(char item);
+    void SetInt8(signed char item);
 
     void SetInt16(short item);
 
