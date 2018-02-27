@@ -263,6 +263,15 @@ protected:
 	*/
 	virtual void Configurated() = 0;
 
+	/**
+	* Fixing events associated with changes in a data
+	* based value. Usually this is not used.
+	*
+	* @param value
+	*            type event
+	*/
+	virtual void FixateCorrectDataEvent(unsigned char event) = 0;
+
 	/*
 	Check than push message exists and need send it by HDLC protocol
 	return true if invokes server's interface is Rs485 and push message exists
