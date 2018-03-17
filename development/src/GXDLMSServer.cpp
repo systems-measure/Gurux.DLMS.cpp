@@ -31,6 +31,7 @@
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
+#include "prj_defines.h"
 
 #include "../include/GXDLMSServer.h"
 #include "../include/GXDLMS.h"
@@ -41,10 +42,7 @@
 #include "../include/GXDLMSValueEventCollection.h"
 #include "profile_cap_objects.h"
 #include "Helper\Helper.h"
-#if defined(MEMLOG)
-#include "memlog.h"
-#endif
-
+#include "Debugger\memlog.h"
 
 CGXDLMSServer::CGXDLMSServer(DLMS_INTERFACE_TYPE type) : m_Transaction(nullptr), m_Settings(),
     m_LinkEstablished(false)
