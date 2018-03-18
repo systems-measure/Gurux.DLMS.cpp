@@ -284,7 +284,7 @@ int GetDateTime(CGXByteBuffer& buff, CGXDataInfo& info, CGXDLMSVariant& value)
     {
         tm.tm_year -= 1900;
     }
-    if (tm.tm_wday < 0 || tm.tm_wday > 7)
+    if (tm.tm_wday < 0 || tm.tm_wday >= 7)
     {
         tm.tm_wday = 0;
         skip = (DATETIME_SKIPS)(skip | DATETIME_SKIPS_DAYOFWEEK);
@@ -1330,13 +1330,7 @@ static int SetDateTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
     }
     else
     {
-        int val = dt.tm_wday + 1;
-        //If Sunday.
-        if (val == 1)
-        {
-            val = 8;
-        }
-        buff.SetUInt8(val - 1);
+        buff.SetUInt8(dt.tm_wday);
     }
     //Add Hours
     if (dt.tm_hour != -1 && (skip & DATETIME_SKIPS_HOUR) == 0)
