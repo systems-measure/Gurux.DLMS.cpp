@@ -77,8 +77,33 @@ typedef enum enERRORCODES
     //DLMS Standard error codes end here.
     //////////////////////////////////////////
 
+    //////////////////////////////////////////
+    // -- CiART error codes start here.
+    DLMS_ERROR_CODE_unknown_exception = 30,
+    DLMS_ERROR_CODE_internal_error,
+    // -- MPro ERROR code translate
+    DLMS_ERROR_CODE_MPro_STS_BGN = 40,
+    DLMS_ERROR_CODE_MPro_UNKNOWN_CMD,
+    DLMS_ERROR_CODE_MPro_ERR_FRMT,
+    DLMS_ERROR_CODE_MPro_NOT_FOUND,
+    DLMS_ERROR_CODE_MPro_ERR_PSW,
+    DLMS_ERROR_CODE_MPro_ERR_OTHER,
+    DLMS_ERROR_CODE_MPro_ERR_TIME,
+    DLMS_ERROR_CODE_MPro_ERR_CORECT_TIME,
+    DLMS_ERROR_CODE_MPro_ERR_LEN,
+    DLMS_ERROR_CODE_MPro_ERR_PRM,
+    DLMS_ERROR_CODE_MPro_ERR_pin_INIT,
+    DLMS_ERROR_CODE_MPro_ERR_PROHIBITED,
+    DLMS_ERROR_CODE_MPro_ERR_METR_RELOAD,
+    DLMS_ERROR_CODE_MPro_METER_WAIT_TIMEOUT,
+    DLMS_ERROR_CODE_MPro_METER_BUSY,
+    DLMS_ERROR_CODE_MPro_ERR_MODEM,
+    DLMS_ERROR_CODE_MPro_ERR_DST,
+    // -- CiART error codes end here.
+    //////////////////////////////////////////
+
     //Unknown error.
-    DLMS_ERROR_CODE_UNKNOWN,
+    DLMS_ERROR_CODE_UNKNOWN = DLMS_ERROR_CODE_OTHER_REASON + 1,
     //Data send failed.
     DLMS_ERROR_CODE_SEND_FAILED,
     //Data receive failed.
@@ -87,7 +112,7 @@ typedef enum enERRORCODES
     //Secure connection is not supported.
     DLMS_ERROR_CODE_DLMS_SECURITY_NOT_IMPLEMENTED,
     //Invalid DLMS command.
-    DLMS_ERROR_CODE_INVALID_COMMAND,
+    DLMS_ERROR_CODE_INVALID_COMMAND,    // 255
     //Invalid Block number.
     DLMS_ERROR_CODE_INVALID_BLOCK_NUMBER,
     //Invalid parameter.

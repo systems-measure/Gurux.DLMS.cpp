@@ -186,7 +186,9 @@ DLMS_ERROR_CODE CGXDLMSValueEventArg::GetError()
 
 void CGXDLMSValueEventArg::SetError(DLMS_ERROR_CODE value)
 {
-	event_param[8] = value;
+    int intVal = value;
+
+	event_param[8] = ((0 <= intVal) && (intVal <= 0xFF)) ? value : DLMS_ERROR_CODE_OTHER_REASON;
 }
 
 bool CGXDLMSValueEventArg::GetSkipMaxPduSize()
