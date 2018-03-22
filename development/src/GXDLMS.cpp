@@ -497,13 +497,14 @@ int IfChiphering(CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
 		AddLLCBytes(p.GetSettings(), reply);
 	}
 	reply.Set(&tmp, 0, tmp.GetSize());
+    
+    return ret;
 }
 
 int CGXDLMS::GetLNPdu(
     CGXDLMSLNParameters& p,
     CGXByteBuffer& reply)
 {
-    int ret;
     unsigned char ciphering = p.GetSettings()->GetCipher() != NULL
         && p.GetSettings()->GetCipher()->GetSecurity() != DLMS_SECURITY_NONE;
     int len = 0;
