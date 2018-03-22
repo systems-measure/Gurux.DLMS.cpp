@@ -78,10 +78,7 @@ typedef enum enERRORCODES
     //////////////////////////////////////////
 
     //////////////////////////////////////////
-    // -- CiART error codes start here.
-    DLMS_ERROR_CODE_unknown_exception = 30,
-    DLMS_ERROR_CODE_internal_error,
-    // -- MPro ERROR code translate
+    // -- CiART MPro ERROR code translate
     DLMS_ERROR_CODE_MPro_STS_BGN = 40,
     DLMS_ERROR_CODE_MPro_UNKNOWN_CMD,
     DLMS_ERROR_CODE_MPro_ERR_FRMT,
@@ -99,6 +96,10 @@ typedef enum enERRORCODES
     DLMS_ERROR_CODE_MPro_METER_BUSY,
     DLMS_ERROR_CODE_MPro_ERR_MODEM,
     DLMS_ERROR_CODE_MPro_ERR_DST,
+    // -- CiART DLMS/SPODES error codes start here.
+    DLMS_ERROR_CODE_unknown_exception = 70,
+    DLMS_ERROR_CODE_internal_error,
+    DLMS_ERROR_CODE_INVALID_PARAMETER,              //Invalid parameter.
     // -- CiART error codes end here.
     //////////////////////////////////////////
 
@@ -115,8 +116,6 @@ typedef enum enERRORCODES
     DLMS_ERROR_CODE_INVALID_COMMAND,    // 255
     //Invalid Block number.
     DLMS_ERROR_CODE_INVALID_BLOCK_NUMBER,
-    //Invalid parameter.
-    DLMS_ERROR_CODE_INVALID_PARAMETER,
     //Server is not initialized.
     DLMS_ERROR_CODE_NOT_INITIALIZED,
     //Not enough memory available.
