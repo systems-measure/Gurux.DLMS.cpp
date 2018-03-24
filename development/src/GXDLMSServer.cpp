@@ -31,8 +31,6 @@
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
-#include "prj_defines.h"
-
 #include "../include/GXDLMSServer.h"
 #include "../include/GXDLMS.h"
 #include "../include/GXDLMSProfileGeneric.h"
@@ -40,9 +38,6 @@
 #include "../include/GXAPDU.h"
 #include "../include/GXSecure.h"
 #include "../include/GXDLMSValueEventCollection.h"
-#include "profile_cap_objects.h"
-#include "Helper\Helper.h"
-#include "Debugger\memlog.h"
 
 CGXDLMSServer::CGXDLMSServer(DLMS_INTERFACE_TYPE type) : m_Transaction(nullptr), m_Settings(),
     m_LinkEstablished(false)
@@ -1526,7 +1521,7 @@ int CGXDLMSServer::HandleRequest(
         // Check is data send to this server.
         if (!IsTarget(m_Settings.GetServerAddress(), m_Settings.GetClientAddress()))
         {
-		if (m_Info.GetCommand() != DLMS_COMMAND_SNRM || !CheckCallingAfterPush() || (m_Info.GetControlField()&0x10 == 0) )
+		if (m_Info.GetCommand() != DLMS_COMMAND_SNRM || !CheckCallingAfterPush() || ((m_Info.GetControlField() & 0x10) == 0) )
 		{
             m_Info.Clear();
             return 0;

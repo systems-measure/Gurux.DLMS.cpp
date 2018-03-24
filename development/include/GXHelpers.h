@@ -285,4 +285,12 @@ public:
     static int GetDataTypeSize(DLMS_DATA_TYPE type);
 
 };
+
+template<typename T, typename attr_t = int8_t>
+struct tabFunc {
+    attr_t attr_index;
+    T execute_func;
+};
+
+int8_t spodesSizeof(DLMS_DATA_TYPE& type);
 #endif //GXHELPERS_H

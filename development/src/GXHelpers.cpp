@@ -2256,3 +2256,62 @@ int GXHelpers::GetDataTypeSize(DLMS_DATA_TYPE type)
     }
     return size;
 }
+int8_t spodesSizeof(DLMS_DATA_TYPE& type) {
+    int8_t ret;
+    switch (type)
+    {
+    case DLMS_DATA_TYPE_NONE: {
+        ret = 0;
+        break;
+    }
+    case DLMS_DATA_TYPE_ARRAY:
+    case DLMS_DATA_TYPE_STRUCTURE:
+    case DLMS_DATA_TYPE_BIT_STRING:
+    case DLMS_DATA_TYPE_OCTET_STRING:
+    case DLMS_DATA_TYPE_STRING:
+    case DLMS_DATA_TYPE_STRING_UTF8:
+    case DLMS_DATA_TYPE_COMPACT_ARRAY: {
+        ret = -1;
+        break;
+    }
+    case DLMS_DATA_TYPE_BOOLEAN:
+    case DLMS_DATA_TYPE_BINARY_CODED_DESIMAL:
+    case DLMS_DATA_TYPE_INT8:
+    case DLMS_DATA_TYPE_UINT8:
+    case DLMS_DATA_TYPE_ENUM: {
+        ret = 1;
+        break;
+    }
+    case DLMS_DATA_TYPE_INT16:
+    case DLMS_DATA_TYPE_UINT16: {
+        ret = 2;
+        break;
+    }
+    case DLMS_DATA_TYPE_INT32:
+    case DLMS_DATA_TYPE_UINT32:
+    case DLMS_DATA_TYPE_FLOAT32:
+    case DLMS_DATA_TYPE_TIME: {
+        ret = 4;
+        break;
+    }
+    case DLMS_DATA_TYPE_DATE: {
+        ret = 5;
+        break;
+    }
+    case DLMS_DATA_TYPE_INT64:
+    case DLMS_DATA_TYPE_UINT64:
+    case DLMS_DATA_TYPE_FLOAT64: {
+        ret = 8;
+        break;
+    }
+    case DLMS_DATA_TYPE_DATETIME: {
+        ret = 12;
+        break;
+    }
+    default: {
+        ret = -2;
+        break;
+    }
+    }
+    return ret;
+}

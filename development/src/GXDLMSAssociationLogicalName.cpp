@@ -39,6 +39,7 @@
 #include "../include/GXSecure.h"
 
 #include "converter_mpro\converter_mpro.h"
+#include "memory\memory_srv.h"
 
 void CGXDLMSAssociationLogicalName::Init()
 {
@@ -235,13 +236,13 @@ CGXAuthenticationMechanismName CGXDLMSAssociationLogicalName::GetAuthenticationM
 
 void CGXDLMSAssociationLogicalName::GetSecret(CGXByteBuffer& lls)
 {
-	uint8_t size_str = strlen((const char*)mpro::UserMem.ExtMem.LLSSecret);
-	lls.Set(mpro::UserMem.ExtMem.LLSSecret, size_str);
+	uint8_t size_str = strlen((const char*)mem::UserMem.ExtMem.LLSSecret);
+	lls.Set(mem::UserMem.ExtMem.LLSSecret, size_str);
 }
 void CGXDLMSAssociationLogicalName::SetSecret(CGXByteBuffer& value)
 {
 	value.SetUInt8('\0');
-	mpro::wr_flash_inf(&mpro::UserMem.ExtMem.LLSSecret, value.GetData(), value.GetSize());
+	mem::wr_ext_mem(GetAddr(LLSSecret), value.GetData(), value.GetSize());
 }
 
 DLMS_DLMS_ASSOCIATION_STATUS CGXDLMSAssociationLogicalName::GetAssociationStatus()
@@ -379,8 +380,8 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
         unsigned long ic = 0;
         CGXByteBuffer* readSecret;
 		CGXByteBuffer m_HlsSecret;
-		uint8_t size_str = strlen((const char*)mpro::UserMem.ExtMem.HLSSecret);
-		m_HlsSecret.Set(mpro::UserMem.ExtMem.HLSSecret, size_str);
+		uint8_t size_str = strlen((const char*)mem::UserMem.ExtMem.HLSSecret);
+		m_HlsSecret.Set(mem::UserMem.ExtMem.HLSSecret, size_str);
         if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC)
         {
             unsigned char ch;
@@ -443,7 +444,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		VarInfo v_info;
 		e.GetParameters().GetVar(v_info);
 		e.GetParameters().SetUInt8('\0');
-		mpro::wr_flash_inf(&mpro::UserMem.ExtMem.HLSSecret, e.GetParameters().GetCurPtr(), v_info.size + 1);
+		mem::wr_ext_mem(GetAddr(HLSSecret), e.GetParameters().GetCurPtr(), v_info.size + 1);
 		e.GetServer()->Configurated();
 		e.GetServer()->FixateCorrectDataEvent(14);
 		return 0;
@@ -572,28 +573,28 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
 		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
 		if (e.GetTarget()->GetName().compare("0.0.40.0.0.255") == 0) {
 			if (settings.GetAuthentication() == DLMS_AUTHENTICATION_LOW) {
-				size_str = strlen((const char*)mpro::UserMem.ExtMem.LLSSecret);
+				size_str = strlen((const char*)mem::UserMem.ExtMem.LLSSecret);
 				GXHelpers::SetObjectCount(size_str, data);
-				data.Set(mpro::UserMem.ExtMem.LLSSecret, size_str);
+				data.Set(mem::UserMem.ExtMem.LLSSecret, size_str);
 			}
 			else {
 				if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH) {
-					size_str = strlen((const char*)mpro::UserMem.ExtMem.HLSSecret);
+					size_str = strlen((const char*)mem::UserMem.ExtMem.HLSSecret);
 					GXHelpers::SetObjectCount(size_str, data);
-					data.Set(mpro::UserMem.ExtMem.HLSSecret, size_str);
+					data.Set(mem::UserMem.ExtMem.HLSSecret, size_str);
 				}
 			}
 		}
 		else {
 			if (e.GetTarget()->GetName().compare("0.0.40.0.2.255") == 0) {
-				size_str = strlen((const char*)mpro::UserMem.ExtMem.LLSSecret);
+				size_str = strlen((const char*)mem::UserMem.ExtMem.LLSSecret);
 				GXHelpers::SetObjectCount(size_str, data);
-				data.Set(mpro::UserMem.ExtMem.LLSSecret, size_str);
+				data.Set(mem::UserMem.ExtMem.LLSSecret, size_str);
 			}
 			else {
-				size_str = strlen((const char*)mpro::UserMem.ExtMem.HLSSecret);
+				size_str = strlen((const char*)mem::UserMem.ExtMem.HLSSecret);
 				GXHelpers::SetObjectCount(size_str, data);
-				data.Set(mpro::UserMem.ExtMem.HLSSecret, size_str);
+				data.Set(mem::UserMem.ExtMem.HLSSecret, size_str);
 			}
 		}
 		e.SetValue(data);
@@ -647,7 +648,7 @@ int CGXDLMSAssociationLogicalName::SetValue(CGXDLMSSettings& settings, CGXDLMSVa
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		e.GetCAValue().SetUInt8('\0');
-		mpro::wr_flash_inf(&mpro::UserMem.ExtMem.LLSSecret, e.GetCAValue().GetCurPtr(), v_info.size + 1);
+		mem::wr_ext_mem(GetAddr(LLSSecret), e.GetCAValue().GetCurPtr(), v_info.size + 1);
 		e.GetServer()->Configurated();
 		e.GetServer()->FixateCorrectDataEvent(13);
     }

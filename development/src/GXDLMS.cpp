@@ -31,18 +31,12 @@
 // This code is licensed under the GNU General Public License v2.
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
-#include "prj_defines.h"
-
 #include "../include/GXDLMS.h"
 #include "../include/GXAPDU.h"
 #include "../include/GXBytebuffer.h"
-#include "Helper\Helper.h"
-
 
 #define MAX_SERVER_ADDR_SIZE    4
 #define MAX_CLIENT_ADDR_SIZE    1
-
-
 
 const unsigned char CIPHERING_HEADER_SIZE = 7 + 12 + 3;
 //CRC table.
