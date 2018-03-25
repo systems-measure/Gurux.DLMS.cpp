@@ -100,6 +100,10 @@ typedef enum enERRORCODES
     DLMS_ERROR_CODE_unknown_exception = 70,
     DLMS_ERROR_CODE_internal_error,
     DLMS_ERROR_CODE_INVALID_PARAMETER,              //Invalid parameter.
+    // -- MEM
+    DLMS_ERROR_CODE_MemUnknow,
+    DLMS_ERROR_CODE_MemInvalidParam,
+    DLMS_ERROR_CODE_MemInvalidHard,
     // -- CiART error codes end here.
     //////////////////////////////////////////
 

@@ -242,7 +242,7 @@ void CGXDLMSAssociationLogicalName::GetSecret(CGXByteBuffer& lls)
 void CGXDLMSAssociationLogicalName::SetSecret(CGXByteBuffer& value)
 {
 	value.SetUInt8('\0');
-	mem::wr_ext_mem(GetAddr(LLSSecret), value.GetData(), value.GetSize());
+    mem::wr_ext_mem(GetAddr(LLSSecret), value.GetData(), value.GetSize());
 }
 
 DLMS_DLMS_ASSOCIATION_STATUS CGXDLMSAssociationLogicalName::GetAssociationStatus()
@@ -444,7 +444,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		VarInfo v_info;
 		e.GetParameters().GetVar(v_info);
 		e.GetParameters().SetUInt8('\0');
-		mem::wr_ext_mem(GetAddr(HLSSecret), e.GetParameters().GetCurPtr(), v_info.size + 1);
+        mem::wr_ext_mem(GetAddr(HLSSecret), e.GetParameters().GetCurPtr(), v_info.size + 1);
 		e.GetServer()->Configurated();
 		e.GetServer()->FixateCorrectDataEvent(14);
 		return 0;
@@ -648,7 +648,7 @@ int CGXDLMSAssociationLogicalName::SetValue(CGXDLMSSettings& settings, CGXDLMSVa
 		VarInfo v_info;
 		e.GetCAValue().GetVar(v_info);
 		e.GetCAValue().SetUInt8('\0');
-		mem::wr_ext_mem(GetAddr(LLSSecret), e.GetCAValue().GetCurPtr(), v_info.size + 1);
+        mem::wr_ext_mem(GetAddr(LLSSecret), e.GetCAValue().GetCurPtr(), v_info.size + 1);
 		e.GetServer()->Configurated();
 		e.GetServer()->FixateCorrectDataEvent(13);
     }
