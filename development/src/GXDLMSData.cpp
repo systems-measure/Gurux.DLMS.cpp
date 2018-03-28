@@ -48,20 +48,20 @@ CGXDLMSData::CGXDLMSData(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, 
 //LN Constructor.
 CGXDLMSData::CGXDLMSData(const char* ln, CArtVariant value) : CGXDLMSObject(DLMS_OBJECT_TYPE_DATA, ln)
 {
-    m_Value = value;
+   // m_Value = value;
 }
 
 // Get value of COSEM Data object.
-CArtVariant CGXDLMSData::GetValue()
-{
-    return m_Value;
-}
-
-// Set value of COSEM Data object.
-void CGXDLMSData::SetValue(CArtVariant& value)
-{
-    m_Value = value;
-}
+//CArtVariant CGXDLMSData::GetValue()
+//{
+//    return m_Value;
+//}
+//
+//// Set value of COSEM Data object.
+//void CGXDLMSData::SetValue(CArtVariant& value)
+//{
+//    m_Value = value;
+//}
 
 // Returns amount of attributes.
 int CGXDLMSData::GetAttributeCount()
@@ -118,8 +118,8 @@ int CGXDLMSData::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
     }
     if (e.GetIndex() == 2)
     {
-		CArtVariant tmp_value(m_Value);
-        e.SetValue(tmp_value);
+		//CArtVariant tmp_value(m_Value);
+  //      e.SetValue(tmp_value);
         return DLMS_ERROR_CODE_OK;
     }
     return DLMS_ERROR_CODE_INVALID_PARAMETER;
@@ -134,7 +134,7 @@ int CGXDLMSData::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
     }
     else if (e.GetIndex() == 2)
     {
-        SetValue(e.GetCAValue());
+        //SetValue(e.GetCAValue());
     }
     else
     {
