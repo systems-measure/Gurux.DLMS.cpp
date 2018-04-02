@@ -57,6 +57,40 @@ CGXDLMSSettings::CGXDLMSSettings(bool isServer)
     m_Count = 0;
     m_ProposedConformance = m_NegotiatedConformance = (DLMS_CONFORMANCE)0;
 }
+CGXDLMSSettings::CGXDLMSSettings(const CGXDLMSSettings& obj) :
+    m_Connected(obj.m_Connected),
+    m_CustomChallenges(obj.m_CustomChallenges),
+    m_CtoSChallenge(obj.m_CtoSChallenge),
+    m_StoCChallenge(obj.m_StoCChallenge),
+    m_SourceSystemTitle(obj.m_SourceSystemTitle),
+    m_InvokeID(obj.m_InvokeID),
+    m_LongInvokeID(obj.m_LongInvokeID),
+    m_Priority(obj.m_Priority),
+    m_ServiceClass(obj.m_ServiceClass),
+    m_ClientAddress(obj.m_ClientAddress),
+    m_ServerAddress(obj.m_ServerAddress),
+    m_UseLogicalNameReferencing(obj.m_UseLogicalNameReferencing),
+    m_InterfaceType(obj.m_InterfaceType),
+    m_Authentication(obj.m_Authentication),
+    m_Password(obj.m_Password),
+    m_Kek(obj.m_Kek),
+    m_Count(obj.m_Count),
+    m_Index(obj.m_Index),
+    m_DlmsVersionNumber(obj.m_DlmsVersionNumber),
+    m_MaxReceivePDUSize(obj.m_MaxReceivePDUSize),
+    m_MaxServerPDUSize(obj.m_MaxServerPDUSize),
+    m_SenderFrame(obj.m_SenderFrame),
+    m_ReceiverFrame(obj.m_ReceiverFrame),
+    m_Server(obj.m_Server),
+    m_Limits(obj.m_Limits),
+    m_BlockIndex(obj.m_BlockIndex),
+    // m_Objects(obj.m_Objects),  ///< CGXDLMSObjectCollection not implemented copy constructor
+    m_Cipher(obj.m_Cipher),
+    m_ProposedConformance(obj.m_ProposedConformance),
+    m_NegotiatedConformance(obj.m_NegotiatedConformance)
+{
+
+}
 
 //Destructor.
 CGXDLMSSettings::~CGXDLMSSettings()

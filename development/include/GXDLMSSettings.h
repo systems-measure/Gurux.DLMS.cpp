@@ -164,6 +164,7 @@ class CGXDLMSSettings
 public:
     // Constructor.
     CGXDLMSSettings(bool isServer);
+    CGXDLMSSettings(const CGXDLMSSettings& obj);
 
     //Destructor.
     ~CGXDLMSSettings();
