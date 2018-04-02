@@ -435,7 +435,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
         }
         else
         {
-            settings.SetConnected(false);       
+            settings.SetConnected(false);
 			e.SetError(DLMS_ERROR_CODE_OTHER_REASON);
         }
 		return 0;

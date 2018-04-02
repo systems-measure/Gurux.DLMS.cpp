@@ -40,6 +40,7 @@
 #include "GXDLMSLimits.h"
 #include "GXDLMSObjectCollection.h"
 #include "GXCipher.h"
+#include "Delegate.h"
 
 // Server sender frame sequence starting number.
 const unsigned char SERVER_START_SENDER_FRAME_SEQUENCE = 0x1E;
@@ -60,6 +61,8 @@ const unsigned short MAX_RECEIVE_PDU_SIZE = 0xFFFF;
 // This class includes DLMS communication Settings.
 class CGXDLMSSettings
 {
+    typedef void(*pFUN_SendEventJournalInfo_t)(bool fnewSateConnect);
+
     //Is connection made for the server.
     bool m_Connected;
 
@@ -155,8 +158,7 @@ class CGXDLMSSettings
 	* Cipher interface that is used to cipher PDU.
 	*/
 	CGXCipher* m_Cipher;
-
-
+    
 public:
     // Constructor.
     CGXDLMSSettings();
@@ -387,6 +389,11 @@ public:
     *            Functionality.
     */
     void SetProposedConformance(DLMS_CONFORMANCE value);
+
+    /**
+    *
+    */
+    Delegate SendEventJournalInfo;
 };
 
 #endif //GXDLMSSETTINGS_H

@@ -164,7 +164,6 @@ private:
                        CGXByteBuffer &reply);
     
 	bool m_Initialized;
-   
 protected:
   
 	/**
