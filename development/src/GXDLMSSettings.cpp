@@ -382,8 +382,7 @@ bool CGXDLMSSettings::IsConnected()
     return m_Connected;
 }
 
-void CGXDLMSSettings::SetConnected(bool value)
-{
+void CGXDLMSSettings::SetConnected(bool value){
     SendEventJournalInfo(value);
     m_Connected = value;
 }

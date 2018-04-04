@@ -30,10 +30,7 @@ template<class T, class A> class Conteiner<T, void (T::*)(A)> : public IConteine
 		void Call(IArgument* piarg) {
 			Argument<A>* parg = dynamic_cast<Argument<A>*>(piarg);
 			//assert(parg);
-			if (parg){
-                (t_class->*m_method)(parg->arg);
-                delete parg;
-            }
+			if (parg) (t_class->*m_method)(parg->arg);
 		}
 };
 
@@ -51,8 +48,9 @@ public:
 	}
 	template<class T>void operator()(T arg) {
 		if (m_conteiner) {
-
-			m_conteiner->Call(new Argument<T>(arg));
+            Argument<T> value_delegate{arg};
+            
+			m_conteiner->Call(&value_delegate);
 		}
 	}
 };
