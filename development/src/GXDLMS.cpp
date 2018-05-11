@@ -472,28 +472,28 @@ void MultipleBlocks(
     }
 }
 
-int IfChiphering(CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
-	CGXByteBuffer tmp;
-	int ret = p.GetSettings()->GetCipher()->Encrypt(
-		p.GetSettings()->GetCipher()->GetSecurity(),
-		DLMS_COUNT_TYPE_PACKET,
-		p.GetSettings()->GetCipher()->GetFrameCounter(),
-		GetGloMessage(p.GetCommand()),
-		p.GetSettings()->GetCipher()->GetSystemTitle(),
-		reply, tmp);
-	if (ret != 0)
-	{
-		return ret;
-	}
-	reply.SetSize(0);
-	if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
-	{
-		AddLLCBytes(p.GetSettings(), reply);
-	}
-	reply.Set(&tmp, 0, tmp.GetSize());
-    
-    return ret;
-}
+//int IfChiphering(CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
+//	CGXByteBuffer tmp;
+//	int ret = p.GetSettings()->GetCipher()->Encrypt(
+//		p.GetSettings()->GetCipher()->GetSecurity(),
+//		DLMS_COUNT_TYPE_PACKET,
+//		p.GetSettings()->GetCipher()->GetFrameCounter(),
+//		GetGloMessage(p.GetCommand()),
+//		p.GetSettings()->GetCipher()->GetSystemTitle(),
+//		reply, tmp);
+//	if (ret != 0)
+//	{
+//		return ret;
+//	}
+//	reply.SetSize(0);
+//	if (p.GetSettings()->GetInterfaceType() == DLMS_INTERFACE_TYPE_HDLC)
+//	{
+//		AddLLCBytes(p.GetSettings(), reply);
+//	}
+//	reply.Set(&tmp, 0, tmp.GetSize());
+//    
+//    return ret;
+//}
 
 int CGXDLMS::GetLNPdu(
     CGXDLMSLNParameters& p,
@@ -660,10 +660,10 @@ int CGXDLMS::GetLNPdu(
                 reply.Set(p.GetData(), p.GetData()->GetPosition(), len);
             }
         }
-        if (ciphering)
-        {
-			IfChiphering(p, reply);
-            }
+   //     if (ciphering)
+   //     {
+			////IfChiphering(p, reply);
+   //         }
             }
     return 0;
 }
@@ -1293,10 +1293,10 @@ int CGXDLMS::HandledGloRequest(CGXDLMSSettings& settings,
         int ret;
         unsigned char ch;
         data.GetData().SetPosition(data.GetData().GetPosition() - 1);
-        if ((ret = settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), data.GetData(), security)) != 0)
-        {
-            return ret;
-        }
+        //if ((ret = settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), data.GetData(), security)) != 0)
+        //{
+        //    return ret;
+        //}
         // Get command.
         data.GetData().GetUInt8(&ch);
         data.SetCommand((DLMS_COMMAND)ch);
@@ -1327,7 +1327,7 @@ int CGXDLMS::HandledGloResponse(
         bb.Set(&tmp, data.GetData().GetPosition(), data.GetData().GetSize() - data.GetData().GetPosition());
         data.GetData().SetPosition(index);
         data.GetData().SetSize(index);
-        settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), bb, security);
+        //settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), bb, security);
         data.GetData().Set(&bb);
         data.SetCommand(DLMS_COMMAND_NONE);
         GetPdu(settings, data);
@@ -1392,19 +1392,19 @@ int CGXDLMS::GetPdu(
             // If all frames are read.
             if ((data.GetMoreData() & DLMS_DATA_REQUEST_TYPES_FRAME) == 0)
             {
-                data.GetData().SetPosition(data.GetData().GetPosition() - 1);
-                DLMS_SECURITY security;
-                if ((ret = settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), data.GetData(), security)) != 0)
-                {
-                    return ret;
-                }
-                // Get command
-                if ((ret = data.GetData().GetUInt8(&ch)) != 0)
-                {
-                    return ret;
-                }
-                cmd = (DLMS_COMMAND)ch;
-                data.SetCommand(cmd);
+                //data.GetData().SetPosition(data.GetData().GetPosition() - 1);
+                //DLMS_SECURITY security;
+                //if ((ret = settings.GetCipher()->Decrypt(settings.GetSourceSystemTitle(), data.GetData(), security)) != 0)
+                //{
+                //    return ret;
+                //}
+                //// Get command
+                //if ((ret = data.GetData().GetUInt8(&ch)) != 0)
+                //{
+                //    return ret;
+                //}
+                //cmd = (DLMS_COMMAND)ch;
+                //data.SetCommand(cmd);
             }
             else
             {

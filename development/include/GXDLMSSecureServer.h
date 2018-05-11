@@ -40,7 +40,7 @@
 class CGXDLMSSecureServer : public CGXDLMSServer
 {
 private:
-    CGXCipher m_Cipher;
+   // CGXCipher m_Cipher;
 public:
     /////////////////////////////////////////////////////////////////////////////
     //Constructor
@@ -57,6 +57,6 @@ public:
     /**
      * @return Ciphering settings.
      */
-    CGXCipher* GetCiphering();
+    //CGXCipher* GetCiphering();
 };
 #endif //GXDLMSSECURESERVER_H

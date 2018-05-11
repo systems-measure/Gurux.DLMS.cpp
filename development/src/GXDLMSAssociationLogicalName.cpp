@@ -41,6 +41,21 @@
 #include "converter_mpro\converter_mpro.h"
 #include "memory\memory_srv.h"
 
+void SecureHLS_Psw(CGXDLMSSettings& settings, CGXByteBuffer& secured) {
+	CGXByteBuffer hls_psw;
+	hls_psw.Set(mem::UserMem.ExtMem.HLSSecret, strlen((const char*)mem::UserMem.ExtMem.HLSSecret));
+	CGXSecure::Secure(settings, hls_psw, mem::UserMem.ExtMem.HLSSecret, secured);
+	if (secured.GetSize() != 0) {
+		if (secured.Capacity() < secured.GetSize() + 2) {
+			secured.Capacity(secured.GetSize() + 2);
+		}
+		secured.SetSize(secured.GetSize() + 2);
+		secured.Move(0, 2, secured.GetSize() - 2);
+		secured.SetUInt8(0, DLMS_DATA_TYPE_OCTET_STRING);
+		secured.SetUInt8(1, secured.GetSize() - 2);
+	}
+}
+
 void CGXDLMSAssociationLogicalName::Init()
 {
     m_AssociationStatus = DLMS_DLMS_ASSOCIATION_STATUS_NON_ASSOCIATED;
@@ -377,49 +392,14 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		VarInfo v_info;
 		e.GetParameters().GetVar(v_info);
 		int ret;
-        unsigned long ic = 0;
-        CGXByteBuffer* readSecret;
-		CGXByteBuffer m_HlsSecret;
-		uint8_t size_str = strlen((const char*)mem::UserMem.ExtMem.HLSSecret);
-		m_HlsSecret.Set(mem::UserMem.ExtMem.HLSSecret, size_str);
-        if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC)
-        {
-            unsigned char ch;
-            readSecret = &settings.GetSourceSystemTitle();
-            CGXByteBuffer bb;
-            bb.Set(e.GetParameters().GetCurPtr(), v_info.size);
-            if ((ret = bb.GetUInt8(&ch)) != 0)
-            {
-                return ret;
-            }
-            if ((ret = bb.GetUInt32(&ic)) != 0)
-            {
-                return ret;
-            }
-        }
-        else
-        {
-            readSecret = &m_HlsSecret;
-        }
         CGXByteBuffer serverChallenge;
-		if ((ret = CGXSecure::Secure(settings, settings.GetCipher(), ic,
-            settings.GetStoCChallenge(), *readSecret, serverChallenge)) != 0)
+		if ((ret = CGXSecure::Secure(settings, settings.GetStoCChallenge(), mem::UserMem.ExtMem.HLSSecret, serverChallenge)) != 0)
         {
             return ret;
         }
         if (serverChallenge.Compare(e.GetParameters().GetCurPtr(), v_info.size))
         {
-            if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC)
-            {
-                readSecret = &settings.GetCipher()->GetSystemTitle();
-                ic = settings.GetCipher()->GetFrameCounter();
-            }
-            else
-            {
-                readSecret = &m_HlsSecret;
-            }
-            if ((ret = CGXSecure::Secure(settings, settings.GetCipher(), ic,
-                settings.GetCtoSChallenge(), *readSecret, serverChallenge)) != 0)
+            if ((ret = CGXSecure::Secure(settings, settings.GetCtoSChallenge(), mem::UserMem.ExtMem.HLSSecret, serverChallenge)) != 0)
             {
                 return ret;
             }
@@ -441,10 +421,19 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		return 0;
     }
 	if (e.GetIndex() == 2) {
+		int ret = 0;
+		CGXByteBuffer decrypted;
 		VarInfo v_info;
 		e.GetParameters().GetVar(v_info);
-		e.GetParameters().SetUInt8('\0');
-        mem::wr_ext_mem(GetAddr(HLSSecret), e.GetParameters().GetCurPtr(), v_info.size + 1);
+		if (v_info.size > 16) {
+			return DLMS_ERROR_CODE_INVALID_PARAMETER;
+		}
+		CGXSecure::UnSecure(settings, e.GetParameters().GetCurPtr(), v_info.size, decrypted);
+		decrypted.SetUInt8('\0');
+		if (strcmp((const char*)mem::UserMem.ExtMem.HLSSecret, (const char*)decrypted.GetData()) != 0) {
+			CGXCipher::SetRoundKeysState(false);
+			mem::wr_ext_mem(GetAddr(HLSSecret), decrypted.GetData(), strlen((const char*)decrypted.GetData()) + 1);
+		}
 		e.GetServer()->Configurated();
 		e.GetServer()->FixateCorrectDataEvent(14);
 		return 0;
@@ -579,9 +568,10 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
 			}
 			else {
 				if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH) {
-					size_str = strlen((const char*)mem::UserMem.ExtMem.HLSSecret);
-					GXHelpers::SetObjectCount(size_str, data);
-					data.Set(mem::UserMem.ExtMem.HLSSecret, size_str);
+					SecureHLS_Psw(settings, data);
+					if (data.GetSize() == 0) {
+						return DLMS_ERROR_CODE_HARDWARE_FAULT;
+					}
 				}
 			}
 		}
@@ -592,9 +582,10 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
 				data.Set(mem::UserMem.ExtMem.LLSSecret, size_str);
 			}
 			else {
-				size_str = strlen((const char*)mem::UserMem.ExtMem.HLSSecret);
-				GXHelpers::SetObjectCount(size_str, data);
-				data.Set(mem::UserMem.ExtMem.HLSSecret, size_str);
+				SecureHLS_Psw(settings, data);
+				if (data.GetSize() == 0) {
+					return DLMS_ERROR_CODE_HARDWARE_FAULT;
+				}
 			}
 		}
 		e.SetValue(data);

@@ -64,69 +64,54 @@ int CGXSecure::GenerateChallenge(DLMS_AUTHENTICATION authentication, CGXByteBuff
     */
 int CGXSecure::Secure(
     CGXDLMSSettings& settings,
-    CGXCipher* cipher,
-    unsigned long ic,
     CGXByteBuffer& data,
-    CGXByteBuffer& secret,
+	const unsigned char* secret,
     CGXByteBuffer& reply)
 {
     int ret = 0, pos;
     reply.Clear();
     if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH)
     {
-        CGXByteBuffer s;
         int len = data.GetSize();
         if (len % 16 != 0)
         {
             len += (16 - (data.GetSize() % 16));
         }
-        if (secret.GetSize() > data.GetSize())
-        {
-            len = secret.GetSize();
-            if (len % 16 != 0)
-            {
-                len += (16 - (secret.GetSize() % 16));
-            }
-        }
-        s.Set(&secret);
-        s.Zero(s.GetSize(), len - s.GetSize());
+		if (!CGXCipher::RoundKeysIsInit()) {
+			CGXCipher::SetKeyToExtKey(secret, strlen((const char*)secret));
+			if ((ret = CGXCipher::KeyExpand()) != DLMS_ERROR_CODE_OK) {
+				return ret;
+			}
+		}
         reply.Set(&data);
         reply.Zero(reply.GetSize(), len - reply.GetSize());
         for (pos = 0; pos < len / 16; ++pos)
         {
-            CGXCipher::Aes1Encrypt(reply, pos * 16, s);
+            CGXCipher::Aes1Encrypt(reply.GetData() + pos * 16);
         }
         return 0;
     }
-    // Get server Challenge.
-    CGXByteBuffer challenge;
-    // Get shared secret
-    if (settings.GetAuthentication() != DLMS_AUTHENTICATION_HIGH_GMAC)
-    {
-        challenge.Set(&data);
-        challenge.Set(&secret);
-    }
-    if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_MD5)
-    {
-        //MD5 is not supported at the moment.
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    else if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_SHA1)
-    {
-        //SHA-1 is not supported at the moment.
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    else if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC)
-    {
-        CGXByteBuffer tmp;
-        ret = cipher->Encrypt(DLMS_SECURITY_AUTHENTICATION,
-            DLMS_COUNT_TYPE_TAG, ic, 0, secret, data, tmp);
-        if (ret == 0)
-        {
-            reply.SetUInt8(DLMS_SECURITY_AUTHENTICATION);
-            reply.SetUInt32(ic);
-            reply.Set(&tmp);
-        }
-    }
     return ret;
+}
+
+void CGXSecure::UnSecure(
+	CGXDLMSSettings& settings,
+	unsigned char* data,
+	unsigned char size_data,
+	CGXByteBuffer& reply) {
+	int pos;
+	reply.Clear();
+	if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH)
+	{
+		if (size_data % 16 != 0)
+		{
+			size_data += (16 - (size_data % 16));
+		}
+		reply.Set(data, size_data);
+		reply.Zero(reply.GetSize(), size_data - reply.GetSize());
+		for (pos = 0; pos < size_data / 16; ++pos)
+		{
+			CGXCipher::Aes1Decrypt(reply.GetData() + pos * 16);
+		}
+	}
 }

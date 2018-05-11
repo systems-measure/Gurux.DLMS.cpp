@@ -188,7 +188,7 @@ void CGXDLMSServer::Reset(bool connected)
     {
         if (!connected)
         {
-            m_Settings.GetCipher()->Reset();
+            //m_Settings.GetCipher()->Reset();
         }
         else
         {

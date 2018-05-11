@@ -189,31 +189,31 @@ int GenerateUserInformation(
             return ret;
         }
     }
-    else
-    {
-        CGXByteBuffer tmp, crypted;
-        if ((ret = GetInitiateRequest(settings, cipher, tmp)) != 0)
-        {
-            return ret;
-        }
-        if ((ret = cipher->Encrypt(cipher->GetSecurity(),
-            DLMS_COUNT_TYPE_PACKET,
-            settings.GetCipher()->GetFrameCounter(),
-            DLMS_COMMAND_GLO_INITIATE_REQUEST,
-            cipher->GetSystemTitle(),
-            tmp,
-            crypted)) != 0)
-        {
-            return ret;
-        }
+    //else
+    //{
+    //    CGXByteBuffer tmp, crypted;
+    //    if ((ret = GetInitiateRequest(settings, cipher, tmp)) != 0)
+    //    {
+    //        return ret;
+    //    }
+    //    if ((ret = cipher->Encrypt(cipher->GetSecurity(),
+    //        DLMS_COUNT_TYPE_PACKET,
+    //        settings.GetCipher()->GetFrameCounter(),
+    //        DLMS_COMMAND_GLO_INITIATE_REQUEST,
+    //        cipher->GetSystemTitle(),
+    //        tmp,
+    //        crypted)) != 0)
+    //    {
+    //        return ret;
+    //    }
 
-        // Length for AARQ user field
-        GXHelpers::SetObjectCount(2 + crypted.GetSize(), data);
-        // Coding the choice for user-information (Octet string, universal)
-        data.SetUInt8(BER_TYPE_OCTET_STRING);
-        GXHelpers::SetObjectCount(crypted.GetSize(), data);
-        data.Set(&crypted);
-    }
+    //    // Length for AARQ user field
+    //    GXHelpers::SetObjectCount(2 + crypted.GetSize(), data);
+    //    // Coding the choice for user-information (Octet string, universal)
+    //    data.SetUInt8(BER_TYPE_OCTET_STRING);
+    //    GXHelpers::SetObjectCount(crypted.GetSize(), data);
+    //    data.Set(&crypted);
+    //}
     return 0;
 }
 
@@ -258,32 +258,32 @@ int ParseUserInformation(
     }
     if (tag == DLMS_COMMAND_GLO_INITIATE_RESPONSE)
     {
-        data.SetPosition(data.GetPosition() - 1);
-        DLMS_SECURITY security = DLMS_SECURITY_NONE;
-        if ((ret = cipher->Decrypt(settings.GetSourceSystemTitle(), data, security)) != 0)
-        {
-            return ret;
-        }
-        cipher->SetSecurity(security);
-        if ((ret = data.GetUInt8(&tag)) != 0)
-        {
-            return ret;
-        }
+        //data.SetPosition(data.GetPosition() - 1);
+        //DLMS_SECURITY security = DLMS_SECURITY_NONE;
+        //if ((ret = cipher->Decrypt(settings.GetSourceSystemTitle(), data, security)) != 0)
+        //{
+        //    return ret;
+        //}
+        //cipher->SetSecurity(security);
+        //if ((ret = data.GetUInt8(&tag)) != 0)
+        //{
+        //    return ret;
+        //}
     }
     else if (tag == DLMS_COMMAND_GLO_INITIATE_REQUEST)
     {
-        data.SetPosition(data.GetPosition() - 1);
-        // InitiateRequest
-        DLMS_SECURITY security = DLMS_SECURITY_NONE;
-        if ((ret = cipher->Decrypt(settings.GetSourceSystemTitle(), data, security)) != 0)
-        {
-            return ret;
-        }
-        cipher->SetSecurity(security);
-        if ((ret = data.GetUInt8(&tag)) != 0)
-        {
-            return ret;
-        }
+        //data.SetPosition(data.GetPosition() - 1);
+        //// InitiateRequest
+        //DLMS_SECURITY security = DLMS_SECURITY_NONE;
+        //if ((ret = cipher->Decrypt(settings.GetSourceSystemTitle(), data, security)) != 0)
+        //{
+        //    return ret;
+        //}
+        //cipher->SetSecurity(security);
+        //if ((ret = data.GetUInt8(&tag)) != 0)
+        //{
+        //    return ret;
+        //}
     }
     bool response = tag == DLMS_COMMAND_INITIATE_RESPONSE;
     if (response)
@@ -669,7 +669,7 @@ int GetUserInformation(
 		data.Set(&bb, 1, 3);
 		data.SetUInt16(settings.GetMaxPduSize());
 		data.SetUInt16(0x0007);
-		if (cipher != NULL && cipher->IsCiphered())
+		/*if (cipher != NULL && cipher->IsCiphered())
 		{
 			CGXByteBuffer tmp(data);
 			data.Clear();
@@ -680,7 +680,7 @@ int GetUserInformation(
 				cipher->GetSystemTitle(),
 				tmp,
 				data);
-		}
+		}*/
 	}
     return 0;
 }
@@ -1100,16 +1100,16 @@ int CGXAPDU::GenerateAARE(
 		data.SetUInt8(diagnostic);
 	}
     // SystemTitle
-    if (cipher != NULL
-        && (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC
-            || cipher->IsCiphered()))
-    {
-        data.SetUInt8(BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AP_INVOCATION_ID);
-        GXHelpers::SetObjectCount(2 + cipher->GetSystemTitle().GetSize(), data);
-        data.SetUInt8(BER_TYPE_OCTET_STRING);
-        GXHelpers::SetObjectCount(cipher->GetSystemTitle().GetSize(), data);
-        data.Set(&cipher->GetSystemTitle());
-    }
+    //if (cipher != NULL
+    //    && (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC
+    //        || cipher->IsCiphered()))
+    //{
+    //    data.SetUInt8(BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AP_INVOCATION_ID);
+    //    GXHelpers::SetObjectCount(2 + cipher->GetSystemTitle().GetSize(), data);
+    //    data.SetUInt8(BER_TYPE_OCTET_STRING);
+    //    GXHelpers::SetObjectCount(cipher->GetSystemTitle().GetSize(), data);
+    //    data.Set(&cipher->GetSystemTitle());
+    //}
 
     if (result != DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED
         && diagnostic == DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_REQUIRED)

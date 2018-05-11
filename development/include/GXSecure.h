@@ -66,11 +66,26 @@ public:
     */
     static int Secure(
         CGXDLMSSettings& settings,
-        CGXCipher* cipher,
-        unsigned long ic,
         CGXByteBuffer& data,
-        CGXByteBuffer& secret,
+        const unsigned char* secret,
         CGXByteBuffer& reply);
+
+	/**
+	* UnChipher text.
+	*
+	* @param auth
+	*            Authentication level.
+	* @param data
+	*            Text to unchipher.
+	* @param secret
+	*            Secret.
+	* @return UnChiphered text.
+	*/
+	static void UnSecure(
+		CGXDLMSSettings& settings,
+		unsigned char* data,
+		unsigned char size_data,
+		CGXByteBuffer& reply);
 };
 
 #endif //GXSECURE_H
