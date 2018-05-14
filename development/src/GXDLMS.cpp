@@ -1435,8 +1435,8 @@ int CGXDLMS::CheckHdlcAddress(
         if (settings.GetClientAddress() != target)
         {
 			// If push message
-			if (target == 0x10 && ((srcAddrSize == 2 && ((source & 0x3F80) >> 7) == 0x01) ||
-								   (srcAddrSize == 4 && ((source & 0x0FFFC000) >> 14) == 0x01))) {
+			if (target == 0x01 && ((srcAddrSize == 2 && (((source & 0x3F80) >> 7) == 0x01) && (((source & 0x007F)) == 0x7E)) ||
+								   (srcAddrSize == 4 && (((source & 0x0FFFC000) >> 14) == 0x01) &&((source & 0x3FFF) == 0x3FFE)))) {
 				if (reply.GetUInt8(reply.GetPosition(), &ch) != 0)
 				{
 					return DLMS_ERROR_CODE_INVALID_PARAMETER;
