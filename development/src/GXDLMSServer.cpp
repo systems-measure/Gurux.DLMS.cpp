@@ -916,9 +916,13 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 					e->GetCAValue().Clear();
 				}
 			}
+			if (e->GetHandled()) {
+				delete arr.back();
+				e = nullptr;
+				arr.pop_back();
+			}
 		}
 	}       
-    
     ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
     if (m_Settings.GetCount() != m_Settings.GetIndex()
         || bb.GetSize() != bb.GetPosition())
@@ -970,7 +974,7 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
         else
         {
             bb.Set(&m_Transaction->GetData());
-            bool moreData = m_Settings.GetIndex() != m_Settings.GetCount();
+            bool moreData = ((m_Settings.GetIndex() != m_Settings.GetCount()) || (m_Transaction->GetTargets().size() != 0));
             if (moreData)
             {
                 // If there is multiple blocks on the buffer.
@@ -1004,11 +1008,11 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 
 							(*arg)->SetTargetName();
 							m_CurrentALN->GetObjectList().FreeConstructedObj();
+							if (m_Transaction->GetCommandType() == DLMS_GET_COMMAND_TYPE_WITH_LIST) {
+								bb.SetUInt8((*arg)->GetError());
+							}
 							if ((*arg)->GetError() != DLMS_ERROR_CODE_OK) {
 								p.SetStatus((*arg)->GetError());
-								if (m_Transaction->GetCommandType() == DLMS_GET_COMMAND_TYPE_WITH_LIST) {
-									bb.SetUInt8((*arg)->GetError());
-								}
 								(*arg)->SetHandled(true);
 							}
 							else {
@@ -1033,6 +1037,9 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 						if ((*arg)->GetHandled()) {
 							++arg;
 						}
+					}
+					for (CGXDLMSValueEventCollection::iterator beg = m_Transaction->GetTargets().begin(); beg != arg; ++beg) {
+						delete *beg;
 					}
 					m_Transaction->GetTargets().erase(m_Transaction->GetTargets().begin(), arg);
 				}
@@ -1180,13 +1187,16 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 			++e;
 		}
 	}
+	for (CGXDLMSValueEventCollection::iterator beg = list.begin(); beg != e; ++beg) {
+		delete *beg;
+	}
 	list.erase(list.begin(), e);
 	
-	if (bb.GetSize() > m_Settings.GetMaxPduSize()) {
+	if (bb.GetSize() > m_Settings.GetMaxPduSize() - 6) {
 		p.SetStatus(DLMS_ERROR_CODE_OK);
 	}
 	ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
-	if (m_Settings.GetIndex() != m_Settings.GetCount())
+	if (m_Settings.GetIndex() != m_Settings.GetCount() || bb.GetSize() != bb.GetPosition())
 	{
 		if (m_Transaction != nullptr)
 		{
