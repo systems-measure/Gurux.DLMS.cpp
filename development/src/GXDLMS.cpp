@@ -2290,11 +2290,6 @@ int CGXDLMS::HandleGetResponse(
     else if (type == 3)
     {
         // Get response with list.
-        //Get count.
-        if ((ret = GXHelpers::GetObjectCount(data, count)) != 0)
-        {
-            return ret;
-        }
         GetDataFromBlock(data, 0);
         return DLMS_ERROR_CODE_FALSE;
     }
