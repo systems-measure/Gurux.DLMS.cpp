@@ -56,7 +56,7 @@ private:
 
 	CArtVariant m_Parameters;
 
-	signed char event_param[10];//0-5 target_name, 6-m_Index, 7-m_Selector, 8-m_Error, 9-m_SkipMaxPduSize
+	signed char event_param[11];//0-5 target_name, 6-m_Index, 7-m_Selector, 8-m_Error, 9-m_SkipMaxPduSize, 10 - m_Handled
 
 	unsigned short row_param[3];//0-m_RowToPdu, 1-m_RowBeginIndex , 2-m_RowEndIndex
     
@@ -228,6 +228,16 @@ public:
      */
     void SetSkipMaxPduSize(bool value);
 
+	/**
+	* @return State of handling object attribute.
+	*/
+	bool GetHandled();
+
+	/**
+	* @param value
+	*           setting state of handling object attribute.
+	*/
+	void SetHandled(bool value);
 
     /**
     * @return How many rows are read to one PDU.

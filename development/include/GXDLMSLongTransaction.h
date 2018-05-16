@@ -49,6 +49,8 @@ private:
     */
     DLMS_COMMAND m_Command;
 
+	uint8_t command_type;
+
     /**
      * Targets.
      */
@@ -69,11 +71,12 @@ public:
      * @param data
      */
     CGXDLMSLongTransaction(CGXDLMSValueEventCollection& targets,
-                           DLMS_COMMAND command, CGXByteBuffer& data)
+                           DLMS_COMMAND command, DLMS_GET_COMMAND_TYPE com_type, CGXByteBuffer& data)
     {
         m_Targets.insert(m_Targets.end(), targets.begin(), targets.end());
         targets.clear();
         m_Command = command;
+		command_type = com_type;
         m_Data.Set(&data, data.GetPosition());
     }
 
@@ -84,6 +87,11 @@ public:
     {
         return m_Command;
     }
+
+	DLMS_GET_COMMAND_TYPE GetCommandType()
+	{
+		return (DLMS_GET_COMMAND_TYPE)command_type;
+	}
 
     /**
      * @return Targets.

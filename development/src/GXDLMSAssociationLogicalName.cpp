@@ -187,6 +187,7 @@ int CGXDLMSAssociationLogicalName::GetObjects(
 			//Access rights.
 			GetAccessRights(m_ObjectList.GetCurALN(), e.GetServer(), data);
 			settings.SetIndex(settings.GetCount());
+			e.SetHandled(true);
 			++m_pos;
 		}
 	}

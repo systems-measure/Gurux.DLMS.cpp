@@ -119,6 +119,7 @@ void CGXDLMSValueEventArg::Init(
 	event_param[7] = selector;
 	event_param[8] = DLMS_ERROR_CODE_OK;
 	event_param[9] = 0;
+	event_param[10] = 0;
 	row_param[0] = 0;
 	row_param[1] = 0;
 	row_param[2] = 0;
@@ -199,6 +200,14 @@ bool CGXDLMSValueEventArg::GetSkipMaxPduSize()
 void CGXDLMSValueEventArg::SetSkipMaxPduSize(bool value)
 {
 	event_param[9] = value;
+}
+
+bool CGXDLMSValueEventArg::GetHandled() {
+	return (event_param[10] != 0);
+}
+
+void CGXDLMSValueEventArg::SetHandled(bool value) {
+	event_param[10] = value;
 }
 
 unsigned short CGXDLMSValueEventArg::GetRowToPdu()

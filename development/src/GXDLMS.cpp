@@ -565,7 +565,7 @@ int CGXDLMS::GetLNPdu(
 		{
 			if (p.IsMultipleBlocks())
 			{
-				if (p.GetRequestType() == 1)
+				if (p.GetRequestType() != 2)
 				{
 					p.SetRequestType(2);
 				}

@@ -601,7 +601,7 @@ int CGXDLMSServer::HandleSetRequest(
 			if (p.IsMultipleBlocks()) {
 				e->SetValue(value);
 				list.push_back(e);
-				m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
+				m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, DLMS_GET_COMMAND_TYPE_NORMAL, data);
 			}
 			else {
 				VarInfo v_info;
@@ -640,7 +640,7 @@ int CGXDLMSServer::HandleSetRequest(
 					if (p.IsMultipleBlocks())
 					{
 						list.push_back(e);
-						m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, data);
+						m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, DLMS_GET_COMMAND_TYPE_NORMAL, data);
 					}
 					PreWrite(e);
 					if (e->GetError() != 0)
@@ -903,8 +903,8 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
 				else {
 					PreRead(e);
 					if (m_Settings.GetCount() == 0) {
-					m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
-				}
+						m_Settings.SetCount(e->GetRowEndIndex() - e->GetRowBeginIndex());
+					}
 				}
 				if (p.GetStatus() == DLMS_ERROR_CODE_OK)
 				{
@@ -928,7 +928,7 @@ int CGXDLMSServer::GetRequestNormal(CGXByteBuffer& data)
             delete m_Transaction;
             m_Transaction = nullptr;
         }
-		    m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, bb);
+		    m_Transaction = new CGXDLMSLongTransaction(arr, DLMS_COMMAND_GET_REQUEST, DLMS_GET_COMMAND_TYPE_NEXT_DATA_BLOCK, bb);
     }
 	else {
 		if (m_Transaction != nullptr) {
@@ -977,8 +977,8 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
                 // This might happen when Max PDU size is very small.
                 if (bb.GetSize() < m_Settings.GetMaxPduSize())
                 {
-					for (std::vector<CGXDLMSValueEventArg*>::iterator arg = m_Transaction->GetTargets().begin();
-						arg != m_Transaction->GetTargets().end(); ++arg)
+					std::vector<CGXDLMSValueEventArg*>::iterator arg = m_Transaction->GetTargets().begin();
+					while(arg != m_Transaction->GetTargets().end() && bb.GetSize() < m_Settings.GetMaxPduSize())
 					{
 						if ((*arg)->GetError() == DLMS_ERROR_CODE_OK) {
 							if ((*arg)->GetTarget() == nullptr) {
@@ -996,29 +996,45 @@ int CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data)
 								{
 									ret = m_CurrentALN->GetValue(m_Settings, *(*arg));
 								}
-								if (ret != 0) {
-									m_CurrentALN->GetObjectList().FreeConstructedObj();
-									p.SetStatus(ret);
-									return CGXDLMS::GetLNPdu(p, m_ReplyData);
-								}
+								(*arg)->SetError((DLMS_ERROR_CODE)ret);
 							}
 							else {
 								PreRead(*arg);
 							}
+
 							(*arg)->SetTargetName();
 							m_CurrentALN->GetObjectList().FreeConstructedObj();
-							if ((*arg)->GetCAValue().byteArr != NULL && (*arg)->GetCAValue().size != 0) {
-								// If byte array is added do not add type.
-								bb.Set((*arg)->GetCAValue().byteArr, (*arg)->GetCAValue().size);
-								(*arg)->GetCAValue().Clear();
+							if ((*arg)->GetError() != DLMS_ERROR_CODE_OK) {
+								p.SetStatus((*arg)->GetError());
+								if (m_Transaction->GetCommandType() == DLMS_GET_COMMAND_TYPE_WITH_LIST) {
+									bb.SetUInt8((*arg)->GetError());
+								}
+								(*arg)->SetHandled(true);
 							}
+							else {
+								if ((*arg)->GetCAValue().byteArr != NULL && (*arg)->GetCAValue().size != 0) {
+									// If byte array is added do not add type.
+									bb.Set((*arg)->GetCAValue().byteArr, (*arg)->GetCAValue().size);
+									(*arg)->GetCAValue().Clear();
+								}
+								else {				
+									p.SetStatus(DLMS_ERROR_CODE_HARDWARE_FAULT);
+									(*arg)->SetHandled(true);
+								}
 							}
+						}
 						else {
 							p.SetStatus((*arg)->GetError());
-							m_CurrentALN->GetObjectList().FreeConstructedObj();
-							return CGXDLMS::GetLNPdu(p, m_ReplyData);
+							if (m_Transaction->GetCommandType() == DLMS_GET_COMMAND_TYPE_WITH_LIST) {
+								bb.SetUInt8((*arg)->GetError());
+							}
+							(*arg)->SetHandled(true);
+						}
+						if ((*arg)->GetHandled()) {
+							++arg;
 						}
 					}
+					m_Transaction->GetTargets().erase(m_Transaction->GetTargets().begin(), arg);
 				}
 			}
             p.SetMultipleBlocks(true);
@@ -1099,7 +1115,7 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 					return ret;
 				}
 			}
-			CGXDLMSValueEventArg *arg = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
+			arg = new CGXDLMSValueEventArg(this, obj, attributeIndex, selector, parameters);
 			list.push_back(arg);
 			if (GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ && GetAttributeAccess(arg) != DLMS_ACCESS_MODE_READ_WRITE)
 			{
@@ -1111,35 +1127,64 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
 		}
 	}
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 3, nullptr, &bb, 0xFF);
 	std::vector<CGXDLMSValueEventArg*>::iterator e = list.begin();
-	memcpy(ln,(*e)->GetTargetName(), 6);
-	obj = m_CurrentALN->GetObjectList().FindByLN(ln);
-	if (obj != nullptr) {
-		(*e)->SetTarget(obj);
-		if ((*e)->GetTarget()->GetDataValidity() || (*e)->GetIndex() == 1)
-		{
-			ret = (*e)->GetTarget()->GetValue(m_Settings, *(*e));
+	while(e != list.end() && bb.GetSize() < m_Settings.GetMaxPduSize()) {
+		if ((*e)->GetError() != DLMS_ERROR_CODE_OK) {
+			bb.SetUInt8((*e)->GetError());
+			(*e)->SetHandled(true);
 		}
 		else {
-			PreRead(*e);
-		}
-		bb.SetUInt8((*e)->GetError());
-
-		if ((*e)->GetCAValue().byteArr != nullptr && (*e)->GetCAValue().size != 0) {
-			// If byte array is added do not add type.
-			bb.Set((*e)->GetCAValue().byteArr, (*e)->GetCAValue().size);
-			(*e)->GetCAValue().Clear();
-		}
-		else {
+			memcpy(ln, (*e)->GetTargetName(), 6);
+			obj = m_CurrentALN->GetObjectList().FindByLN(ln);
+			if (obj != nullptr) {
+				(*e)->SetTarget(obj);
+				if ((*e)->GetTarget()->GetDataValidity() || (*e)->GetIndex() == 1)
+				{
+					if ((*e)->GetTarget()->GetObjectType() != DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME) {
+						ret = (*e)->GetTarget()->GetValue(m_Settings, *(*e));
+					}
+					else
+					{
+						ret = m_CurrentALN->GetValue(m_Settings, *(*e));
+					}
+					(*e)->SetError((DLMS_ERROR_CODE)ret);
+				}
+				else {
+					PreRead(*e);
+				}
+				bb.SetUInt8((*e)->GetError());
+				if ((*e)->GetError() != DLMS_ERROR_CODE_OK) {
+					(*e)->SetHandled(true);
+				}
+				else {
+					if ((*e)->GetCAValue().byteArr != nullptr && (*e)->GetCAValue().size != 0) {
+						// If byte array is added do not add type.
+						bb.Set((*e)->GetCAValue().byteArr, (*e)->GetCAValue().size);
+						(*e)->GetCAValue().Clear();
+					}
+					else {
+						bb.SetUInt8(DLMS_ERROR_CODE_HARDWARE_FAULT);
+						(*e)->SetHandled(true);
+					}
+				}
+			}
+			else {
+				bb.SetUInt8(DLMS_ERROR_CODE_UNDEFINED_OBJECT);
+				(*e)->SetHandled(true);
+			}
 			obj = nullptr;
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
 		}
+		if ((*e)->GetHandled()) {
+			++e;
+		}
 	}
-	else {
-		(*e)->SetError(DLMS_ERROR_CODE_UNDEFINED_OBJECT);
+	list.erase(list.begin(), e);
+	
+	if (bb.GetSize() > m_Settings.GetMaxPduSize()) {
+		p.SetStatus(DLMS_ERROR_CODE_OK);
 	}
-	list.erase(list.begin(), list.begin() + 1);
-	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, 3, nullptr, &bb, 0xFF);
 	ret = CGXDLMS::GetLNPdu(p, m_ReplyData);
 	if (m_Settings.GetIndex() != m_Settings.GetCount())
 	{
@@ -1148,11 +1193,9 @@ int CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data)
 			delete m_Transaction;
 			m_Transaction = nullptr;
 		}
-		m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, bb);
+		m_Transaction = new CGXDLMSLongTransaction(list, DLMS_COMMAND_GET_REQUEST, DLMS_GET_COMMAND_TYPE_WITH_LIST, bb);
 	}
 	list.clear();
-	obj = nullptr;
-	m_CurrentALN->GetObjectList().FreeConstructedObj();
 	return ret;
 }
 
