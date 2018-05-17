@@ -2048,14 +2048,14 @@ int CGXDLMS::GetPdu(
         }
     }
 
-    // Get data if all data is read or we want to peek data.
-    if (data.GetData().GetPosition() != data.GetData().GetSize()
-        && (cmd == DLMS_COMMAND_READ_RESPONSE || cmd == DLMS_COMMAND_GET_RESPONSE)
-        && (data.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE
-            || data.GetPeek()))
-    {
-        ret = GetValueFromData(settings, data);
-    }
+    //// Get data if all data is read or we want to peek data.
+    //if (data.GetData().GetPosition() != data.GetData().GetSize()
+    //    && (cmd == DLMS_COMMAND_READ_RESPONSE || cmd == DLMS_COMMAND_GET_RESPONSE)
+    //    && (data.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE
+    //        || data.GetPeek()))
+    //{
+    //    ret = GetValueFromData(settings, data);
+    //}
     return ret;
 }
 
