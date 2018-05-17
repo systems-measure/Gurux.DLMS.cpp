@@ -1242,9 +1242,16 @@ std::vector<int> CGXDLMSClient::UpdateValues(
             {
                 return ret;
             }
-            CGXDLMSValueEventArg e(NULL, it->first, it->second);
-            e.SetValue(value);
-            it->first->SetValue(m_Settings, e);
+			if (it->first != nullptr) {
+				CGXDLMSValueEventArg e(NULL, it->first, it->second);
+				e.SetValue(value);
+				it->first->SetValue(m_Settings, e);
+			}
+			else {
+				ret.clear();
+				ret.push_back(-1);
+				return ret;
+			}
             info.Clear();
         }
         else
