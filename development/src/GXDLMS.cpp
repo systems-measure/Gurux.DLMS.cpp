@@ -1995,15 +1995,15 @@ int CGXDLMS::GetPdu(
         // peek.
         if (!data.GetPeek() && data.GetMoreData() == DLMS_DATA_REQUEST_TYPES_NONE)
         {
-            if (data.GetCommand() == DLMS_COMMAND_AARE
-                || data.GetCommand() == DLMS_COMMAND_AARQ)
-            {
+            //if (data.GetCommand() == DLMS_COMMAND_AARE
+            //    || data.GetCommand() == DLMS_COMMAND_AARQ)
+            //{
                 data.GetData().SetPosition(0);
-            }
-            else
-            {
-                data.GetData().SetPosition(1);
-            }
+            //}
+            //else
+            //{
+            //    data.GetData().SetPosition(1);
+            //}
             settings.ResetBlockIndex();
         }
         // Get command if operating as a server.
@@ -2080,7 +2080,7 @@ void CGXDLMS::CopyReplyParam(CGXByteBuffer& reply, CGXReplyData& src, CGXReplyDa
 }
 
 int CGXDLMS::GetData(CGXDLMSSettings& settings,
-    CGXByteBuffer& reply,
+    CGXByteBuffer& reply, 
     CGXReplyData& data,
 	CGXReplyData& ui_data)
 {
