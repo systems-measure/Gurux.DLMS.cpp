@@ -482,6 +482,7 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
             return ret;
         }
         e.SetValue(data);
+		e.SetHandled(true);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)

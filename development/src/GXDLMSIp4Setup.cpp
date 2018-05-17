@@ -173,6 +173,7 @@ int CGXDLMSIp4Setup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
             return ret;
         }
         e.SetValue(data);
+		e.SetHandled(true);
     }
     else if (e.GetIndex() == 2)
     {

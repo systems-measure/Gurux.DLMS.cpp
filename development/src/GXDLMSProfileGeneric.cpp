@@ -255,6 +255,7 @@ int CGXDLMSProfileGeneric::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEvent
             return ret;
         }
         e.SetValue(data);
+		e.SetHandled(true);
     }
     else if (e.GetIndex() == 2)
     {

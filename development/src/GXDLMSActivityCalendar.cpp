@@ -172,6 +172,7 @@ int CGXDLMSActivityCalendar::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEve
         {
             return ret;
         }
+		e.SetHandled(true);
         e.SetValue(data);
         return DLMS_ERROR_CODE_OK;
     }

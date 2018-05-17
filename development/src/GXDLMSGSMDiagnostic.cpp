@@ -151,6 +151,7 @@ int CGXDLMSGSMDiagnostic::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
             return ret;
         }
         e.SetValue(data);
+		e.SetHandled(true);
         return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)

@@ -155,6 +155,7 @@ int CGXDLMSIecHdlcSetup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventAr
             return ret;
         }
         e.SetValue(data);
+		e.SetHandled(true);
         return DLMS_ERROR_CODE_OK;
     }
     else if (e.GetIndex() == 2)

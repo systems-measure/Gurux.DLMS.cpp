@@ -167,6 +167,7 @@ int CGXDLMSClock::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 			return ret;
 		}
 		e.SetValue(data);
+		e.SetHandled(true);
 		return DLMS_ERROR_CODE_OK;
     }
     if (e.GetIndex() == 2)
