@@ -369,6 +369,7 @@ int CGXDLMSIp4Setup::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
             };
             add.sin_addr = *(in_addr*)(void*)Hostent->h_addr_list[0];
         };
+		add.sin_addr.s_addr = _byteswap_ulong(add.sin_addr.s_addr);
         e.SetValue((unsigned long)add.sin_addr.s_addr);
     }
     else if (e.GetIndex() == 4)
@@ -463,13 +464,14 @@ int CGXDLMSIp4Setup::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e
     {
         long tmp = e.GetValue().ToInteger();
         CGXByteBuffer bb;
-        bb.AddIntAsString(tmp & 0xFF);
+
+		bb.AddIntAsString((tmp >> 24) & 0xFF);
+		bb.SetInt8('.');
+		bb.AddIntAsString((tmp >> 16) & 0xFF);
         bb.SetInt8('.');
         bb.AddIntAsString((tmp >> 8) & 0xFF);
         bb.SetInt8('.');
-        bb.AddIntAsString((tmp >> 16) & 0xFF);
-        bb.SetInt8('.');
-        bb.AddIntAsString((tmp >> 24) & 0xFF);
+		bb.AddIntAsString(tmp & 0xFF);
         m_IPAddress = bb.ToString();
     }
     else if (e.GetIndex() == 4)
