@@ -172,6 +172,9 @@ void CGXDLMSServer::Reset(bool connected)
     }
     m_Settings.SetCount(0);
     m_Settings.SetIndex(0);
+	if (m_Settings.IsConnected()) {
+		Disconnected();
+	}
     m_Settings.SetConnected(false);
     m_ReceivedData.Clear();
     m_ReplyData.Clear();
