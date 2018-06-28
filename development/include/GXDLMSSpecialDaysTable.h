@@ -54,6 +54,7 @@ public:
     ~CGXDLMSSpecialDaysTable();
 
     std::vector<CGXDLMSSpecialDay*>& GetEntries();
+	void SetEntries(std::vector<CGXDLMSSpecialDay*> entries);
 
     // Returns amount of attributes.
     int GetAttributeCount();
