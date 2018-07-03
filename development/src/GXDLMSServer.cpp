@@ -548,6 +548,7 @@ int CGXDLMSServer::HandleSetRequest(
             return ret;
         }
         p.SetMultipleBlocks(ch == 0);
+		p.SetLastBlock(ch == 1);
         ret = data.GetUInt32(&blockNumber);
         if (ret != 0)
         {
@@ -682,6 +683,17 @@ int CGXDLMSServer::HanleSetRequestWithDataBlock(CGXByteBuffer& data, CGXDLMSLNPa
         return ret;
     }
     p.SetMultipleBlocks(ch == 0);
+	p.SetLastBlock(ch == 1);
+	if (ch == 0)
+	{
+		m_Info.SetMoreData(
+			(DLMS_DATA_REQUEST_TYPES)(m_Info.GetMoreData() | DLMS_DATA_REQUEST_TYPES_BLOCK));
+	}
+	else
+	{
+		m_Info.SetMoreData(
+			(DLMS_DATA_REQUEST_TYPES)(m_Info.GetMoreData() & ~DLMS_DATA_REQUEST_TYPES_BLOCK));
+	}
     if ((ret = data.GetUInt32(&blockNumber)) != 0)
     {
         return ret;

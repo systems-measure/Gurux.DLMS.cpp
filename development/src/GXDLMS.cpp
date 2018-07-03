@@ -1435,7 +1435,9 @@ int CGXDLMS::GetPdu(
             {
                 data.GetData().SetPosition(1);
             }
-            settings.ResetBlockIndex();
+			if (cmd != DLMS_COMMAND_SET_REQUEST) {
+				settings.ResetBlockIndex();
+			}
         }
             // Ciphered messages are handled after whole PDU is received.
             switch (cmd)
