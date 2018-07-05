@@ -126,7 +126,15 @@ void CGXDateTime::Init(int year, int month, int day, int hour, int minute, int s
         skip |= DATETIME_SKIPS_MONTH;
         month = 0;
     }
-    else
+	else if (month == 0xFE) {
+		m_DaylightSavingsBegin = true;
+		month = 2;
+	}
+	else if (month == 0xFD) {
+		m_DaylightSavingsEnd = true;
+		month = 9;
+	}
+	else
     {
         --month;
     }
