@@ -73,6 +73,8 @@ class CGXDateTime
     struct tm m_Value;
     bool m_DaylightSavingsBegin;
     bool m_DaylightSavingsEnd;
+	bool m_LastMonthDay;
+	bool m_PreLastMonthDay;
     DLMS_CLOCK_STATUS m_Status;
     void Init(int year, int month, int day, int hour, int minute, int second, int millisecond, int devitation);
 public:
@@ -106,6 +108,14 @@ public:
     // Daylight savings end.
     bool GetDaylightSavingsEnd();
     void SetDaylightSavingsEnd(bool value);
+
+	// Daylight savings begin.
+	bool GetLastdayInMonth();
+	void SetLastdayInMonth(bool value);
+
+	// Daylight savings end.
+	bool GetPreLastdayInMonth();
+	void SetPreLastdayInMonth(bool value);
 
     // Get deviation.
     int GetDeviation();

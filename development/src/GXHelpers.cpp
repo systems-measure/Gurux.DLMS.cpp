@@ -1252,14 +1252,23 @@ static int SetDate(CGXByteBuffer& buff, CGXDLMSVariant& value)
         buff.SetUInt8(dt.tm_mon + 1);
     }
     // Add day
-    if ((skip & DATETIME_SKIPS_DAY) != 0)
-    {
-        buff.SetUInt8(0xFF);
-    }
-    else
-    {
-        buff.SetUInt8(dt.tm_mday);
-    }
+
+	if (value.dateTime.GetLastdayInMonth())
+	{
+		buff.SetUInt8(0xFE);
+	}
+	else if (value.dateTime.GetPreLastdayInMonth())
+	{
+		buff.SetUInt8(0xFD);
+	}
+	else  if (dt.tm_mday != -1 && (skip & DATETIME_SKIPS_DAY) == 0)
+	{
+		buff.SetUInt8(dt.tm_mday);
+	}
+	else
+	{
+		buff.SetUInt8(0xFF);
+	}
     //Add week day
     if ((skip & DATETIME_SKIPS_DAYOFWEEK) != 0)
     {
@@ -1315,14 +1324,24 @@ static int SetDateTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
         buff.SetUInt8(0xFF);
     }
     //Add day
-    if (dt.tm_mday != -1 && (skip & DATETIME_SKIPS_DAY) == 0)
-    {
-        buff.SetUInt8(dt.tm_mday);
-    }
-    else
-    {
-        buff.SetUInt8(0xFF);
-    }
+
+	if (value.dateTime.GetLastdayInMonth())
+	{
+		buff.SetUInt8(0xFE);
+	}
+	else if (value.dateTime.GetPreLastdayInMonth())
+	{
+		buff.SetUInt8(0xFD);
+	}
+	else  if (dt.tm_mday != -1 && (skip & DATETIME_SKIPS_DAY) == 0)
+	{
+		buff.SetUInt8(dt.tm_mday);
+	}
+	else
+	{
+		buff.SetUInt8(0xFF);
+	}
+
     //Add week day
     if ((skip & DATETIME_SKIPS_DAYOFWEEK) != 0)
     {

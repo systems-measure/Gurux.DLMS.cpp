@@ -81,6 +81,7 @@ CGXDateTime::CGXDateTime()
     m_Skip = DATETIME_SKIPS_NONE;
     memset(&m_Value, 0xFF, sizeof(m_Value));
     m_DaylightSavingsBegin = m_DaylightSavingsEnd = false;
+	m_LastMonthDay = m_PreLastMonthDay = false;
     m_Status = DLMS_CLOCK_STATUS_OK;
 }
 
@@ -93,6 +94,7 @@ CGXDateTime::CGXDateTime(struct tm value)
     m_Value = value;
     m_Skip = DATETIME_SKIPS_NONE;
     m_DaylightSavingsBegin = m_DaylightSavingsEnd = false;
+	m_LastMonthDay = m_PreLastMonthDay = false;
     m_Status = DLMS_CLOCK_STATUS_OK;
 }
 
@@ -114,6 +116,7 @@ void CGXDateTime::Init(int year, int month, int day, int hour, int minute, int s
 {
     memset(&m_Value, 0, sizeof(m_Value));
     m_DaylightSavingsBegin = m_DaylightSavingsEnd = false;
+	m_LastMonthDay = m_PreLastMonthDay = false;
     m_Status = DLMS_CLOCK_STATUS_OK;
     int skip = DATETIME_SKIPS_NONE;
     if (year < 1 || year == 0xFFFF)
@@ -145,11 +148,13 @@ void CGXDateTime::Init(int year, int month, int day, int hour, int minute, int s
     }
     else if (day == 0xFD)
     {
-        day = DaysInMonth(year, month) - 1;
+		m_PreLastMonthDay = true;
+        day = 1;
     }
     else if (day == 0xFE)
     {
-        day = DaysInMonth(year, month);
+		m_LastMonthDay = true;
+		day = 1;
     }
     if (hour == -1 || hour == 0xFF)
     {
@@ -254,6 +259,21 @@ bool CGXDateTime::GetDaylightSavingsEnd()
 void CGXDateTime::SetDaylightSavingsEnd(bool value)
 {
     m_DaylightSavingsEnd = value;
+}
+
+
+bool  CGXDateTime::GetLastdayInMonth() {
+	return m_LastMonthDay;
+}
+void  CGXDateTime::SetLastdayInMonth(bool value) {
+	m_LastMonthDay = value;
+}
+
+bool  CGXDateTime::GetPreLastdayInMonth() {
+	return m_PreLastMonthDay;
+}
+void  CGXDateTime::SetPreLastdayInMonth(bool value) {
+	m_PreLastMonthDay = value;
 }
 
 int CGXDateTime::GetDeviation()
