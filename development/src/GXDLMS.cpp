@@ -163,11 +163,7 @@ int CGXDLMS::ReceiverReady(
     // Get next frame.
     if ((type & DLMS_DATA_REQUEST_TYPES_FRAME) != 0)
     {
-        if ((ret = CGXDLMS::GetHdlcFrame(settings, settings.GetReceiverReady(), NULL, reply)) != 0)
-        {
-            return ret;
-        }
-        return ret;
+		return CGXDLMS::GetHdlcFrame(settings, settings.GetReceiverReady(), NULL, reply);
     }
     // Get next block.
     DLMS_COMMAND cmd;
