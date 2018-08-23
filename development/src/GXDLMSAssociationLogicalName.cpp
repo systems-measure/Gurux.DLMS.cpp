@@ -43,8 +43,10 @@
 
 void SecureHLS_Psw(CGXDLMSSettings& settings, CGXByteBuffer& secured) {
 	CGXByteBuffer hls_psw;
-	hls_psw.Set(mem::UserMem.ExtMem.HLSSecret, strlen((const char*)mem::UserMem.ExtMem.HLSSecret));
-	CGXSecure::Secure(settings, hls_psw, mem::UserMem.ExtMem.HLSSecret, secured);
+    uint8_t	HLSSecret_read[64];
+    mem::rd_ext_mem(HLSSecret_read, GetAddr(HLSSecret), sizeof(HLSSecret_read));
+	hls_psw.Set(HLSSecret_read, strlen((const char*)HLSSecret_read));
+	CGXSecure::Secure(settings, hls_psw, HLSSecret_read, secured);
 	if (secured.GetSize() != 0) {
 		if (secured.Capacity() < secured.GetSize() + 2) {
 			secured.Capacity(secured.GetSize() + 2);
@@ -252,8 +254,10 @@ CGXAuthenticationMechanismName CGXDLMSAssociationLogicalName::GetAuthenticationM
 
 void CGXDLMSAssociationLogicalName::GetSecret(CGXByteBuffer& lls)
 {
-	uint8_t size_str = strlen((const char*)mem::UserMem.ExtMem.LLSSecret);
-	lls.Set(mem::UserMem.ExtMem.LLSSecret, size_str);
+    uint8_t	LLSSecret_read[64];
+    mem::rd_ext_mem(LLSSecret_read, GetAddr(LLSSecret), sizeof(LLSSecret_read));
+	uint8_t size_str = strlen((const char*)LLSSecret_read);
+	lls.Set(LLSSecret_read, size_str);
 }
 void CGXDLMSAssociationLogicalName::SetSecret(CGXByteBuffer& value)
 {
@@ -387,6 +391,8 @@ DLMS_DATA_TYPE CGXDLMSAssociationLogicalName::GetDataType(signed char index) {
 
 int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
+    uint8_t	HLSSecret_read[64];
+    mem::rd_ext_mem(HLSSecret_read, GetAddr(HLSSecret), sizeof(HLSSecret_read));
     // Check reply_to_HLS_authentication
     if (e.GetIndex() == 1)
     {
@@ -394,13 +400,13 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		e.GetParameters().GetVar(v_info);
 		int ret;
         CGXByteBuffer serverChallenge;
-		if ((ret = CGXSecure::Secure(settings, settings.GetStoCChallenge(), mem::UserMem.ExtMem.HLSSecret, serverChallenge)) != 0)
+		if ((ret = CGXSecure::Secure(settings, settings.GetStoCChallenge(), HLSSecret_read, serverChallenge)) != 0)
         {
             return ret;
         }
         if (serverChallenge.Compare(e.GetParameters().GetCurPtr(), v_info.size))
         {
-            if ((ret = CGXSecure::Secure(settings, settings.GetCtoSChallenge(), mem::UserMem.ExtMem.HLSSecret, serverChallenge)) != 0)
+            if ((ret = CGXSecure::Secure(settings, settings.GetCtoSChallenge(), HLSSecret_read, serverChallenge)) != 0)
             {
                 return ret;
             }
@@ -430,7 +436,7 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		}
 		CGXSecure::UnSecure(settings, e.GetParameters().GetCurPtr(), v_info.size, decrypted);
 		decrypted.SetUInt8('\0');
-		if (strcmp((const char*)mem::UserMem.ExtMem.HLSSecret, (const char*)decrypted.GetData()) != 0) {
+		if (strcmp((const char*)HLSSecret_read, (const char*)decrypted.GetData()) != 0) {
 			CGXCipher::SetRoundKeysState(false);
 			mem::wr_ext_mem(GetAddr(HLSSecret), decrypted.GetData(), strlen((const char*)decrypted.GetData()) + 1);
 		}
@@ -563,9 +569,11 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
 		data.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
 		if (e.GetTarget()->GetName().compare("0.0.40.0.0.255") == 0) {
 			if (settings.GetAuthentication() == DLMS_AUTHENTICATION_LOW) {
-				size_str = strlen((const char*)mem::UserMem.ExtMem.LLSSecret);
+                uint8_t	LLSSecret_read[64];
+                mem::rd_ext_mem(LLSSecret_read, GetAddr(LLSSecret), sizeof(LLSSecret_read));
+				size_str = strlen((const char*)LLSSecret_read);
 				GXHelpers::SetObjectCount(size_str, data);
-				data.Set(mem::UserMem.ExtMem.LLSSecret, size_str);
+				data.Set(LLSSecret_read, size_str);
 			}
 			else {
 				if (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH) {
@@ -578,9 +586,11 @@ int CGXDLMSAssociationLogicalName::GetValue(CGXDLMSSettings& settings, CGXDLMSVa
 		}
 		else {
 			if (e.GetTarget()->GetName().compare("0.0.40.0.2.255") == 0) {
-				size_str = strlen((const char*)mem::UserMem.ExtMem.LLSSecret);
+                uint8_t	LLSSecret_read[64];
+                mem::rd_ext_mem(LLSSecret_read, GetAddr(LLSSecret), sizeof(LLSSecret_read));
+				size_str = strlen((const char*)LLSSecret_read);
 				GXHelpers::SetObjectCount(size_str, data);
-				data.Set(mem::UserMem.ExtMem.LLSSecret, size_str);
+				data.Set(LLSSecret_read, size_str);
 			}
 			else {
 				SecureHLS_Psw(settings, data);
