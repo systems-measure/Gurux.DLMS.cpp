@@ -233,7 +233,7 @@ int GetDateTime(CGXByteBuffer& buff, CGXDataInfo& info, CGXDLMSVariant& value)
     {
         return ret;
     }
-    tm.tm_wday = ch;
+    tm.tm_wday = (ch == 7) ? 0 : ch;
     // Get time.
     if ((ret = buff.GetUInt8(&ch)) != 0)
     {
@@ -1276,13 +1276,8 @@ static int SetDate(CGXByteBuffer& buff, CGXDLMSVariant& value)
     }
     else
     {
-        int val = dt.tm_wday;
-        //If Sunday.
-        if (val == 0)
-        {
-            val = 8;
-        }
-        buff.SetUInt8(val - 1);
+        uint8_t val = (dt.tm_wday == 0) ? 7 : dt.tm_wday;
+        buff.SetUInt8(val);
     }
     return 0;
 }
@@ -1349,7 +1344,8 @@ static int SetDateTime(CGXByteBuffer& buff, CGXDLMSVariant& value)
     }
     else
     {
-        buff.SetUInt8(dt.tm_wday);
+        uint8_t wday = (dt.tm_wday == 0) ? 7 : dt.tm_wday;
+        buff.SetUInt8(wday);
     }
     //Add Hours
     if (dt.tm_hour != -1 && (skip & DATETIME_SKIPS_HOUR) == 0)
