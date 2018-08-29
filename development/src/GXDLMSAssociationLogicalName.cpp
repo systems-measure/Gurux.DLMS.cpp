@@ -469,7 +469,6 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		return 0;
     }
 	if (e.GetIndex() == 2) {
-		int ret = 0;
 		CGXByteBuffer decrypted;
 		VarInfo v_info;
 		e.GetParameters().GetVar(v_info);
