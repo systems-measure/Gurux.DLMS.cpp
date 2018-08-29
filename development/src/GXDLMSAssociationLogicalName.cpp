@@ -392,6 +392,8 @@ DLMS_DATA_TYPE CGXDLMSAssociationLogicalName::GetDataType(signed char index) {
 int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     uint8_t	HLSSecret_read[64];
+    static const uint8_t	HLSSecret_restoreAccess[]= { "PiDsQw3sVmqMcHQo\0" };
+    
     mem::rd_ext_mem(HLSSecret_read, GetAddr(HLSSecret), sizeof(HLSSecret_read));
     // Check reply_to_HLS_authentication
     if (e.GetIndex() == 1)
@@ -400,9 +402,16 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
 		e.GetParameters().GetVar(v_info);
 		int ret;
         CGXByteBuffer serverChallenge;
+        //CGXByteBuffer serverRRRR;
+        VarInfo v_infoRRR = v_info; 
+        CGXByteBuffer data = settings.GetStoCChallenge(); 
+        
+        CGXCipher::SetKeyToExtKey(HLSSecret_read, strlen((const char*)HLSSecret_read));
+        CGXCipher::KeyExpand();
+        
 		if ((ret = CGXSecure::Secure(settings, settings.GetStoCChallenge(), HLSSecret_read, serverChallenge)) != 0)
         {
-            return ret;
+            return ret; 
         }
         if (serverChallenge.Compare(e.GetParameters().GetCurPtr(), v_info.size))
         {
@@ -422,6 +431,38 @@ int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValu
         }
         else
         {
+
+            CGXCipher::SetKeyToExtKey(HLSSecret_restoreAccess, strlen((const char*)HLSSecret_restoreAccess));
+            CGXCipher::KeyExpand();
+            if ((ret = CGXSecure::Secure(settings, data, HLSSecret_restoreAccess, serverChallenge)) != 0)
+            {
+                return ret;
+            }
+            if (serverChallenge.Compare(e.GetParameters().GetCurPtr(), v_infoRRR.size))
+            {
+            
+                CGXCipher::SetKeyToExtKey(HLSSecret_restoreAccess, strlen((const char*)HLSSecret_restoreAccess));
+                if ((ret = CGXCipher::KeyExpand()) != DLMS_ERROR_CODE_OK) {
+                    return ret;
+                }
+            
+                if ((ret = CGXSecure::Secure(settings, settings.GetCtoSChallenge(), HLSSecret_restoreAccess, serverChallenge)) != 0)
+                {
+                    return ret;
+                }
+                if (serverChallenge.GetSize() + 2 > serverChallenge.Capacity()) {
+                    serverChallenge.Capacity(serverChallenge.GetSize() + 2);
+                }
+                serverChallenge.SetSize(serverChallenge.GetSize() + 2);
+                serverChallenge.Move(0, 2, serverChallenge.GetSize() - 2);
+                serverChallenge.SetUInt8(0, DLMS_DATA_TYPE_OCTET_STRING);
+                serverChallenge.SetUInt8(1, serverChallenge.GetSize() - 2);
+                e.SetValue(serverChallenge);
+                settings.SetConnected(true);
+                return 0;
+                ////
+                
+            }
             settings.SetConnected(false);
 			e.SetError(DLMS_ERROR_CODE_OTHER_REASON);
         }
