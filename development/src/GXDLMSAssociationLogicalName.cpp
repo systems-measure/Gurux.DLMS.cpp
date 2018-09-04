@@ -392,7 +392,7 @@ DLMS_DATA_TYPE CGXDLMSAssociationLogicalName::GetDataType(signed char index) {
 int CGXDLMSAssociationLogicalName::Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
 {
     uint8_t	HLSSecret_read[64];
-    static const uint8_t	HLSSecret_restoreAccess[]= { "PiDsQw3sVmqMcHQo\0" };
+    static const uint8_t	HLSSecret_restoreAccess[]= { CHK_HLSSecret_restoreAccess };
     
     mem::rd_ext_mem(HLSSecret_read, GetAddr(HLSSecret), sizeof(HLSSecret_read));
     // Check reply_to_HLS_authentication
