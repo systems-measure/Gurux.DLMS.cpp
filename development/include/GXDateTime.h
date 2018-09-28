@@ -151,9 +151,14 @@ public:
     int AddDays(int hours);
 
     /**
-    * Compare current time to another time.
+    * Compare current date time to another time.
     */
     int CompareTo(CGXDateTime& antherDate);
+
+    /**
+    * Compare current time to another time.
+    */
+    int CompareTimeTo(CGXDateTime& antherDate);
 
     /**
     * Get amount of days in given month.

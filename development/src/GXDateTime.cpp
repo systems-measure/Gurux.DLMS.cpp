@@ -602,6 +602,12 @@ int CGXDateTime::CompareTo(CGXDateTime& antherDate)
     }
     return 0;
 }
+int CGXDateTime::CompareTimeTo(CGXDateTime& antherDate) {
+    CGXDateTime Time = antherDate;
+
+    memcpy(&Time.GetValue().tm_mday, &m_Value.tm_mday, sizeof(m_Value) - offsetof(struct tm, tm_mday));
+    return CompareTo(Time);
+}
 
 int CGXDateTime::ToLocalTime(struct tm& localTime)
 {
