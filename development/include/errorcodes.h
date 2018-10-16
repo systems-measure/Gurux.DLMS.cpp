@@ -104,6 +104,8 @@ typedef enum enERRORCODES
     DLMS_ERROR_CODE_MemUnknow,
     DLMS_ERROR_CODE_MemInvalidParam,
     DLMS_ERROR_CODE_MemInvalidHard,
+	// -- CiART DLMS/SPODES error codes for "Communication Gateway".
+	DLMS_ERROR_CODE_COM_GETEWAY_ACTIVATION, // 76
     // -- CiART error codes end here.
     //////////////////////////////////////////
 
