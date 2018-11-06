@@ -58,156 +58,21 @@ int CGXDLMSImageTransfer::GetMethodCount()
     return 4;
 }
 
+const DLMS_DATA_TYPE IT_TypeArr[] = { DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_UINT32, DLMS_DATA_TYPE_BIT_STRING, DLMS_DATA_TYPE_UINT32,
+                                      DLMS_DATA_TYPE_BOOLEAN, DLMS_DATA_TYPE_ENUM, DLMS_DATA_TYPE_ARRAY };
+
 int CGXDLMSImageTransfer::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
-    if (index == 1)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (index == 2)
-    {
-        type = DLMS_DATA_TYPE_UINT32;
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (index == 3)
-    {
-        type = DLMS_DATA_TYPE_BIT_STRING;
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (index == 4)
-    {
-        type = DLMS_DATA_TYPE_UINT32;
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (index == 5)
-    {
-        type = DLMS_DATA_TYPE_BOOLEAN;
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (index == 6)
-    {
-        type = DLMS_DATA_TYPE_ENUM;
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (index == 7)
-    {
-        type = DLMS_DATA_TYPE_ARRAY;
-        return DLMS_ERROR_CODE_OK;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
+	if (index >= 1 && index <= 7) {
+		type = IT_TypeArr[index];
+		return DLMS_ERROR_CODE_OK;
+	}
+	return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 DLMS_DATA_TYPE CGXDLMSImageTransfer::GetDataType(signed char index) {
-	if (index == 1)
-	{
-		return  DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 2)
-	{
-		return DLMS_DATA_TYPE_UINT32;
-	}
-	if (index == 3)
-	{
-		return DLMS_DATA_TYPE_BIT_STRING;
-	}
-	if (index == 4)
-	{
-		return DLMS_DATA_TYPE_UINT32;
-	}
-	if (index == 5)
-	{
-		return DLMS_DATA_TYPE_BOOLEAN;
-	}
-	if (index == 6)
-	{
-		return DLMS_DATA_TYPE_ENUM;
-	}
-	if (index == 7)
-	{
-		return DLMS_DATA_TYPE_ARRAY;
+	if (index >= 1 && index <= 7) {
+		return IT_TypeArr[index];
 	}
 	return DLMS_DATA_TYPE_NONE;
-}
-
-// Returns value of given attribute.
-int CGXDLMSImageTransfer::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-        int ret;
-		CGXByteBuffer data;
-        if ((ret = GetLogicalName(this, data)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(data);
-		e.SetHandled(true);
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 2)
-    {
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 3)
-    {
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 4)
-    {
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 5)
-    {
-        return DLMS_ERROR_CODE_OK;
-
-    }
-    if (e.GetIndex() == 6)
-    {
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 7)
-    {
-
-        return DLMS_ERROR_CODE_OK;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
-}
-
-// Set value of given attribute.
-int CGXDLMSImageTransfer::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-        return SetLogicalName(this, e.GetCAValue());
-    }
-    else if (e.GetIndex() == 2)
-    {
-
-    }
-    else if (e.GetIndex() == 3)
-    {
-
-    }
-    else if (e.GetIndex() == 4)
-    {
-
-    }
-    else if (e.GetIndex() == 5)
-    {
-
-    }
-    else if (e.GetIndex() == 6)
-    {
-
-    }
-    else if (e.GetIndex() == 7)
-    {
-       
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
 }

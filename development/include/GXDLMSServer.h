@@ -38,16 +38,11 @@
 #include <vector>
 #include "GXDLMSLongTransaction.h"
 #include "GXReplyData.h"
-#include "GXDLMSSettings.h"
 #include "GXDLMSLNParameters.h"
+#include "GXDLMSAssociationLogicalName.h"
 
-class CGXDLMSProfileGeneric;
 class CGXDLMSServer
 {
-    friend class CGXDLMSProfileGeneric;
-    friend class CGXDLMSValueEventArg;
-    friend class CGXDLMSAssociationLogicalName;
-    friend class CGXDLMSAssociationShortName;
 private:
     CGXReplyData m_Info;
 
@@ -69,15 +64,17 @@ private:
     * @param data
     *            Received data.
     */
-    int GetRequestNormal(CGXByteBuffer& data);
+	void GetRequestNormal(CGXByteBuffer& data, CGXDLMSLNParameters& p);
 
-    /**
+	/**
     * Handle get request next data block command.
     *
     * @param data
     *            Received data.
     */
-    int GetRequestNextDataBlock(CGXByteBuffer& data);
+	void CheckGetRequestLongTransaction(CGXByteBuffer& data, CGXDLMSLNParameters& p);
+
+	void GetRequestNextDataBlock(CGXByteBuffer& data, CGXDLMSLNParameters& p);
 
     /**
      * Handle get request with list command.
@@ -85,19 +82,25 @@ private:
      * @param data
      *            Received data.
      */
-    int GetRequestWithList(CGXByteBuffer& data);
+	void GetRequestWithList(CGXByteBuffer& data, CGXDLMSLNParameters& p);
 
-	int GetRequestError();
+	void GetRequestError(CGXDLMSLNParameters& p);
 
-    int HandleSetRequest(
+	void GetSetRequestBlockIndex(CGXByteBuffer& data,
+		CGXDLMSLNParameters& p);
+
+	void HandleSetRequestNormalAndFirstDataBlock(
+		CGXByteBuffer& data,
+		CGXDLMSLNParameters& p);
+
+    void HandleSetRequestWithDataBlock(
         CGXByteBuffer& data,
-        unsigned char& type,
         CGXDLMSLNParameters& p);
 
-    int HanleSetRequestWithDataBlock(
-        CGXByteBuffer& data,
-        CGXDLMSLNParameters& p);
 
+	void HanleMethodRequestNormal(
+		CGXByteBuffer& data,
+		CGXDLMSLNParameters& p);
 
     /**
     * Reset settings when connection is made or close.
@@ -107,13 +110,14 @@ private:
     */
     void Reset(bool connected);
 
+	void ClearLastLTInfo(CGXDLMSLNParameters& p);
+
     /**
     * Handle received command.
     */
     int HandleCommand(
         DLMS_COMMAND& cmd,
-        CGXByteBuffer& data,
-        CGXByteBuffer& reply);
+        CGXByteBuffer& data);
 
     /**
     * Parse AARQ request that client send and returns AARE request.
@@ -138,6 +142,14 @@ private:
     */
     int HandleGetRequest(
         CGXByteBuffer& data);
+
+	/**
+	* Handle Action request.
+	*
+	* @return Reply to the client.
+	*/
+	int HandleMethodRequest(
+		CGXByteBuffer& data);
   
     /**
     * Handle RR request.
@@ -162,36 +174,24 @@ private:
     */
     bool CheckCtlField(unsigned char ctl,
                        CGXByteBuffer &reply);
-    
-	bool m_Initialized;
 protected:
-  
-	/**
-	* Handle action request.
-	*
-	* @param reply
-	*            Received data from the client.
-	* @return Reply.
-	*/
-	virtual int HandleMethodRequest(
-		CGXByteBuffer& data);
 
-	CGXDLMSValueEventArg * getCGXDLMSValueEventArg(
-		CGXDLMSServer* server,
-		CGXDLMSObject* target,
-		int index,
-		int selector,
-		CArtVariant& parameters);
+	/**
+	* Try to take single configurator session, if fail p will carry status TEMPORARY_FAILURE
+	* If current interface is optoport then single configurator session taked garranty 
+	*/
+	virtual void CheckTakeConfiguratorSession(CGXDLMSLNParameters& p, CGXDLMSValueEventArg* arg) = 0;
+
 	/**
 	* Reply data.
 	*/
 	CGXByteBuffer m_ReplyData;
 
-   bool m_LinkEstablished;
+    bool m_LinkEstablished;
 	/**
 	* Received data.
 	*/
-	CGXByteBuffer m_ReceivedData;
+	CGXByteBuffer m_RxTxData;
 
     /**
      * Server Settings.
@@ -202,15 +202,7 @@ protected:
 	* Server Current ALN.
 	*/
 	CGXDLMSAssociationLogicalName *m_CurrentALN;
-
-    /**
-     * @param value
-     *            Cipher interface that is used to cipher PDU.
-     */
-    void SetCipher(CGXCipher* value);
-
    
-
     /**
         * Check is data sent to this server.
         *
@@ -237,7 +229,6 @@ protected:
         DLMS_AUTHENTICATION authentication,
         CGXByteBuffer& password) = 0;
 
-
     /**
      * Read selected item(s).
      *
@@ -256,20 +247,14 @@ protected:
     virtual void PreWrite(
         CGXDLMSValueEventArg* arg) = 0;
 
-	/*
-	If write data or actions with data were successful, then counter of configuarations 
-	and date of last configurations should update by this 
-	*/
-	virtual void Configurated() = 0;
-
 	/**
-	* Fixing events associated with changes in a data
-	* based value. Usually this is not used.
+	* Action is occurred.
 	*
-	* @param value
-	*            type event
+	* @param args
+	*            Handled action requests.
 	*/
-	virtual void FixateCorrectDataEvent(unsigned char event) = 0;
+	virtual void PreAction(
+		CGXDLMSValueEventArg* arg) = 0;
 
 	/*
 	Check than push message exists and need send it by HDLC protocol
@@ -329,62 +314,50 @@ protected:
     */
     virtual DLMS_METHOD_ACCESS_MODE GetMethodAccess(CGXDLMSValueEventArg* arg) = 0;
 
-    /**
-     * Action is occurred.
-     *
-     * @param args
-     *            Handled action requests.
-     */
-    virtual void PreAction(
-        CGXDLMSValueEventArg* arg) = 0;
-
+	/**
+	* Return current long transaction processing or not
+	*/
 	bool IsLongTransaction();
+
+	/**
+	* Return event argument of request with target object pointer, attribute index and selective access flag
+	*/
+	CGXDLMSValueEventArg* GetObjectInfoFromRequest(CGXByteBuffer& data, CGXDLMSLNParameters& p);
+
+	/**
+	* Take parameters from request, if it presents
+	*/
+	void GetParametersFromRequest(CGXByteBuffer& data, CGXDLMSLNParameters& p, CGXDLMSValueEventArg* arg);
+
+	/**
+	* Take value from request (for set request), if it presents 
+	*/
+	void GetValueFromRequest(CGXByteBuffer& data, CGXDLMSValueEventArg* arg);
+
+	/**
+	* Verificate value type (for set request). 
+	* If value type is octet string, but object attribute type is not octet string, try to cast value to wanted type 
+	*/
+	bool CheckValueType(CGXDLMSLNParameters& p, CGXDLMSValueEventArg* arg);
+
+	/**
+	* Free event argument, long transaction of server and constructed object by current association LN
+	* @param arg 
+	            Value event argument
+	* @param long_trns_clear
+				Need clear long transaction
+	*/
+	void BeforeReturn(CGXDLMSValueEventArg* arg, bool long_trns_clear);
 
 public:
 	/**
 	* @return Get settings.
 	*/
 	CGXDLMSSettings& GetSettings();
-    /**
-     * @return Client to Server challenge.
-     */
-    CGXByteBuffer& GetCtoSChallenge();
 
-    /**
-     * @return Server to Client challenge.
-     */
-    CGXByteBuffer& GetStoCChallenge();
+	CGXDLMSAssociationLogicalName* GetCurrentALN();
 
-    /**
-     * @return Interface type.
-     */
-    DLMS_INTERFACE_TYPE GetInterfaceType();
-
-    /**
-     * Server to Client custom challenge. This is for debugging purposes. Reset
-     * custom challenge settings StoCChallenge to NULL.
-     *
-     * @param value
-     *            Server to Client challenge.
-     */
-    void SetStoCChallenge(
-        CGXByteBuffer& value);
-
-    /**
-     * Set starting packet index. Default is One based, but some meters use Zero
-     * based value. Usually this is not used.
-     *
-     * @param value
-     *            Zero based starting index.
-     */
-    void SetStartingPacketIndex(int value);
-
-    /**
-     * @return Invoke ID.
-     */
-    int GetInvokeID();
-
-    /**
+	/**
      * Constructor.
      *
      * @param logicalNameReferencing
@@ -392,7 +365,7 @@ public:
      * @param type
      *            Interface type.
      */
-    CGXDLMSServer( DLMS_INTERFACE_TYPE type);
+    CGXDLMSServer();
 
     /**
     * Destructor.
@@ -422,10 +395,7 @@ public:
      * @param value
      *            Maximum size of received PDU.
      */
-    void SetMaxReceivePDUSize(
-        unsigned short value);
-
-
+    void SetMaxReceivePDUSize( unsigned short value);
 
 	 /**
      * Initialize server. This must call after server objects are set.
@@ -445,21 +415,7 @@ public:
     // * @return Response to the request. Response is NULL if request packet is
     // *         not complete.
     // */
-    int HandleRequest(CGXByteBuffer& reply);
+    int HandleRequest();
 
-
-    /**
-    * Server will tell what functionality is available for the client.
-    * @return Available functionality.
-    */
-    DLMS_CONFORMANCE GetConformance();
-
-    /**
-    * Server will tell what functionality is available for the client.
-    *
-    * @param value
-    *            Available functionality.
-    */
-    void SetConformance(DLMS_CONFORMANCE value);
 };
 #endif //GXDLMSSERVER_H

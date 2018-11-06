@@ -47,10 +47,8 @@ CGXDLMSSettings::CGXDLMSSettings()
     m_ServiceClass = DLMS_SERVICE_CLASS_CONFIRMED;
     m_ClientAddress = 0;
     m_ServerAddress = 0;
-    m_InterfaceType = DLMS_INTERFACE_TYPE_HDLC;
     m_Authentication = DLMS_AUTHENTICATION_NONE;
     m_MaxServerPDUSize = m_MaxReceivePDUSize = 0xFFFF;
-    m_Cipher = NULL;
     m_SourceSystemTitle.Clear();
     m_Index = 0;
     m_Count = 0;
@@ -243,16 +241,6 @@ CGXDLMSLimits& CGXDLMSSettings::GetLimits()
     return m_Limits;
 }
 
-DLMS_INTERFACE_TYPE CGXDLMSSettings::GetInterfaceType()
-{
-    return m_InterfaceType;
-}
-
-void CGXDLMSSettings::SetInterfaceType(DLMS_INTERFACE_TYPE value)
-{
-    m_InterfaceType = value;
-}
-
 unsigned long CGXDLMSSettings::GetClientAddress()
 {
     return m_ClientAddress;
@@ -367,16 +355,6 @@ CGXDLMSObjectCollection*& CGXDLMSSettings::GetObjects()
     return m_Objects;
 }
 
-bool CGXDLMSSettings::IsCustomChallenges()
-{
-    return m_CustomChallenges;
-}
-
-void CGXDLMSSettings::SetUseCustomChallenge(bool value)
-{
-    m_CustomChallenges = value;
-}
-
 bool CGXDLMSSettings::IsConnected()
 {
     return m_Connected;
@@ -385,16 +363,6 @@ bool CGXDLMSSettings::IsConnected()
 void CGXDLMSSettings::SetConnected(bool value){
     SendEventJournalInfo(value);
     m_Connected = value;
-}
-
-CGXCipher* CGXDLMSSettings::GetCipher()
-{
-    return m_Cipher;
-}
-
-void CGXDLMSSettings::SetCipher(CGXCipher* value)
-{
-    m_Cipher = value;
 }
 
 /**
@@ -418,23 +386,6 @@ int  CGXDLMSSettings::SetSourceSystemTitle(CGXByteBuffer& value)
     }
     m_SourceSystemTitle = value;
     return DLMS_ERROR_CODE_OK;
-}
-
-/**
- * @return Key Encrypting Key, also known as Master key.
- */
-CGXByteBuffer& CGXDLMSSettings::GetKek()
-{
-    return m_Kek;
-}
-
-/**
- * @param value
- *            Key Encrypting Key, also known as Master key.
- */
-void CGXDLMSSettings::SetKek(CGXByteBuffer& value)
-{
-    m_Kek = value;
 }
 
 /**
@@ -471,9 +422,19 @@ void CGXDLMSSettings::SetIndex(unsigned short value)
     m_Index = value;
 }
 
+void CGXDLMSSettings::IncreaseIndex() {
+	++m_Index;
+}
+
 DLMS_CONFORMANCE CGXDLMSSettings::GetNegotiatedConformance()
 {
     return m_NegotiatedConformance;
+}
+
+void CGXDLMSSettings::GetNegotiatedConformance(CGXByteBuffer& bb) {
+	bb.SetUInt8((m_NegotiatedConformance >> 16) & 0xFF);
+	bb.SetUInt8((m_NegotiatedConformance >> 8) & 0xFF);
+	bb.SetUInt8(m_NegotiatedConformance & 0xFF);
 }
 
 void CGXDLMSSettings::SetNegotiatedConformance(DLMS_CONFORMANCE value)

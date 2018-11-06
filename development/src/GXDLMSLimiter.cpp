@@ -58,219 +58,28 @@ int CGXDLMSLimiter::GetMethodCount()
     return 2;
 }
 
+const DLMS_DATA_TYPE Lmr_TypeArr[] = { DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_STRUCTURE, DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE_NONE,
+                                       DLMS_DATA_TYPE_UINT32, DLMS_DATA_TYPE_UINT32, DLMS_DATA_TYPE_STRUCTURE, DLMS_DATA_TYPE_ARRAY, DLMS_DATA_TYPE_BOOLEAN, DLMS_DATA_TYPE_STRUCTURE };
+
 int CGXDLMSLimiter::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
-    if (index == 1)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-    }
-    else if (index == 2)
-    {
-        type = DLMS_DATA_TYPE_STRUCTURE;
-    }
-    else if (index == 3)
-    {
-		return CGXDLMSObject::GetDataType(index, type);
-    }
-    else if (index == 4)
-    {
-		return CGXDLMSObject::GetDataType(index, type);
-    }
-    else if (index == 5)
-    {
-		return CGXDLMSObject::GetDataType(index, type);
-    }
-    else if (index == 6)
-    {
-        type = DLMS_DATA_TYPE_UINT32;
-    }
-    else if (index == 7)
-    {
-        type = DLMS_DATA_TYPE_UINT32;
-    }
-    else if (index == 8)
-    {
-        type = DLMS_DATA_TYPE_STRUCTURE;
-    }
-    else if (index == 9)
-    {
-        type = DLMS_DATA_TYPE_ARRAY;
-    }
-    else if (index == 10)
-    {
-        type = DLMS_DATA_TYPE_BOOLEAN;
-    }
-    else if (index == 11)
-    {
-        type = DLMS_DATA_TYPE_STRUCTURE;
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
+	if (index >= 1 && index <= 11) {
+		type = Lmr_TypeArr[index];
+		if (type == DLMS_DATA_TYPE_NONE) {
+			return CGXDLMSObject::GetDataType(index, type);
+		}
+		return DLMS_ERROR_CODE_OK;
+	}
+	return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 DLMS_DATA_TYPE CGXDLMSLimiter::GetDataType(signed char index) {
-	if (index == 1)
-	{
-		return  DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 2)
-	{
-		return DLMS_DATA_TYPE_STRUCTURE;
-	}
-	if (index == 3)
-	{
-		return CGXDLMSObject::GetDataType(index);;
-	}
-	if (index == 4)
-	{
-		return CGXDLMSObject::GetDataType(index);;
-	}
-	if (index == 5)
-	{
-		return CGXDLMSObject::GetDataType(index);;
-	}
-	if (index == 6)
-	{
-		return DLMS_DATA_TYPE_UINT32;
-	}
-	if (index == 7)
-	{
-		return DLMS_DATA_TYPE_UINT32;
-	}
-	if (index == 8)
-	{
-		return DLMS_DATA_TYPE_STRUCTURE;
-	}
-	if (index == 9)
-	{
-		return DLMS_DATA_TYPE_ARRAY;
-	}
-	if (index == 10)
-	{
-		return DLMS_DATA_TYPE_BOOLEAN;
-	}
-	if (index == 11)
-	{
-		return DLMS_DATA_TYPE_STRUCTURE;
+	if (index >= 1 && index <= 11) {
+		DLMS_DATA_TYPE type = Lmr_TypeArr[index];
+		if (type == DLMS_DATA_TYPE_NONE) {
+			return CGXDLMSObject::GetDataType(index);
+		}
+		return type;
 	}
 	return DLMS_DATA_TYPE_NONE;
-}
-
-// Returns value of given attribute.
-int CGXDLMSLimiter::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-	CGXByteBuffer data;
-    if (e.GetIndex() == 1)
-    {
-        int ret;
-        if ((ret = GetLogicalName(this, data)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(data);
-		e.SetHandled(true);
-        return DLMS_ERROR_CODE_OK;
-    }
-    else if (e.GetIndex() == 2)
-    {
-       
-    }
-    else if (e.GetIndex() == 3)
-    {
-		
-    }
-    else if (e.GetIndex() == 4)
-    {
-		
-    }
-    else if (e.GetIndex() == 5)
-    {
-		
-    }
-    else if (e.GetIndex() == 6)
-    {
-		
-    }
-    else if (e.GetIndex() == 7)
-    {
-		
-    }
-    else if (e.GetIndex() == 8)
-    {
-       
-    }
-    else if (e.GetIndex() == 9)
-    {
-        
-    }
-    else if (e.GetIndex() == 10)
-    {
-		
-    }
-    else if (e.GetIndex() == 11)
-    {
-        
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
-}
-
-// Set value of given attribute.
-int CGXDLMSLimiter::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-        return SetLogicalName(this, e.GetCAValue());
-    }
-    else if (e.GetIndex() == 2)
-    {
-		
-    }
-    else if (e.GetIndex() == 3)
-    {
-        
-    }
-    else if (e.GetIndex() == 4)
-    {
-       
-    }
-    else if (e.GetIndex() == 5)
-    {
-       
-    }
-    else if (e.GetIndex() == 6)
-    {
-		
-    }
-    else if (e.GetIndex() == 7)
-    {
-		
-    }
-    else if (e.GetIndex() == 8)
-    {
-		
-    }
-    else if (e.GetIndex() == 9)
-    {
-		
-    }
-    else if (e.GetIndex() == 10)
-    {
-		
-    }
-    else if (e.GetIndex() == 11)
-    {
-		
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
 }

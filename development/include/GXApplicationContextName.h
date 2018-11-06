@@ -74,6 +74,5 @@ public:
     unsigned char GetContextId();
     void SetContextId(unsigned char value);
 
-    std::string ToString();
 };
 #endif //GXAPPLICATIONCONTEXTNAME_H

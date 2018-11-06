@@ -33,7 +33,6 @@
 //---------------------------------------------------------------------------
 
 #include "../include/GXDLMSValueEventArg.h"
-#include "../include/GXDLMSSettings.h"
 #include "../include/GXDLMSServer.h"
 
 CGXDLMSObject* CGXDLMSValueEventArg::GetTarget()
@@ -58,12 +57,12 @@ void CGXDLMSValueEventArg::SetTargetName() {
 	}
 }
 
-signed char& CGXDLMSValueEventArg::GetIndex()
+signed char CGXDLMSValueEventArg::GetIndex()
 {
     return event_param[6];
 }
 
-void CGXDLMSValueEventArg::SetIndex(unsigned char value)
+void CGXDLMSValueEventArg::SetIndex(signed char value)
 {
 	event_param[6] = value;
 }
@@ -82,12 +81,12 @@ void CGXDLMSValueEventArg::SetValue(CGXByteBuffer& value) {
 	c_Value = value;
 }
 
-signed char& CGXDLMSValueEventArg::GetSelector()
+unsigned char CGXDLMSValueEventArg::GetSelector()
 {
-    return event_param[7];
+    return (unsigned char)event_param[7];
 }
 
-void CGXDLMSValueEventArg::SetSelector(unsigned char& value)
+void CGXDLMSValueEventArg::SetSelector(unsigned char value)
 {
 	event_param[7] = value;
 }
@@ -103,14 +102,12 @@ void CGXDLMSValueEventArg::SetParameters(CArtVariant& value)
 }
 
 void CGXDLMSValueEventArg::Init(
-    CGXDLMSServer* server,
     CGXDLMSObject* target,
 	unsigned char * target_name,
-    int index,
-    int selector)
+	signed char index,
+	unsigned char selector)
 {
-    m_Server = server;
-    m_Settings = &server->GetSettings();
+    m_Server = nullptr;
     SetTarget(target);
 	if (target_name != nullptr) {
 		memcpy(event_param, target_name, 6);
@@ -119,65 +116,32 @@ void CGXDLMSValueEventArg::Init(
 	event_param[7] = selector;
 	event_param[8] = DLMS_ERROR_CODE_OK;
 	event_param[9] = 0;
-	event_param[10] = 0;
-	row_param[0] = 0;
-	row_param[1] = 0;
-	row_param[2] = 0;
+	m_RowEndIndex = 0;
 	m_Parameters.Reserve(0);
 	c_Value.Reserve(0);
 }
 
 CGXDLMSValueEventArg::CGXDLMSValueEventArg(
-    CGXDLMSServer* server,
     CGXDLMSObject* target,
-    int index)
+	signed char index)
 {
-    Init(server, target, nullptr, index, 0);
+    Init(target, nullptr, index, 0);
 }
 
 CGXDLMSValueEventArg::CGXDLMSValueEventArg(
-    CGXDLMSServer* server,
     CGXDLMSObject* target,
-    int index,
-    int selector,
+	signed char index,
+	unsigned char selector,
 	CArtVariant& parameters)
 {
-    Init(server, target, nullptr, index, selector);
+    Init(target, nullptr, index, selector);
     m_Parameters = parameters;
-}
-
-CGXDLMSValueEventArg::CGXDLMSValueEventArg(
-    CGXDLMSObject* target,
-    int index)
-{
-    Init(nullptr, target, nullptr, index, 0);
-}
-
-CGXDLMSValueEventArg::CGXDLMSValueEventArg(
-    CGXDLMSObject* target,
-    int index,
-    int selector,
-	CArtVariant& parameters)
-{
-    Init(nullptr, target, nullptr, index, selector);
-    m_Parameters = parameters;
-}
-
-CGXDLMSValueEventArg::CGXDLMSValueEventArg(
-	CGXDLMSServer* server,
-	unsigned char* target_name,
-	int index,
-	int selector,
-	CArtVariant& parameters)
-{
-	Init(server, nullptr, target_name, index, selector);
-	m_Parameters = parameters;
 }
 
 CGXDLMSValueEventArg::~CGXDLMSValueEventArg() 
 {
-	/*c_Value.Clear();
-	m_Parameters.Clear();*/
+	m_Parameters.Clear();
+	c_Value.Clear();
 }
 
 DLMS_ERROR_CODE CGXDLMSValueEventArg::GetError()
@@ -192,55 +156,23 @@ void CGXDLMSValueEventArg::SetError(DLMS_ERROR_CODE value)
 	event_param[8] = ((0 <= intVal) && (intVal <= 0xFF)) ? value : DLMS_ERROR_CODE_OTHER_REASON;
 }
 
-bool CGXDLMSValueEventArg::GetSkipMaxPduSize()
-{
-    return (event_param[9] != 0);
-}
-
-void CGXDLMSValueEventArg::SetSkipMaxPduSize(bool value)
-{
-	event_param[9] = value;
-}
-
 bool CGXDLMSValueEventArg::GetHandled() {
-	return (event_param[10] != 0);
+	return (event_param[9] != 0);
 }
 
 void CGXDLMSValueEventArg::SetHandled(bool value) {
-	event_param[10] = value;
-}
-
-unsigned short CGXDLMSValueEventArg::GetRowToPdu()
-{
-    return row_param[0];
-}
-
-void CGXDLMSValueEventArg::SetRowToPdu(unsigned short value) {
-	row_param[0] = value;
+	event_param[9] = value;
 }
 
 unsigned short& CGXDLMSValueEventArg::GetRowEndIndex() {
-    return row_param[2];
+    return m_RowEndIndex;
 }
 
-void CGXDLMSValueEventArg::SetRowEndIndex(unsigned int value) {
-	row_param[2] = value;
-}
-
-unsigned int CGXDLMSValueEventArg::GetRowBeginIndex() {
-    return row_param[1];
-}
-
-void CGXDLMSValueEventArg::SetRowBeginIndex(unsigned int value) {
-	row_param[1] = value;
-}
-
-CGXDLMSSettings* CGXDLMSValueEventArg::GetSettings()
-{
-	return  m_Settings;
-}
-
-CGXDLMSServer* CGXDLMSValueEventArg::GetServer()
+void* CGXDLMSValueEventArg::GetServer()
 {
     return m_Server;
+}
+
+void CGXDLMSValueEventArg::SetServer(void* serv_instance) {
+	m_Server = serv_instance;
 }

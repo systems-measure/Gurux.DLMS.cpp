@@ -34,38 +34,14 @@
 #ifndef GXDLMSASSOCIATIONLOGICALNAME_H
 #define GXDLMSASSOCIATIONLOGICALNAME_H
 
-#include "GXDLMSObject.h"
-#include "GXApplicationContextName.h"
-#include "GXDLMSContextType.h"
-#include "GXAuthenticationMechanismName.h"
 #include "GXDLMSObjectCollection.h"
 
 class CGXDLMSAssociationLogicalName : public CGXDLMSObject
 {
 private:
 	unsigned char m_pos;
-	unsigned char m_ClientSAP;
-	unsigned short m_ServerSAP;
     CGXDLMSObjectCollection m_ObjectList;
-    CGXApplicationContextName m_ApplicationContextName;
-    CGXDLMSContextType m_XDLMSContextInfo;
-    CGXAuthenticationMechanismName m_AuthenticationMechanismName;
 	DLMS_DLMS_ASSOCIATION_STATUS m_AssociationStatus;
-    std::string m_SecuritySetupReference;
-
-    void Init();
-
-    void GetAccessRights(
-        CGXDLMSObject* pItem,
-        CGXDLMSServer* server,
-        CGXByteBuffer& data);
-
-    // Returns LN Association View.
-    int GetObjects(
-        CGXDLMSSettings& settings,
-        CGXDLMSValueEventArg& e,
-        CGXByteBuffer& data);
-
 public:
     /**
      Constructor.
@@ -80,33 +56,15 @@ public:
 
     CGXDLMSObjectCollection& GetObjectList();
 
-
-    /// Contains the identifiers of the COSEM client APs within the physical devices hosting these APs,
-    /// which belong to the AA modelled by the “Association LN” object.
-    unsigned char GetClientSAP();
-    void SetClientSAP(unsigned char value);
-
-    /// Contains the identifiers of the COSEM server (logical device) APs within the physical
-    /// devices hosting these APs, which belong to the AA modelled by the “Association LN” object.
-    unsigned short GetServerSAP();
-    void SetServerSAP(unsigned short value);
-
-    CGXApplicationContextName GetApplicationContextName();
-
-    CGXDLMSContextType GetXDLMSContextInfo();
-
-    CGXAuthenticationMechanismName GetAuthenticationMechanismMame();
-
-    void GetSecret(CGXByteBuffer& lls);
-
-    void SetSecret(CGXByteBuffer& value);
+	bool CompareSecret(CGXByteBuffer& lls);
 
     DLMS_DLMS_ASSOCIATION_STATUS GetAssociationStatus();
 
     void SetAssociationStatus(DLMS_DLMS_ASSOCIATION_STATUS value);
 
-    std::string GetSecuritySetupReference();
-    void SetSecuritySetupReference(std::string value);
+	unsigned char GetMPos();
+
+	void SetMPos(unsigned char m_pos);
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -118,11 +76,5 @@ public:
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
     DLMS_DATA_TYPE GetDataType(signed char index) override;
-
-    int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-	void GetContextInfo(CGXByteBuffer& data);
-
-    int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-    int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
 #endif //GXDLMSASSOCIATIONLOGICALNAME_H

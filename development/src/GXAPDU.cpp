@@ -35,196 +35,32 @@
 #include "../include/GXAPDU.h"
 
 /**
- * Retrieves the string that indicates the level of authentication, if any.
- */
-int GetAuthenticationString(
-    CGXDLMSSettings& settings,
-    CGXByteBuffer& data)
-{
-    // If authentication is used.
-    if (settings.GetAuthentication() != DLMS_AUTHENTICATION_NONE)
-    {
-        // Add sender ACSE-requirements field component.
-        data.SetUInt8(BER_TYPE_CONTEXT
-            | PDU_TYPE_SENDER_ACSE_REQUIREMENTS);
-        data.SetUInt8(2);
-        data.SetUInt8(BER_TYPE_BIT_STRING
-            | BER_TYPE_OCTET_STRING);
-        data.SetUInt8(0x80);
-
-        data.SetUInt8(BER_TYPE_CONTEXT
-            | PDU_TYPE_MECHANISM_NAME);
-        // Len
-        data.SetUInt8(7);
-        // OBJECT IDENTIFIER
-        unsigned char p[] = { 0x60, 0x85, 0x74, 0x05, 0x08, 0x02, (unsigned char)settings.GetAuthentication() };
-        data.Set(p, 7);
-        // Add Calling authentication information.
-        CGXByteBuffer *callingAuthenticationValue;
-        if (settings.GetAuthentication() == DLMS_AUTHENTICATION_LOW)
-        {
-            callingAuthenticationValue = &settings.GetPassword();
-        }
-        else
-        {
-            callingAuthenticationValue = &settings.GetCtoSChallenge();
-        }
-        // 0xAC
-        data.SetUInt8(BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLING_AUTHENTICATION_VALUE);
-        // Len
-        GXHelpers::SetObjectCount(2 + callingAuthenticationValue->GetSize(), data);
-        // Add authentication information.
-        data.SetUInt8(BER_TYPE_CONTEXT);
-        // Len.
-        GXHelpers::SetObjectCount(callingAuthenticationValue->GetSize(), data);
-        if (callingAuthenticationValue->GetSize() != 0)
-        {
-            data.Set(callingAuthenticationValue);
-        }
-    }
-    return 0;
-}
-
-/**
 * Code application context name.
 *
 * @param settings
 *            DLMS settings.
 * @param data
 *            Byte buffer where data is saved.
-* @param cipher
-*            Is ciphering settings.
 */
-int GenerateApplicationContextName(
+
+const uint8_t gApplCntxtName_str[4] = { (BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_APPLICATION_CONTEXT_NAME), // Application context name tag
+                                         0x09,                                                                         // Len
+                                         BER_TYPE_OBJECT_IDENTIFIER,                                                   // Tag
+                                         0x07 };                                                                       // Len
+
+void GenerateApplicationContextName(
 	CGXDLMSSettings& settings,
-	CGXByteBuffer& data,
-	CGXCipher* cipher)
+	CGXByteBuffer& data)
 {
-	// Application context name tag
-	data.SetUInt8((BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_APPLICATION_CONTEXT_NAME));
-	// Len
-	data.SetUInt8(0x09);
-	data.SetUInt8(BER_TYPE_OBJECT_IDENTIFIER);
-	// Len
-	data.SetUInt8(0x07);
-	bool ciphered = cipher != NULL && cipher->IsCiphered();
-	if (ciphered)
-	{
-		data.Set(LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING, sizeof(LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING));
-	}
-	else
-	{
-		data.Set(LOGICAL_NAME_OBJECT_ID, sizeof(LOGICAL_NAME_OBJECT_ID));
-	}
-	return 0;
+	data.Set(gApplCntxtName_str, sizeof(gApplCntxtName_str));
+	data.Set(LOGICAL_NAME_OBJECT_ID, sizeof(LOGICAL_NAME_OBJECT_ID));
 }
-
-/**
- * Generate User information initiate request.
- *
- * @param settings
- *            DLMS settings.
- * @param cipher
- * @param data
- */
-int GetInitiateRequest(
-    CGXDLMSSettings& settings,
-    CGXCipher* cipher, CGXByteBuffer& data)
-{
-    // Tag for xDLMS-Initiate request
-    data.SetUInt8(DLMS_COMMAND_INITIATE_REQUEST);
-    // Usage field for the response allowed component.
-
-    // Usage field for dedicated-key component. Not used
-    data.SetUInt8(0x00);
-
-    // encoding of the response-allowed component (bool DEFAULT TRUE)
-    // usage flag (FALSE, default value TRUE conveyed)
-    data.SetUInt8(0);
-
-    // Usage field of the proposed-quality-of-service component. Not used
-    data.SetUInt8(0x00);
-    data.SetUInt8(settings.GetDLMSVersion());
-    // Tag for conformance block
-    data.SetUInt8(0x5F);
-    data.SetUInt8(0x1F);
-    // length of the conformance block
-    data.SetUInt8(0x04);
-    // encoding the number of unused bits in the bit string
-    data.SetUInt8(0x00);
-    //Add conformance block.
-    CGXByteBuffer bb(4);
-    bb.SetUInt32((unsigned long)settings.GetProposedConformance());
-    data.Set(&bb, 1, 3);
-    data.SetUInt16(settings.GetMaxPduSize());
-    return 0;
-}
-
-/**
- * Generate user information.
- *
- * @param settings
- *            DLMS settings.
- * @param cipher
- * @param data
- *            Generated user information.
- */
-int GenerateUserInformation(
-    CGXDLMSSettings& settings,
-    CGXCipher* cipher,
-    CGXByteBuffer& data)
-{
-    int ret;
-    data.SetUInt8(BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_USER_INFORMATION);
-    if (cipher == NULL || !cipher->IsCiphered())
-    {
-        // Length for AARQ user field
-        data.SetUInt8(0x10);
-        // Coding the choice for user-information (Octet STRING, universal)
-        data.SetUInt8(BER_TYPE_OCTET_STRING);
-        // Length
-        data.SetUInt8(0x0E);
-        if ((ret = GetInitiateRequest(settings, cipher, data)) != 0)
-        {
-            return ret;
-        }
-    }
-    //else
-    //{
-    //    CGXByteBuffer tmp, crypted;
-    //    if ((ret = GetInitiateRequest(settings, cipher, tmp)) != 0)
-    //    {
-    //        return ret;
-    //    }
-    //    if ((ret = cipher->Encrypt(cipher->GetSecurity(),
-    //        DLMS_COUNT_TYPE_PACKET,
-    //        settings.GetCipher()->GetFrameCounter(),
-    //        DLMS_COMMAND_GLO_INITIATE_REQUEST,
-    //        cipher->GetSystemTitle(),
-    //        tmp,
-    //        crypted)) != 0)
-    //    {
-    //        return ret;
-    //    }
-
-    //    // Length for AARQ user field
-    //    GXHelpers::SetObjectCount(2 + crypted.GetSize(), data);
-    //    // Coding the choice for user-information (Octet string, universal)
-    //    data.SetUInt8(BER_TYPE_OCTET_STRING);
-    //    GXHelpers::SetObjectCount(crypted.GetSize(), data);
-    //    data.Set(&crypted);
-    //}
-    return 0;
-}
-
-
 
 /**
  * Parse User Information from PDU.
  */
 int ParseUserInformation(
     CGXDLMSSettings& settings,
-    CGXCipher* cipher,
     CGXByteBuffer& data)
 {
     int ret;
@@ -256,54 +92,7 @@ int ParseUserInformation(
     {
         return ret;
     }
-    if (tag == DLMS_COMMAND_GLO_INITIATE_RESPONSE)
-    {
-        //data.SetPosition(data.GetPosition() - 1);
-        //DLMS_SECURITY security = DLMS_SECURITY_NONE;
-        //if ((ret = cipher->Decrypt(settings.GetSourceSystemTitle(), data, security)) != 0)
-        //{
-        //    return ret;
-        //}
-        //cipher->SetSecurity(security);
-        //if ((ret = data.GetUInt8(&tag)) != 0)
-        //{
-        //    return ret;
-        //}
-    }
-    else if (tag == DLMS_COMMAND_GLO_INITIATE_REQUEST)
-    {
-        //data.SetPosition(data.GetPosition() - 1);
-        //// InitiateRequest
-        //DLMS_SECURITY security = DLMS_SECURITY_NONE;
-        //if ((ret = cipher->Decrypt(settings.GetSourceSystemTitle(), data, security)) != 0)
-        //{
-        //    return ret;
-        //}
-        //cipher->SetSecurity(security);
-        //if ((ret = data.GetUInt8(&tag)) != 0)
-        //{
-        //    return ret;
-        //}
-    }
-    bool response = tag == DLMS_COMMAND_INITIATE_RESPONSE;
-    if (response)
-    {
-        // Optional usage field of the negotiated quality of service
-        // component
-        if ((ret = data.GetUInt8(&tag)) != 0)
-        {
-            return ret;
-        }
-        if (tag != 0)
-        {
-            if ((ret = data.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            data.SetPosition(data.GetPosition() + len);
-        }
-    }
-    else if (tag == DLMS_COMMAND_INITIATE_REQUEST)
+	if (tag == DLMS_COMMAND_INITIATE_REQUEST)
     {
         // Optional usage field of the negotiated quality of service
         // component
@@ -416,25 +205,6 @@ int ParseUserInformation(
 	if ((ret = settings.SetMaxReceivePDUSize(pduSize)) != 0) {
 		return ret;
 	}
-	if (response)
-	{
-		// VAA Name
-		unsigned short vaa;
-		if ((ret = data.GetUInt16(&vaa)) != 0)
-		{
-			return ret;
-		}
-		if (vaa == 0xFA00)
-		{
-			//Invalid VAA.
-			return DLMS_ERROR_CODE_INVALID_PARAMETER;
-		}
-		else
-		{
-			// Unknown VAA.
-			return DLMS_ERROR_CODE_INVALID_PARAMETER;
-		}
-	}
 	return 0;
 }
 
@@ -471,11 +241,7 @@ int ParseApplicationContextName(
         //Encoding failed. Not an Object ID.
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
     }
-    if (settings.GetCipher() != NULL)
-    {
-        settings.GetCipher()->SetSecurity(DLMS_SECURITY_NONE);
-	}
-	// Object ID length.
+    // Object ID length.
 	if ((ret = buff.GetUInt8(&len)) != 0)
 	{
 		return ret;
@@ -548,7 +314,7 @@ int UpdatePassword(
     }
     else
     {
-		if (len != 16) {
+		if (len <= 8) {
 			return DLMS_ERROR_CODE_INVALID_TAG;
 		}
         settings.SetCtoSChallenge(tmp);
@@ -556,65 +322,24 @@ int UpdatePassword(
     return 0;
 }
 
+
+const uint8_t valOfObjID[7] = { 0x07, 0x60, 0x85, 0x74, 0x05, 0x08, 0x02 };
 int UpdateAuthentication(
     CGXDLMSSettings& settings,
     CGXByteBuffer& buff)
 {
     int ret;
+	uint8_t val[7];
     unsigned char ch;
-    if ((ret = buff.GetUInt8(&ch)) != 0)
+    if ((ret = buff.Get(val, sizeof(val))) != 0)
     {
         return ret;
     }
 
-    if ((ret = buff.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0x60)
-    {
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = buff.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0x85)
-    {
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = buff.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0x74)
-    {
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = buff.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0x05)
-    {
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = buff.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0x08)
-    {
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
-    if ((ret = buff.GetUInt8(&ch)) != 0)
-    {
-        return ret;
-    }
-    if (ch != 0x02)
-    {
-        return DLMS_ERROR_CODE_INVALID_TAG;
-    }
+	if (memcmp(valOfObjID, val, sizeof(val))) {
+		return DLMS_ERROR_CODE_INVALID_TAG;
+	}
+
     if ((ret = buff.GetUInt8(&ch)) != 0)
     {
         return ret;
@@ -637,86 +362,42 @@ int UpdateAuthentication(
     return 0;
 }
 
-int GetUserInformation(
+const uint8_t gUserInfo_str_err[] = { DLMS_COMMAND_CONFIRMED_SERVICE_ERROR,
+									  DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR,
+									  DLMS_SERVICE_ERROR_INITIATE,
+									  DLMS_INITIATE_DLMS_VERSION_TOO_LOW };
+const uint8_t gUserInfo_str[] = { DLMS_COMMAND_INITIATE_RESPONSE, // Tag for xDLMS-Initiate response
+                                  0x00,                           // Usage field for the response allowed component(not used)
+                                  0x06,                           // DLMS Version Number
+                                  0x5F,
+                                  0x1F,
+                                  0x04,                           // length of the conformance block
+                                  0x00};                          // encoding the number of unused bits in the bit string
+
+void GetUserInformation(
     CGXDLMSSettings& settings,
-    CGXCipher* cipher,
     CGXByteBuffer& data)
 {
     data.Clear();
-	if (settings.GetDLMSVersion() < 6) {
-		
-		data.SetUInt8(DLMS_COMMAND_CONFIRMED_SERVICE_ERROR);
-		data.SetUInt8(DLMS_CONFIRMED_SERVICE_ERROR_INITIATE_ERROR);
-		data.SetUInt8(DLMS_SERVICE_ERROR_INITIATE);
-		data.SetUInt8(DLMS_INITIATE_DLMS_VERSION_TOO_LOW);
+	if (settings.GetDLMSVersion() < 6) {	
+		data.Set(gUserInfo_str_err, sizeof(gUserInfo_str_err));
 	}
 	else {
-		data.SetUInt8(DLMS_COMMAND_INITIATE_RESPONSE); // Tag for xDLMS-Initiate
-													   // response    
-													   //    data.SetUInt8(0x01);    
-		data.SetUInt8(0x00); // Usage field for the response allowed component
-							 // (not used)
-							 // DLMS Version Number
-		data.SetUInt8(06);
-		data.SetUInt8(0x5F);
-		data.SetUInt8(0x1F);
-		// length of the conformance block
-		data.SetUInt8(0x04);
-		// encoding the number of unused bits in the bit string
-		data.SetUInt8(0x00);
-		CGXByteBuffer bb(4);
-		bb.SetUInt32((unsigned long)settings.GetNegotiatedConformance());
-		data.Set(&bb, 1, 3);
+		data.Set(gUserInfo_str, sizeof(gUserInfo_str));
+		settings.GetNegotiatedConformance(data);
 		data.SetUInt16(settings.GetMaxPduSize());
 		data.SetUInt16(0x0007);
-		/*if (cipher != NULL && cipher->IsCiphered())
-		{
-			CGXByteBuffer tmp(data);
-			data.Clear();
-			return cipher->Encrypt(cipher->GetSecurity(),
-				DLMS_COUNT_TYPE_PACKET,
-				settings.GetCipher()->GetFrameCounter(),
-				DLMS_COMMAND_GLO_INITIATE_RESPONSE,
-				cipher->GetSystemTitle(),
-				tmp,
-				data);
-		}*/
 	}
-    return 0;
 }
 
-int CGXAPDU::GenerateAarq(
-    CGXDLMSSettings& settings,
-    CGXCipher* cipher,
-    CGXByteBuffer& data)
-{
-    int ret;
-    // AARQ APDU Tag
-    data.SetUInt8(BER_TYPE_APPLICATION | BER_TYPE_CONSTRUCTED);
-    // Length is updated later.
-    unsigned long offset = data.GetSize();
-    data.SetUInt8(0);
-    ///////////////////////////////////////////
-    // Add Application context name.
-    if ((ret = GenerateApplicationContextName(settings, data, cipher)) != 0)
-    {
-        return ret;
-    }
-    if ((ret = GetAuthenticationString(settings, data)) != 0)
-    {
-        return ret;
-    }
-    if ((ret = GenerateUserInformation(settings, cipher, data)) != 0)
-    {
-        return ret;
-    }
-    data.SetUInt8(offset, (unsigned char)(data.GetSize() - offset - 1));
-    return 0;
-}
+const DLMS_ERROR_CODE diagnostic_res[3][4] = {
+	{ DLMS_ERROR_CODE_OK, DLMS_ERROR_CODE_NO_REASON_GIVEN,                              DLMS_ERROR_CODE_APPLICATION_CONTEXT_NAME_NOT_SUPPORTED, DLMS_ERROR_CODE_OK },
+    { DLMS_ERROR_CODE_OK, DLMS_ERROR_CODE_AUTHENTICATION_MECHANISM_NAME_NOT_RECOGNISED, DLMS_ERROR_CODE_AUTHENTICATION_MECHANISM_NAME_REQUIRED, DLMS_ERROR_CODE_AUTHENTICATION_FAILURE },
+    { DLMS_ERROR_CODE_OK, DLMS_ERROR_CODE_OK,                                           DLMS_ERROR_CODE_INVALID_VERSION_NUMBER,                 DLMS_ERROR_CODE_OK }
+};
 
 int CGXAPDU::ParsePDU(
     CGXDLMSSettings& settings,
-    CGXCipher* cipher,
     CGXByteBuffer& buff,
     DLMS_SOURCE_DIAGNOSTIC& diagnostic)
 {
@@ -734,8 +415,7 @@ int CGXAPDU::ParsePDU(
     {
         return ret;
     }
-    int size = buff.GetSize() - buff.GetPosition();
-    if (len > size)
+    if (len > buff.GetSize() - buff.GetPosition())
     {
         //Encoding failed. Not enough data.
         return DLMS_ERROR_CODE_OUTOFMEMORY;
@@ -760,136 +440,6 @@ int CGXAPDU::ParsePDU(
             }
         }
         break;
-        // 0xA2
-        case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AP_TITLE:
-            // Get len.
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            if (len != 3)
-            {
-                return DLMS_ERROR_CODE_INVALID_TAG;
-            }
-            // Choice for result (INTEGER, universal)
-
-            if ((ret = buff.GetUInt8(&tag)) != 0)
-            {
-                return ret;
-            }
-            // Get len.
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            if (len != 1)
-            {
-                return DLMS_ERROR_CODE_INVALID_TAG;
-            }
-            if ((ret = buff.GetUInt8(&tag)) != 0)
-            {
-                return ret;
-            }
-			if (tag <= 2) {
-				resultComponent = (DLMS_ASSOCIATION_RESULT)tag;
-			}
-            break;
-            // 0xA3 SourceDiagnostic
-        case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AE_QUALIFIER:
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            // ACSE service user tag.
-            if ((ret = buff.GetUInt8(&tag)) != 0)
-            {
-                return ret;
-            }
-			if (tag == 0xA1) {
-				if ((ret = buff.GetUInt8(&len)) != 0)
-				{
-					return ret;
-				}
-				// Result source diagnostic component.
-				if ((ret = buff.GetUInt8(&tag)) != 0)
-				{
-					return ret;
-				}
-				if ((ret = buff.GetUInt8(&len)) != 0)
-				{
-					return ret;
-				}
-				if (len != 1)
-				{
-					return DLMS_ERROR_CODE_INVALID_TAG;
-				}
-				if ((ret = buff.GetUInt8(&tag)) != 0)
-				{
-					return ret;
-				}
-				if ((tag <= 2) || (tag >= 11 && tag <= 14)) {
-					diagnostic = (DLMS_SOURCE_DIAGNOSTIC)tag;
-				}
-			}
-			else {
-				if (tag == 0xA2) {
-					if ((ret = buff.GetUInt8(&len)) != 0)
-					{
-						return ret;
-					}
-					// Result source diagnostic component.
-					if ((ret = buff.GetUInt8(&tag)) != 0)
-					{
-						return ret;
-					}
-					if ((ret = buff.GetUInt8(&len)) != 0)
-					{
-						return ret;
-					}
-					if (len != 1)
-					{
-						return DLMS_ERROR_CODE_INVALID_TAG;
-					}
-					if ((ret = buff.GetUInt8(&tag)) != 0)
-					{
-						return ret;
-					}
-					if (tag <= 2)  {
-						diagnostic = (DLMS_SOURCE_DIAGNOSTIC)(tag + 20);
-					}
-				}
-				else {
-					if ((ret = buff.GetUInt8(&len)) != 0)
-					{
-						return ret;
-					}
-					buff.SetPosition(buff.GetPosition() + len);
-					diagnostic = DLMS_SOURCE_DIAGNOSTIC_NONE;
-				}
-			}
-           break;
-            // 0xA4 Result
-        case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AP_INVOCATION_ID:
-            // Get len.
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            // Choice for result (Universal, Octet string type)
-            if ((ret = buff.GetUInt8(&tag)) != 0)
-            {
-                return ret;
-            }
-            // responding-AP-title-field
-            // Get len.
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            tmp.Clear();
-            tmp.Set(&buff, buff.GetPosition(), len);
-            settings.SetSourceSystemTitle(tmp);
-            break;
             // 0xA6 Client system title.
         case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLING_AP_TITLE:
             if ((ret = buff.GetUInt8(&len)) != 0)
@@ -907,24 +457,6 @@ int CGXAPDU::ParsePDU(
             tmp.Clear();
             tmp.Set(&buff, buff.GetPosition(), len);
             settings.SetSourceSystemTitle(tmp);
-            break;
-            // 0xAA Server system title.
-        case BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_SENDER_ACSE_REQUIREMENTS:
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            if ((ret = buff.GetUInt8(&tag)) != 0)
-            {
-                return ret;
-            }
-            if ((ret = buff.GetUInt8(&len)) != 0)
-            {
-                return ret;
-            }
-            tmp.Clear();
-            tmp.Set(&buff, buff.GetPosition(), len);
-            settings.SetStoCChallenge(tmp);
             break;
             //  0x8A or 0x88
         case BER_TYPE_CONTEXT | PDU_TYPE_SENDER_ACSE_REQUIREMENTS:
@@ -979,7 +511,7 @@ int CGXAPDU::ParsePDU(
             {
                 return DLMS_ERROR_CODE_REJECTED_PERMAMENT;
             }
-            if ((ret = ParseUserInformation(settings, cipher, buff)) != 0)
+            if ((ret = ParseUserInformation(settings, buff)) != 0)
             {
 				buff.SetPosition(buff.GetSize());
                 diagnostic = DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN;
@@ -1021,128 +553,83 @@ int CGXAPDU::ParsePDU(
             break;
         }
     }
-    switch ((int)diagnostic)
-    {
-    case DLMS_SOURCE_DIAGNOSTIC_NO_REASON_GIVEN:
-        return DLMS_ERROR_CODE_NO_REASON_GIVEN;
-        break;
-    case DLMS_SOURCE_DIAGNOSTIC_NOT_SUPPORTED:
-        return DLMS_ERROR_CODE_APPLICATION_CONTEXT_NAME_NOT_SUPPORTED;
-        break;
-    case DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_MECHANISM_NAME_NOT_RECOGNISED:
-        return DLMS_ERROR_CODE_AUTHENTICATION_MECHANISM_NAME_NOT_RECOGNISED;
-        break;
-    case DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_MECHANISM_NAME_REQUIRED:
-        return DLMS_ERROR_CODE_AUTHENTICATION_MECHANISM_NAME_REQUIRED;
-        break;
-    case DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_FAILURE:
-        return DLMS_ERROR_CODE_AUTHENTICATION_FAILURE;
-        break;
-	case DLMS_SOURCE_DIAGNOSTIC_ASCE_NO_COMMON_VERSION:
-		return DLMS_ERROR_CODE_INVALID_VERSION_NUMBER;
-		break;
-    default:
-        //OK.
-        break;
-    }
+
+	if (diagnostic < DLMS_SOURCE_DIAGNOSTIC_ASCE_NO_COMMON_VERSION) {
+		return diagnostic_res[diagnostic / 10][diagnostic % 10];
+	}
     return 0;
 }
 
 /**
  * Server generates AARE message.
  */
-int CGXAPDU::GenerateAARE(
+
+const uint8_t gAARERes_str[24] = { BER_TYPE_APPLICATION | BER_TYPE_CONSTRUCTED | PDU_TYPE_APPLICATION_CONTEXT_NAME, // Set AARE tag and length 0x61
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,          // Length and application context name are updated later
+	                             BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | BER_TYPE_INTEGER,                      // Result 0xA2
+	                             0x03,                                                                            // len
+	                             BER_TYPE_INTEGER,                                                                // Tag
+	                             0x01,                                                                            // Len
+	                             0x00,                                                                            // ResultValue is updated later
+	                             0xA3,                                                                            // 0xA3 SourceDiagnostic
+	                             0x05,                                                                            // len
+	                             0x00,                                                                            // Tag is updated later
+	                             0x03,                                                                            // len
+	                             0x02,                                                                            // Tag
+	                             0x01                                                                             // len
+};
+
+const uint8_t gAARESysTitle_str[12] = { 0x88,              // Add server ACSE-requirenents field component.
+                                        0x02,              // Len
+                                        0x07,              // value
+                                        0x80,			   //
+                                        0x89,              // Tag
+                                        0x07,              // Len
+                                        0x60,              // value
+                                        0x85,			   //
+                                        0x74,			   //
+                                        0x05,			   //
+                                        0x08,			   //
+                                        0x02
+};
+
+void CGXAPDU::GenerateAARE(
     CGXDLMSSettings& settings,
     CGXByteBuffer& data,
     DLMS_ASSOCIATION_RESULT result,
-    DLMS_SOURCE_DIAGNOSTIC diagnostic,
-    CGXCipher* cipher)
+    DLMS_SOURCE_DIAGNOSTIC diagnostic)
 {
-    int ret;
     unsigned long offset = data.GetSize();
-    // Set AARE tag and length 0x61
-    data.SetUInt8(BER_TYPE_APPLICATION | BER_TYPE_CONSTRUCTED | PDU_TYPE_APPLICATION_CONTEXT_NAME);
-    // Length is updated later.
-    data.SetUInt8(0);
-    if ((ret = GenerateApplicationContextName(settings, data, cipher)) != 0)
-    {
-        return ret;
-    }
-    // Result 0xA2
-    data.SetUInt8(BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | BER_TYPE_INTEGER);
-    data.SetUInt8(3); // len
-    // Tag
-    data.SetUInt8(BER_TYPE_INTEGER);
-    // Choice for result (INTEGER, universal)
-    data.SetUInt8(1); // Len
-    // ResultValue
-    data.SetUInt8(result);
-    // SourceDiagnostic
-    data.SetUInt8(0xA3);
-    data.SetUInt8(5); // len
-	// Tag
-	if (diagnostic >= 20) {
-		data.SetUInt8(0xA2);
-		data.SetUInt8(3); // len
-		data.SetUInt8(2); // Tag
-		// Choice for result (INTEGER, universal)
-		data.SetUInt8(1); // Len
-		// diagnostic
-		data.SetUInt8(diagnostic - 20);
-	}
-	else {
-		data.SetUInt8(0xA1);
-		data.SetUInt8(3); // len
-		data.SetUInt8(2); // Tag
-		// Choice for result (INTEGER, universal)
-		data.SetUInt8(1); // Len
-		// diagnostic
-		data.SetUInt8(diagnostic);
-	}
-    // SystemTitle
-    //if (cipher != NULL
-    //    && (settings.GetAuthentication() == DLMS_AUTHENTICATION_HIGH_GMAC
-    //        || cipher->IsCiphered()))
-    //{
-    //    data.SetUInt8(BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_CALLED_AP_INVOCATION_ID);
-    //    GXHelpers::SetObjectCount(2 + cipher->GetSystemTitle().GetSize(), data);
-    //    data.SetUInt8(BER_TYPE_OCTET_STRING);
-    //    GXHelpers::SetObjectCount(cipher->GetSystemTitle().GetSize(), data);
-    //    data.Set(&cipher->GetSystemTitle());
-    //}
+	data.Capacity(offset + sizeof(gAARERes_str) + sizeof(gAARESysTitle_str) + 2);
+	// Result 0xA2
+	data.Set(gAARERes_str, sizeof(gAARERes_str));
+	data.SetSize(offset + 2);
+	GenerateApplicationContextName(settings, data);
+	data.SetUInt8(offset + 17, result);
+	data.SetUInt8(offset + 20, 0xA1 + diagnostic / 20);
+	data.SetSize(offset + 24);
+	data.SetUInt8(diagnostic % 20);
 
-    if (result != DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED
-        && diagnostic == DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_REQUIRED)
-    {
-        // Add server ACSE-requirenents field component.
-        data.SetUInt8(0x88);
-        data.SetUInt8(0x02); // Len.
-        data.SetUInt16(0x0780);
-        // Add tag.
-        data.SetUInt8(0x89);
-        data.SetUInt8(0x07); // Len
-        data.SetUInt8(0x60);
-        data.SetUInt8(0x85);
-        data.SetUInt8(0x74);
-        data.SetUInt8(0x05);
-        data.SetUInt8(0x08);
-        data.SetUInt8(0x02);
-        data.SetUInt8(settings.GetAuthentication());
-        // Add tag.
-        data.SetUInt8(0xAA);
-        GXHelpers::SetObjectCount(2 + settings.GetStoCChallenge().GetSize(), data); // Len
-        data.SetUInt8(BER_TYPE_CONTEXT);
-        GXHelpers::SetObjectCount(settings.GetStoCChallenge().GetSize(), data);
-        data.Set(settings.GetStoCChallenge().GetData(), settings.GetStoCChallenge().GetSize());
-    }
+	// SystemTitle
+	if (result != DLMS_ASSOCIATION_RESULT_PERMANENT_REJECTED
+		&& diagnostic == DLMS_SOURCE_DIAGNOSTIC_AUTHENTICATION_REQUIRED)
+	{
+		data.Set(gAARESysTitle_str, sizeof(gAARESysTitle_str));
+		data.SetSize(offset + 37);
+		data.SetUInt8(settings.GetAuthentication());
+		// Add tag.
+		data.SetUInt8(0xAA);
+		GXHelpers::SetObjectCount(2 + settings.GetStoCChallenge().GetSize(), data); // Len
+		data.SetUInt8(BER_TYPE_CONTEXT);
+		GXHelpers::SetObjectCount(settings.GetStoCChallenge().GetSize(), data);
+		data.Set(settings.GetStoCChallenge().GetData(), settings.GetStoCChallenge().GetSize());
+	}
+
     // Add User Information
     // Tag 0xBE
     data.SetUInt8(BER_TYPE_CONTEXT | BER_TYPE_CONSTRUCTED | PDU_TYPE_USER_INFORMATION);
     CGXByteBuffer tmp;
-    if ((ret = GetUserInformation(settings, cipher, tmp)) != 0)
-    {
-        return ret;
-    }
+	GetUserInformation(settings, tmp);
     GXHelpers::SetObjectCount(2 + tmp.GetSize(), data);
     // Coding the choice for user-information (Octet STRING, universal)
     data.SetUInt8(BER_TYPE_OCTET_STRING);
@@ -1150,5 +637,4 @@ int CGXAPDU::GenerateAARE(
     GXHelpers::SetObjectCount(tmp.GetSize(), data);
     data.Set(&tmp);
     data.SetUInt8(offset + 1, (unsigned char)(data.GetSize() - offset - 2));
-    return 0;
 }

@@ -38,12 +38,7 @@
 
 class CGXDLMSRegister : public CGXDLMSObject
 {
-    //void Init();
 protected:
-    /*CArtVariant m_Value;
-    signed char m_Scaler;
-    unsigned char m_Unit;*/
-
 	//LN Constructor.
     CGXDLMSRegister(DLMS_OBJECT_TYPE type, const char* ln);
 
@@ -57,45 +52,13 @@ public:
     //LN Constructor.
     CGXDLMSRegister(const char* ln, double scaler, unsigned char unit, CArtVariant value);
 
-    /// <summary>
-    /// Get value of COSEM Data object.
-    /// </summary>
-	//CArtVariant GetValue();
-
- //   /// <summary>
- //   /// Set value of COSEM Data object.
- //   /// </summary>
- //   void SetValue(CArtVariant& value);
-
-    //// Scaler of COSEM Register object.
-    //double GetScaler();
-
-    //void SetScaler(double value);
-
-    // Unit of COSEM Register object.
-	//unsigned char GetUnit();
-
- //   void SetUnit(unsigned char value);
-
-    /*
-     * Reset value.
-     */
-   // void Reset();
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
     // Returns amount of methods.
     int GetMethodCount();
 
-    int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
-
 	DLMS_DATA_TYPE GetDataType(signed char index) override;
-
-    int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-
-    int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
 #endif //GXDLMSREGISTER_H

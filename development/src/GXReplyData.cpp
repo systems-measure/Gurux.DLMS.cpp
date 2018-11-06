@@ -63,22 +63,22 @@ void CGXReplyData::SetValue(CArtVariant& value)
     m_DataValue = value;
 }
 
-unsigned long CGXReplyData::GetReadPosition()
+unsigned short CGXReplyData::GetReadPosition()
 {
     return m_ReadPosition;
 }
 
-void CGXReplyData::SetReadPosition(unsigned long value)
+void CGXReplyData::SetReadPosition(unsigned short value)
 {
     m_ReadPosition = value;
 }
 
-int CGXReplyData::GetPacketLength()
+unsigned short CGXReplyData::GetPacketLength()
 {
     return m_PacketLength;
 }
 
-void CGXReplyData::SetPacketLength(int value)
+void CGXReplyData::SetPacketLength(unsigned short value)
 {
     m_PacketLength = value;
 }
@@ -98,23 +98,15 @@ void CGXReplyData::SetComplete(bool value)
     m_Complete = value;
 }
 
-void CGXReplyData::SetTotalCount(int value)
-{
-    m_TotalCount = value;
-}
-
 void CGXReplyData::Clear()
 {
     m_MoreData = DLMS_DATA_REQUEST_TYPES_NONE;
     m_Command = DLMS_COMMAND_NONE;
     m_Data.Clear();
     m_Complete = false;
-    m_Peek = false;
-    m_TotalCount = 0;
     m_DataValue.Clear();
     m_ReadPosition = 0;
     m_PacketLength = 0;
-    m_CipherIndex = 0;
     m_Gbt = false;
 }
 
@@ -146,43 +138,6 @@ CGXByteBuffer& CGXReplyData::GetData()
 bool CGXReplyData::IsComplete()
 {
     return m_Complete;
-}
-
-int CGXReplyData::GetTotalCount()
-{
-    return m_TotalCount;
-}
-
-int CGXReplyData::GetCount()
-{
-	VarInfo v_info;
-	m_DataValue.GetVar(v_info);
-	m_DataValue.SetPosition(0);
-    if (v_info.vt == DLMS_DATA_TYPE_ARRAY)
-    {
-        return (int)v_info.size;
-    }
-    return 0;
-}
-
-bool CGXReplyData::GetPeek()
-{
-    return m_Peek;
-}
-
-void CGXReplyData::SetPeek(bool value)
-{
-    m_Peek = value;
-}
-
-unsigned short CGXReplyData::GetCipherIndex()
-{
-    return m_CipherIndex;
-}
-
-void CGXReplyData::SetCipherIndex(unsigned short value)
-{
-    m_CipherIndex = value;
 }
 
 bool CGXReplyData::GetGbt()

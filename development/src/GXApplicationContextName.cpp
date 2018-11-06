@@ -107,24 +107,3 @@ void CGXApplicationContextName::SetContextId(unsigned char value)
 {
     m_ContextId = value;
 }
-
-std::string CGXApplicationContextName::ToString()
-{
-    CGXByteBuffer bb;
-    bb.AddString(m_LogicalName.c_str());
-    bb.SetUInt8(' ');
-    bb.AddIntAsString(m_JointIsoCtt);
-    bb.SetUInt8(' ');
-    bb.AddIntAsString(m_Country);
-    bb.SetUInt8(' ');
-    bb.AddIntAsString(m_CountryName);
-    bb.SetUInt8(' ');
-    bb.AddIntAsString(m_IdentifiedOrganization);
-    bb.SetUInt8(' ');
-    bb.AddIntAsString(m_DlmsUA);
-    bb.SetUInt8(' ');
-    bb.AddIntAsString(m_ApplicationContext);
-    bb.SetUInt8(' ');
-    bb.AddIntAsString(m_ContextId);
-    return bb.ToString();
-}

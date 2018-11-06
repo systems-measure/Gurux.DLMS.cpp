@@ -83,7 +83,7 @@ private:
 	/**
 	* Request type.
 	*/
-	int m_RequestType;
+	unsigned char m_RequestType;
 
 public:
     /**
@@ -102,10 +102,10 @@ public:
      */
     CGXDLMSLNParameters(CGXDLMSSettings* settings,
                         DLMS_COMMAND command,
-                        int commandType,
+		                unsigned char commandType,
                         CGXByteBuffer* attributeDescriptor,
                         CGXByteBuffer* data,
-                        int status);
+		                unsigned char status);
 
     /**
      * @return DLMS settings.
@@ -120,13 +120,13 @@ public:
     /**
      * @return Request type.
      */
-    int GetRequestType();
+	unsigned char GetRequestType();
 
     /**
      * @param value
      *            the requestType to set
      */
-    void SetRequestType(int value);
+    void SetRequestType(unsigned char value);
 
     /**
      * @return the attributeDescriptor

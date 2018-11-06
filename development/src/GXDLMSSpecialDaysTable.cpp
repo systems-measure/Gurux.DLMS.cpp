@@ -63,78 +63,20 @@ int CGXDLMSSpecialDaysTable::GetMethodCount()
     return 2;
 }
 
+const DLMS_DATA_TYPE SD_TypeArr[] = { DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_ARRAY };
+
 int CGXDLMSSpecialDaysTable::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
-    if (index == 1)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-        return DLMS_ERROR_CODE_OK;
-    }
-    //Entries
-    if (index == 2)
-    {
-        type = DLMS_DATA_TYPE_ARRAY;
-        return DLMS_ERROR_CODE_OK;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
+	if (index >= 1 && index <= 2) {
+		type = SD_TypeArr[index];
+		return DLMS_ERROR_CODE_OK;
+	}
+	return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 DLMS_DATA_TYPE CGXDLMSSpecialDaysTable::GetDataType(signed char index) {
-	if (index == 1)
-	{
-		return  DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 2)
-	{
-		return DLMS_DATA_TYPE_ARRAY;
+	if (index >= 1 && index <= 2) {
+		return SD_TypeArr[index];
 	}
 	return DLMS_DATA_TYPE_NONE;
-}
-
-// Returns value of given attribute.
-int CGXDLMSSpecialDaysTable::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-		CGXByteBuffer data;
-        int ret;
-        if ((ret = GetLogicalName(this, data)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(data);
-		e.SetHandled(true);
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 2)
-    {
-        
-        return DLMS_ERROR_CODE_OK;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
-}
-
-// Set value of given attribute.
-int CGXDLMSSpecialDaysTable::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-        int ret;
-		CGXByteBuffer data;
-        if ((ret = GetLogicalName(this, data)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(data);
-        return DLMS_ERROR_CODE_OK;
-    }
-    else if (e.GetIndex() == 2)
-    {
-        
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
 }

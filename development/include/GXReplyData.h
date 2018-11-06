@@ -64,31 +64,16 @@ private:
 	* Is frame complete.
 	*/
 	bool m_Complete;
-
-	/**
-	* Try Get value.
-	*/
-	bool m_Peek;
-
-	/**
-	* Cipher index is position where data is decrypted.
-	*/
-	unsigned short m_CipherIndex;
-
-	/**
-	* Expected count of element in the array.
-	*/
-	int m_TotalCount;
 	
 	/**
 	* Packet Length.
 	*/
-	int m_PacketLength;
+	unsigned short m_PacketLength;
 
 	/**
 	* Last read position. This is used in peek to solve how far data is read.
 	*/
-	unsigned long m_ReadPosition;
+	unsigned short m_ReadPosition;
 
     /**
      * Received data.
@@ -129,21 +114,19 @@ public:
 
     void SetValue(CArtVariant& value);
 
-    unsigned long GetReadPosition();
+	unsigned short GetReadPosition();
 
-    void SetReadPosition(unsigned long value);
+    void SetReadPosition(unsigned short value);
 
-    int GetPacketLength();
+	unsigned short GetPacketLength();
 
-    void SetPacketLength(int value);
+    void SetPacketLength(unsigned short value);
 
     void SetCommand(DLMS_COMMAND value);
 
     void SetData(CGXByteBuffer& value);
 
     void SetComplete(bool value);
-
-    void SetTotalCount(int value);
 
     /**
      * Reset data values to default.
@@ -185,53 +168,6 @@ public:
      * @return Returns true if frame is complete or false if bytes is missing.
      */
     bool IsComplete();
-
-    /**
-     * Get total count of element in the array. If this method is used peek must
-     * be Set true.
-     *
-     * @return Count of element in the array.
-     * @see peek
-     * @see GetCount
-     */
-    int GetTotalCount();
-
-    /**
-     * Get count of read elements. If this method is used peek must be Set true.
-     *
-     * @return Count of read elements.
-     * @see peek
-     * @see GetTotalCount
-     */
-    int GetCount();
-
-    /**
-     * Get is value try to peek.
-     *
-     * @return Is value try to peek.
-     * @see GetCount
-     * @see GetTotalCount
-     */
-    bool GetPeek();
-
-    /**
-     * Set is value try to peek.
-     *
-     * @param value
-     *            Is value try to peek.
-     */
-    void SetPeek(bool value);
-
-    /**
-     * @return Cipher index is position where data is decrypted.
-     */
-    unsigned short GetCipherIndex();
-
-    /**
-     * @param cipherIndex
-     *            Cipher index is position where data is decrypted.
-     */
-    void SetCipherIndex(unsigned short value);
 
     /**
      * @return Is received message General Block Transfer message.

@@ -48,9 +48,9 @@ CGXDLMSObject::CGXDLMSObject()
     Initialize(DLMS_OBJECT_TYPE_NONE, 0, NULL);
 }
 
-CGXDLMSObject::CGXDLMSObject(unsigned short class_id, unsigned char version, CGXByteBuffer& ln)
-{
-    Initialize(class_id, version, &ln);
+CGXDLMSObject::CGXDLMSObject(unsigned short class_id, unsigned char version, const char* ln) {
+	Initialize(class_id, version, NULL);
+	GXHelpers::SetLogicalName(ln, m_LN);
 }
 
 CGXDLMSObject::CGXDLMSObject(DLMS_OBJECT_TYPE type)
@@ -60,27 +60,18 @@ CGXDLMSObject::CGXDLMSObject(DLMS_OBJECT_TYPE type)
 
 int CGXDLMSObject::GetLogicalName(CGXDLMSObject * target, CGXByteBuffer& value)
 {
-	value.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-	value.SetUInt8(6);
-    value.Set(target->m_LN, 6);
-    return DLMS_ERROR_CODE_OK;
+	if (target != nullptr) {
+		value.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
+		value.SetUInt8(6);
+		value.Set(target->m_LN, 6);
+		return DLMS_ERROR_CODE_OK;
+	}
+	return DLMS_ERROR_CODE_HARDWARE_FAULT;
 }
 
-int CGXDLMSObject::SetLogicalName(CGXDLMSObject * target, CArtVariant& value)
-{
-	VarInfo v_info;
-	value.GetVar(v_info);
-    if (v_info.vt != DLMS_DATA_TYPE_OCTET_STRING || v_info.size != 6)
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    memcpy(target->m_LN, value.byteArr, 6);
-    return DLMS_ERROR_CODE_OK;
-}
 
 void CGXDLMSObject::Initialize(unsigned short class_id, unsigned char version, CGXByteBuffer* ln)
 {
-    m_DataValidity = false;
     m_ObjectType = (DLMS_OBJECT_TYPE)class_id;
     m_Version = version;
     if (ln == NULL)
@@ -112,14 +103,6 @@ void CGXDLMSObject::SetDataTypeFunc(TypeAttrCallback callback) {
 	get_data_type = callback;
 }
 
-bool CGXDLMSObject::GetDataValidity() {
-	return m_DataValidity;
-}
-
-void CGXDLMSObject::SetDataValidity(bool validity) {
-	m_DataValidity = validity;
-}
-
 void CGXDLMSObject::SetConstructedIdx(uint8_t* idx) {
 	constr_idx = *idx;
 }
@@ -129,16 +112,6 @@ std::string CGXDLMSObject::GetName()
 	std::string ln;
     GXHelpers::GetLogicalName(m_LN, ln);
     return ln;
-}
-
-int CGXDLMSObject::SetName(CGXDLMSVariant& value)
-{
-    if (value.vt == DLMS_DATA_TYPE_STRING)
-    {
-        GXHelpers::SetLogicalName(value.strVal.c_str(), m_LN);
-        return DLMS_ERROR_CODE_OK;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 DLMS_OBJECT_TYPE CGXDLMSObject::GetObjectType()
@@ -182,13 +155,4 @@ void CGXDLMSObject::SetVersion(unsigned char value)
 unsigned char CGXDLMSObject::GetVersion()
 {
     return m_Version;
-}
-
-
-void CGXDLMSObject::SetAttributeCount(unsigned char count) {
-	
-}
-
-void CGXDLMSObject::SetMethodCount(unsigned char count) {
-	
 }

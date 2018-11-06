@@ -51,29 +51,7 @@ class GXHelpers
     static unsigned char GetValue(char c);
 public:
 
-    /**
-    * Convert object to DLMS bytes.
-    *
-    * buff : Byte buffer where data is write.
-    * type : Data type.
-    * value : Added Value.
-    */
-    static int SetData(CGXByteBuffer& buff, DLMS_DATA_TYPE type, CGXDLMSVariant& value);
-
-    /**
-        * Get data from DLMS frame.
-        *
-        * @param data
-        *            received data.
-        * @param info
-        *            Data info.
-        * @return Received data.
-        */
-    static int GetData(CGXByteBuffer& data, CGXDataInfo& info, CGXDLMSVariant& value);
-
-	static int GetDataCA(CGXByteBuffer& data, CArtVariant& value);
-
-	static void SetDateTime(CGXByteBuffer& buff, CGXDateTime& value);
+	static void GetDataCA(CGXByteBuffer& data, CArtVariant& value);
 
 	static void SetDateTime(CArtVariant& buff, unsigned char index, CGXDateTime& value);
 
@@ -220,69 +198,8 @@ public:
     // buff : Byte buffer.
     /////////////////////////////////////////////////////////////////////////////
     static void SetObjectCount(unsigned long count, CGXByteBuffer& buff);
-
-    static std::vector< std::string > Split(std::string& s, char separator);
-
-    static std::vector< std::string > Split(std::string& s, std::string separators, bool ignoreEmpty);
-
-    static void Replace(std::string& str, std::string oldString, std::string newString);
-
-    /////////////////////////////////////////////////////////////////////////////
-    // Trim from start.
-    /////////////////////////////////////////////////////////////////////////////
-    static std::string &ltrim(std::string& s);
-
-    /////////////////////////////////////////////////////////////////////////////
-    // Trim from end.
-    /////////////////////////////////////////////////////////////////////////////
-    static inline std::string &rtrim(std::string& s)
-    {
-        s.erase(std::find_if(s.rbegin(), s.rend(),
-            std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-        return s;
-    }
-
-    /////////////////////////////////////////////////////////////////////////////
-    // Trim from both ends
-    /////////////////////////////////////////////////////////////////////////////
-    static inline std::string &trim(std::string& s)
-    {
-        return ltrim(rtrim(s));
-    }
-
-    static std::string BytesToHex(unsigned char* pBytes, int count);
-
-    static std::string BytesToHex(unsigned char* pBytes, int count, char separator);
-
-    /**
-     * Convert std::string to byte array.
-     *
-     * @param value
-     *            Hex std::string.
-     * @param buffer
-     *            byte array.
-     * @return Occurred error.
-     */
-    static void HexToBytes(std::string value, CGXByteBuffer& buffer);
     
     static void LNToBytes(std::string ln, CGXByteBuffer& buffer);
-
-    static void Write(char* fileName, char* pData, int len);
-
-    static void Write(std::string fileName, std::string data);
-
-    static bool GetBits(unsigned char& tmp, unsigned char BitMask);
-
-    static inline bool StringCompare(const char* c1, const char* c2);
-
-    /**
-    * Get data type in bytes.
-    *
-    * @param type
-    *            Data type.
-    * @return Size of data type in bytes.
-    */
-    static int GetDataTypeSize(DLMS_DATA_TYPE type);
 
 };
 
@@ -292,5 +209,5 @@ struct tabFunc {
     T execute_func;
 };
 
-int8_t spodesSizeof(DLMS_DATA_TYPE& type);
+int8_t spodesSizeof(DLMS_DATA_TYPE type);
 #endif //GXHELPERS_H

@@ -49,7 +49,7 @@ private:
     */
     DLMS_COMMAND m_Command;
 
-	uint8_t command_type;
+	uint8_t m_Command_type;
 
     /**
      * Targets.
@@ -70,15 +70,47 @@ public:
      * @param command
      * @param data
      */
-    CGXDLMSLongTransaction(CGXDLMSValueEventCollection& targets,
-                           DLMS_COMMAND command, DLMS_GET_COMMAND_TYPE com_type, CGXByteBuffer& data)
+	CGXDLMSLongTransaction()
+	{
+		m_Targets.clear();
+		m_Command = DLMS_COMMAND_NONE;
+		m_Command_type = 0;
+		m_Data.Clear();
+	}
+
+	void ClearEventTo(CGXDLMSValueEventCollection::iterator endEvent) {
+		for (CGXDLMSValueEventCollection::iterator it = m_Targets.begin(); it != endEvent; ++it) {
+			delete *it;
+		}
+		m_Targets.erase(m_Targets.begin(), endEvent);
+	}
+
+    void SetLongTransactionList(CGXDLMSValueEventCollection& targets,
+                           DLMS_COMMAND command, uint8_t com_type, CGXByteBuffer& data)
     {
         m_Targets.insert(m_Targets.end(), targets.begin(), targets.end());
         targets.clear();
         m_Command = command;
-		command_type = com_type;
+		m_Command_type = com_type;
         m_Data.Set(&data, data.GetPosition());
     }
+
+	void SetLongTransactionEvent(CGXDLMSValueEventArg* event,
+		DLMS_COMMAND command, uint8_t com_type, CGXByteBuffer& data)
+	{
+		m_Targets.push_back(event);
+		m_Command = command;
+		m_Command_type = com_type;
+		m_Data.Set(&data, data.GetPosition());
+	}
+
+	void SetLongTransactionEvent(CGXDLMSValueEventArg* event,
+		DLMS_COMMAND command, uint8_t com_type)
+	{
+		m_Targets.push_back(event);
+		m_Command = command;
+		m_Command_type = com_type;
+	}
 
     /**
      * @return Executed command.
@@ -88,9 +120,17 @@ public:
         return m_Command;
     }
 
-	DLMS_GET_COMMAND_TYPE GetCommandType()
+	void SetCommand(DLMS_COMMAND command) {
+		m_Command = command;
+	}
+
+	uint8_t GetCommandType()
 	{
-		return (DLMS_GET_COMMAND_TYPE)command_type;
+		return m_Command_type;
+	}
+
+	void SetCommandType(uint8_t command_type) {
+		m_Command_type = command_type;
 	}
 
     /**
@@ -118,5 +158,20 @@ public:
         m_Data.Clear();
         m_Data.Set(&value, value.GetPosition());
     }
+
+	void SetLongTransactionEvent(CGXDLMSValueEventArg* event) {
+		m_Targets.push_back(event);
+	}
+
+	void Clear() {
+		for (std::vector<CGXDLMSValueEventArg*>::iterator it = m_Targets.begin(); it != m_Targets.end(); ++it)
+		{
+			delete *it;
+		}
+		m_Targets.clear();
+		m_Data.Clear();
+		m_Command_type = 0;
+		m_Command = DLMS_COMMAND_NONE;
+	}
 };
 #endif //GXDLMSLONGTRANSACTION_H

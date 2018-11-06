@@ -35,13 +35,12 @@
 #include "../include/GXSecure.h"
 #include <stdlib.h> //rand
 
-int CGXSecure::GenerateChallenge(DLMS_AUTHENTICATION authentication, CGXByteBuffer& challenge)
+int CGXSecure::GenerateChallenge(CGXByteBuffer& challenge)
 {
     // Random challenge is 8 to 64 bytes.
     // Texas Instruments accepts only 16 byte long challenge.
     // For this reason challenge size is 16 bytes at the moment.
     int len = 16;
-    //int len = rand() % 58 + 8;
     unsigned char val;
     for (int pos = 0; pos != len; ++pos)
     {

@@ -42,9 +42,8 @@
 #include "GXDLMSSettings.h"
 
 const unsigned char LOGICAL_NAME_OBJECT_ID[7] = {0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x01};
-const unsigned char SHORT_NAME_OBJECT_ID[7] = {0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x02};
 const unsigned char LOGICAL_NAME_OBJECT_ID_WITH_CIPHERING[7] = {0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x03};
-const unsigned char SHORT_NAME_OBJECT_ID_WITH_CIPHERING[7] = {0x60, 0x85, 0x74, 0x05, 0x08, 0x01, 0x04};
+
 
 /////////////////////////////////////////////////////////////////////////////
 // The services to access the attributes and methods of COSEM objects are
@@ -67,30 +66,20 @@ private:
 public:
 
     /**
-     * Generates Aarq.
-     */
-    static int GenerateAarq(
-        CGXDLMSSettings& settings,
-        CGXCipher* cipher,
-        CGXByteBuffer& data);
-
-    /**
      * Parse APDU.
      */
     static int ParsePDU(CGXDLMSSettings& settings,
-                        CGXCipher* cipher,
                         CGXByteBuffer& buff,
                         DLMS_SOURCE_DIAGNOSTIC& diagnostic);
 
     /**
      * Server generates AARE message.
      */
-    static int GenerateAARE(
+    static void GenerateAARE(
         CGXDLMSSettings& settings,
         CGXByteBuffer& data,
         DLMS_ASSOCIATION_RESULT result,
-        DLMS_SOURCE_DIAGNOSTIC diagnostic,
-        CGXCipher* cipher);
+        DLMS_SOURCE_DIAGNOSTIC diagnostic);
 };
 
 #endif //GXAPDU_H

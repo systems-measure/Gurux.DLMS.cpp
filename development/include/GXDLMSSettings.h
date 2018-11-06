@@ -88,9 +88,6 @@ class CGXDLMSSettings
     // Service class.
     DLMS_SERVICE_CLASS m_ServiceClass;
 
-    // Interface type.
-    DLMS_INTERFACE_TYPE m_InterfaceType;
-
     // User authentication.
     DLMS_AUTHENTICATION m_Authentication;
 
@@ -138,11 +135,6 @@ class CGXDLMSSettings
 	// User password.
 	CGXByteBuffer m_Password;
 
-	/**
-	* Key Encrypting Key, also known as Master key.
-	*/
-	CGXByteBuffer m_Kek;
-
 	// Client to server challenge.
 	CGXByteBuffer m_CtoSChallenge;
 
@@ -153,11 +145,6 @@ class CGXDLMSSettings
 
 	// List of server or client objects.
 	CGXDLMSObjectCollection* m_Objects;
-
-	/**
-	* Cipher interface that is used to cipher PDU.
-	*/
-	CGXCipher* m_Cipher;
     
 public:
     // Constructor.
@@ -228,12 +215,6 @@ public:
     // Information from the frame size that server can handle.
     CGXDLMSLimits& GetLimits();
 
-    // Used interface.
-    DLMS_INTERFACE_TYPE GetInterfaceType();
-
-    // Used interface.
-    void SetInterfaceType(DLMS_INTERFACE_TYPE value);
-
     // Gets client address.
     unsigned long GetClientAddress();
 
@@ -296,27 +277,11 @@ public:
     // Collection of the objects.
     CGXDLMSObjectCollection*& GetObjects();
 
-    // Get Is custom challenges used.
-    bool IsCustomChallenges();
-
-    // Set is custom challenges used.
-    void SetUseCustomChallenge(bool value);
-
     //Get is connection made for the server.
     bool IsConnected();
 
     //Set is connection made for the server.
     void SetConnected(bool value);
-
-    /**
-    * Cipher interface that is used to cipher PDU.
-    */
-    CGXCipher* GetCipher();
-
-    /**
-    * Cipher interface that is used to cipher PDU.
-    */
-    void SetCipher(CGXCipher* value);
 
     /**
      * @return Source system title.
@@ -362,11 +327,15 @@ public:
      */
     void SetIndex(unsigned short value);
 
+	void IncreaseIndex();
+
     /**
     * Server will tell what functionality is available. Client will know what functionality server offers.
     * @return Available functionality.
     */
     DLMS_CONFORMANCE GetNegotiatedConformance();
+
+	void GetNegotiatedConformance(CGXByteBuffer& bb);
 
     /**
     * Server will tell what functionality is available. Client will know what functionality server offers from this value.

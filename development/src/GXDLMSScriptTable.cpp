@@ -63,71 +63,20 @@ int CGXDLMSScriptTable::GetMethodCount()
     return 1;
 }
 
+const DLMS_DATA_TYPE ST_TypeArr[] = { DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_ARRAY };
+
 int CGXDLMSScriptTable::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
-    if (index == 1)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-        return DLMS_ERROR_CODE_OK;
-    }
-    //Scripts
-    if (index == 2)
-    {
-        type = DLMS_DATA_TYPE_ARRAY;
-        return DLMS_ERROR_CODE_OK;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
+	if (index >= 1 && index <= 2) {
+		type = ST_TypeArr[index];
+		return DLMS_ERROR_CODE_OK;
+	}
+	return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 DLMS_DATA_TYPE CGXDLMSScriptTable::GetDataType(signed char index) {
-	if (index == 1)
-	{
-		return  DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 2)
-	{
-		return DLMS_DATA_TYPE_ARRAY;
+	if (index >= 1 && index <= 2) {
+		return ST_TypeArr[index];
 	}
 	return DLMS_DATA_TYPE_NONE;
-}
-
-// Returns value of given attribute.
-int CGXDLMSScriptTable::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-        int ret;
-		CGXByteBuffer data;
-        if ((ret = GetLogicalName(this, data)) != 0)
-        {
-            return ret;
-        }
-        e.SetValue(data);
-		e.SetHandled(true);
-        return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 2)
-    {
-        
-        return DLMS_ERROR_CODE_OK;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
-}
-
-// Set value of given attribute.
-int CGXDLMSScriptTable::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-        return SetLogicalName(this, e.GetCAValue());
-    }
-    else if (e.GetIndex() == 2)
-    {
-        
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
 }

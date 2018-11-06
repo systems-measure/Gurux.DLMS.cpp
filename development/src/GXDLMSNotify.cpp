@@ -36,7 +36,6 @@
 
 void CGXDLMSNotify::SetCipher(CGXCipher* value)
 {
-    m_Settings.SetCipher(value);
 }
 
 CGXDLMSSettings& CGXDLMSNotify::GetSettings()
@@ -52,7 +51,6 @@ CGXDLMSNotify::CGXDLMSNotify(/*bool useLogicalNameReferencing,*/
     //m_Settings.SetUseLogicalNameReferencing(useLogicalNameReferencing);
     m_Settings.SetClientAddress(clientAddress);
     m_Settings.SetServerAddress(serverAddress);
-    m_Settings.SetInterfaceType(interfaceType);
 }
 
 CGXDLMSObjectCollection*& CGXDLMSNotify::GetObjects()

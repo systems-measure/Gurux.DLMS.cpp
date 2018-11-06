@@ -56,11 +56,5 @@ class CGXDLMSSpecialDaysTable : public CGXDLMSObject
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 	DLMS_DATA_TYPE GetDataType(signed char index) override;
-
-    // Returns value of given attribute.
-    int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-
-    // Set value of given attribute.
-    int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
 #endif //GXDLMSSPECIALDAYSTABLE_H

@@ -94,7 +94,7 @@ public:
     // Skip selected date time fields.
     DATETIME_SKIPS GetSkip();
     void SetSkip(DATETIME_SKIPS value);
-    std::string ToString();
+    //std::string ToString();
 
     //Get currect time.
     static CGXDateTime Now();

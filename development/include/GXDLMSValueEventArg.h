@@ -40,87 +40,41 @@
 #include "GXDLMSVariant.h"
 
 class CGXDLMSObject;
-class CGXDLMSServer;
-class CGXDLMSSettings;
-class CGXDLMSAssociationLogicalName;
 
 class CGXDLMSValueEventArg
 {
-    friend class CGXDLMSServer;
-    friend class CGXDLMSProfileGeneric;
-    friend class CGXDLMSAssociationLogicalName;
-
 private:
 
 	CArtVariant c_Value;
 
 	CArtVariant m_Parameters;
 
-	signed char event_param[11];//0-5 target_name, 6-m_Index, 7-m_Selector, 8-m_Error, 9-m_SkipMaxPduSize, 10 - m_Handled
+	signed char event_param[10];//0-5 target_name, 6-m_Index, 7-m_Selector, 8-m_Error, 9- m_Handled
 
-	unsigned short row_param[3];//0-m_RowToPdu, 1-m_RowBeginIndex , 2-m_RowEndIndex
+	unsigned short m_RowEndIndex;//0-m_RowToPdu, 1-m_RowBeginIndex , 2-m_RowEndIndex
     
-    CGXDLMSSettings* m_Settings;
     /**
     * DLMS server.
     */
-    CGXDLMSServer* m_Server;
+    void* m_Server;
 	/**
 	* Target DLMS object
 	*/
 	CGXDLMSObject* m_Target;
 
     void Init(
-        CGXDLMSServer* server,
         CGXDLMSObject* target,
 		unsigned char * target_name,
-        int index,
-        int selector);
+		signed char index,
+		unsigned char selector);
 
-    /**
-    * Constructor.
-    *
-    * @param target
-    *            Event target.
-    * @param index
-    *            Event index.
-    */
-    CGXDLMSValueEventArg(
-        CGXDLMSServer* server,
-        CGXDLMSObject* target,
-        int index);
-
-    /**
-    * Constructor.
-    *
-    * @param target
-    *            Event target.
-    * @param index
-    *            Event index.
-    * @param selector
-    *            Optional read event selector.
-    * @param parameters
-    *            Optional parameters.
-    */
-    CGXDLMSValueEventArg(
-        CGXDLMSServer* server,
-        CGXDLMSObject* target,
-        int index,
-        int selector,
-        CArtVariant& parameters);
-
-	CGXDLMSValueEventArg(
-		CGXDLMSServer* server,
-		unsigned char* target_name,
-		int index,
-		int selector,
-		CArtVariant& parameters);
-
-    /**
-    * DLMS server.
-    */
-    CGXDLMSServer* GetServer();
 public:
+	/**
+	* DLMS server.
+	*/
+	void* GetServer();
+
+	void SetServer(void* serv_instance);
 
 	CArtVariant& GetCAValue();
     /**
@@ -140,9 +94,9 @@ public:
     /**
     * @return Attribute index of queried object.
     */
-    signed char& GetIndex();
+    signed char GetIndex();
 
-    void SetIndex(unsigned char value);
+    void SetIndex(signed char value);
 
 	/**
 	* @param value
@@ -155,13 +109,13 @@ public:
     /**
     * @return Optional selector.
     */
-	signed char& GetSelector();
+	unsigned char GetSelector();
 
     /**
     * @param value
     *           Selector.
     */
-    void SetSelector(unsigned char& value);
+    void SetSelector(unsigned char value);
 
     /**
     * @return Optional parameters.
@@ -185,7 +139,7 @@ public:
     */
     CGXDLMSValueEventArg(
         CGXDLMSObject* target,
-        int index);
+		signed char index);
 
     /**
     * Constructor.
@@ -201,8 +155,8 @@ public:
     */
     CGXDLMSValueEventArg(
         CGXDLMSObject* target,
-        int index,
-        int selector,
+		signed char index,
+		unsigned char selector,
         CArtVariant& parameters);
 
 	~CGXDLMSValueEventArg();
@@ -217,17 +171,6 @@ public:
      */
     void SetError(DLMS_ERROR_CODE value);
 
-    /**
-    * @return Is value max PDU size skipped.
-    */
-    bool GetSkipMaxPduSize();
-
-    /**
-     * @param value
-     *            Is value max PDU size skipped.
-     */
-    void SetSkipMaxPduSize(bool value);
-
 	/**
 	* @return State of handling object attribute.
 	*/
@@ -240,41 +183,9 @@ public:
 	void SetHandled(bool value);
 
     /**
-    * @return How many rows are read to one PDU.
-    */
-    unsigned short GetRowToPdu();
-
-    /**
-    * @param value
-    *            How many rows are read to one PDU.
-    */
-    void SetRowToPdu(unsigned short value);
-
-    /**
     * @return Rows end index.
     */
     unsigned short& GetRowEndIndex();
 
-    /**
-    * @param value
-    *            Rows end index.
-    */
-    void SetRowEndIndex(unsigned int value);
-
-    /**
-    * @return Rows begin index.
-    */
-    unsigned int GetRowBeginIndex();
-
-    /**
-    * @param value
-    *            Rows begin index.
-    */
-    void SetRowBeginIndex(unsigned int value);
-
-    /**
-    * DLMS settings.
-    */
-    CGXDLMSSettings* GetSettings();
 };
 #endif //GXDLMSVALUEEVENTARGS_H

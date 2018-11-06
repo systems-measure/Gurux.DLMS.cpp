@@ -34,12 +34,16 @@
 
 #include "../include/GXDLMSLimits.h"
 
+const unsigned char DEFAULT_MAX_INFO_RX = 128;
+const unsigned char DEFAULT_MAX_INFO_TX = 128;
+const unsigned char DEFAULT_WINDOWS_SIZE_RX = 1;
+const unsigned char DEFAULT_WINDOWS_SIZE_TX = 1;
+
+const unsigned char CGXDLMSLimits::defLimits[4] = { DEFAULT_MAX_INFO_RX, DEFAULT_MAX_INFO_TX, DEFAULT_WINDOWS_SIZE_RX, DEFAULT_WINDOWS_SIZE_TX };
+
 CGXDLMSLimits::CGXDLMSLimits()
 {
-    m_MaxInfoTX = DEFAULT_MAX_INFO_TX;
-    m_MaxInfoRX = DEFAULT_MAX_INFO_RX;
-    m_WindowSizeTX = DEFAULT_WINDOWS_SIZE_TX;
-    m_WindowSizeRX = DEFAULT_WINDOWS_SIZE_RX;
+	SetDefaultLimits();
 }
 
 unsigned short CGXDLMSLimits::GetMaxInfoTX()
@@ -47,7 +51,7 @@ unsigned short CGXDLMSLimits::GetMaxInfoTX()
     return m_MaxInfoTX;
 }
 
-void CGXDLMSLimits::SetMaxInfoTX(unsigned int value)
+void CGXDLMSLimits::SetMaxInfoTX(unsigned short value)
 {
     m_MaxInfoTX = value;
 }
@@ -62,7 +66,7 @@ unsigned short CGXDLMSLimits::GetMaxInfoRX()
     return m_MaxInfoRX;
 }
 
-void CGXDLMSLimits::SetMaxInfoRX(unsigned int value)
+void CGXDLMSLimits::SetMaxInfoRX(unsigned short value)
 {
     m_MaxInfoRX = value;
 }
@@ -77,7 +81,7 @@ unsigned char CGXDLMSLimits::GetWindowSizeTX()
     return m_WindowSizeRX;
 }
 
-void CGXDLMSLimits::SetWindowSizeTX(unsigned int value)
+void CGXDLMSLimits::SetWindowSizeTX(unsigned char value)
 {
     m_WindowSizeRX = value;
 }
@@ -92,7 +96,7 @@ unsigned char CGXDLMSLimits::GetWindowSizeRX()
     return m_WindowSizeTX;
 }
 
-void CGXDLMSLimits::SetWindowSizeRX(unsigned int value)
+void CGXDLMSLimits::SetWindowSizeRX(unsigned char value)
 {
     m_WindowSizeTX = value;
 }
@@ -101,3 +105,12 @@ void CGXDLMSLimits::DefaultWindowSizeRX()
 {
 	m_WindowSizeTX = DEFAULT_WINDOWS_SIZE_RX;
 }
+
+void CGXDLMSLimits::SetDefaultLimits() {
+	m_MaxInfoTX = DEFAULT_MAX_INFO_TX;
+	m_MaxInfoRX = DEFAULT_MAX_INFO_RX;
+	m_WindowSizeTX = DEFAULT_WINDOWS_SIZE_TX;
+	m_WindowSizeRX = DEFAULT_WINDOWS_SIZE_RX;
+}
+
+

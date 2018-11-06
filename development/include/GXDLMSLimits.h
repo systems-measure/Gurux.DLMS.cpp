@@ -42,10 +42,7 @@ class CGXDLMSLimits
     unsigned short m_MaxInfoTX, m_MaxInfoRX;
 	unsigned char m_WindowSizeRX, m_WindowSizeTX;
 public:
-    static const unsigned char DEFAULT_MAX_INFO_RX = 128;
-    static const unsigned char DEFAULT_MAX_INFO_TX = 128;
-    static const int  DEFAULT_WINDOWS_SIZE_RX = 1;
-    static const int DEFAULT_WINDOWS_SIZE_TX = 1;
+	static const unsigned char defLimits[4];
     //Constructor.
     CGXDLMSLimits();
 
@@ -53,7 +50,7 @@ public:
     // DefaultValue is 128.
 	unsigned short GetMaxInfoTX();
 
-    void SetMaxInfoTX(unsigned int value);
+    void SetMaxInfoTX(unsigned short value);
 
 	void DefaultInfoTX();
 
@@ -61,7 +58,7 @@ public:
     /// DefaultValue is 128.
 	unsigned short GetMaxInfoRX();
 
-    void SetMaxInfoRX(unsigned int value);
+    void SetMaxInfoRX(unsigned short value);
 
 	void DefaultInfoRX();
 
@@ -70,7 +67,7 @@ public:
     /// DefaultValue is 1.
 	unsigned char GetWindowSizeTX();
 
-    void SetWindowSizeTX(unsigned int value);
+    void SetWindowSizeTX(unsigned char value);
 
 	void DefaultWindowSizeTX();
 
@@ -78,8 +75,10 @@ public:
     /// DefaultValue is 1.
 	unsigned char GetWindowSizeRX();
 
-    void SetWindowSizeRX(unsigned int value);
+    void SetWindowSizeRX(unsigned char value);
 
 	void DefaultWindowSizeRX();
+
+	void SetDefaultLimits();
 };
 #endif //GXDLMSLIMITS_H

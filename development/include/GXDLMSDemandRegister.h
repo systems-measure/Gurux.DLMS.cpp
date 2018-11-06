@@ -39,7 +39,6 @@
 
 class CGXDLMSDemandRegister : public CGXDLMSObject
 {
-
 public:
     /**
      Constructor.
@@ -53,30 +52,15 @@ public:
     */
     CGXDLMSDemandRegister(const char* ln);
 
-       /*
-     * Reset value.
-     */
-    void Reset();
-
-    /*
-     * Next period.
-     */
-    void NextPeriod();
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
     // Returns amount of methods.
     int GetMethodCount();
 
-    int Invoke(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
-    int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-
-    int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
 
 #endif //GXDLMSDEMANDREGISTER_H

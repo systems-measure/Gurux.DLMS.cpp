@@ -36,7 +36,6 @@
 #define GXSECURE_H
 
 #include "../include/enums.h"
-#include "../include/GXBytebuffer.h"
 #include "../include/GXDLMSSettings.h"
 
 class CGXSecure
@@ -44,14 +43,10 @@ class CGXSecure
 public:
     /**
     * Generates challenge.
-    *
-    * @param authentication
-    *            Used authentication.
+
     * @return Generated challenge.
     */
-    static int GenerateChallenge(
-        DLMS_AUTHENTICATION authentication,
-        CGXByteBuffer& challenge);
+    static int GenerateChallenge(CGXByteBuffer& challenge);
 
     /**
     * Chipher text.

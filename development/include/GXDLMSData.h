@@ -39,7 +39,6 @@
 
 class CGXDLMSData : public CGXDLMSObject
 {
-    //CArtVariant m_Value;
 public:
     //Constructor.
     CGXDLMSData();
@@ -50,12 +49,6 @@ public:
     //LN Constructor.
     CGXDLMSData(const char* ln, CArtVariant value);
 
-    // Get value of COSEM Data object.
-    //CArtVariant GetValue();
-
-    // Set value of COSEM Data object.
-    //void SetValue(CArtVariant& value);
-
     // Returns amount of attributes.
     int GetAttributeCount();
 
@@ -63,13 +56,7 @@ public:
     int GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
-
 	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
-    // Returns value of given attribute.
-    int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-
-    // Set value of given attribute.
-    int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
 #endif //GXDLMSDATA_H

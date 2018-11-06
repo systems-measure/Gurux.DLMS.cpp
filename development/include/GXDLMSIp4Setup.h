@@ -36,54 +36,15 @@
 #define GXDLMSIP4SETUP_H
 
 #include "GXDLMSObject.h"
-//#include "GXDLMSIp4SetupIpOption.h"
 
 class CGXDLMSIp4Setup : public CGXDLMSObject
 {
-    //std::string m_DataLinkLayerReference;
-    //std::string m_IPAddress;
-    //std::vector<unsigned long> m_MulticastIPAddress;
-    //std::vector<CGXDLMSIp4SetupIpOption> m_IPOptions;
-    //unsigned long m_SubnetMask;
-    //unsigned long m_GatewayIPAddress;
-    //bool m_UseDHCP;
-    //unsigned long m_PrimaryDNSAddress;
-    //unsigned long m_SecondaryDNSAddress;
-
-    //CGXDLMSVariant m_Value;
 public:
     //Constructor.
     CGXDLMSIp4Setup();
 
     //LN Constructor.
     CGXDLMSIp4Setup(const char* ln);
-
-   /* std::string& GetDataLinkLayerReference();
-    void SetDataLinkLayerReference(std::string value);
-
-    std::string& GetIPAddress();
-    void SetIPAddress(std::string& value);
-
-    std::vector<unsigned long>& GetMulticastIPAddress();
-
-    std::vector<CGXDLMSIp4SetupIpOption>& GetIPOptions();
-
-    void SetIPOptions(std::vector<CGXDLMSIp4SetupIpOption>& value);
-
-    unsigned long GetSubnetMask();
-    void SetSubnetMask(unsigned long value);
-
-    unsigned long GetGatewayIPAddress();
-    void SetGatewayIPAddress(unsigned long value);
-
-    bool GetUseDHCP();
-    void SetUseDHCP(bool value);
-
-    unsigned long GetPrimaryDNSAddress();
-    void SetPrimaryDNSAddress(unsigned long value);
-
-    unsigned long GetSecondaryDNSAddress();
-    void SetSecondaryDNSAddress(unsigned long value);*/
 
     // Returns amount of attributes.
     int GetAttributeCount();
@@ -94,10 +55,5 @@ public:
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 	DLMS_DATA_TYPE GetDataType(signed char index) override;
 
-    // Returns value of given attribute.
-    int GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
-
-    // Set value of given attribute.
-    int SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e);
 };
 #endif //GXDLMSIP4SETUP_H

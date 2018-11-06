@@ -295,10 +295,10 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(uint8_t* ln)
 	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
 		if (memcmp(ln, objects_ln[i], 6) == 0)
 		{
-			char ln[24];
-			GXHelpers::GetLogicalName(objects_ln[i], ln);
+			char ln_str[24];
+			GXHelpers::GetLogicalName(objects_ln[i], ln_str);
 			if (type_callback != nullptr) {
-				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln, idx_constructed_obj);
+				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln_str, idx_constructed_obj);
 				CreateObject(o_type);
 				if (constructed_obj != nullptr) {
 					memcpy(constructed_obj->m_LN, objects_ln[i], 6);

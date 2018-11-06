@@ -32,20 +32,13 @@
 // Full text may be retrieved at http://www.gnu.org/licenses/gpl-2.0.txt
 //---------------------------------------------------------------------------
 
-#include "../include/GXDLMSVariant.h"
 #include "../include/GXDLMSClock.h"
-
-void CGXDLMSClock::Init()
-{
-
-}
 
 /**
  Constructor.
 */
 CGXDLMSClock::CGXDLMSClock() : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, "0.0.1.0.0.255")
 {
-    Init();
 }
 
 /**
@@ -54,7 +47,6 @@ Constructor.
 */
 CGXDLMSClock::CGXDLMSClock(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOCK, ln)
 {
-    Init();
 }
 
 // Returns amount of attributes.
@@ -69,194 +61,22 @@ int CGXDLMSClock::GetMethodCount()
     return 6;
 }
 
+const DLMS_DATA_TYPE Clk_TypeArr[] = { DLMS_DATA_TYPE_NONE, DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_INT16, DLMS_DATA_TYPE_UINT8,
+                                      DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_OCTET_STRING, DLMS_DATA_TYPE_INT8, DLMS_DATA_TYPE_BOOLEAN, DLMS_DATA_TYPE_ENUM };
+
 int CGXDLMSClock::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 {
-    if (index == 1)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-    }
-    else if (index == 2)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-    }
-    else if (index == 3)
-    {
-        type = DLMS_DATA_TYPE_INT16;
-    }
-    else if (index == 4)
-    {
-        type = DLMS_DATA_TYPE_UINT8;
-    }
-    else if (index == 5)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-    }
-    else if (index == 6)
-    {
-        type = DLMS_DATA_TYPE_OCTET_STRING;
-    }
-    else if (index == 7)
-    {
-        type = DLMS_DATA_TYPE_INT8;
-    }
-    else if (index == 8)
-    {
-        type = DLMS_DATA_TYPE_BOOLEAN;
-    }
-    else if (index == 9)
-    {
-        type = DLMS_DATA_TYPE_ENUM;
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
+	if (index >= 1 && index <= 9) {
+		type = Clk_TypeArr[index];
+		return DLMS_ERROR_CODE_OK;
+	}
+	return DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 DLMS_DATA_TYPE CGXDLMSClock::GetDataType(signed char index) {
-	if (index == 1)
-	{
-		return  DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 2)
-	{
-		return DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 3)
-	{
-		return DLMS_DATA_TYPE_INT16;
-	}
-	if (index == 4)
-	{
-		return DLMS_DATA_TYPE_UINT8;
-	}
-	if (index == 5)
-	{
-		return DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 6)
-	{
-		return DLMS_DATA_TYPE_OCTET_STRING;
-	}
-	if (index == 7)
-	{
-		return DLMS_DATA_TYPE_INT8;
-	}
-	if (index == 8)
-	{
-		return DLMS_DATA_TYPE_BOOLEAN;
-	}
-	if (index == 9)
-	{
-		return DLMS_DATA_TYPE_ENUM;
+	if (index >= 1 && index <= 9) {
+		return Clk_TypeArr[index];
 	}
 	return DLMS_DATA_TYPE_NONE;
 }
-/*
- * Returns value of given attribute.
- */
-int CGXDLMSClock::GetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-		CGXByteBuffer data;
-		int ret;
-		if ((ret = GetLogicalName(this, data)) != 0)
-		{
-			return ret;
-		}
-		e.SetValue(data);
-		e.SetHandled(true);
-		return DLMS_ERROR_CODE_OK;
-    }
-    if (e.GetIndex() == 2)
-    {
-       
-        return 0;
-    }
-    if (e.GetIndex() == 3)
-    {
-       
-        return 0;
-    }
-    if (e.GetIndex() == 4)
-    {
-        
-        return 0;
-    }
-    if (e.GetIndex() == 5)
-    {
-       
-        return 0;
-    }
-    if (e.GetIndex() == 6)
-    {
-      
-        return 0;
-    }
-    if (e.GetIndex() == 7)
-    {
-       
-        return 0;
-    }
-    if (e.GetIndex() == 8)
-    {
-     
-        return 0;
-    }
-    if (e.GetIndex() == 9)
-    {
-       
-        return 0;
-    }
-    return DLMS_ERROR_CODE_INVALID_PARAMETER;
-}
 
-/*
- * Set value of given attribute.
- */
-int CGXDLMSClock::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventArg& e)
-{
-    if (e.GetIndex() == 1)
-    {
-        return SetLogicalName(this, e.GetCAValue());
-    }
-    else if (e.GetIndex() == 2)
-    {
-       
-    }
-    else if (e.GetIndex() == 3)
-    {
-       
-    }
-    else if (e.GetIndex() == 4)
-    {
-       
-    }
-    else if (e.GetIndex() == 5)
-    {
-        
-    }
-    else if (e.GetIndex() == 6)
-    {
-        
-    }
-    else if (e.GetIndex() == 7)
-    {
-        
-    }
-    else if (e.GetIndex() == 8)
-    {
-      
-    }
-    else if (e.GetIndex() == 9)
-    {
-       
-    }
-    else
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    return DLMS_ERROR_CODE_OK;
-}
