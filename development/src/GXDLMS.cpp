@@ -1645,26 +1645,27 @@ int CGXDLMS::HandleSetResponse(
             return ch;
         }
     }
-    else if (type == DLMS_SET_RESPONSE_TYPE_DATA_BLOCK || type == DLMS_SET_RESPONSE_TYPE_LAST_DATA_BLOCK)
-    {
+    else if (type == DLMS_SET_RESPONSE_TYPE_DATA_BLOCK){
         unsigned long  tmp;
-		if ((ret = data.GetData().GetUInt8(&ch)) != 0)
-		{
-			return ret;
-		}
         if ((ret = data.GetData().GetUInt32(&tmp)) != 0)
         {
             return ret;
-        }
+        }	
+    }
+	else if (type == DLMS_SET_RESPONSE_TYPE_LAST_DATA_BLOCK) {
+		unsigned long  tmp;
 		if ((ret = data.GetData().GetUInt8(&ch)) != 0)
 		{
 			return ret;
 		}
-		if (ch != 0) 
-		{
+		if (ch != 0) {
 			return ch;
 		}
-    }
+		if ((ret = data.GetData().GetUInt32(&tmp)) != 0)
+		{
+			return ret;
+		}
+	}
     else
     {
         //Invalid data type.
