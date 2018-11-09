@@ -61,6 +61,13 @@ enum GX_PS_STATUS
 	DLMS_PS_STATUS_UMTS		= 3,
 	DLMS_PS_STATUS_HSDPA	= 4,
 };
+typedef struct _GX_cell_info {
+    unsigned short cell_ID, location_ID;
+    unsigned char signal_quality, ber;
+
+    _GX_cell_info() { memset(this, 0, sizeof(*this)); }
+}GX_cell_info;
+
 class CGXDLMSGsmDiagnostic : public CGXDLMSObject
 {
 private:
@@ -68,6 +75,7 @@ private:
 	GX_STATUS			m_status;
 	GX_CS_ATTACHMENT	m_cs_attachment;
 	GX_PS_STATUS		m_ps_status;
+    GX_cell_info        m_cell_info;
 
 	void Init(void);
 public:
@@ -84,6 +92,7 @@ public:
 	GX_STATUS			GetStatus();
 	GX_CS_ATTACHMENT	GetCsAttachment();
 	GX_PS_STATUS		GetPsStatus();
+    const GX_cell_info& Get_cell_info() { return m_cell_info; }
     
 
     CGXDLMSQualityOfService& GetDefaultQualityOfService();

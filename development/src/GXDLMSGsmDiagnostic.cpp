@@ -259,6 +259,27 @@ int CGXDLMSGsmDiagnostic::SetValue(CGXDLMSSettings& settings, CGXDLMSValueEventA
 	{
 		m_ps_status = (GX_PS_STATUS)e.GetValue().uiVal;
 	}
+    /// 4.6.8 GSM diagnostic (class_id: 47, version: 0) [Attribute 6 cell_info](https://gyazo.com/f79705a612552818286a12c28109f6aa)
+    else if (e.GetIndex() == 6)
+    {
+        // -- Check type
+        if ( (e.GetValue().vt != DLMS_DATA_TYPE_STRUCTURE) ||
+             (e.GetValue().Arr.size() != 4) )
+            return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        // -- cell_ID
+        if(e.GetValue().Arr[0].vt != DLMS_DATA_TYPE_UINT16) return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        m_cell_info.cell_ID = e.GetValue().Arr[0].uiVal;
+        // -- location_ID
+        if(e.GetValue().Arr[1].vt != DLMS_DATA_TYPE_UINT16) return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        m_cell_info.location_ID = e.GetValue().Arr[1].uiVal;
+        // -- signal_quality
+        if(e.GetValue().Arr[2].vt != DLMS_DATA_TYPE_UINT8) return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        m_cell_info.signal_quality = e.GetValue().Arr[2].bVal;
+        // -- ber
+        if(e.GetValue().Arr[3].vt != DLMS_DATA_TYPE_UINT8) return DLMS_ERROR_CODE_INVALID_PARAMETER;
+        m_cell_info.ber = e.GetValue().Arr[3].bVal;
+    }
+    else if (e.GetIndex() <= 8) return DLMS_ERROR_CODE_NOT_IMPLEMENTED;
     else
     {
         return DLMS_ERROR_CODE_INVALID_PARAMETER;
