@@ -52,13 +52,13 @@ CGXDLMSSpecialDaysTable::~CGXDLMSSpecialDaysTable()
 }
 
 // Returns amount of attributes.
-int CGXDLMSSpecialDaysTable::GetAttributeCount()
+unsigned char CGXDLMSSpecialDaysTable::GetAttributeCount()
 {
     return 2;
 }
 
 // Returns amount of methods.
-int CGXDLMSSpecialDaysTable::GetMethodCount()
+unsigned char CGXDLMSSpecialDaysTable::GetMethodCount()
 {
     return 2;
 }

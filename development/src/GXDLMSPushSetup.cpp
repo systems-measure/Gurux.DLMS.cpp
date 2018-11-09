@@ -46,13 +46,13 @@ CGXDLMSPushSetup::CGXDLMSPushSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_T
 }
 
 // Returns amount of attributes.
-int CGXDLMSPushSetup::GetAttributeCount()
+unsigned char CGXDLMSPushSetup::GetAttributeCount()
 {
     return 7;
 }
 
 // Returns amount of methods.
-int CGXDLMSPushSetup::GetMethodCount()
+unsigned char CGXDLMSPushSetup::GetMethodCount()
 {
     return 1;
 }

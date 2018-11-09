@@ -50,13 +50,13 @@ CGXDLMSClock::CGXDLMSClock(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_CLOC
 }
 
 // Returns amount of attributes.
-int CGXDLMSClock::GetAttributeCount()
+unsigned char CGXDLMSClock::GetAttributeCount()
 {
     return 9;
 }
 
 // Returns amount of methods.
-int CGXDLMSClock::GetMethodCount()
+unsigned char CGXDLMSClock::GetMethodCount()
 {
     return 6;
 }

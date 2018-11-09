@@ -45,13 +45,13 @@ CGXDLMSGSMDiagnostic::CGXDLMSGSMDiagnostic(const char* ln) : CGXDLMSObject(DLMS_
 }
 
 // Returns amount of attributes.
-int CGXDLMSGSMDiagnostic::GetAttributeCount()
+unsigned char CGXDLMSGSMDiagnostic::GetAttributeCount()
 {
     return 8;
 }
 
 // Returns amount of methods.
-int CGXDLMSGSMDiagnostic::GetMethodCount()
+unsigned char CGXDLMSGSMDiagnostic::GetMethodCount()
 {
     return 0;
 }

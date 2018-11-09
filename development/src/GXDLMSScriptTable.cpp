@@ -52,13 +52,13 @@ CGXDLMSScriptTable::~CGXDLMSScriptTable()
 }
 
 // Returns amount of attributes.
-int CGXDLMSScriptTable::GetAttributeCount()
+unsigned char CGXDLMSScriptTable::GetAttributeCount()
 {
     return 2;
 }
 
 // Returns amount of methods.
-int CGXDLMSScriptTable::GetMethodCount()
+unsigned char CGXDLMSScriptTable::GetMethodCount()
 {
     return 1;
 }

@@ -419,10 +419,10 @@ void CGXDLMS::GetLNPdu( CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
 	}
 	// Add data that fits to one block.
 	// Add status if reply.
-	if (p.GetStatus() != 0 && p.GetCommand() == DLMS_COMMAND_GET_RESPONSE) {
+	if (p.GetStatus() != 0 && p.GetCommand() == DLMS_COMMAND_GET_RESPONSE)
 		reply.SetUInt8(1);
-	}
-	reply.SetUInt8(p.GetStatus());
+	if (p.GetCommand() != DLMS_COMMAND_GET_RESPONSE || p.GetRequestType() != DLMS_GET_COMMAND_TYPE_WITH_LIST)
+		reply.SetUInt8(p.GetStatus());
 	if (p.GetData() != NULL && p.GetData()->GetSize() != 0) {
 
 		len = p.GetData()->GetSize() - p.GetData()->GetPosition();

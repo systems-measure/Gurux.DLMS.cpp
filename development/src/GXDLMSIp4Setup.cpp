@@ -57,13 +57,13 @@ CGXDLMSIp4Setup::CGXDLMSIp4Setup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYP
 }
 
 // Returns amount of attributes.
-int CGXDLMSIp4Setup::GetAttributeCount()
+unsigned char CGXDLMSIp4Setup::GetAttributeCount()
 {
     return 10;
 }
 
 // Returns amount of methods.
-int CGXDLMSIp4Setup::GetMethodCount()
+unsigned char CGXDLMSIp4Setup::GetMethodCount()
 {
     return 3;
 }

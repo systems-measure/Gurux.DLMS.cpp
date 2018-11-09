@@ -50,13 +50,13 @@ CGXDLMSActivityCalendar::~CGXDLMSActivityCalendar()
 }
 
 // Returns amount of attributes.
-int CGXDLMSActivityCalendar::GetAttributeCount()
+unsigned char CGXDLMSActivityCalendar::GetAttributeCount()
 {
     return 10;
 }
 
 // Returns amount of methods.
-int CGXDLMSActivityCalendar::GetMethodCount()
+unsigned char CGXDLMSActivityCalendar::GetMethodCount()
 {
     return 1;
 }

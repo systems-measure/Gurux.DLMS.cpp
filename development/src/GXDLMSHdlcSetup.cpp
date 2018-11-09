@@ -47,13 +47,13 @@ CGXDLMSIecHdlcSetup::CGXDLMSIecHdlcSetup(const char* ln) : CGXDLMSObject(DLMS_OB
 }
 
 // Returns amount of attributes.
-int CGXDLMSIecHdlcSetup::GetAttributeCount()
+unsigned char CGXDLMSIecHdlcSetup::GetAttributeCount()
 {
     return 9;
 }
 
 // Returns amount of methods.
-int CGXDLMSIecHdlcSetup::GetMethodCount()
+unsigned char CGXDLMSIecHdlcSetup::GetMethodCount()
 {
     return 0;
 }

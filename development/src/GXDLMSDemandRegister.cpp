@@ -53,13 +53,13 @@ CGXDLMSDemandRegister::CGXDLMSDemandRegister(const char* ln) : CGXDLMSObject(DLM
 }
 
 // Returns amount of attributes.
-int CGXDLMSDemandRegister::GetAttributeCount()
+unsigned char CGXDLMSDemandRegister::GetAttributeCount()
 {
     return 9;
 }
 
 // Returns amount of methods.
-int CGXDLMSDemandRegister::GetMethodCount()
+unsigned char CGXDLMSDemandRegister::GetMethodCount()
 {
     return 2;
 }

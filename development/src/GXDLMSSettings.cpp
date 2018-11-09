@@ -129,7 +129,7 @@ bool CGXDLMSSettings::CheckFrame(unsigned char frame)
     // If U frame.
     if ((frame & 0x3) == 3)
     {
-		if (frame == DLMS_COMMAND_SNRM || frame == DLMS_COMMAND_UA) {
+		if (frame == DLMS_COMMAND_SNRM || frame == DLMS_COMMAND_UA || frame == DLMS_COMMAND_DISC) {
 			ResetFrameSequence();
 		}
         return true;

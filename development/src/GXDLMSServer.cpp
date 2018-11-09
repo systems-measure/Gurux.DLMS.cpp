@@ -141,6 +141,7 @@ void CGXDLMSServer::Reset(bool connected)
 		m_Info.Clear();
 		m_Settings.SetServerAddress(0);
 		m_Settings.SetClientAddress(0);
+		m_Settings.ResetFrameSequence();
 		m_LinkEstablished = false;
 	}
 
@@ -399,7 +400,7 @@ unsigned char FindEndOfValue(CGXByteBuffer& data) {
 	if (size_val == -2) {
 		return DLMS_ERROR_CODE_INVALID_PARAMETER;
 	}
-	if (size_val != -1) {
+	if (size_val != -1 && (data.GetPosition() + size_val <= data.GetSize())) {
 		data.SetPosition(data.GetPosition() + size_val);
 		return DLMS_ERROR_CODE_OK;
 	}
@@ -408,7 +409,8 @@ unsigned char FindEndOfValue(CGXByteBuffer& data) {
 		if (GXHelpers::GetObjectCount(data, size_arr) != 0) {
 			return DLMS_ERROR_CODE_OUTOFMEMORY;
 		}
-		if (ch != DLMS_DATA_TYPE_ARRAY && ch != DLMS_DATA_TYPE_STRUCTURE) {
+		if (ch != DLMS_DATA_TYPE_ARRAY && ch != DLMS_DATA_TYPE_STRUCTURE
+			&& (data.GetPosition() + size_arr <= data.GetSize())) {
 			data.SetPosition(data.GetPosition() + size_arr);
 			return DLMS_ERROR_CODE_OK;
 		}
@@ -682,9 +684,9 @@ void ProcessGetRequestWithList(CGXDLMSValueEventArg* arg, CGXDLMSLNParameters& p
 	}
 	else {
 		if (arg->GetCAValue().byteArr != NULL && arg->GetCAValue().size != 0) {
+			p.GetData()->SetUInt8(DLMS_ERROR_CODE_OK);
 			p.GetData()->Set(arg->GetCAValue().byteArr, arg->GetCAValue().size);
 			arg->GetCAValue().Clear();
-			p.GetData()->SetUInt8(DLMS_ERROR_CODE_OK);
 		}
 		else {
 			p.GetData()->SetUInt8(DLMS_ERROR_CODE_HARDWARE_FAULT);
@@ -850,21 +852,7 @@ void CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data, CGXDLMSLNParameters&
 		else {
 			arg->SetTarget(m_CurrentALN->GetObjectList().FindByLN((uint8_t*)arg->GetTargetName()));
 			PreRead(arg);
-			p.GetData()->SetUInt8(arg->GetError());
-			if (arg->GetError() != DLMS_ERROR_CODE_OK) {
-				arg->SetHandled(true);
-			}
-			else {
-				if (arg->GetCAValue().byteArr != nullptr && arg->GetCAValue().size != 0) {
-					// If byte array is added do not add type.
-					p.GetData()->Set(arg->GetCAValue().byteArr, arg->GetCAValue().size);
-					arg->GetCAValue().Clear();
-				}
-				else {
-					p.GetData()->SetUInt8(DLMS_ERROR_CODE_HARDWARE_FAULT);
-					arg->SetHandled(true);
-				}
-			}
+			ProcessGetRequestWithList(arg, p);
 
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
 		}
@@ -1106,11 +1094,6 @@ int CGXDLMSServer::HandleCommand(
 }
 
 int CGXDLMSServer::HandleReadyRead(DLMS_COMMAND& cmd, unsigned char& frame) {
-
-	if (!m_LinkEstablished) {
-		frame = DLMS_COMMAND_REJECTED;
-		return 0;
-	}
 
 	if (IsLongTransaction() || m_ReplyData.GetSize() != 0) {
 		frame = m_Settings.GetNextSend(0);

@@ -168,6 +168,10 @@ unsigned short& CGXDLMSValueEventArg::GetRowEndIndex() {
     return m_RowEndIndex;
 }
 
+void CGXDLMSValueEventArg::SetRowEndIndex(unsigned short val) {
+	m_RowEndIndex = val;
+}
+
 void* CGXDLMSValueEventArg::GetServer()
 {
     return m_Server;

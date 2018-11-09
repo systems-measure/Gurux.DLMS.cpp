@@ -52,13 +52,13 @@ CGXDLMSData::CGXDLMSData(const char* ln, CArtVariant value) : CGXDLMSObject(DLMS
 }
 
 // Returns amount of attributes.
-int CGXDLMSData::GetAttributeCount()
+unsigned char CGXDLMSData::GetAttributeCount()
 {
     return 2;
 }
 
 // Returns amount of methods.
-int CGXDLMSData::GetMethodCount()
+unsigned char CGXDLMSData::GetMethodCount()
 {
     return 0;
 }

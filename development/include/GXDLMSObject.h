@@ -52,7 +52,7 @@ class CGXDLMSObject
     unsigned char m_Version;
 	TypeAttrCallback get_data_type;
 protected:
-    unsigned char m_LN[6];
+	unsigned char m_LN[6];
 	unsigned char constr_idx;
 public:
 
@@ -90,14 +90,14 @@ public:
 	virtual DLMS_DATA_TYPE GetDataType(signed char index);
 
     // Returns amount of attributes.
-    virtual int GetAttributeCount()
+    virtual unsigned char GetAttributeCount()
     {
         assert(0);
         return 1;
     }
 
 	// Returns amount of methods.
-    virtual int GetMethodCount()
+    virtual unsigned char GetMethodCount()
     {
         assert(0);
         return 0;

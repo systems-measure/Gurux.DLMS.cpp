@@ -50,10 +50,10 @@ public:
     CGXDLMSData(const char* ln, CArtVariant value);
 
     // Returns amount of attributes.
-    int GetAttributeCount();
+	unsigned char GetAttributeCount();
 
     // Returns amount of methods.
-    int GetMethodCount();
+	unsigned char GetMethodCount();
 
     int GetDataType(signed char index, DLMS_DATA_TYPE& type);
 	DLMS_DATA_TYPE GetDataType(signed char index) override;

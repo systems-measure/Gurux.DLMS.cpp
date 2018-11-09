@@ -51,13 +51,13 @@ CGXDLMSMacAddressSetup::CGXDLMSMacAddressSetup(const char* ln) : CGXDLMSObject(D
 }
 
 // Returns amount of attributes.
-int CGXDLMSMacAddressSetup::GetAttributeCount()
+unsigned char CGXDLMSMacAddressSetup::GetAttributeCount()
 {
     return 2;
 }
 
 // Returns amount of methods.
-int CGXDLMSMacAddressSetup::GetMethodCount()
+unsigned char CGXDLMSMacAddressSetup::GetMethodCount()
 {
     return 0;
 }

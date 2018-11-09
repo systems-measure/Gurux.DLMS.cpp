@@ -45,13 +45,13 @@ CGXDLMSGPRSSetup::CGXDLMSGPRSSetup(const char* ln) : CGXDLMSObject(DLMS_OBJECT_T
 }
 
 // Returns amount of attributes.
-int CGXDLMSGPRSSetup::GetAttributeCount()
+unsigned char CGXDLMSGPRSSetup::GetAttributeCount()
 {
     return 4;
 }
 
 // Returns amount of methods.
-int CGXDLMSGPRSSetup::GetMethodCount()
+unsigned char CGXDLMSGPRSSetup::GetMethodCount()
 {
     return 0;
 }

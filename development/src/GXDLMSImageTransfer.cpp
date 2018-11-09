@@ -47,13 +47,13 @@ CGXDLMSImageTransfer::CGXDLMSImageTransfer(const char* ln) : CGXDLMSObject(DLMS_
 }
 
 // Returns amount of attributes.
-int CGXDLMSImageTransfer::GetAttributeCount()
+unsigned char CGXDLMSImageTransfer::GetAttributeCount()
 {
     return 7;
 }
 
 // Returns amount of methods.
-int CGXDLMSImageTransfer::GetMethodCount()
+unsigned char CGXDLMSImageTransfer::GetMethodCount()
 {
     return 4;
 }

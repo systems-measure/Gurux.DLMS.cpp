@@ -90,7 +90,7 @@ void CGXDLMSAssociationLogicalName::SetMPos(unsigned char pos) {
 }
 
 // Returns amount of attributes.
-int CGXDLMSAssociationLogicalName::GetAttributeCount()
+unsigned char CGXDLMSAssociationLogicalName::GetAttributeCount()
 {
     //Security Setup Reference is from version 1.
     if (GetVersion() > 0)
@@ -99,7 +99,7 @@ int CGXDLMSAssociationLogicalName::GetAttributeCount()
 }
 
 // Returns amount of methods.
-int CGXDLMSAssociationLogicalName::GetMethodCount()
+unsigned char CGXDLMSAssociationLogicalName::GetMethodCount()
 {
     return 4;
 }

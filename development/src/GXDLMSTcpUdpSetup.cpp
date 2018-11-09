@@ -53,13 +53,13 @@ CGXDLMSTcpUdpSetup::CGXDLMSTcpUdpSetup(const char* ln) : CGXDLMSObject(DLMS_OBJE
 }
 
 // Returns amount of attributes.
-int CGXDLMSTcpUdpSetup::GetAttributeCount()
+unsigned char CGXDLMSTcpUdpSetup::GetAttributeCount()
 {
     return 6;
 }
 
 // Returns amount of methods.
-int CGXDLMSTcpUdpSetup::GetMethodCount()
+unsigned char CGXDLMSTcpUdpSetup::GetMethodCount()
 {
     return 0;
 }

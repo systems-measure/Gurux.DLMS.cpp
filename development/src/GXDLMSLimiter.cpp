@@ -47,13 +47,13 @@ CGXDLMSLimiter::CGXDLMSLimiter(const char* ln) : CGXDLMSObject(DLMS_OBJECT_TYPE_
 }
 
 // Returns amount of attributes.
-int CGXDLMSLimiter::GetAttributeCount()
+unsigned char CGXDLMSLimiter::GetAttributeCount()
 {
     return 11;
 }
 
 // Returns amount of methods.
-int CGXDLMSLimiter::GetMethodCount()
+unsigned char CGXDLMSLimiter::GetMethodCount()
 {
     return 2;
 }

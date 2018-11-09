@@ -58,13 +58,13 @@ CGXDLMSProfileGeneric::CGXDLMSProfileGeneric(const char* ln) : CGXDLMSObject(DLM
 }
 
 //Returns amount of attributes.
-int CGXDLMSProfileGeneric::GetAttributeCount()
+unsigned char CGXDLMSProfileGeneric::GetAttributeCount()
 {
     return 8;
 }
 
 //Returns amount of methods.
-int CGXDLMSProfileGeneric::GetMethodCount()
+unsigned char CGXDLMSProfileGeneric::GetMethodCount()
 {
     return 2;
 }

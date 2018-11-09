@@ -67,10 +67,10 @@ public:
 	void SetMPos(unsigned char m_pos);
 
     // Returns amount of attributes.
-    int GetAttributeCount();
+	unsigned char GetAttributeCount();
 
     // Returns amount of methods.
-    int GetMethodCount();
+	unsigned char GetMethodCount();
 
     //Get attribute values of object.
 

@@ -187,5 +187,7 @@ public:
     */
     unsigned short& GetRowEndIndex();
 
+	void SetRowEndIndex(unsigned short val);
+
 };
 #endif //GXDLMSVALUEEVENTARGS_H

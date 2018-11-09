@@ -46,13 +46,13 @@ CGXDLMSDisconnectControl::CGXDLMSDisconnectControl(const char* ln) : CGXDLMSObje
 }
 
 // Returns amount of attributes.
-int CGXDLMSDisconnectControl::GetAttributeCount()
+unsigned char CGXDLMSDisconnectControl::GetAttributeCount()
 {
     return 4;
 }
 
 // Returns amount of methods.
-int CGXDLMSDisconnectControl::GetMethodCount()
+unsigned char CGXDLMSDisconnectControl::GetMethodCount()
 {
     return 2;
 }

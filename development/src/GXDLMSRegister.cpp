@@ -55,13 +55,13 @@ CGXDLMSRegister::CGXDLMSRegister(const char* ln, double scaler, unsigned char un
 }
 
 // Returns amount of attributes.
-int CGXDLMSRegister::GetAttributeCount()
+unsigned char CGXDLMSRegister::GetAttributeCount()
 {
     return 3;
 }
 
 // Returns amount of methods.
-int CGXDLMSRegister::GetMethodCount()
+unsigned char CGXDLMSRegister::GetMethodCount()
 {
     return 1;
 }
