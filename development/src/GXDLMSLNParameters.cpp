@@ -38,7 +38,6 @@ CGXDLMSLNParameters::CGXDLMSLNParameters(
     CGXDLMSSettings* settings,
     DLMS_COMMAND command,
 	unsigned char commandType,
-    CGXByteBuffer* attributeDescriptor,
     CGXByteBuffer* data,
 	unsigned char status)
 {
@@ -46,7 +45,6 @@ CGXDLMSLNParameters::CGXDLMSLNParameters(
     m_BlockIndex = settings->GetBlockIndex();
     m_Command = command;
     m_RequestType = commandType;
-    m_AttributeDescriptor = attributeDescriptor;
     m_Data = data;
     m_Time = NULL;
     m_Status = status;
@@ -72,11 +70,6 @@ unsigned char CGXDLMSLNParameters::GetRequestType()
 void CGXDLMSLNParameters::SetRequestType(unsigned char value)
 {
     m_RequestType = value;
-}
-
-CGXByteBuffer* CGXDLMSLNParameters::GetAttributeDescriptor()
-{
-    return m_AttributeDescriptor;
 }
 
 CGXByteBuffer* CGXDLMSLNParameters::GetData()

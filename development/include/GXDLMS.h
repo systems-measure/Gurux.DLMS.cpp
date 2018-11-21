@@ -90,24 +90,6 @@ private:
         CGXReplyData& info);
 public:
 
-    /////////////////////////////////////////////////////////////////////////////
-    // Check client and server addresses. Reserved for internal use.
-    /////////////////////////////////////////////////////////////////////////////
-    static int CheckInit(CGXDLMSSettings& settings);
-
-    /**
-     * Get all Logical name messages. Client uses this to generate messages.
-     *
-     * @param p
-     *            LN settings.
-     * @param reply
-     *            Generated messages.
-     * @return    Status code.
-     */
-    static int GetLnMessages(
-        CGXDLMSLNParameters& p,
-        std::vector<CGXByteBuffer>& reply);
-
     /**
     * Handle General block transfer message.
     *
@@ -118,7 +100,7 @@ public:
     */
     static int HandleGbt(CGXDLMSSettings& settings, CGXReplyData& data);
 
-	static long GetLongInvokeIDPriority(CGXDLMSSettings& settings);
+	  static long GetLongInvokeIDPriority(CGXDLMSSettings& settings);
 
     /**
     * Get next logical name PDU.

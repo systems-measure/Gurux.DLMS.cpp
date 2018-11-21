@@ -620,7 +620,7 @@ int CGXDLMSServer::HandleSetRequest(CGXByteBuffer& data)
 	{
 		return DLMS_ERROR_CODE_OUTOFMEMORY;
 	}
-	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_SET_RESPONSE, DLMS_SET_COMMAND_TYPE_NORMAL, nullptr, nullptr, 0);
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_SET_RESPONSE, DLMS_SET_COMMAND_TYPE_NORMAL, nullptr, 0);
 	if (type > 3) {
 		m_Settings.ResetBlockIndex();
 		p.SetStatus(DLMS_ERROR_CODE_NOT_IMPLEMENTED);
@@ -886,7 +886,7 @@ int CGXDLMSServer::HandleGetRequest(
         return DLMS_ERROR_CODE_OUTOFMEMORY;
     }
 	CGXByteBuffer bb;
-	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, type, nullptr, &bb, DLMS_ERROR_CODE_OK);
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_GET_RESPONSE, type, &bb, DLMS_ERROR_CODE_OK);
     // GetRequest normal
     if (type == DLMS_GET_COMMAND_TYPE_NORMAL)
     {
@@ -988,7 +988,7 @@ int CGXDLMSServer::HandleMethodRequest(CGXByteBuffer& data) {
 		return DLMS_ERROR_CODE_OUTOFMEMORY;
 	}
 	CGXByteBuffer bb;
-	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_METHOD_RESPONSE, type, nullptr, &bb, DLMS_ERROR_CODE_OK);
+	CGXDLMSLNParameters p(&m_Settings, DLMS_COMMAND_METHOD_RESPONSE, type, &bb, DLMS_ERROR_CODE_OK);
 	// GetRequest normal
 	if (type == DLMS_ACTION_COMMAND_TYPE_NORMAL)
 		HanleMethodRequestNormal(data, p);

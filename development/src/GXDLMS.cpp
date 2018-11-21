@@ -103,19 +103,6 @@ int CGXDLMS::GetAddress(long value, unsigned long& address, int& size)
     return DLMS_ERROR_CODE_OK;
 }
 
-int CGXDLMS::CheckInit(CGXDLMSSettings& settings)
-{
-    if (settings.GetClientAddress() == 0)
-    {
-        return DLMS_ERROR_CODE_INVALID_CLIENT_ADDRESS;
-    }
-    if (settings.GetServerAddress() == 0)
-    {
-        return DLMS_ERROR_CODE_INVALID_SERVER_ADDRESS;
-    }
-    return DLMS_ERROR_CODE_OK;
-}
-
 /////////////////////////////////////////////////////////////////////////////
 // Get data from Block.
 /////////////////////////////////////////////////////////////////////////////
@@ -306,10 +293,6 @@ void MultipleBlocks(
 {
     // Check is all data fit to one message if data is given.
     unsigned short len = p.GetData()->GetSize() - p.GetData()->GetPosition();
-    if (p.GetAttributeDescriptor() != NULL)
-    {
-        len += p.GetAttributeDescriptor()->GetSize();
-    }
     if (!p.IsMultipleBlocks())
     {
         // Add command type and invoke and priority.
@@ -393,7 +376,6 @@ void CGXDLMS::GetLNPdu( CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
 	// Add Invoke Id And Priority.
 	reply.SetUInt8(GetInvokeIDPriority(*p.GetSettings()));
 	// Add attribute descriptor.
-	reply.Set(p.GetAttributeDescriptor());
 	if ((p.GetSettings()->GetNegotiatedConformance() & DLMS_CONFORMANCE_GENERAL_BLOCK_TRANSFER) == 0) {
 		// If multiple blocks.
 		if (p.IsMultipleBlocks()) {
@@ -435,47 +417,6 @@ void CGXDLMS::GetLNPdu( CGXDLMSLNParameters& p, CGXByteBuffer& reply) {
 		reply.Set(p.GetData(), p.GetData()->GetPosition(), len);
 	}
 	return;
-}
-
-int CGXDLMS::GetLnMessages(
-    CGXDLMSLNParameters& p,
-    std::vector<CGXByteBuffer>& messages)
-{
-    int ret;
-    CGXByteBuffer reply, tmp;
-    unsigned char frame = 0;
-    if (p.GetCommand() == DLMS_COMMAND_AARQ)
-	{
-		frame = 0x10;
-	}
-	else if (p.GetCommand() == DLMS_COMMAND_DATA_NOTIFICATION) {
-		frame = 0x13;
-	}
-	do
-	{
-		GetLNPdu(p, reply);
-		p.SetLastBlock(true);
-		if (p.GetAttributeDescriptor() == NULL)
-		{
-			p.GetSettings()->IncreaseBlockIndex();
-		}
-		while (reply.GetPosition() != reply.GetSize())
-		{
-			ret = GetHdlcFrame(*p.GetSettings(), frame, &reply, tmp);
-			if (ret == 0 && reply.GetPosition() != reply.GetSize())
-			{
-				frame = 0;
-			}
-			if (ret != 0)
-			{
-				break;
-			}
-			messages.push_back(tmp);
-			tmp.Clear();
-		}
-		reply.Clear();
-	} while (ret == 0 && p.GetData() != NULL && p.GetData()->GetPosition() != p.GetData()->GetSize());
-	return ret;
 }
 
 int CGXDLMS::GetHdlcData(

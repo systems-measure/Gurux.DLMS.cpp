@@ -49,10 +49,6 @@ private:
      */
     CGXDLMSSettings *m_Settings;
     /**
-     * Attribute descriptor.
-     */
-    CGXByteBuffer* m_AttributeDescriptor;
-    /**
      * Data.
      */
     CGXByteBuffer* m_Data;
@@ -103,7 +99,6 @@ public:
     CGXDLMSLNParameters(CGXDLMSSettings* settings,
                         DLMS_COMMAND command,
 		                unsigned char commandType,
-                        CGXByteBuffer* attributeDescriptor,
                         CGXByteBuffer* data,
 		                unsigned char status);
 
@@ -127,11 +122,6 @@ public:
      *            the requestType to set
      */
     void SetRequestType(unsigned char value);
-
-    /**
-     * @return the attributeDescriptor
-     */
-    CGXByteBuffer* GetAttributeDescriptor();
 
     /**
      * @return the data
