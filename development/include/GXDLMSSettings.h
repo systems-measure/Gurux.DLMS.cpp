@@ -295,17 +295,6 @@ public:
     int SetSourceSystemTitle(CGXByteBuffer& value);
 
     /**
-     * @return Key Encrypting Key, also known as Master key.
-     */
-    CGXByteBuffer& GetKek();
-
-    /**
-     * @param value
-     *            Key Encrypting Key, also known as Master key.
-     */
-    void SetKek(CGXByteBuffer& value);
-
-    /**
      * @return Long data count.
      */
     unsigned short GetCount();

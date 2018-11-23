@@ -164,8 +164,7 @@ public:
      */
     static int CheckHdlcAddress(
         CGXDLMSSettings& settings,
-        CGXByteBuffer& reply,
-        int index);
+        CGXByteBuffer& reply);
 
     /////////////////////////////////////////////////////////////////////////////
     // Get PDU from the packet.

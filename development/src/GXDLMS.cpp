@@ -463,7 +463,7 @@ int CGXDLMS::GetHdlcData(
     }
 
     // Check addresses.
-    ret = CheckHdlcAddress(settings, reply, frameLen);
+    ret = CheckHdlcAddress(settings, reply);
     if (ret != 0)
     {
         return ret;
@@ -623,8 +623,7 @@ static void GetServerAddress(int address, int& logical, int& physical)
 
 int CGXDLMS::CheckHdlcAddress(
     CGXDLMSSettings& settings,
-    CGXByteBuffer& reply,
-    int index)
+    CGXByteBuffer& reply)
 {
     unsigned char ch;
     unsigned long source, target;
