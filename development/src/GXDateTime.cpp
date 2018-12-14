@@ -587,7 +587,12 @@ int CGXDateTime::AddSeconds(int seconds)
     }
     return DLMS_ERROR_CODE_OK;
 }
-
+bool operator==(const CGXDateTime& left, const CGXDateTime& rigth) { 
+  return !const_cast<CGXDateTime&>(left).CompareTo(const_cast<CGXDateTime&>(rigth)); 
+}
+bool operator>=(const CGXDateTime& left, const CGXDateTime& rigth) { 
+  return const_cast<CGXDateTime&>(left).CompareTo(const_cast<CGXDateTime&>(rigth)) >= 0; 
+}
 int CGXDateTime::CompareTo(CGXDateTime& antherDate)
 {
     time_t time1 = mktime(&m_Value);

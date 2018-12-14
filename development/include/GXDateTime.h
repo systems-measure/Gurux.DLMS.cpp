@@ -101,6 +101,8 @@ public:
     //Get currect time.
     static CGXDateTime Now();
 
+    operator double() { return mktime(&GetValue()); }
+
     // Daylight savings begin.
     bool GetDaylightSavingsBegin();
     void SetDaylightSavingsBegin(bool value);
@@ -179,6 +181,9 @@ public:
 
     //Convert value to local time.
     int ToLocalTime(struct tm& localTime);
-
 };
+
+bool operator==(const CGXDateTime& left, const CGXDateTime& rigth);
+bool operator>=(const CGXDateTime& left, const CGXDateTime& rigth);
+
 #endif //GXDATETIME_H
