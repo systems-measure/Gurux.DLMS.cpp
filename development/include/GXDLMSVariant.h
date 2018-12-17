@@ -116,7 +116,6 @@ public:
     //Destructor.
     ~CGXDLMSVariant();
 
-
     CGXDLMSVariant& operator=(const CGXDLMSVariant& value);
 
     CGXDLMSVariant& operator=(std::string value);
@@ -153,4 +152,7 @@ public:
     double ToDouble();
     int GetBytes(CGXByteBuffer& value);
 };
+
+bool operator==(const CGXDLMSVariant& const_left, const CGXDLMSVariant& const_rigth);
+
 #endif //GXDLMSVARIANT_H

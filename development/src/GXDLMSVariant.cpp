@@ -883,23 +883,43 @@ void CGXDLMSVariant::Add(std::string value)
         size += (unsigned short)value.size();
     }
 }
+bool operator==(const CGXDLMSVariant& const_left, const CGXDLMSVariant& const_rigth) { 
+  CGXDLMSVariant &left = const_cast<CGXDLMSVariant&>(const_left);
+  CGXDLMSVariant &rigth = const_cast<CGXDLMSVariant&>(const_rigth);
 
-bool CGXDLMSVariant::Equals(CGXDLMSVariant& item)
-{
-    if (vt != item.vt)
-    {
-        return false;
+  return left.Equals(rigth); 
+}
+bool CGXDLMSVariant::Equals(CGXDLMSVariant& item){
+    if (vt != item.vt) return false;
+
+    switch (vt) {
+    case DLMS_DATA_TYPE_NONE:                   return true;
+    case DLMS_DATA_TYPE_BOOLEAN:                return boolVal == item.boolVal;
+    case DLMS_DATA_TYPE_BIT_STRING:             return strVal == item.strVal;
+    case DLMS_DATA_TYPE_INT32:                  return lVal == item.lVal;
+    case DLMS_DATA_TYPE_UINT32:                 return ulVal == item.ulVal;
+    case DLMS_DATA_TYPE_OCTET_STRING:           return (size == item.size) && !memcmp(byteArr, item.byteArr, size);
+    case DLMS_DATA_TYPE_STRING:                 return strVal == item.strVal;
+    //case DLMS_DATA_TYPE_BINARY_CODED_DESIMAL:
+    //case DLMS_DATA_TYPE_STRING_UTF8:
+    case DLMS_DATA_TYPE_INT8:                   return cVal == item.cVal;
+    case DLMS_DATA_TYPE_INT16:                  return iVal == item.iVal;
+    case DLMS_DATA_TYPE_UINT8:                  return bVal == item.bVal;
+    case DLMS_DATA_TYPE_UINT16:                 return uiVal == item.uiVal;
+    case DLMS_DATA_TYPE_INT64:                  return llVal == item.llVal;
+    case DLMS_DATA_TYPE_UINT64:                 return ullVal == item.ullVal;
+    case DLMS_DATA_TYPE_ENUM:                   return bVal == item.bVal;
+    case DLMS_DATA_TYPE_FLOAT32:                return fltVal == item.fltVal;
+    case DLMS_DATA_TYPE_FLOAT64:                return fltVal == item.fltVal;
+    case DLMS_DATA_TYPE_DATETIME:               return !dateTime.CompareTo(item.dateTime);
+    case DLMS_DATA_TYPE_DATE:                   return !dateTime.CompareTo(item.dateTime);
+    case DLMS_DATA_TYPE_TIME:                   return !dateTime.CompareTo(item.dateTime);
+    case DLMS_DATA_TYPE_ARRAY:                  return (size == item.size) && !memcmp(byteArr, item.byteArr, size);
+    case DLMS_DATA_TYPE_STRUCTURE:              return Arr == item.Arr;
+    //case DLMS_DATA_TYPE_COMPACT_ARRAY:
     }
-    int size = GetSize();
-    if (size == -1 || size != item.GetSize())
-    {
-        return false;
-    }
-    if (size != 0)
-    {
-        return memcmp(&this->bVal, &item.bVal, size) == 0;
-    }
-    return true;
+    
+    return false;
 }
 
 int CGXDLMSVariant::ChangeType(DLMS_DATA_TYPE newType)
