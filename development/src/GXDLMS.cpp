@@ -528,7 +528,10 @@ void MultipleBlocks(
 {
     // Check is all data fit to one message if data is given.
     int len = p.GetData()->GetSize() - p.GetData()->GetPosition();
-    if (p.GetAttributeDescriptor() != NULL)
+    if (p.GetAttributeDescriptor() != NULL && 
+      ((p.IsMultipleBlocks() && (p.GetRequestType() == 2)) || 
+      (!p.IsMultipleBlocks() && (p.GetRequestType() == 1)) || 
+       (p.GetCommand() == DLMS_COMMAND_GET_REQUEST)))
     {
         len += p.GetAttributeDescriptor()->GetSize();
     }
@@ -618,6 +621,7 @@ int CGXDLMS::GetLNPdu(
                     else if (p.GetRequestType() == 2)
                     {
                         p.SetRequestType(3);
+                        MultipleBlocks(p, reply, ciphering);
                     }
                 }
             }
