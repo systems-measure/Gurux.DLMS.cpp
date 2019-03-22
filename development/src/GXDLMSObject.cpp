@@ -72,12 +72,15 @@ int CGXDLMSObject::GetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value)
 
 int CGXDLMSObject::SetLogicalName(CGXDLMSObject * target, CGXDLMSVariant& value)
 {
-    if (value.vt != DLMS_DATA_TYPE_OCTET_STRING || value.GetSize() != 6)
-    {
-        return DLMS_ERROR_CODE_INVALID_PARAMETER;
-    }
-    memcpy(target->m_LN, value.byteArr, 6);
-    return DLMS_ERROR_CODE_OK;
+  if (value.vt == DLMS_DATA_TYPE_STRING) {
+    ///< @TODO: Дописать...
+    return DLMS_ERROR_CODE_INVALID_PARAMETER;
+  } else if (value.vt != DLMS_DATA_TYPE_OCTET_STRING || value.GetSize() != 6)
+  {
+      return DLMS_ERROR_CODE_INVALID_PARAMETER;
+  }
+  memcpy(target->m_LN, value.byteArr, 6);
+  return DLMS_ERROR_CODE_OK;
 }
 
 void CGXDLMSObject::Initialize(short sn, unsigned short class_id, unsigned char version, CGXByteBuffer* ln)

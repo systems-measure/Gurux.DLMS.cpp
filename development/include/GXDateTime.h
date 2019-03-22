@@ -101,7 +101,7 @@ public:
     //Get currect time.
     static CGXDateTime Now();
 
-    operator double() { return mktime(&GetValue()); }
+    operator double() { return (double)mktime(&GetValue()); }
 
     // Daylight savings begin.
     bool GetDaylightSavingsBegin();
