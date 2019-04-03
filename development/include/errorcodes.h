@@ -103,6 +103,12 @@ typedef enum
     // -- CiART error codes end here.
     //////////////////////////////////////////
 
+    //////////////////////////////////////////
+    // -- CiART specific ERROR code 
+    DLMS_ERROR_CODE_NotSupported = 80,
+    // -- CiART specific ERROR codes
+    //////////////////////////////////////////
+
     //Unknown error.
     DLMS_ERROR_CODE_UNKNOWN,
     //Data send failed.
