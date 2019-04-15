@@ -294,6 +294,14 @@ void CGXDLMSObject::GetLogicalName(std::string& ln)
     GXHelpers::GetLogicalName(m_LN, ln);
 }
 
+std::string CGXDLMSObject::GetLogicalName(){
+  std::string ln;
+
+  GXHelpers::GetLogicalName(m_LN, ln);
+
+  return ln;
+}
+
 void CGXDLMSObject::SetVersion(unsigned short value)
 {
     m_Version = value;

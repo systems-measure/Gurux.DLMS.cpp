@@ -113,6 +113,8 @@ public:
 
     //Get Object's Logical Name.
     void GetLogicalName(std::string& ln);
+    std::string GetLogicalName();
+
 
     void SetVersion(unsigned short value);
     unsigned short GetVersion();
