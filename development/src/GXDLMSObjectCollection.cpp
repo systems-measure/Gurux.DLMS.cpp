@@ -218,7 +218,7 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	constructed_obj = nullptr;
 	m_currentALN = nullptr;
-	idx_constructed_obj = new uint8_t;
+	idx_constructed_obj = new uint16_t;
 	*idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
@@ -227,17 +227,17 @@ CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	objects_ln = nullptr;
 }
 
-CGXDLMSObjectCollection::CGXDLMSObjectCollection(uint8_t size) {
+CGXDLMSObjectCollection::CGXDLMSObjectCollection(uint16_t size) {
 	constructed_obj = nullptr;
 	m_currentALN = nullptr;
-	idx_constructed_obj = new uint8_t;
+	idx_constructed_obj = new uint16_t;
     *idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
 	size_collection = size;
 	num_obj_in_collection = 0;
 	objects_ln = new uint8_t*[size];
-	for (uint8_t i = 0; i < size; ++i) {
+	for (uint16_t i = 0; i < size; ++i) {
 		objects_ln[i] = nullptr;
 	}
 }
