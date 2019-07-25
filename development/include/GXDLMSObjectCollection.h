@@ -37,20 +37,20 @@
 
 #include "GXDLMSObject.h"
 
-typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint16_t* idx_cnstrd);
+typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint8_t* idx_cnstrd);
 
-typedef uint8_t(*TypeObj)(const char* obis, uint16_t* idx_cnstrd);
+typedef unsigned char(*TypeObj)(const char* obis, uint8_t* idx_cnstrd);
 
 class CGXDLMSObjectCollection
 {
 private:
 	CGXDLMSObject* constructed_obj;
 
-	uint16_t* idx_constructed_obj;
+	uint8_t* idx_constructed_obj;
 
 	uint8_t** objects_ln;
 
-	uint16_t size_collection;
+	uint8_t size_collection;
 
 	uint8_t num_obj_in_collection;
 
@@ -65,7 +65,7 @@ public:
 
 	CGXDLMSObjectCollection();
 
-	CGXDLMSObjectCollection(uint16_t size);
+	CGXDLMSObjectCollection(uint8_t size);
 
     ~CGXDLMSObjectCollection();
 

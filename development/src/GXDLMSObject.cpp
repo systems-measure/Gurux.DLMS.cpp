@@ -103,7 +103,7 @@ void CGXDLMSObject::SetDataTypeFunc(TypeAttrCallback callback) {
 	get_data_type = callback;
 }
 
-void CGXDLMSObject::SetConstructedIdx(uint16_t* idx) {
+void CGXDLMSObject::SetConstructedIdx(uint8_t* idx) {
 	constr_idx = *idx;
 }
 
