@@ -181,6 +181,7 @@ public:
 
     //Convert value to local time.
     int ToLocalTime(struct tm& localTime);
+    time_t GetUtcTime();
 };
 
 bool operator==(const CGXDateTime& left, const CGXDateTime& rigth);

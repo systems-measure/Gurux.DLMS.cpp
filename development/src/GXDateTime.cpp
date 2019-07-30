@@ -62,7 +62,7 @@ void GetUtcOffset(int& hours, int& minutes)
     minutes = tm.tm_min;
 }
 
-static time_t GetUtcTime(struct tm * timeptr)
+time_t GetUtcTime(struct tm * timeptr)
 {
     /* gets the epoch time relative to the local time zone,
     and then adds the appropriate number of seconds to make it UTC */
@@ -587,6 +587,9 @@ int CGXDateTime::AddSeconds(int seconds)
     }
     return DLMS_ERROR_CODE_OK;
 }
+time_t CGXDateTime::GetUtcTime() {
+    return ::GetUtcTime(&m_Value);
+}
 bool operator==(const CGXDateTime& left, const CGXDateTime& rigth) { 
   return !const_cast<CGXDateTime&>(left).CompareTo(const_cast<CGXDateTime&>(rigth)); 
 }
@@ -620,7 +623,7 @@ int CGXDateTime::ToLocalTime(struct tm& localTime)
     if (m_Deviation != -32768)//0x8000
     {
         localTime.tm_min += m_Deviation;
-        time_t t = GetUtcTime(&localTime);
+        time_t t = ::GetUtcTime(&localTime);
         if (t == -1)
         {
             return DLMS_ERROR_CODE_INVALID_PARAMETER;
