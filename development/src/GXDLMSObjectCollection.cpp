@@ -218,7 +218,7 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	constructed_obj = nullptr;
 	m_currentALN = nullptr;
-	idx_constructed_obj = new uint8_t;
+	idx_constructed_obj = new uint16_t;
 	*idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
@@ -227,11 +227,11 @@ CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	objects_ln = nullptr;
 }
 
-CGXDLMSObjectCollection::CGXDLMSObjectCollection(uint8_t size) {
+CGXDLMSObjectCollection::CGXDLMSObjectCollection(uint16_t size) {
 	constructed_obj = nullptr;
 	m_currentALN = nullptr;
-	idx_constructed_obj = new uint8_t;
-    *idx_constructed_obj = 0;
+	idx_constructed_obj = new uint16_t;
+  *idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
 	size_collection = size;
@@ -267,7 +267,7 @@ CGXDLMSObjectCollection::~CGXDLMSObjectCollection()
 	}
 }
 
-CGXDLMSObject* CGXDLMSObjectCollection::MakeByPosition(uint8_t pos) {
+CGXDLMSObject* CGXDLMSObjectCollection::MakeByPosition(uint16_t pos) {
 	if (type_callback != nullptr) {
 		char ln[24];
 		GXHelpers::GetLogicalName(objects_ln[pos], ln);
@@ -394,7 +394,7 @@ void CGXDLMSObjectCollection::push_back_aln(CGXDLMSObject* item) {
 	m_currentALN = item;
 }
 
-void CGXDLMSObjectCollection::insert(uint8_t start_pos, uint8_t** src, uint8_t count) {
+void CGXDLMSObjectCollection::insert(uint16_t start_pos, uint8_t** src, uint16_t count) {
 	if (start_pos + count <= size_collection) {
 		memcpy(objects_ln + start_pos, src, count*sizeof(uint8_t*));
 		num_obj_in_collection += count;

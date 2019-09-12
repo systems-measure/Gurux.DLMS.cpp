@@ -39,7 +39,7 @@
 #include "GXDateTime.h"
 #include "GXDLMSValueEventArg.h"
 
-typedef uint8_t(*TypeAttrCallback)(uint8_t construct_idx);
+typedef uint8_t(*TypeAttrCallback)(uint16_t construct_idx);
 
 class CGXDLMSObjectCollection;
 
@@ -53,7 +53,7 @@ class CGXDLMSObject
 	TypeAttrCallback get_data_type;
 protected:
 	unsigned char m_LN[6];
-	unsigned char constr_idx;
+	unsigned short constr_idx;
 public:
 
     CGXDLMSObject(void);
@@ -67,7 +67,7 @@ public:
 
 	void SetDataTypeFunc(TypeAttrCallback callback);
 
-	void SetConstructedIdx(uint8_t* idx);
+	void SetConstructedIdx(uint16_t* idx);
 
     //Get Object's Logical or Short Name as a std::string.
     std::string GetName();
