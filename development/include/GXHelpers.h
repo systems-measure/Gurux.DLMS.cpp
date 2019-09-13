@@ -209,5 +209,11 @@ struct tabFunc {
     T execute_func;
 };
 
+template<typename F, typename S>
+struct tabPair {
+  F first;
+  S second;
+};
+
 int8_t spodesSizeof(DLMS_DATA_TYPE type);
 #endif //GXHELPERS_H
