@@ -83,9 +83,9 @@ public:
 
 	bool empty();
 
-	uint8_t size();
+	uint16_t size();
 
-	void Init(uint8_t new_size);
+	void Init(uint16_t new_size);
 
   void push_back(unsigned char* item);
 

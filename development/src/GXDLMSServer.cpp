@@ -101,7 +101,7 @@ int CGXDLMSServer::Initialize()
 
 	char ln[24];
 	CGXDLMSObject* tmp_obj = nullptr;
-	for (uint8_t i = 0; i < GetItems()->size(); ++i)
+	for (uint16_t i = 0; i < GetItems()->size(); ++i)
     {
 		tmp_obj = GetItems()->MakeByPosition(i);
 		if (tmp_obj != nullptr) {

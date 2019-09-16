@@ -81,11 +81,11 @@ void CGXDLMSAssociationLogicalName::SetAssociationStatus(DLMS_DLMS_ASSOCIATION_S
     m_AssociationStatus = value;
 }
 
-unsigned char CGXDLMSAssociationLogicalName::GetMPos() {
+unsigned short CGXDLMSAssociationLogicalName::GetMPos() {
 	return m_pos;
 }
 
-void CGXDLMSAssociationLogicalName::SetMPos(unsigned char pos) {
+void CGXDLMSAssociationLogicalName::SetMPos(unsigned short pos) {
 	m_pos = pos;
 }
 
