@@ -37,22 +37,22 @@
 
 #include "GXDLMSObject.h"
 
-typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint8_t* idx_cnstrd);
+typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint16_t* idx_cnstrd);
 
-typedef unsigned char(*TypeObj)(const char* obis, uint8_t* idx_cnstrd);
+typedef unsigned char(*TypeObj)(const char* obis, uint16_t* idx_cnstrd);
 
 class CGXDLMSObjectCollection
 {
 private:
 	CGXDLMSObject* constructed_obj;
 
-	uint8_t* idx_constructed_obj;
+	uint16_t* idx_constructed_obj;
 
 	uint8_t** objects_ln;
 
-	uint8_t size_collection;
+	uint16_t size_collection;
 
-	uint8_t num_obj_in_collection;
+	uint16_t num_obj_in_collection;
 
 	CGXDLMSObject* m_currentALN;
 
@@ -65,11 +65,11 @@ public:
 
 	CGXDLMSObjectCollection();
 
-	CGXDLMSObjectCollection(uint8_t size);
+	CGXDLMSObjectCollection(uint16_t size);
 
     ~CGXDLMSObjectCollection();
 
-	CGXDLMSObject* MakeByPosition(uint8_t pos);
+	CGXDLMSObject* MakeByPosition(uint16_t pos);
 
     CGXDLMSObject* FindByLN(uint8_t* ln);
 
@@ -83,17 +83,17 @@ public:
 
 	bool empty();
 
-	uint8_t size();
+	uint16_t size();
 
-	void Init(uint8_t new_size);
+	void Init(uint16_t new_size);
 
-    void push_back(unsigned char* item);
+  void push_back(unsigned char* item);
 
 	void push_back_aln(CGXDLMSObject* item);
 
 	void clear();
 
-	void insert(uint8_t start_pos, uint8_t** src, uint8_t count);
+	void insert(uint16_t start_pos, uint8_t** src, uint16_t count);
 
 	InitObjField GetInitCallback();
 

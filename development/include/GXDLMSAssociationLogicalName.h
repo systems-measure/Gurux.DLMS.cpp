@@ -39,7 +39,7 @@
 class CGXDLMSAssociationLogicalName : public CGXDLMSObject
 {
 private:
-	unsigned char m_pos;
+	unsigned short m_pos;
     CGXDLMSObjectCollection m_ObjectList;
 	DLMS_DLMS_ASSOCIATION_STATUS m_AssociationStatus;
 public:
@@ -62,9 +62,9 @@ public:
 
     void SetAssociationStatus(DLMS_DLMS_ASSOCIATION_STATUS value);
 
-	unsigned char GetMPos();
+	unsigned short GetMPos();
 
-	void SetMPos(unsigned char m_pos);
+	void SetMPos(unsigned short m_pos);
 
     // Returns amount of attributes.
 	unsigned char GetAttributeCount();

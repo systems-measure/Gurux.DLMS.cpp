@@ -218,7 +218,7 @@ void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
 CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	constructed_obj = nullptr;
 	m_currentALN = nullptr;
-	idx_constructed_obj = new uint8_t;
+	idx_constructed_obj = new uint16_t;
 	*idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
@@ -227,17 +227,17 @@ CGXDLMSObjectCollection::CGXDLMSObjectCollection() {
 	objects_ln = nullptr;
 }
 
-CGXDLMSObjectCollection::CGXDLMSObjectCollection(uint8_t size) {
+CGXDLMSObjectCollection::CGXDLMSObjectCollection(uint16_t size) {
 	constructed_obj = nullptr;
 	m_currentALN = nullptr;
-	idx_constructed_obj = new uint8_t;
-    *idx_constructed_obj = 0;
+	idx_constructed_obj = new uint16_t;
+  *idx_constructed_obj = 0;
 	init_callback = nullptr;
 	type_callback = nullptr;
 	size_collection = size;
 	num_obj_in_collection = 0;
 	objects_ln = new uint8_t*[size];
-	for (uint8_t i = 0; i < size; ++i) {
+	for (uint16_t i = 0; i < size; ++i) {
 		objects_ln[i] = nullptr;
 	}
 }
@@ -256,7 +256,7 @@ CGXDLMSObjectCollection::~CGXDLMSObjectCollection()
 		delete idx_constructed_obj;
 	}
 	if (objects_ln != nullptr) {
-		for (uint8_t i = 0; i < size_collection; ++i) {
+		for (uint16_t i = 0; i < size_collection; ++i) {
 			if (objects_ln[i] != nullptr) {
 				delete[] objects_ln[i];
 				objects_ln[i] = nullptr;
@@ -267,7 +267,7 @@ CGXDLMSObjectCollection::~CGXDLMSObjectCollection()
 	}
 }
 
-CGXDLMSObject* CGXDLMSObjectCollection::MakeByPosition(uint8_t pos) {
+CGXDLMSObject* CGXDLMSObjectCollection::MakeByPosition(uint16_t pos) {
 	if (type_callback != nullptr) {
 		char ln[24];
 		GXHelpers::GetLogicalName(objects_ln[pos], ln);
@@ -292,7 +292,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(uint8_t* ln)
 	if (memcmp(ln, m_currentALN->m_LN, 6) == 0) {
 		return m_currentALN;
 	}
-	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
+	for (uint16_t i = 0; i < num_obj_in_collection; ++i) {
 		if (memcmp(ln, objects_ln[i], 6) == 0)
 		{
 			char ln_str[24];
@@ -322,7 +322,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(CGXByteBuffer& ln)
 	if (memcmp(ln.GetData(), m_currentALN->m_LN, 6) == 0) {
 		return m_currentALN;
 	}
-	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
+	for (uint16_t i = 0; i < num_obj_in_collection; ++i) {
 		if (memcmp(ln.GetData(), objects_ln[i], 6) == 0)
 		{
 			char ln[24];
@@ -345,7 +345,7 @@ CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(CGXByteBuffer& ln)
 
 unsigned char* CGXDLMSObjectCollection::FindByLN(const char* ln) {
 	char ln2[24];
-	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
+	for (uint16_t i = 0; i < num_obj_in_collection; ++i) {
 		memset(ln2, 0, 24);
 		GXHelpers::GetLogicalName(objects_ln[i], ln2);
 		if (strcmp(ln2, ln) == 0)
@@ -364,17 +364,17 @@ CGXDLMSObject* CGXDLMSObjectCollection::GetCurALN() {
 	return m_currentALN;
 }
 
-void CGXDLMSObjectCollection::Init(uint8_t new_size) {
+void CGXDLMSObjectCollection::Init(uint16_t new_size) {
 	if (objects_ln == nullptr) {
 		size_collection = new_size;
 		objects_ln = new uint8_t*[new_size];
-		for (uint8_t i = 0; i < new_size; ++i) {
+		for (uint16_t i = 0; i < new_size; ++i) {
 			objects_ln[i] = nullptr;
 		}
 	}
 }
 
-uint8_t CGXDLMSObjectCollection::size() {
+uint16_t CGXDLMSObjectCollection::size() {
 	return num_obj_in_collection;
 }
 
@@ -394,7 +394,7 @@ void CGXDLMSObjectCollection::push_back_aln(CGXDLMSObject* item) {
 	m_currentALN = item;
 }
 
-void CGXDLMSObjectCollection::insert(uint8_t start_pos, uint8_t** src, uint8_t count) {
+void CGXDLMSObjectCollection::insert(uint16_t start_pos, uint8_t** src, uint16_t count) {
 	if (start_pos + count <= size_collection) {
 		memcpy(objects_ln + start_pos, src, count*sizeof(uint8_t*));
 		num_obj_in_collection += count;
@@ -408,7 +408,7 @@ void CGXDLMSObjectCollection::insert(uint8_t start_pos, uint8_t** src, uint8_t c
 }
 
 void CGXDLMSObjectCollection::clear() {
-	for (uint8_t i = 0; i < num_obj_in_collection; ++i) {
+	for (uint16_t i = 0; i < num_obj_in_collection; ++i) {
 		objects_ln[i] = nullptr;
 	}
 	num_obj_in_collection = 0;
