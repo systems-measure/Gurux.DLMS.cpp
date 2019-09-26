@@ -775,14 +775,15 @@ void CGXDLMSServer::GetRequestNextDataBlock(CGXByteBuffer& data, CGXDLMSLNParame
 					if ((*arg)->GetTarget() == nullptr) {
 						(*arg)->SetTarget(m_CurrentALN->GetObjectList().FindByLN((uint8_t*)(*arg)->GetTargetName()));
 					}
+                    bool first_request_arg = !m_Settings.GetIndex();
 					PreRead(*arg);
 
 					(*arg)->SetTargetName();
 					m_CurrentALN->GetObjectList().FreeConstructedObj();
-					if (m_Transaction->GetCommandType() == DLMS_GET_COMMAND_TYPE_WITH_LIST) {
+                    (*arg)->SetTarget(nullptr);
+					if (first_request_arg && (m_Transaction->GetCommandType() == DLMS_GET_COMMAND_TYPE_WITH_LIST)) {
 						ProcessGetRequestWithList((*arg), p);
-					}
-					else {
+					} else {
 						ProcessGetRequest((*arg), p);
 					}
 				}
@@ -855,6 +856,7 @@ void CGXDLMSServer::GetRequestWithList(CGXByteBuffer& data, CGXDLMSLNParameters&
 			ProcessGetRequestWithList(arg, p);
 
 			m_CurrentALN->GetObjectList().FreeConstructedObj();
+            arg->SetTarget(nullptr);
 		}
 		if (arg->GetHandled()) {
 			m_Settings.SetCount(0);
