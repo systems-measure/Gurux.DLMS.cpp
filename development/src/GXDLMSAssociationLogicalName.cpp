@@ -66,7 +66,8 @@ CGXDLMSObjectCollection& CGXDLMSAssociationLogicalName::GetObjectList()
 bool CGXDLMSAssociationLogicalName::CompareSecret(CGXByteBuffer& lls) {
 	uint8_t	LLSSecret_read[64];
 	mem::rd_ext_mem(LLSSecret_read, GetAddr(LLSSecret), sizeof(LLSSecret_read));
-	bool equal = lls.Compare(LLSSecret_read, strlen((const char*)LLSSecret_read));
+  size_t mem_len = strnlen((const char*)LLSSecret_read, sizeof(LLSSecret_read));
+	bool equal = (mem_len == lls.GetSize()) ? lls.Compare(LLSSecret_read, mem_len) : false;
 	lls.SetPosition(0);
 	return equal;
 }
