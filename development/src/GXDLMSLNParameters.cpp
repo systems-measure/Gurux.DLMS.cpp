@@ -77,16 +77,6 @@ CGXByteBuffer* CGXDLMSLNParameters::GetData()
     return m_Data;
 }
 
-struct tm* CGXDLMSLNParameters::GetTime()
-{
-    return m_Time;
-}
-
-void CGXDLMSLNParameters::SetTime(struct tm* value)
-{
-    m_Time = value;
-}
-
 unsigned char CGXDLMSLNParameters::GetStatus()
 {
     return m_Status;
