@@ -91,7 +91,7 @@ void CGXDLMSObject::Initialize(unsigned short class_id, unsigned char version, C
         }
     }
 	get_data_type = nullptr;
-	constr_idx = 0xFF;
+	constr_idx = 0xFFFF;
 }
 
 CGXDLMSObject::~CGXDLMSObject(void)
@@ -125,14 +125,14 @@ int CGXDLMSObject::GetDataType(signed char index, DLMS_DATA_TYPE& type)
 	{
 		return DLMS_ERROR_CODE_INVALID_PARAMETER;
 	}
-	if (get_data_type != nullptr && constr_idx != 0xFF) {
+	if (get_data_type != nullptr && constr_idx != 0xFFFF) {
 		type = (DLMS_DATA_TYPE)get_data_type(constr_idx);
 	}
 	return DLMS_ERROR_CODE_OK;
 }
 
 DLMS_DATA_TYPE CGXDLMSObject::GetDataType(signed char index) {
-	if (get_data_type != nullptr && constr_idx != 0xFF) {
+	if (get_data_type != nullptr && constr_idx != 0xFFFF) {
 		return (DLMS_DATA_TYPE)get_data_type(constr_idx);
 	}
     return DLMS_DATA_TYPE_NONE;
