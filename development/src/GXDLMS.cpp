@@ -143,7 +143,8 @@ int CGXDLMS::GetHdlcFrame(
     CGXDLMSSettings& settings,
     unsigned char frame,
     CGXByteBuffer* data,
-    CGXByteBuffer& reply)
+    CGXByteBuffer& reply,
+    bool remove_sent_bytes)
 {
     reply.Clear();
     unsigned short frameSize, len = 0;
@@ -226,7 +227,7 @@ int CGXDLMS::GetHdlcFrame(
     // Add EOP
     reply.SetUInt8(HDLC_FRAME_START_END);
     // Remove sent data in server side.
-        if (data != NULL)
+        if (data != NULL && remove_sent_bytes)
         {
             if (data->GetSize() == data->GetPosition())
             {

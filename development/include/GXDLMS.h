@@ -129,7 +129,8 @@ public:
         CGXDLMSSettings& settings,
         unsigned char frame,
         CGXByteBuffer* data,
-        CGXByteBuffer& reply);
+        CGXByteBuffer& reply,
+        bool remove_sent_bytes = true);
 
     static int GetHdlcData(
         CGXDLMSSettings& settings,
