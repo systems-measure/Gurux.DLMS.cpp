@@ -315,11 +315,12 @@ void CGXByteBuffer::Set(unsigned short index, const void* pSource, unsigned shor
     {
       m_Capacity = index + count;
       m_Data = (unsigned char*)realloc(m_Data, m_Capacity);
-      if (index > m_Size)
-        memset(m_Data + m_Size, 0x00, index - m_Size);
     }
     memcpy(m_Data + index, pSource, count);
-    m_Size += count;
+    if (index > m_Size)
+      memset(m_Data + m_Size, 0x00, index - m_Size);
+    if (index + count > m_Size)
+      m_Size = index + count;
   }
 }
 

@@ -57,7 +57,7 @@ public:
 
 	static unsigned char GetDateTime(CArtVariant& buff, CGXDateTime& value);
 
-	static void GetNum(unsigned char& num, char* ln, unsigned char& size) {
+	static void GetNum(unsigned char num, char* ln, unsigned char& size) {
 		if (num >= 100) {
 			*(ln + size) = (num_codes[num / 100]);
 			++size;
@@ -70,7 +70,7 @@ public:
 		++size;
 	}
 
-	static void GetNum16(unsigned short& num, char* ln, unsigned char& size) {
+	static void GetNum16(unsigned short num, char* ln, unsigned char& size) {
 		if (num >= 10000) {
 			*(ln + size) = (num_codes[num / 10000]);
 			++size;
