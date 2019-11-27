@@ -399,78 +399,29 @@ int GXHelpers::SetLogicalName(const char* name, CArtVariant& value)
     return SetLogicalName(name, value.byteArr);
 }
 
-int GXHelpers::SetLogicalName(const char* name, unsigned char ln[6])
-{
+DLMS_ERROR_CODE GXHelpers::SetLogicalName(const char* name, unsigned char ln[6]){
 	uint8_t i = 0;
-	uint8_t pos = 0;
-	uint8_t char_pos = 0;
-	memset(ln, 0, 6);
-	while (i < 6 && name[pos] != '\0') {
-		while (name[pos] != '.' && name[pos] != '\0') {
-			while (name[pos] != num_codes[char_pos]) {
-				++char_pos;
-			}
-			ln[i] *= 10;
-			ln[i] += char_pos;
-			++pos;
-			char_pos = 0;
+	uint8_t char_val = 0;
+  uint16_t val = 0;
+	while (i < 6 && *name != '\0') {
+		while (*name != '.' && *name != '\0') {
+      char_val = (uint8_t)(*name - '0');
+      if (char_val > 9)
+        return DLMS_ERROR_CODE_INVALID_PARAMETER;
+
+      val *= 10;
+      val += char_val;
+      if(val > 0xFF)
+        return DLMS_ERROR_CODE_INVALID_PARAMETER;
+
+      ++name;
 		}
-		++pos;
+    ln[i] = (uint8_t)val;
+    val = 0;
+		++name;
 		++i;
 	}
-    return DLMS_ERROR_CODE_OK;
-}
-
-unsigned char GXHelpers::GetValue(char c)
-{
-    unsigned char value;
-    if (c > '9')
-    {
-        if (c > 'Z')
-        {
-            value = (c - 'a' + 10);
-        }
-        else
-        {
-            value = (c - 'A' + 10);
-        }
-    }
-    else
-    {
-        value = (c - '0');
-    }
-    return value;
-}
-
-void GXHelpers::LNToBytes(std::string ln, CGXByteBuffer& buffer)
-{
-    int byteCnt = 0;
-    unsigned char byteVal = 0;
-    buffer.Clear();
-    buffer.Capacity(6);
-    std::string::iterator ch = ln.begin();
-    while(ch != ln.end()) {
-        if(*ch >= '0' && *ch <= '9') {
-            byteVal *= 10;
-            byteVal += GetValue(*ch);
-            
-        } else if(*ch == '.') {
-            buffer.SetUInt8(byteVal);
-            byteVal = 0;
-            ++byteCnt;
-        } else {
-            break;
-        }
-        ++ch;
-    }
-    if(ch == ln.end()) {
-        buffer.SetUInt8(byteVal);        
-        ++byteCnt;
-    }
-    
-    if(byteCnt < 6) { // conversion failed
-        buffer.Clear();
-    }
+  return i == 6 ? DLMS_ERROR_CODE_OK : DLMS_ERROR_CODE_INVALID_PARAMETER;
 }
 
 const int8_t typesSize[] = { 0, -1, -1, 1, -1,  4, 4, -2, -2, -1,   // DLMS_DATA_TYPE_NONE - DLMS_DATA_TYPE_OCTET_STRING
