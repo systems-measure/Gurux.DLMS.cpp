@@ -52,14 +52,11 @@ private:
      * Data.
      */
     CGXByteBuffer* m_Data;
-    /**
-     * Send date and time. This is used in Data notification messages.
-     */
-    struct tm* m_Time;
-	/**
-	* DLMS command.
-	*/
-	DLMS_COMMAND m_Command;
+
+	  /**
+	  * DLMS command.
+	  */
+	  DLMS_COMMAND m_Command;
     /**
      * Reply status.
      */
@@ -127,17 +124,6 @@ public:
      * @return the data
      */
     CGXByteBuffer* GetData();
-
-    /**
-     * @return the time
-     */
-    struct tm* GetTime();
-
-    /**
-     * @param value
-     *            the time to set
-     */
-    void SetTime(struct tm* value);
 
     /**
      * @return Status.

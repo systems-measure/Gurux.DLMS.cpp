@@ -110,6 +110,8 @@ public:
 
     void Set(const void* pSource, unsigned short count);
 
+    void Set(unsigned short index, const void* pSource, unsigned short count);
+
     void Set(CGXByteBuffer* data, unsigned short index = 0, unsigned short count = -1);
 
     void Clear();

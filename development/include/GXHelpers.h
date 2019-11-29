@@ -41,14 +41,7 @@
 
 const char num_codes[10] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', };
 
-class GXHelpers
-{
-    /*
-    * Convert char hex value to byte value.
-    * @param c Character to convert hex.
-    * @return Byte value of hex char value.
-    */
-    static unsigned char GetValue(char c);
+class GXHelpers{
 public:
 
 	static void GetDataCA(CGXByteBuffer& data, CArtVariant& value);
@@ -57,7 +50,7 @@ public:
 
 	static unsigned char GetDateTime(CArtVariant& buff, CGXDateTime& value);
 
-	static void GetNum(unsigned char& num, char* ln, unsigned char& size) {
+	static void GetNum(unsigned char num, char* ln, unsigned char& size) {
 		if (num >= 100) {
 			*(ln + size) = (num_codes[num / 100]);
 			++size;
@@ -70,7 +63,7 @@ public:
 		++size;
 	}
 
-	static void GetNum16(unsigned short& num, char* ln, unsigned char& size) {
+	static void GetNum16(unsigned short num, char* ln, unsigned char& size) {
 		if (num >= 10000) {
 			*(ln + size) = (num_codes[num / 10000]);
 			++size;
@@ -173,7 +166,7 @@ public:
     /////////////////////////////////////////////////////////////////////////////
     //Set logical name from std::string.
     /////////////////////////////////////////////////////////////////////////////
-    static int SetLogicalName(const char* name, unsigned char ln[6]);
+    static DLMS_ERROR_CODE SetLogicalName(const char* name, unsigned char ln[6]);
 
     /////////////////////////////////////////////////////////////////////////////
     // Get object count. If first byte is 0x80 or higger it will tell bytes count.
@@ -198,8 +191,6 @@ public:
     // buff : Byte buffer.
     /////////////////////////////////////////////////////////////////////////////
     static void SetObjectCount(unsigned long count, CGXByteBuffer& buff);
-    
-    static void LNToBytes(std::string ln, CGXByteBuffer& buffer);
 
 };
 

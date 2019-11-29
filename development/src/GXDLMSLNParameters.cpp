@@ -46,7 +46,6 @@ CGXDLMSLNParameters::CGXDLMSLNParameters(
     m_Command = command;
     m_RequestType = commandType;
     m_Data = data;
-    m_Time = NULL;
     m_Status = status;
     m_MultipleBlocks = settings->GetCount() != settings->GetIndex();
     m_LastBlock = settings->GetCount() == settings->GetIndex();
@@ -75,16 +74,6 @@ void CGXDLMSLNParameters::SetRequestType(unsigned char value)
 CGXByteBuffer* CGXDLMSLNParameters::GetData()
 {
     return m_Data;
-}
-
-struct tm* CGXDLMSLNParameters::GetTime()
-{
-    return m_Time;
-}
-
-void CGXDLMSLNParameters::SetTime(struct tm* value)
-{
-    m_Time = value;
 }
 
 unsigned char CGXDLMSLNParameters::GetStatus()
