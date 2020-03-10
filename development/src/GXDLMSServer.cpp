@@ -321,8 +321,8 @@ int CGXDLMSServer::HandleSnrmRequest(CGXByteBuffer& data)
 {
 	m_Settings.GetLimits().SetWindowSizeRX(1);
 	m_Settings.GetLimits().SetWindowSizeTX(1);
-	m_Settings.GetLimits().SetMaxInfoRX(256);
-	m_Settings.GetLimits().SetMaxInfoTX(256);
+	m_Settings.GetLimits().SetMaxInfoRX(300);
+	m_Settings.GetLimits().SetMaxInfoTX(300);
     Reset(true);
 	m_LinkEstablished = false;
 	unsigned char ret = ParseSNRM(data, GetLimits());
