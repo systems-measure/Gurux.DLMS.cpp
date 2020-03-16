@@ -140,106 +140,77 @@ int GetDataFromBlock(CGXByteBuffer& data, int index)
  * @return HDLC frame.
  */
 int CGXDLMS::GetHdlcFrame(
-    CGXDLMSSettings& settings,
-    unsigned char frame,
-    CGXByteBuffer* data,
-    CGXByteBuffer& reply,
-    bool remove_sent_bytes)
-{
-    reply.Clear();
-    unsigned short frameSize, len = 0;
-    int ret = 0;
-    CGXByteBuffer primaryAddress, secondaryAddress;
-        if ((ret = GetAddressBytes(settings.GetClientAddress(), primaryAddress)) != 0)
-        {
-            return ret;
-        }
-        if ((ret = GetAddressBytes(settings.GetServerAddress(), secondaryAddress)) != 0)
-        {
-            return ret;
-        }
-    // Add BOP
-    reply.SetUInt8(HDLC_FRAME_START_END);
-    frameSize = settings.GetLimits().GetMaxInfoTX();
-    // If no data
-    if (data == NULL || data->GetSize() == 0)
-    {
-        reply.SetUInt8(0xA0);
-    }
-    else if (data->GetSize() - data->GetPosition() <= frameSize - (9 + primaryAddress.GetSize() + secondaryAddress.GetSize()))
-    {
-        len = data->GetSize() - data->GetPosition();
-        // Is last packet.
-        reply.SetUInt8(0xA0 | ((len >> 8) & 0x7));
-    }
-    else
-    {
-        len = frameSize - 2;
-        // More data to left.
-        reply.SetUInt8(0xA8 | ((len >> 8) & 0x7));
-    }
-    // Frame len.
-    if (len == 0)
-    {
-        reply.SetUInt8((unsigned char)(5 + primaryAddress.GetSize() +
-            secondaryAddress.GetSize() + len));
-    }
-    else
-    { 
-		if (len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize() > frameSize - 2) {
-			reply.SetUInt8((unsigned char)((frameSize - 2) & 0xFF));
-			len = (frameSize)-(9 + primaryAddress.GetSize() + secondaryAddress.GetSize());
-		}
-		else {
-			reply.SetUInt8((unsigned char)(len + 7 + primaryAddress.GetSize() + secondaryAddress.GetSize()));
-		}
-    }
-    // Add primary address.
-    reply.Set(&primaryAddress);
-    // Add secondary address.
-    reply.Set(&secondaryAddress);
+  CGXDLMSSettings& settings,
+  unsigned char frame,
+  CGXByteBuffer* data,
+  CGXByteBuffer& reply,
+  bool remove_sent_bytes) {
+  reply.Clear();
 
-    // Add frame ID.
-    if (frame == 0)
-    {
-        reply.SetUInt8(settings.GetNextSend(1));
-    }
+  int ret = 0;
+  CGXByteBuffer primaryAddress, secondaryAddress;
+  if ((ret = GetAddressBytes(settings.GetClientAddress(), primaryAddress)) != 0)
+    return ret;
+
+  if ((ret = GetAddressBytes(settings.GetServerAddress(), secondaryAddress)) != 0)
+    return ret;
+  // Add BOP
+  reply.SetUInt8(HDLC_FRAME_START_END);
+  unsigned short frameSize = 5 + primaryAddress.GetSize() + secondaryAddress.GetSize();
+  unsigned short len = 0;
+  // If no data
+  if (data == NULL || data->GetSize() == 0)
+    reply.SetUInt8(0xA0);
+
+  else if (data->GetSize() - data->GetPosition() + 2 + frameSize <= settings.GetLimits().GetMaxInfoTX() - 2) {
+    len = data->GetSize() - data->GetPosition();
+    frameSize += (2 + len);
+    // Is last packet.
+    reply.SetUInt8(0xA0 | ((frameSize >> 8) & 0x7));
+  } else {
+    frameSize = settings.GetLimits().GetMaxInfoTX() - 2;
+    len = frameSize - 2 - (5 + primaryAddress.GetSize() + secondaryAddress.GetSize());
+    // More data to left.
+    reply.SetUInt8(0xA8 | ((frameSize >> 8) & 0x7));
+  }
+  // Frame len.
+  reply.SetUInt8((unsigned char)(frameSize & 0xFF));
+  // Add primary address.
+  reply.Set(&primaryAddress);
+  // Add secondary address.
+  reply.Set(&secondaryAddress);
+
+  // Add frame ID.
+  if (frame == 0)
+    reply.SetUInt8(settings.GetNextSend(1));
+  else {
+    if (frame == 0x01)
+      reply.SetUInt8(settings.GetKeepAlive());
     else
-    {
-		if (frame == 0x01) {
-			reply.SetUInt8(settings.GetKeepAlive());
-		}
-		else {
-			reply.SetUInt8(frame);
-		}
-    }
-    // Add header CRC.
-    int crc = CountFCS16(reply, 1, reply.GetSize() - 1);
+      reply.SetUInt8(frame);
+  }
+  // Add header CRC.
+  unsigned short crc = CountFCS16(reply, 1, reply.GetSize() - 1);
+  reply.SetUInt16(crc);
+  if (len != 0) {
+    // Add data.
+    reply.Set(data, data->GetPosition(), len);
+    // Add data CRC.
+    crc = CountFCS16(reply, 1, reply.GetSize() - 1);
     reply.SetUInt16(crc);
-    if (len != 0)
-    {
-        // Add data.
-        reply.Set(data, data->GetPosition(), len);
-        // Add data CRC.
-        crc = CountFCS16(reply, 1, reply.GetSize() - 1);
-        reply.SetUInt16(crc);
+  }
+  // Add EOP
+  reply.SetUInt8(HDLC_FRAME_START_END);
+  // Remove sent data in server side.
+  if (data != NULL && remove_sent_bytes) {
+    if (data->GetSize() == data->GetPosition()) {
+      data->Clear();
+    } else {
+      data->Move(data->GetPosition(), 0, data->GetSize() - data->GetPosition());
+      data->SetPosition(0);
     }
-    // Add EOP
-    reply.SetUInt8(HDLC_FRAME_START_END);
-    // Remove sent data in server side.
-        if (data != NULL && remove_sent_bytes)
-        {
-            if (data->GetSize() == data->GetPosition())
-            {
-                data->Clear();
-            }
-            else
-            {
-                data->Move(data->GetPosition(), 0, data->GetSize() - data->GetPosition());
-                data->SetPosition(0);
-            }
-        }
-    return DLMS_ERROR_CODE_OK;
+  }
+  return DLMS_ERROR_CODE_OK;
 }
 
 unsigned char GetInvokeIDPriority(CGXDLMSSettings& settings)

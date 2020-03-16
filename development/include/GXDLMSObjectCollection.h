@@ -39,7 +39,7 @@
 
 typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint16_t* idx_cnstrd);
 
-typedef unsigned char(*TypeObj)(const char* obis, uint16_t* idx_cnstrd);
+typedef unsigned char(*TypeObj)(const unsigned char obis[6], uint16_t* idx_cnstrd);
 
 class CGXDLMSObjectCollection
 {
