@@ -131,78 +131,78 @@ void CreateLimiter(CGXDLMSObject*& constracted) {
 }
 
 const tabFunc<newObj> create_func[] = {
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_DATA,								  CreateData },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_REGISTER,						  CreateRegister },
-	{ DLMS_OBJECT_TYPE_EXTENDED_REGISTER,							NULL },
-	{ DLMS_OBJECT_TYPE_DEMAND_REGISTER,				CreateDemandRegister },
-	{ DLMS_OBJECT_TYPE_REGISTER_ACTIVATION,							NULL },
-	{ DLMS_OBJECT_TYPE_PROFILE_GENERIC,					   CreateProfile },
-	{ DLMS_OBJECT_TYPE_CLOCK,								 CreateClock },
-	{ DLMS_OBJECT_TYPE_SCRIPT_TABLE,				   CreateScriptTable },
-	{ DLMS_OBJECT_TYPE_SCHEDULE,									NULL },
-	{ DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE,			  CreateSpecDayTable },
-	{ DLMS_OBJECT_TYPE_ASSOCIATION_SHORT_NAME,						NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME,			   CreateALN },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_SAP_ASSIGNMENT,								NULL },
-	{ DLMS_OBJECT_TYPE_IMAGE_TRANSFER,				 CreateImageTransfer },
-	{ DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP,						NULL },
-	{ DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR,		  CreateActivityCalendar },
-	{ DLMS_OBJECT_TYPE_REGISTER_MONITOR,							NULL },
-	{ DLMS_OBJECT_TYPE_ACTION_SCHEDULE,								NULL },
-	{ DLMS_OBJECT_TYPE_IEC_HDLC_SETUP,					 CreateHdlcSetup },
-	{ DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP,						NULL },
-	{ DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP,						NULL },
-	{ DLMS_OBJECT_TYPE_UTILITY_TABLES,								NULL },
-	{ DLMS_OBJECT_TYPE_MODEM_CONFIGURATION,							NULL },
-	{ DLMS_OBJECT_TYPE_AUTO_ANSWER,									NULL },
-	{ DLMS_OBJECT_TYPE_AUTO_CONNECT,								NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_PUSH_SETUP,						 CreatePushSetup },
-	{ DLMS_OBJECT_TYPE_TCP_UDP_SETUP,				   CreateTcpUdpSetup },
-	{ DLMS_OBJECT_TYPE_IP4_SETUP,						  CreateIp4Setup },
-	{ DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP,		   CreateMacAddressSetup },
-	{ DLMS_OBJECT_TYPE_PPP_SETUP,									NULL },
-	{ DLMS_OBJECT_TYPE_GPRS_SETUP,						 CreateGPRSSetup },
-	{ DLMS_OBJECT_TYPE_SMTP_SETUP,									NULL },
-	{ DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC,				 CreateGSMDiagnostic },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_MESSAGE_HANDLER,								NULL },
-	{ DLMS_OBJECT_TYPE_REGISTER_TABLE,								NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_STATUS_MAPPING,								NULL },
-	{ DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP,							NULL },
-	{ DLMS_OBJECT_TYPE_PARAMETER_MONITOR,							NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_NONE,										NULL },
-	{ DLMS_OBJECT_TYPE_DISCONNECT_CONTROL,		  CreateDisconectControl },
-	{ DLMS_OBJECT_TYPE_LIMITER,							   CreateLimiter }
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_DATA,                             CreateData },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_REGISTER,                     CreateRegister },
+	{ DLMS_OBJECT_TYPE_EXTENDED_REGISTER,                      NULL },
+	{ DLMS_OBJECT_TYPE_DEMAND_REGISTER,        CreateDemandRegister },
+	{ DLMS_OBJECT_TYPE_REGISTER_ACTIVATION,                    NULL },
+	{ DLMS_OBJECT_TYPE_PROFILE_GENERIC,               CreateProfile },
+	{ DLMS_OBJECT_TYPE_CLOCK,                           CreateClock },
+	{ DLMS_OBJECT_TYPE_SCRIPT_TABLE,              CreateScriptTable },
+	{ DLMS_OBJECT_TYPE_SCHEDULE,                               NULL },
+	{ DLMS_OBJECT_TYPE_SPECIAL_DAYS_TABLE,       CreateSpecDayTable },
+	{ DLMS_OBJECT_TYPE_ASSOCIATION_SHORT_NAME,                 NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_ASSOCIATION_LOGICAL_NAME,          CreateALN },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_SAP_ASSIGNMENT,                         NULL },
+	{ DLMS_OBJECT_TYPE_IMAGE_TRANSFER,          CreateImageTransfer },
+	{ DLMS_OBJECT_TYPE_IEC_LOCAL_PORT_SETUP,                   NULL },
+	{ DLMS_OBJECT_TYPE_ACTIVITY_CALENDAR,    CreateActivityCalendar },
+	{ DLMS_OBJECT_TYPE_REGISTER_MONITOR,                       NULL },
+	{ DLMS_OBJECT_TYPE_ACTION_SCHEDULE,                        NULL },
+	{ DLMS_OBJECT_TYPE_IEC_HDLC_SETUP,              CreateHdlcSetup },
+	{ DLMS_OBJECT_TYPE_IEC_TWISTED_PAIR_SETUP,                 NULL },
+	{ DLMS_OBJECT_TYPE_MBUS_SLAVE_PORT_SETUP,                  NULL },
+	{ DLMS_OBJECT_TYPE_UTILITY_TABLES,                         NULL },
+	{ DLMS_OBJECT_TYPE_MODEM_CONFIGURATION,                    NULL },
+	{ DLMS_OBJECT_TYPE_AUTO_ANSWER,                            NULL },
+	{ DLMS_OBJECT_TYPE_AUTO_CONNECT,                           NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_PUSH_SETUP,                  CreatePushSetup },
+	{ DLMS_OBJECT_TYPE_TCP_UDP_SETUP,             CreateTcpUdpSetup },
+	{ DLMS_OBJECT_TYPE_IP4_SETUP,                    CreateIp4Setup },
+	{ DLMS_OBJECT_TYPE_MAC_ADDRESS_SETUP,     CreateMacAddressSetup },
+	{ DLMS_OBJECT_TYPE_PPP_SETUP,                              NULL },
+	{ DLMS_OBJECT_TYPE_GPRS_SETUP,                  CreateGPRSSetup },
+	{ DLMS_OBJECT_TYPE_SMTP_SETUP,                             NULL },
+	{ DLMS_OBJECT_TYPE_GSM_DIAGNOSTIC,          CreateGSMDiagnostic },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_MESSAGE_HANDLER,                        NULL },
+	{ DLMS_OBJECT_TYPE_REGISTER_TABLE,                         NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_STATUS_MAPPING,                         NULL },
+	{ DLMS_OBJECT_TYPE_DLMS_SECURITY_SETUP,                    NULL },
+	{ DLMS_OBJECT_TYPE_PARAMETER_MONITOR,                      NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_NONE,                                   NULL },
+	{ DLMS_OBJECT_TYPE_DISCONNECT_CONTROL,   CreateDisconectControl },
+	{ DLMS_OBJECT_TYPE_LIMITER,                       CreateLimiter }
 };
 
 void CGXDLMSObjectCollection::CreateObject(DLMS_OBJECT_TYPE type)
@@ -269,9 +269,7 @@ CGXDLMSObjectCollection::~CGXDLMSObjectCollection()
 
 CGXDLMSObject* CGXDLMSObjectCollection::MakeByPosition(uint16_t pos) {
 	if (type_callback != nullptr) {
-		char ln[24];
-		GXHelpers::GetLogicalName(objects_ln[pos], ln);
-		DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln, idx_constructed_obj);
+		DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(objects_ln[pos], idx_constructed_obj);
 		CreateObject(o_type);
 		if (constructed_obj != nullptr) {
 			memcpy(constructed_obj->m_LN, objects_ln[pos], 6);
@@ -284,73 +282,26 @@ CGXDLMSObject* CGXDLMSObjectCollection::MakeByPosition(uint16_t pos) {
 	return nullptr;
 }
 
-CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(uint8_t* ln)
-{
-	if (ln == nullptr) {
+CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(uint8_t* ln) {
+	if (ln == nullptr)
 		return nullptr;
-	}
-	if (memcmp(ln, m_currentALN->m_LN, 6) == 0) {
+	
+	if (memcmp(ln, m_currentALN->m_LN, 6) == 0)
 		return m_currentALN;
-	}
+	
 	for (uint16_t i = 0; i < num_obj_in_collection; ++i) {
-		if (memcmp(ln, objects_ln[i], 6) == 0)
-		{
-			char ln_str[24];
-			GXHelpers::GetLogicalName(objects_ln[i], ln_str);
-			if (type_callback != nullptr) {
-				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln_str, idx_constructed_obj);
-				CreateObject(o_type);
-				if (constructed_obj != nullptr) {
-					memcpy(constructed_obj->m_LN, objects_ln[i], 6);
-					if (init_callback != nullptr) {
-						init_callback(constructed_obj, idx_constructed_obj);
-						return constructed_obj;
-					}
-				}
-			}
-		}
-	}
-	return nullptr;
-}
-
-CGXDLMSObject* CGXDLMSObjectCollection::FindByLN(CGXByteBuffer& ln)
-{
-    if (ln.GetSize() != 6)
-    {
-        return nullptr;
-    }
-	if (memcmp(ln.GetData(), m_currentALN->m_LN, 6) == 0) {
-		return m_currentALN;
-	}
-	for (uint16_t i = 0; i < num_obj_in_collection; ++i) {
-		if (memcmp(ln.GetData(), objects_ln[i], 6) == 0)
-		{
-			char ln[24];
-			GXHelpers::GetLogicalName(objects_ln[i], ln);
+		if (memcmp(ln, objects_ln[i], 6) == 0) {
 			if (type_callback != nullptr) {
 				DLMS_OBJECT_TYPE o_type = (DLMS_OBJECT_TYPE)type_callback(ln, idx_constructed_obj);
 				CreateObject(o_type);
 				if (constructed_obj != nullptr) {
-					memcpy(constructed_obj->m_LN, objects_ln[i], 6);
+					memcpy(constructed_obj->m_LN, ln, 6);
 					if (init_callback != nullptr) {
 						init_callback(constructed_obj, idx_constructed_obj);
 						return constructed_obj;
 					}
 				}
 			}
-		}
-	}
-	return nullptr;
-}
-
-unsigned char* CGXDLMSObjectCollection::FindByLN(const char* ln) {
-	char ln2[24];
-	for (uint16_t i = 0; i < num_obj_in_collection; ++i) {
-		memset(ln2, 0, 24);
-		GXHelpers::GetLogicalName(objects_ln[i], ln2);
-		if (strcmp(ln2, ln) == 0)
-		{
-			return objects_ln[i];
 		}
 	}
 	return nullptr;

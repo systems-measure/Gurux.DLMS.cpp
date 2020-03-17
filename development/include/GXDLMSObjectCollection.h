@@ -39,71 +39,67 @@
 
 typedef void(*InitObjField)(CGXDLMSObject* constr_obj, uint16_t* idx_cnstrd);
 
-typedef unsigned char(*TypeObj)(const unsigned char obis[6], uint16_t* idx_cnstrd);
+typedef unsigned char(*TypeObj)(const uint8_t* obis, uint16_t* idx_cnstrd);
 
 class CGXDLMSObjectCollection
 {
 private:
-	CGXDLMSObject* constructed_obj;
+  CGXDLMSObject* constructed_obj;
 
-	uint16_t* idx_constructed_obj;
+  uint16_t* idx_constructed_obj;
 
-	uint8_t** objects_ln;
+  uint8_t** objects_ln;
 
-	uint16_t size_collection;
+  uint16_t size_collection;
 
-	uint16_t num_obj_in_collection;
+  uint16_t num_obj_in_collection;
 
-	CGXDLMSObject* m_currentALN;
+  CGXDLMSObject* m_currentALN;
 
-	InitObjField init_callback;
+  InitObjField init_callback;
 
-	TypeObj type_callback;
+  TypeObj type_callback;
 
-	void CreateObject(DLMS_OBJECT_TYPE type);
+  void CreateObject(DLMS_OBJECT_TYPE type);
 public:
 
-	CGXDLMSObjectCollection();
+  CGXDLMSObjectCollection();
 
-	CGXDLMSObjectCollection(uint16_t size);
+  CGXDLMSObjectCollection(uint16_t size);
 
-    ~CGXDLMSObjectCollection();
+  ~CGXDLMSObjectCollection();
 
-	CGXDLMSObject* MakeByPosition(uint16_t pos);
+  CGXDLMSObject* MakeByPosition(uint16_t pos);
 
-    CGXDLMSObject* FindByLN(uint8_t* ln);
+  CGXDLMSObject* FindByLN(uint8_t* ln);
 
-	unsigned char* FindByLN(const char* ln);
+  CGXDLMSObject* GetCurALN();
 
-    CGXDLMSObject* FindByLN(CGXByteBuffer& ln);
+  uint8_t** GetObjectsCollection();
 
-	CGXDLMSObject* GetCurALN();
+  bool empty();
 
-	uint8_t** GetObjectsCollection();
+  uint16_t size();
 
-	bool empty();
-
-	uint16_t size();
-
-	void Init(uint16_t new_size);
+  void Init(uint16_t new_size);
 
   void push_back(unsigned char* item);
 
-	void push_back_aln(CGXDLMSObject* item);
+  void push_back_aln(CGXDLMSObject* item);
 
-	void clear();
+  void clear();
 
-	void insert(uint16_t start_pos, uint8_t** src, uint16_t count);
+  void insert(uint16_t start_pos, uint8_t** src, uint16_t count);
 
-	InitObjField GetInitCallback();
+  InitObjField GetInitCallback();
 
-	void SetInitCallback(InitObjField init);
+  void SetInitCallback(InitObjField init);
 
-	TypeObj GetTypeObjCallback();
+  TypeObj GetTypeObjCallback();
 
-	void SetTypeObjCallback(TypeObj type);
+  void SetTypeObjCallback(TypeObj type);
 
-	void FreeConstructedObj();
+  void FreeConstructedObj();
 
 };
 

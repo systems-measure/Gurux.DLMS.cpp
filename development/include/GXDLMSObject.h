@@ -69,14 +69,10 @@ public:
 
 	void SetConstructedIdx(uint16_t* idx);
 
-    //Get Object's Logical or Short Name as a std::string.
-    std::string GetName();
-
     //Get Object's Interface class type.
     DLMS_OBJECT_TYPE GetObjectType();
 
     //Get Object's Logical Name.
-    void GetLogicalName(char* ln);
 	void GetLogicalName(unsigned char* c_ln);
     void GetLogicalName(signed char* c_ln) { GetLogicalName((unsigned char*)c_ln); }
 

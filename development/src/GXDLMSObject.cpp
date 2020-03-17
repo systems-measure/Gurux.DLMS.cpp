@@ -61,8 +61,7 @@ CGXDLMSObject::CGXDLMSObject(DLMS_OBJECT_TYPE type)
 int CGXDLMSObject::GetLogicalName(CGXDLMSObject * target, CGXByteBuffer& value)
 {
 	if (target != nullptr) {
-		value.SetUInt8(DLMS_DATA_TYPE_OCTET_STRING);
-		value.SetUInt8(6);
+		value.SetUInt16(0x0906);
 		value.Set(target->m_LN, 6);
 		return DLMS_ERROR_CODE_OK;
 	}
@@ -107,13 +106,6 @@ void CGXDLMSObject::SetConstructedIdx(uint16_t* idx) {
 	constr_idx = *idx;
 }
 
-std::string CGXDLMSObject::GetName()
-{
-	std::string ln;
-    GXHelpers::GetLogicalName(m_LN, ln);
-    return ln;
-}
-
 DLMS_OBJECT_TYPE CGXDLMSObject::GetObjectType()
 {
     return m_ObjectType;
@@ -136,11 +128,6 @@ DLMS_DATA_TYPE CGXDLMSObject::GetDataType(signed char index) {
 		return (DLMS_DATA_TYPE)get_data_type(constr_idx);
 	}
     return DLMS_DATA_TYPE_NONE;
-}
-
-void CGXDLMSObject::GetLogicalName(char* ln)
-{
-    GXHelpers::GetLogicalName(m_LN, ln);
 }
 
 void CGXDLMSObject::GetLogicalName(unsigned char* c_ln) {

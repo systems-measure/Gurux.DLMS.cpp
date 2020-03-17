@@ -92,22 +92,21 @@ bool CGXDLMSServer::IsLongTransaction() {
 	return (m_Transaction->GetCommand() != DLMS_COMMAND_NONE);
 }
 
-int CGXDLMSServer::Initialize()
-{
+int CGXDLMSServer::Initialize() {
 	m_Settings.GetLimits().SetWindowSizeRX(1);
 	m_Settings.GetLimits().SetWindowSizeTX(1);
-	m_Settings.GetLimits().SetMaxInfoRX(256);
-	m_Settings.GetLimits().SetMaxInfoTX(256);
+	m_Settings.GetLimits().SetMaxInfoRX(300);
+	m_Settings.GetLimits().SetMaxInfoTX(300);
 
-	char ln[24];
+	uint8_t ln[6];
+  const uint8_t empty[sizeof(ln)] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	CGXDLMSObject* tmp_obj = nullptr;
-	for (uint16_t i = 0; i < GetItems()->size(); ++i)
-    {
+	for (uint16_t i = 0; i < GetItems()->size(); ++i) {
+    memset(ln, 0x00, sizeof(ln));
 		tmp_obj = GetItems()->MakeByPosition(i);
 		if (tmp_obj != nullptr) {
 			tmp_obj->GetLogicalName(ln);
-			if (strlen(ln) == 0)
-			{
+			if (memcmp(ln, empty, sizeof(ln)) == 0) {
 				//Invalid Logical Name.
 				tmp_obj = nullptr;
 				GetItems()->FreeConstructedObj();
@@ -117,8 +116,9 @@ int CGXDLMSServer::Initialize()
 			GetItems()->FreeConstructedObj();
 		}
 	}
-    m_CurrentALN->GetLogicalName(ln);
-	if(strlen(ln) == 0){
+  memset(ln, 0x00, sizeof(ln));
+  m_CurrentALN->GetLogicalName(ln);
+	if(memcmp(ln, empty, sizeof(ln)) == 0) {
 			//Invalid Logical Name.
 			return DLMS_ERROR_CODE_INVALID_LOGICAL_NAME;
 		}
