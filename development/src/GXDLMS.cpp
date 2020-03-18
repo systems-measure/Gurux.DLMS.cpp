@@ -38,7 +38,6 @@
 #define MAX_SERVER_ADDR_SIZE    4
 #define MAX_CLIENT_ADDR_SIZE    1
 
-const unsigned char CIPHERING_HEADER_SIZE = 7 + 12 + 3;
 //CRC table.
 const unsigned short FCS16Table[256] =
 {
@@ -145,7 +144,6 @@ int CGXDLMS::GetHdlcFrame(
   CGXByteBuffer* data,
   CGXByteBuffer& reply,
   bool remove_sent_bytes) {
-  reply.Clear();
 
   int ret = 0;
   CGXByteBuffer primaryAddress, secondaryAddress;
@@ -579,20 +577,6 @@ int CGXDLMS::GetHDLCAddress(
     return DLMS_ERROR_CODE_OK;
 }
 
-static void GetServerAddress(int address, int& logical, int& physical)
-{
-    if (address < 0x4000)
-    {
-        logical = address >> 7;
-        physical = address & 0x7F;
-    }
-    else
-    {
-        logical = address >> 14;
-        physical = address & 0x3FFF;
-    }
-}
-
 int CGXDLMS::CheckHdlcAddress(
     CGXDLMSSettings& settings,
     CGXByteBuffer& reply)
@@ -914,7 +898,6 @@ int CGXDLMS::GetAddressBytes(unsigned long value, CGXByteBuffer& bytes)
 
 int CGXDLMS::GetValueFromData(CGXDLMSSettings& settings, CGXReplyData& reply)
 {
-    int ret; 
     CArtVariant value;
     unsigned short index = reply.GetData().GetPosition();
     reply.GetData().SetPosition(reply.GetReadPosition());

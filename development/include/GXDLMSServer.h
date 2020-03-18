@@ -93,9 +93,9 @@ private:
 		CGXByteBuffer& data,
 		CGXDLMSLNParameters& p);
 
-    void HandleSetRequestWithDataBlock(
-        CGXByteBuffer& data,
-        CGXDLMSLNParameters& p);
+  void HandleSetRequestWithDataBlock(
+      CGXByteBuffer& data,
+      CGXDLMSLNParameters& p);
 
 
 	void HanleMethodRequestNormal(
@@ -108,7 +108,7 @@ private:
     * @param connected
     *            Is co3nnected.
     */
-    void Reset(bool connected);
+  void Reset(bool connected);
 
 	void ClearLastLTInfo(CGXDLMSLNParameters& p);
 

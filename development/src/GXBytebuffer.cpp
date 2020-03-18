@@ -337,9 +337,14 @@ void CGXByteBuffer::Set(CGXByteBuffer* data, unsigned short index, unsigned shor
     }
 }
 
-void CGXByteBuffer::Clear()
+void CGXByteBuffer::Clear(bool free)
 {
+  if(free)
     Capacity(0);
+  else {
+    m_Size = 0;
+    m_Position = 0;
+  }
 }
 
 int CGXByteBuffer::GetUInt8(unsigned char* value)

@@ -114,7 +114,7 @@ public:
 
     void Set(CGXByteBuffer* data, unsigned short index = 0, unsigned short count = -1);
 
-    void Clear();
+    void Clear(bool free = true);
 
     int GetUInt8(unsigned char* value);
 

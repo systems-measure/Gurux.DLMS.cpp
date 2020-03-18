@@ -429,7 +429,7 @@ const int8_t typesSize[] = { 0, -1, -1, 1, -1,  4, 4, -2, -2, -1,   // DLMS_DATA
                              8,  8,  1, 4,  8, 12, 5,  4         }; //DLMS_DATA_TYPE_INT64 - DLMS_DATA_TYPE_TIME
 
 int8_t spodesSizeof(DLMS_DATA_TYPE type) {
-	if (type >= DLMS_DATA_TYPE_NONE && type <= DLMS_DATA_TYPE_TIME)
+	if (type <= DLMS_DATA_TYPE_TIME)
 		return typesSize[type];
 	return -2;
 }

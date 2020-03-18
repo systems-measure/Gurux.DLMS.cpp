@@ -134,7 +134,7 @@ void CGXDLMSServer::Reset(bool connected)
 		Disconnected();
 		m_Settings.SetConnected(false);
 	}
-	m_RxTxData.Clear();
+	m_RxTxData.Clear(false);
 	m_ReplyData.Clear();
 	if (!connected)
 	{
@@ -1137,33 +1137,29 @@ bool CGXDLMSServer::CheckCtlField(unsigned char ctl,
 int CGXDLMSServer::HandleRequest()
 {
 	int ret;
-	if (m_RxTxData.GetData() == nullptr || m_RxTxData.GetSize() == 0)
-	{
+	if (m_RxTxData.GetSize() == 0)
 		return 0;
-	}
+
 
 	if ((ret = CGXDLMS::GetData(m_Settings, m_RxTxData, m_Info)) != 0)
 	{
 		//If all data is not received yet.
 		if (ret == DLMS_ERROR_CODE_FALSE)
-		{
 			ret = 0;
-		}
 		else {
-			if (m_Info.GetControlField() != 0x13) {
+			if (m_Info.GetControlField() != 0x13)
 				m_Info.Clear();
-			}
+
 			CheckPushNeeded(m_Info);
-			m_RxTxData.Clear();
+			m_RxTxData.Clear(false);
 		}
 		return ret;
 	}
 	// If all data is not received yet.
 	if (!m_Info.IsComplete())
-	{
 		return 0;
-	}
-	m_RxTxData.Clear();
+
+	m_RxTxData.Clear(false);
 
 	// Check is data send to this server.
 	if (!IsTarget(m_Settings.GetServerAddress(), m_Settings.GetClientAddress()))
