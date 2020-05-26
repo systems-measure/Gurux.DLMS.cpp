@@ -56,8 +56,6 @@ public:
 
     CGXDLMSObjectCollection& GetObjectList();
 
-	bool CompareSecret(CGXByteBuffer& lls);
-
     DLMS_DLMS_ASSOCIATION_STATUS GetAssociationStatus();
 
     void SetAssociationStatus(DLMS_DLMS_ASSOCIATION_STATUS value);

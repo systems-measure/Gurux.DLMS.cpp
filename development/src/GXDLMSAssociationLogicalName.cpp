@@ -37,10 +37,6 @@
 #include "../include/GXDLMSAssociationLogicalName.h"
 #include "../include/GXDLMSServer.h"
 #include "../include/GXSecure.h"
-
-#include "converter_mpro\converter_mpro.h"
-#include "memory\memory_srv.h"
-
 /**
  Constructor.
 */
@@ -61,15 +57,6 @@ CGXDLMSAssociationLogicalName::CGXDLMSAssociationLogicalName(const char* ln) : C
 CGXDLMSObjectCollection& CGXDLMSAssociationLogicalName::GetObjectList()
 {
     return m_ObjectList;
-}
-
-bool CGXDLMSAssociationLogicalName::CompareSecret(CGXByteBuffer& lls) {
-	uint8_t	LLSSecret_read[64];
-	mem::rd_ext_mem(LLSSecret_read, GetAddr(ext_eeprom.LLSSecret), sizeof(LLSSecret_read));
-  size_t mem_len = strnlen((const char*)LLSSecret_read, sizeof(LLSSecret_read));
-	bool equal = (mem_len == lls.GetSize()) ? lls.Compare(LLSSecret_read, mem_len) : false;
-	lls.SetPosition(0);
-	return equal;
 }
 
 DLMS_DLMS_ASSOCIATION_STATUS CGXDLMSAssociationLogicalName::GetAssociationStatus()
