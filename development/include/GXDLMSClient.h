@@ -102,6 +102,8 @@ public:
     /////////////////////////////////////////////////////////////////////////////
     ~CGXDLMSClient();
 
+    void PushObject(CGXDLMSObject* obj);
+
     bool GetUseLogicalNameReferencing();
 
     DLMS_INTERFACE_TYPE GetInterfaceType();

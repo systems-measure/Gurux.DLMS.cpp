@@ -108,6 +108,10 @@ bool CGXDLMSClient::GetUseLogicalNameReferencing()
     return m_Settings.GetUseLogicalNameReferencing();
 }
 
+void CGXDLMSClient::PushObject(CGXDLMSObject* obj) {
+  m_Settings.GetObjects().push_back(obj);
+}
+
 DLMS_INTERFACE_TYPE CGXDLMSClient::GetInterfaceType()
 {
     return m_Settings.GetInterfaceType();
